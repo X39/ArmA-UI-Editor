@@ -1,0 +1,82 @@
+﻿<Application x:Class="ArmA_UI_Editor.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ArmA_UI_Editor"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name="Colors">
+                    <SolidColorBrush x:Key="UIBackground" Color="#FF2D2D30"/>
+                    <SolidColorBrush x:Key="UIBackgroundLight" Color="#FF3F3F46"/>
+                    <SolidColorBrush x:Key="UIBackgroundDark" Color="#FF252526"/>
+                    <SolidColorBrush x:Key="UIBlue" Color="#FF0E97DD"/>
+                    <SolidColorBrush x:Key="DefaultTextColor" Color="#FFD0D0D0"/>
+                </ResourceDictionary>
+                <ResourceDictionary x:Name="GlobalStyles">
+                    <Style TargetType="{x:Type GridSplitter}" x:Key="GridSplitterStyle">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Width" Value="Auto"/>
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource UIBackgroundLight}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="{x:Type TabControl}" x:Key="TabControlStyle">
+                        <Setter Property="Background" Value="{StaticResource UIBackgroundDark}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource UIBackgroundLight}"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabControl}">
+                                    <ControlTemplate.Resources>
+                                        <ResourceDictionary>
+                                            <Style TargetType="{x:Type TabItem}">
+                                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
+                                                <Setter Property="Background" Value="Red"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type TabItem}">
+                                                            <Grid>
+                                                                <Border Name="Border" Background="{StaticResource UIBackground}">
+                                                                    <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="5,2,5,2" RecognizesAccessKey="True"/>
+                                                                </Border>
+                                                            </Grid>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsSelected" Value="True">
+                                                                    <Setter Property="Panel.ZIndex" Value="100"/>
+                                                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource UIBackgroundDark}"/>
+                                                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource UIBackgroundLight}"/>
+                                                                    <Setter TargetName="Border" Property="BorderThickness" Value="1,0,1,1" />
+                                                                    <Setter Property="Foreground" Value="{StaticResource UIBlue}"/>
+                                                                    <Setter Property="Margin" Value="0,-1,0,0"/>
+                                                                    <Setter TargetName="Border" Property="Padding" Value="0,1,0,0"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ResourceDictionary>
+                                    </ControlTemplate.Resources>
+                                    <Grid KeyboardNavigation.TabNavigation="Local">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Orientation="Horizontal" x:Name="HeaderPanel" Grid.Row="1" Panel.ZIndex="1" IsItemsHost="True" KeyboardNavigation.TabIndex="1" Background="Transparent" />
+                                        <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Grid.Row="0" BorderThickness="1" KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2">
+                                            <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,140 @@
+﻿<Window x:Class="ArmA_UI_Editor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ArmA_UI_Editor"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" MinWidth="550" Width="550" Background="{StaticResource UIBackground}">
+    <!-- Little test about visual-studio like panels (only visual, required loads of implementation)
+    <Window.Resources>
+        <Style TargetType="{x:Type Label}" x:Key="SlidePanelLabelButtonBase">
+            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Label}">
+                        <Border x:Name="BorderElement" BorderBrush="{StaticResource UIBackgroundLight}" BorderThickness="0,0,0,5" Margin="5,0,5,0">
+                            <ContentPresenter x:Name="PresenterElement"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource UIBlue}" TargetName="BorderElement"/>
+                                <Setter Property="Foreground" Value="{StaticResource UIBlue}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Background="{StaticResource UIBackground}">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}">
+                    <Setter Property="LayoutTransform">
+                        <Setter.Value>
+                            <RotateTransform Angle="90"/>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </StackPanel.Resources>
+            
+            <Label Content="TEST"/>
+            <Label Content="TEST"/>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Right" Background="{StaticResource UIBackground}">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}">
+                    <Setter Property="LayoutTransform">
+                        <Setter.Value>
+                            <RotateTransform Angle="270"/>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </StackPanel.Resources>
+
+            <Label Content="TEST"/>
+            <Label Content="TEST"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="{StaticResource UIBackground}">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}"/>
+            </StackPanel.Resources>
+            <Label Content="TEST"/>
+            <Label Content="TEST"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Background="{StaticResource UIBackground}">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}"/>
+            </StackPanel.Resources>
+
+            <Label Content="TEST"/>
+            <Label Content="TEST"/>
+        </StackPanel>
+        <Frame/>
+    </DockPanel>
+    -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Margin="3" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" MinWidth="128"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="2*" MinWidth="256"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="1*" MinWidth="128"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <TabControl Style="{StaticResource TabControlStyle}">
+                    <TabItem Header="ToolBox">
+                        <TextBlock Text="ToolBox"/>
+                    </TabItem>
+                    <TabItem Header="ZIndex">
+                        <TextBlock Text="ZIndex"/>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+            <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
+            <Grid Grid.Column="2">
+                <TabControl Style="{StaticResource TabControlStyle}">
+                    <TabItem Header="Display">
+                        <TextBlock Text="Properties"/>
+                    </TabItem>
+                    <TabItem Header="Config">
+                        <RichTextBox x:Name="ConfigTextbox" Background="{StaticResource UIBackgroundDark}" Foreground="{StaticResource DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="ConfigTextbox_TextChanged"/>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+            <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="3"/>
+            <Grid Grid.Column="4">
+                <TabControl Style="{StaticResource TabControlStyle}">
+                    <TabItem Header="Properties">
+                        <TextBlock Text="Properties"/>
+                    </TabItem>
+                    <TabItem Header="Window Options">
+                        <ListView Background="Transparent" Initialized="ListView_Initialized" Foreground="{StaticResource DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0">
+                            <ListView.Resources>
+                                <Style TargetType="GridViewColumnHeader">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </Style>
+                            </ListView.Resources>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Text}"/>
+                                    <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Object}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1" Background="{StaticResource UIBlue}" Height="16">
+            <TextBlock x:Name="StatusText"/>
+        </Grid>
+    </Grid>
+</Window>
