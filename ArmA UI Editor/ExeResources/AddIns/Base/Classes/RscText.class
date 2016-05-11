@@ -1,0 +1,16 @@
+﻿class RscText
+{
+	access = 0;
+	type = 0;
+	idc = -1;
+	style = 0x01;
+	w = 0.1;
+	h = 0.05;
+	font = "TahomaB";
+	sizeEx = 0.04;
+	colorBackground[] = {0,0,0,0};
+	colorText[] = {1,1,1,1};
+	text = "";
+	fixedWidth = 0;
+	shadow = 0;
+};

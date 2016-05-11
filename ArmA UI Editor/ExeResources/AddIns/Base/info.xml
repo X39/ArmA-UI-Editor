@@ -1,0 +1,44 @@
+﻿<root>
+  <info>
+    <!-- <author> should contain the authors comma separated-->
+    <author>X39</author>
+    <!-- <description> contains basic information about this AddIn -->
+    <description>Base Add-in containing most base elements available in ArmA 3</description>
+    <!-- Format for <version>: MAJOR '.' MINOR '.' REVISION '-' [ ADDITION ] -->
+    <version>1.0.0</version>
+    <!-- Format for <updateurl>: VERSION:PACKAGEURLASZIP -->
+    <updateurl></updateurl>
+  </info>
+  <files>
+    <file>
+      <!-- <displayname> contains the text which will represent this element in the toolbox -->
+      <displayname>RscText</displayname>
+      <!-- <image> contains 16x16px image which represents this element in the toolbox -->
+      <image></image>
+      <!-- <class> contains the path to the class-file which represents this element -->
+      <class>/Classes/RscText.class</class>
+      <!-- <xaml> contains the path to the xaml-file which represents this element
+           xaml file contains special databinding syntax to "bind" to class attributes:
+              1. {{x:armaClassBind /path/to/class/field, toString}}
+              2. {{x:armaClassBind /path/to/class/field, toHex}}
+              3. {{x:armaClassBind /path/to/class/field, commaSeparated}}
+              4. {{x:armaClassBind /path/to/class/field, multipliedBy=<NUMBER>}}
+              
+              info to 1:
+                Will copy content straight over to field
+              info to 2:
+                Will convert array content to hex color value
+                Can be used to generate a SolidColorBrush for eg. Background Color
+              info to 3:
+                Will copy array content comma separated
+              info to 4:
+                Will multiply number in field by number provided
+                Can be used to resize the weirdo ArmA Font sizes to WPF Pixel sizes
+              
+              Any errors happening in here will throw exceptions which are displayed
+              when an addIn is loaded (addIn will fail to load due to that)
+              The field path begins AFTER the initial class-->
+      <xaml>/Xaml/RscText.xaml</xaml>
+    </file>
+  </files>
+</root>
