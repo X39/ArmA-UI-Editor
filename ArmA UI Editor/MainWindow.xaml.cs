@@ -51,5 +51,11 @@ namespace ArmA_UI_Editor
                 StatusText.Text = ex.Message;
             }
         }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            App.Current.Shutdown();
+            
+        }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArmA_UI_Editor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" MinWidth="550" Width="550" Background="{StaticResource UIBackground}">
+        Title="MainWindow" Height="350" MinWidth="550" Width="550" Background="{StaticResource UIBackground}" Closed="Window_Closed">
     <!-- Little test about visual-studio like panels (only visual, required loads of implementation)
     <Window.Resources>
         <Style TargetType="{x:Type Label}" x:Key="SlidePanelLabelButtonBase">
