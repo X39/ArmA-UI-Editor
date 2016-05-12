@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         Height="256"
-        Width="512" Initialized="Window_Initialized" Closed="Window_Closed">
+        Width="512" Initialized="Window_Initialized" Closed="Window_Closed" Background="{StaticResource UIBackground}" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -26,14 +26,24 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="1" Margin="5">
-                <TextBlock Text="ArmA UI Editor" Foreground="White" FontSize="24" FontWeight="Bold"/>
-                <TextBlock Name="VersionLabel" Text="Version X.X.X" Foreground="White" FontSize="12" FontWeight="Bold"/>
-            </StackPanel>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="5">
+                    <TextBlock Text="ArmA UI Editor" Foreground="White" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock Name="VersionLabel" Text="Version X.X.X" Foreground="White" FontSize="12" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <TextBlock Text="Community Tool" Foreground="White" FontSize="6" TextAlignment="Right"/>
+                    <TextBlock Text="Image © Bohemia Interactive" Foreground="White" FontSize="6" TextAlignment="Right"/>
+                </StackPanel>
+            </Grid>
         </Grid>
         <Grid Grid.Row="1">
-            <ProgressBar Grid.Row="1" Name="Progress_Bar" Minimum="0" Maximum="1"/>
-            <TextBlock Name="Progress_Text" Text="" HorizontalAlignment="Center"/>
+            <ProgressBar Grid.Row="1" Name="Progress_Bar" Minimum="0" Maximum="1" Foreground="{StaticResource UIBlue}" Background="{StaticResource UIBackground}" Value="0.5" BorderThickness="0"/>
+            <TextBlock Name="Progress_Text" HorizontalAlignment="Center" Foreground="{StaticResource DefaultTextColor}" Text="Placeholder"/>
         </Grid>
     </Grid>
 </Window>
