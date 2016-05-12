@@ -39,6 +39,8 @@
               when an addIn is loaded (addIn will fail to load due to that)
               The field path begins AFTER the initial class-->
       <xaml>/Xaml/RscText.xaml</xaml>
+      <!-- <property> contains the property informations for this class -->
+      <property>/Properties/RscText.xml</property>
     </file>
   </files>
 </root>

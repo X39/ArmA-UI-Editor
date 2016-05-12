@@ -1,0 +1,61 @@
+﻿<root>
+  <group name="Positioning">
+    <property>
+      <type name="NUMBER"/>
+      <fieldPath>/x</fieldPath>
+      <displayname>Pos X</displayname>
+    </property>
+    <property>
+      <type name="NUMBER"/>
+      <fieldPath>/y</fieldPath>
+      <displayname>Pos Y</displayname>
+    </property>
+    <property>
+      <type name="NUMBER"/>
+      <fieldPath>/w</fieldPath>
+      <displayname>Width</displayname>
+    </property>
+    <property>
+      <type name="NUMBER"/>
+      <fieldPath>/h</fieldPath>
+      <displayname>Height</displayname>
+    </property>
+  </group>
+  <group name="Coloring">
+    <property>
+      <type name="ARRAY">
+        <elements>NUMBER</elements>
+        <count>4</count>
+      </type>
+      <fieldPath>/colorBackground</fieldPath>
+      <displayname>Background Color</displayname>
+    </property>
+    <property>
+      <type name="ARRAY">
+        <elements>NUMBER</elements>
+        <count>4</count>
+      </type>
+      <fieldPath>/colorText</fieldPath>
+      <displayname>Foreground Color</displayname>
+    </property>
+  </group>
+  <group name="General">
+    <property>
+      <type name="STRING"/>
+      <fieldPath>/text</fieldPath>
+      <displayname>Text</displayname>
+    </property>
+    <property>
+      <type name="LISTBOX">
+        <item display="TahomaB" value="TahomaB"/>
+      </type>
+      <fieldPath>/font</fieldPath>
+      <displayname>Font</displayname>
+    </property>
+    <property>
+      <type name="NUMBER"/>
+      <fieldPath>/sizeEx</fieldPath>
+      <displayname>Font Size</displayname>
+    </property>
+  </group>
+</root>
