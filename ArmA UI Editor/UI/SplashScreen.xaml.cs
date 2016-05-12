@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Threading;
 
-namespace ArmA_UI_Editor
+namespace ArmA_UI_Editor.UI
 {
     /// <summary>
     /// Interaction logic for SplashScreen.xaml

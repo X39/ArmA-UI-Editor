@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 
-namespace ArmA_UI_Editor
+namespace ArmA_UI_Editor.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
