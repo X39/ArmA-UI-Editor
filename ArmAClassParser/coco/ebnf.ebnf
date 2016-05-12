@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SQF.ClassParser;
 
 COMPILER CONFIGFILE
 	CHARACTERS
@@ -15,7 +16,7 @@ COMPILER CONFIGFILE
 	TOKENS
 		T_SCALAR = [ '-' ] DIGIT { DIGIT } [ '.' DIGIT { DIGIT } ].
 		T_STRING = '"' { STRINGCHARS | "\\\""} '"'.
-        T_STRINGTABLESTRING = '$' { CHARACTER | '_' | DIGIT }
+        T_STRINGTABLESTRING = '$' { CHARACTER | '_' | DIGIT }.
 		T_IDENT = ( CHARACTER | '_' ) { CHARACTER | '_' | DIGIT }.
 		
 	COMMENTS FROM "/*" TO "*/" NESTED
@@ -24,76 +25,146 @@ COMPILER CONFIGFILE
 	IGNORE '\t' + '\r' + '\n'
 		
 	PRODUCTIONS
-		CONFIGFILE =
-            CONFIG
+		CONFIGFILE (. Data data; .) =
+            (.
+            if(Base == null)
             {
-                CONFIG
+                Base = new SQF.ClassParser.File();
             }
+            else
+            {
+                Base.BeginEdit();
+            }
+            .)
+            
+            
+            CONFIG<out data, Base> (. Base[data] = data; .)
+            {
+                CONFIG<out data, Base> (. Base[data] = data; .)
+            }
+            
+            (.
+            if(errors.count == 0)
+            {
+                Base.EndEdit();
+            }
+            else
+            {
+                Base.CancelEdit();
+            }
+            .)
 		.
-        CONFIG =
+        CONFIG<out Data data, ConfigClass parent> (. ConfigClass cc = new ConfigClass(); data = new Data(cc); Data d; .)=
             "class"
             T_IDENT
+            (.
+                if(parent.ContainsKey(t.val))
+                {
+                    SemErr("Class is already defined in current scope");
+                }
+                data.Name = t.val;
+            .)
             [
                 ':'
-                T_IDENT (. string whatever = t.val; .)
+                T_IDENT
+                (.
+                    if(parent.ContainsKey(t.val))
+                    {
+                        cc.Parent = parent[t.val].Class;
+                    }
+                    else
+                    {
+                        SemErr("Parent is not yet existing");
+                    };
+                .)
             ]
             [
                 '{'
                 {
-                    FIELD
+                    FIELD<out d, data.Class> (. data.Class[d] = d; .)
                     |
-                    CONFIG
+                    CONFIG<out d, data.Class> (. data.Class[d] = d; .)
                 }
                 '}'
             ]
             ';'
         .
-        FIELD (. double someVar; .)=
-            T_IDENT
+        FIELD<out Data data, ConfigClass parent> (. data = null; bool isArray = false; .) =
+            T_IDENT (. string name = t.val; .)
             [
                 '['
                 ']'
+                (. isArray = true; .)
             ]
             '='
             (
-                ARRAY
+                ARRAY<out data> (. if(!isArray) SemErr("Invalid field syntax: Missing [] at field name"); .)
                 |
-                SCALAR<out someVar>
+                SCALAR<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
                 |
-                STRING
+                STRING<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
                 |
-                BOOLEAN
+                BOOLEAN<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
             )
+            ';'
+            (. if(data != null) data.Name = name; .)
         .
-        SCALAR<out double d> (. d = 0; .) =
-            T_SCALAR (. d = Double.Parse(t.val); .)
+        SCALAR<out Data data> =
+            T_SCALAR (. data = new Data(Double.Parse(t.val)); .)
         .
-        STRING = 
-            T_STRING
-            |
-            T_STRINGTABLESTRING
+        STRING<out Data data> (. string content = default(string); .) = 
+            (
+                T_STRING (. content = t.val.Substring(1, t.val.Length - 2); .)
+                |
+                T_STRINGTABLESTRING (. content = t.val.Substring(1); .)
+            )
+            (.
+            //TODO: Add ArmA like string escaping
+            data = new Data(content);
+            .)
         .
-        BOOLEAN =
-            "true"
-            |
-            "false"
+        BOOLEAN<out Data data> (. bool flag = false; .) =
+            (
+                "true" (. flag = true; .)
+                |
+                "false"
+            )
+            (.
+            data = new Data(flag);
+            .)
         .
-        ARRAY = 
+        ARRAY<out Data data> (. data = null; Data tmp; .) = 
             '{'
             [
                 (
-                    SCALAR
-                    |
-                    STRING
+                    (. var list = new List<double>(); .)
+                    SCALAR<out tmp> (. list.Add(tmp.Number); .)
+                    {
+                        ','
+                        SCALAR<out tmp> (. list.Add(tmp.Number); .)
+                    }
+                    (. data = new Data(list); .)
                 )
-                {
-                    ','
-                    (
-                        SCALAR
-                        |
-                        STRING
-                    )
-                }
+                |
+                (
+                    (. var list = new List<string>(); .)
+                    STRING<out tmp> (. list.Add(tmp.String); .)
+                    {
+                        ','
+                        STRING<out tmp> (. list.Add(tmp.String); .)
+                    }
+                    (. data = new Data(list); .)
+                )
+                |
+                (
+                    (. var list = new List<bool>(); .)
+                    BOOLEAN<out tmp> (. list.Add(tmp.Boolean); .)
+                    {
+                        ','
+                        BOOLEAN<out tmp> (. list.Add(tmp.Boolean); .)
+                    }
+                    (. data = new Data(list); .)
+                )
             ]
             '}'
         .
