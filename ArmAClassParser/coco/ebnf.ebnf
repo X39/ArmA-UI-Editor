@@ -1,0 +1,100 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+COMPILER CONFIGFILE
+	CHARACTERS
+		DIGIT = "0123456789".
+		CHARACTER = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".
+        ACHARACTER = "!|§$%&/*+-()=?`´#~ß}][{-_".
+		OTHER = ANY - '/' - '*'. 
+		STRINGCHARS = ANY - '\n' - '\r' - '"'.
+
+	TOKENS
+		T_SCALAR = [ '-' ] DIGIT { DIGIT } [ '.' DIGIT { DIGIT } ].
+		T_STRING = '"' { STRINGCHARS | "\\\""} '"'.
+        T_STRINGTABLESTRING = '$' { CHARACTER | '_' | DIGIT }
+		T_IDENT = ( CHARACTER | '_' ) { CHARACTER | '_' | DIGIT }.
+		
+	COMMENTS FROM "/*" TO "*/" NESTED
+	COMMENTS FROM "//" TO '\n'
+	COMMENTS FROM '#' TO '\n'
+	IGNORE '\t' + '\r' + '\n'
+		
+	PRODUCTIONS
+		CONFIGFILE =
+            CONFIG
+            {
+                CONFIG
+            }
+		.
+        CONFIG =
+            "class"
+            T_IDENT
+            [
+                ':'
+                T_IDENT (. string whatever = t.val; .)
+            ]
+            [
+                '{'
+                {
+                    FIELD
+                    |
+                    CONFIG
+                }
+                '}'
+            ]
+            ';'
+        .
+        FIELD (. double someVar; .)=
+            T_IDENT
+            [
+                '['
+                ']'
+            ]
+            '='
+            (
+                ARRAY
+                |
+                SCALAR<out someVar>
+                |
+                STRING
+                |
+                BOOLEAN
+            )
+        .
+        SCALAR<out double d> (. d = 0; .) =
+            T_SCALAR (. d = Double.Parse(t.val); .)
+        .
+        STRING = 
+            T_STRING
+            |
+            T_STRINGTABLESTRING
+        .
+        BOOLEAN =
+            "true"
+            |
+            "false"
+        .
+        ARRAY = 
+            '{'
+            [
+                (
+                    SCALAR
+                    |
+                    STRING
+                )
+                {
+                    ','
+                    (
+                        SCALAR
+                        |
+                        STRING
+                    )
+                }
+            ]
+            '}'
+        .
+END CONFIGFILE.
