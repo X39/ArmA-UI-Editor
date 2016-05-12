@@ -28,11 +28,11 @@ namespace ArmA_UI_Editor
 
         private void Window_Initialized(object sender, EventArgs e)
         {
+            this.VersionLabel.Text = string.Format("Version {0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
             LoadData();
         }
         private async void LoadData()
         {
-
             await Task.Delay(5000);
             isFinished = true;
             this.Close();

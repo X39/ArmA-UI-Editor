@@ -27,8 +27,8 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="1" Margin="5">
-                <TextBlock Text="ArmA UI Creator" Foreground="White" FontSize="24" FontWeight="Bold"/>
-                <TextBlock Text="Version X.X.X" Foreground="White" FontSize="12" FontWeight="Bold"/>
+                <TextBlock Text="ArmA UI Editor" Foreground="White" FontSize="24" FontWeight="Bold"/>
+                <TextBlock Name="VersionLabel" Text="Version X.X.X" Foreground="White" FontSize="12" FontWeight="Bold"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1">
