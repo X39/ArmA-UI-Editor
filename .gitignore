@@ -306,3 +306,4 @@ $RECYCLE.BIN/
 *.lnk
 /Project Resources
 *.old
+ArmAClassParser/SQF/ClassParser/Generated/Scanner.cs.old
