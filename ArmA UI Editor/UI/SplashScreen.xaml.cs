@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Threading;
+using System.ComponentModel;
 
 namespace ArmA_UI_Editor.UI
 {
@@ -29,13 +30,39 @@ namespace ArmA_UI_Editor.UI
         private void Window_Initialized(object sender, EventArgs e)
         {
             this.VersionLabel.Text = string.Format("Version {0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
-            LoadData();
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += Worker_DoWork;
+            worker.ProgressChanged += Worker_ProgressChanged;
+            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            worker.RunWorkerAsync();
         }
-        private async void LoadData()
+
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            await Task.Delay(5000);
             isFinished = true;
             this.Close();
+        }
+
+        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            Progress_Bar.Value = e.ProgressPercentage / 100;
+            Progress_Text.Text = e.UserState as string;
+        }
+
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                Code.AddInManager.Instance.ReloadAddIns(new Progress<Tuple<double, string>>((t) => {
+                    ((BackgroundWorker)sender).ReportProgress((int)(t.Item1 * 100), t.Item2);
+                }));
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message + '\n' + ex.StackTrace);
+            }
+            Thread.Sleep(1000);
         }
 
         private void Window_Closed(object sender, EventArgs e)

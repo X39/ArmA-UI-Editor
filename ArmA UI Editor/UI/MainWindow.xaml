@@ -75,66 +75,105 @@
         <Frame/>
     </DockPanel>
     -->
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid Margin="3" Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" MinWidth="128"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="2*" MinWidth="256"/>
-                <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="1*" MinWidth="128"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <TabControl Style="{StaticResource TabControlStyle}">
-                    <TabItem Header="ToolBox">
-                        <TextBlock Text="ToolBox"/>
-                    </TabItem>
-                    <TabItem Header="ZIndex">
-                        <TextBlock Text="ZIndex"/>
-                    </TabItem>
-                </TabControl>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Style="{StaticResource MenuStyle}">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open"/>
+                <MenuItem Header="_Save"/>
+                <Separator/>
+                <MenuItem Header="SubMenuTest">
+                    <MenuItem Header="Entry"/>
+                    <MenuItem Header="Entry"/>
+                    <MenuItem Header="Entry"/>
+                    <Separator/>
+                    <MenuItem Header="Entry"/>
+                    <MenuItem Header="Entry"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Settings">
+                <MenuItem Header="_DisplayAddInBrowser" Click="MenuItem_Click"/>
+                <x:Code>
+                    <![CDATA[
+                            private void MenuItem_Click(object sender, RoutedEventArgs e)
+                            {
+                                var tmp = new AddInBrowser();
+                                tmp.Show();
+                            }
+                            ]]>
+                </x:Code>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Margin="3" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" MinWidth="128"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="2*" MinWidth="256"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="1*" MinWidth="128"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TabControl Style="{StaticResource TabControlStyle}">
+                        <TabItem Header="ToolBox">
+                            <ListBox x:Name="ToolBox" Initialized="ToolBox_Initialized" Style="{StaticResource ListBoxStyle}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Margin="0, 0, 3, 0" Source="{Binding Image}"/>
+                                            <TextBlock Text="{Binding DisplayName}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </TabItem>
+                        <TabItem Header="ZIndex">
+                            <TextBlock Text="ZIndex"/>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+                <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
+                <Grid Grid.Column="2">
+                    <TabControl Style="{StaticResource TabControlStyle}">
+                        <TabItem Header="Display">
+                            <TextBlock Text="Properties"/>
+                        </TabItem>
+                        <TabItem Header="Config">
+                            <!-- ToDo: Implement & check license of: http://visualstudiogallery.msdn.microsoft.com/d9984737-275d-4919-b7c8-7a5f5f83c74c -->
+                            <TextBox x:Name="ConfigTextbox" Background="{StaticResource UIBackgroundDark}" Foreground="{StaticResource DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="ConfigTextbox_TextChanged"/>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+                <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="3"/>
+                <Grid Grid.Column="4">
+                    <TabControl Style="{StaticResource TabControlStyle}">
+                        <TabItem Header="Properties">
+                            <TextBlock Text="Properties"/>
+                        </TabItem>
+                        <TabItem Header="Window Options">
+                            <ListView Background="Transparent" Initialized="ListView_Initialized" Foreground="{StaticResource DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0">
+                                <ListView.Resources>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </Style>
+                                </ListView.Resources>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Text}"/>
+                                        <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Object}"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
             </Grid>
-            <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
-            <Grid Grid.Column="2">
-                <TabControl Style="{StaticResource TabControlStyle}">
-                    <TabItem Header="Display">
-                        <TextBlock Text="Properties"/>
-                    </TabItem>
-                    <TabItem Header="Config">
-                        <RichTextBox x:Name="ConfigTextbox" Background="{StaticResource UIBackgroundDark}" Foreground="{StaticResource DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="ConfigTextbox_TextChanged"/>
-                    </TabItem>
-                </TabControl>
-            </Grid>
-            <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="3"/>
-            <Grid Grid.Column="4">
-                <TabControl Style="{StaticResource TabControlStyle}">
-                    <TabItem Header="Properties">
-                        <TextBlock Text="Properties"/>
-                    </TabItem>
-                    <TabItem Header="Window Options">
-                        <ListView Background="Transparent" Initialized="ListView_Initialized" Foreground="{StaticResource DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0">
-                            <ListView.Resources>
-                                <Style TargetType="GridViewColumnHeader">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </Style>
-                            </ListView.Resources>
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Text}"/>
-                                    <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Object}"/>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </TabItem>
-                </TabControl>
+            <Grid Grid.Row="1" Background="{StaticResource UIBlue}" Height="16">
+                <TextBlock x:Name="StatusText"/>
             </Grid>
         </Grid>
-        <Grid Grid.Row="1" Background="{StaticResource UIBlue}" Height="16">
-            <TextBlock x:Name="StatusText"/>
-        </Grid>
-    </Grid>
+    </DockPanel>
 </Window>

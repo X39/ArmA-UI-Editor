@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:a="clr-namespace:ArmA_UI_Editor.Code.Markup"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:ArmA_UI_Editor"
         mc:Ignorable="d"
         WindowStyle="None"
@@ -36,7 +38,7 @@
                     <TextBlock Name="VersionLabel" Text="Version X.X.X" Foreground="White" FontSize="12" FontWeight="Bold"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                    <TextBlock Text="Community Tool" Foreground="White" FontSize="6" TextAlignment="Right"/>
+                    <TextBlock Text="Communitymade Tool" Foreground="White" FontSize="6" TextAlignment="Right"/>
                     <TextBlock Text="Image © Bohemia Interactive" Foreground="White" FontSize="6" TextAlignment="Right"/>
                 </StackPanel>
             </Grid>

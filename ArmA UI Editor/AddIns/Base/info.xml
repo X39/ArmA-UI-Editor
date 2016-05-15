@@ -1,9 +1,11 @@
-﻿<root>
+﻿<AddIn>
   <info>
-    <!-- <author> should contain the authors comma separated-->
-    <author>X39</author>
+    <!-- <name> Displayname of this AddIn -->
+    <name>Base</name>
     <!-- <description> contains basic information about this AddIn -->
     <description>Base Add-in containing most base elements available in ArmA 3</description>
+    <!-- <author> should contain the authors comma separated-->
+    <author>X39</author>
     <!-- Format for <version>: MAJOR '.' MINOR '.' REVISION '-' [ ADDITION ] -->
     <version>1.0.0</version>
     <!-- Format for <updateurl>: VERSION:PACKAGEURLASZIP -->
@@ -14,33 +16,24 @@
       <!-- <displayname> contains the text which will represent this element in the toolbox -->
       <displayname>RscText</displayname>
       <!-- <image> contains 16x16px image which represents this element in the toolbox -->
-      <image></image>
+      <image>/Images/icon.png</image>
       <!-- <class> contains the path to the class-file which represents this element -->
       <class>/Classes/RscText.class</class>
       <!-- <xaml> contains the path to the xaml-file which represents this element
            xaml file contains special databinding syntax to "bind" to class attributes:
-              1. {{x:armaClassBind /path/to/class/field, toString}}
-              2. {{x:armaClassBind /path/to/class/field, toHex}}
-              3. {{x:armaClassBind /path/to/class/field, commaSeparated}}
-              4. {{x:armaClassBind /path/to/class/field, multipliedBy=<NUMBER>}}
+           (please do not forget to ref xmlns:a="clr-namespace:ArmA_UI_Editor.Code.Markup")
               
-              info to 1:
-                Will copy content straight over to field
-              info to 2:
-                Will convert array content to hex color value
-                Can be used to generate a SolidColorBrush for eg. Background Color
-              info to 3:
-                Will copy array content comma separated
-              info to 4:
-                Will multiply number in field by number provided
-                Can be used to resize the weirdo ArmA Font sizes to WPF Pixel sizes
+              1. {{a:BindValue Path=/path/to/class/field}}
+              2. {{a:BindBrush Path=/path/to/class/field}}
+              3. {{a:BindColor Path=/path/to/class/field}}
+              4. {{a:BindMultipliedValue Path=/path/to/class/field, MultiplyBy=<NUMBER>}}
               
               Any errors happening in here will throw exceptions which are displayed
               when an addIn is loaded (addIn will fail to load due to that)
               The field path begins AFTER the initial class-->
       <xaml>/Xaml/RscText.xaml</xaml>
-      <!-- <property> contains the property informations for this class -->
-      <property>/Properties/RscText.xml</property>
+      <!-- <properties> contains the property informations for this class -->
+      <properties>/Properties/RscText.xml</properties>
     </file>
   </files>
-</root>
+</AddIn>

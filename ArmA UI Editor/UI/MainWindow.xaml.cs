@@ -24,6 +24,23 @@ namespace ArmA_UI_Editor.UI
         public MainWindow()
         {
             InitializeComponent();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("class NewArmAUI");
+            sb.AppendLine("{");
+            sb.AppendLine(" idd = -1;");
+            sb.AppendLine(" onLoad = \"\";");
+            sb.AppendLine(" onUnload = \"\";");
+            sb.AppendLine(" duration = 32000;");
+            sb.AppendLine(" fadeIn = 0;");
+            sb.AppendLine(" fadeOut = 0;");
+            sb.AppendLine(" enableSimulation = 1;");
+            sb.AppendLine(" ");
+            sb.AppendLine(" class controls");
+            sb.AppendLine(" {");
+            sb.AppendLine("     ");
+            sb.AppendLine(" }");
+            sb.AppendLine("}");
+            this.ConfigTextbox.Text = sb.ToString();
         }
 
         private void ListView_Initialized(object sender, EventArgs e)
@@ -37,14 +54,6 @@ namespace ArmA_UI_Editor.UI
         {
             try
             {
-                MemoryStream memStream = new MemoryStream();
-                //ToDo: Read ConfigTextbox content into memStream
-                memStream.Seek(0, SeekOrigin.Begin);
-                
-                SQF.ClassParser.File.load(memStream);
-                //ToDo: Build UI from Config
-
-
             }
             catch(Exception ex)
             {
@@ -56,6 +65,17 @@ namespace ArmA_UI_Editor.UI
         {
             App.Current.Shutdown();
             
+        }
+
+        private void ToolBox_Initialized(object sender, EventArgs e)
+        {
+            foreach(var addIn in Code.AddInManager.Instance.AddIns)
+            {
+                foreach(var it in addIn.Files)
+                {
+                    this.ToolBox.Items.Add(it);
+                }
+            }
         }
     }
 }

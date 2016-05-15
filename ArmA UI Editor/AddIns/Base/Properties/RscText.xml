@@ -1,60 +1,60 @@
 ﻿<root>
   <group name="Positioning">
     <property>
-      <type name="NUMBER"/>
-      <fieldPath>/x</fieldPath>
+      <number/>
+      <fieldpath>/x</fieldpath>
       <displayname>Pos X</displayname>
     </property>
     <property>
-      <type name="NUMBER"/>
-      <fieldPath>/y</fieldPath>
+      <number/>
+      <fieldpath>/y</fieldpath>
       <displayname>Pos Y</displayname>
     </property>
     <property>
-      <type name="NUMBER"/>
-      <fieldPath>/w</fieldPath>
+      <number/>
+      <fieldpath>/w</fieldpath>
       <displayname>Width</displayname>
     </property>
     <property>
-      <type name="NUMBER"/>
-      <fieldPath>/h</fieldPath>
+      <number/>
+      <fieldpath>/h</fieldpath>
       <displayname>Height</displayname>
     </property>
   </group>
   <group name="Coloring">
     <property>
-      <type name="ARRAY">
-        <elements>NUMBER</elements>
+      <array>
+        <type>NUMBER</type>
         <count>4</count>
-      </type>
-      <fieldPath>/colorBackground</fieldPath>
+      </array>
+      <fieldpath>/colorBackground</fieldpath>
       <displayname>Background Color</displayname>
     </property>
     <property>
-      <type name="ARRAY">
-        <elements>NUMBER</elements>
+      <array>
+        <type>NUMBER</type>
         <count>4</count>
-      </type>
-      <fieldPath>/colorText</fieldPath>
+      </array>
+      <fieldpath>/colorText</fieldpath>
       <displayname>Foreground Color</displayname>
     </property>
   </group>
   <group name="General">
     <property>
-      <type name="STRING"/>
-      <fieldPath>/text</fieldPath>
+      <string/>
+      <fieldpath>/text</fieldpath>
       <displayname>Text</displayname>
     </property>
     <property>
-      <type name="LISTBOX">
+      <listbox>
         <item display="TahomaB" value="TahomaB"/>
-      </type>
-      <fieldPath>/font</fieldPath>
+      </listbox>
+      <fieldpath>/font</fieldpath>
       <displayname>Font</displayname>
     </property>
     <property>
-      <type name="NUMBER"/>
-      <fieldPath>/sizeEx</fieldPath>
+      <number/>
+      <fieldpath>/sizeEx</fieldpath>
       <displayname>Font Size</displayname>
     </property>
   </group>
