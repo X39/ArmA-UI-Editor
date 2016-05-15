@@ -35,7 +35,7 @@ namespace SQF.ClassParser
         const bool _T = true;
         const bool _x = false;
         const int minErrDist = 2;
-        
+
         public Scanner scanner;
         public Errors  errors;
 
@@ -47,9 +47,9 @@ namespace SQF.ClassParser
 
         public SQF.ClassParser.File Base { get; set;}
         
-        public Parser(Scanner scanner) {
+        public Parser(Scanner scanner, Action<string> LoggerAction) {
             this.scanner = scanner;
-            errors = new Errors();
+            errors = new Errors(LoggerAction);
         }
         
         bool peekCompare(params int[] values)
@@ -162,6 +162,11 @@ namespace SQF.ClassParser
         public int count = 0;                                    // number of errors detected
         public System.IO.TextWriter errorStream = Console.Out;   // error messages go to this stream
         public string errMsgFormat = "line {0} col {1}: {2}"; // 0=line, 1=column, 2=text
+        public Action<string> LoggerAction;
+        public Errors(Action<string> LoggerAction)
+        {
+            this.LoggerAction = LoggerAction;
+        }
 
         public virtual void SynErr (int line, int col, int n) {
             string s;
@@ -169,19 +174,19 @@ namespace SQF.ClassParser
     -->errors
                 default: s = "error " + n; break;
             }
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s));
+            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s), this.LoggerAction);
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
 
         public virtual void SemErr (int line, int col, string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s));
+            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s), this.LoggerAction);
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
         
         public virtual void SemErr (string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, s);
+            Logger.Instance.log(Logger.LogLevel.ERROR, s, this.LoggerAction);
             //errorStream.WriteLine(s);
             count++;
         }

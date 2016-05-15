@@ -24,19 +24,37 @@ namespace SQF.ClassParser
         }
         public static File Load(string filePath)
         {
-            Parser parser = new Parser(new Scanner(filePath));
+            List<string> errors = new List<string>();
+            Parser parser = new Parser(new Scanner(filePath), (s) => { errors.Add(s); });
             parser.Parse();
             if (parser.errors.count > 0)
-                throw new Exception(string.Format("Found {0} errors during parsing", parser.errors.count));
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(string.Format("Found {0} errors during parsing {1}\n\n", parser.errors.count, filePath));
+                foreach(var s in errors)
+                {
+                    sb.AppendLine(s);
+                }
+                throw new Exception(sb.ToString());
+            }
             return parser.Base;
         }
         public void AppendConfig(string filePath)
         {
-            Parser parser = new Parser(new Scanner(filePath));
+            List<string> errors = new List<string>();
+            Parser parser = new Parser(new Scanner(filePath), (s) => { errors.Add(s); });
             parser.Base = this;
             parser.Parse();
             if (parser.errors.count > 0)
-                throw new Exception(string.Format("Found {0} errors during parsing", parser.errors.count));
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(string.Format("Found {0} errors during parsing\n\n", parser.errors.count));
+                foreach (var s in errors)
+                {
+                    sb.AppendLine(s);
+                }
+                throw new Exception(sb.ToString());
+            }
         }
 
         public void BeginEdit()

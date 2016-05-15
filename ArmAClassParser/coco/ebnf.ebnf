@@ -8,6 +8,7 @@ using SQF.ClassParser;
 COMPILER CONFIGFILE
 	CHARACTERS
 		DIGIT = "0123456789".
+        HEXDIGIT = "0123456789ABCDEFabcdef".
 		CHARACTER = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".
         ACHARACTER = "!|§$%&/*+-()=?`´#~ß}][{-_".
 		OTHER = ANY - '/' - '*'. 
@@ -15,6 +16,7 @@ COMPILER CONFIGFILE
 
 	TOKENS
 		T_SCALAR = [ '-' ] DIGIT { DIGIT } [ '.' DIGIT { DIGIT } ].
+        T_HEX = ("0x" | "0X") HEXDIGIT { HEXDIGIT }.
 		T_STRING = '"' { STRINGCHARS | "\\\""} '"'.
         T_STRINGTABLESTRING = '$' { CHARACTER | '_' | DIGIT }.
 		T_IDENT = ( CHARACTER | '_' ) { CHARACTER | '_' | DIGIT }.
@@ -109,8 +111,10 @@ COMPILER CONFIGFILE
             ';'
             (. if(data != null) data.Name = name; .)
         .
-        SCALAR<out Data data> =
+        SCALAR<out Data data> (. data = null; .)  =
             T_SCALAR (. data = new Data(Double.Parse(t.val)); .)
+            |
+            T_HEX (. data = new Data((double)Convert.ToInt32(t.val.Substring(2), 16)); .)
         .
         STRING<out Data data> (. string content = default(string); .) = 
             (
