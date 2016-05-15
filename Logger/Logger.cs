@@ -55,7 +55,7 @@ public class Logger
             this.fstream = null;
         }
     }
-    public void log(LogLevel l, string msg)
+    public void log(LogLevel l, string msg, Action<string> logAction = null)
     {
         if (l != LogLevel.CONTINUE)
             lastLogLevel = l;
@@ -65,6 +65,8 @@ public class Logger
         Console.WriteLine(line);
         if (this.fstream != null)
             fstream.WriteLine(line);
+        if (logAction != null)
+            logAction.Invoke(line);
     }
     public void close()
     {
@@ -73,4 +75,5 @@ public class Logger
         this.fstream.Close();
         this.fstream = null;
     }
+    
 }
