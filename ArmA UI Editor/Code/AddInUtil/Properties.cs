@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ArmA_UI_Editor.Code.AddInUtil
 {
@@ -15,29 +16,92 @@ namespace ArmA_UI_Editor.Code.AddInUtil
     {
         public class Property
         {
+            public class PTypeDataTag
+            {
+                public SQF.ClassParser.File File;
+                public SQF.ClassParser.Data BaseData;
+                public string Path;
+            }
             public abstract class PType
             {
-                public abstract UIElement GenerateUiElement();
+                public abstract FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal);
+                public static event EventHandler ValueChanged;
+                protected void TriggerValueChanged(object sender)
+                {
+                    if (ValueChanged != null)
+                        ValueChanged(sender, new EventArgs());
+                }
             }
             public class StringType : PType
             {
-                public override UIElement GenerateUiElement()
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
                 {
-                    throw new NotImplementedException();
+                    var tb = new TextBox();
+                    tb.Text = curVal != null ? curVal.String : "";
+                    tb.PreviewTextInput += Tb_PreviewTextInput;
+                    return tb;
+                }
+
+                private void Tb_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+                {
+                    if (e.Text.Contains('\r'))
+                    {
+                        var tb = sender as TextBox;
+                        PTypeDataTag tag = tb.Tag as PTypeDataTag;
+                        var data = tag.File[tag.Path];
+                        if (data == null)
+                            data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
+                        data.String = tb.Text;
+                        TriggerValueChanged(tb);
+                    }
                 }
             }
             public class NumberType : PType
             {
-                public override UIElement GenerateUiElement()
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
                 {
-                    throw new NotImplementedException();
+                    var tb = new TextBox();
+                    tb.Text = curVal != null ? curVal.Number.ToString() : "";
+                    tb.PreviewTextInput += Tb_PreviewTextInput;
+                    return tb;
+                }
+
+                private void Tb_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+                {
+                    if(e.Text.Contains('\r'))
+                    {
+                        var tb = sender as TextBox;
+                        PTypeDataTag tag = tb.Tag as PTypeDataTag;
+                        var data = tag.File[tag.Path];
+                        if (data == null)
+                            data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
+                        data.Number = double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture);
+                        TriggerValueChanged(tb);
+                    }
                 }
             }
             public class BooleanType : PType
             {
-                public override UIElement GenerateUiElement()
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
                 {
-                    throw new NotImplementedException();
+                    var cb = new ComboBox();
+                    cb.Items.Add("true");
+                    cb.Items.Add("false");
+                    if(curVal != null)
+                        cb.SelectedIndex = curVal.Boolean ? 0 : 1;
+                    cb.SelectionChanged += Cb_SelectionChanged;
+                    return cb;
+                }
+
+                private void Cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+                {
+                    ComboBox cb = sender as ComboBox;
+                    PTypeDataTag tag = cb.Tag as PTypeDataTag;
+                    var data = tag.File[tag.Path];
+                    if (data == null)
+                        data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
+                    data.Boolean = bool.Parse((string)cb.SelectedValue);
+                    TriggerValueChanged(cb);
                 }
             }
             public class ArrayType : PType
@@ -47,9 +111,11 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 [XmlElement("count")]
                 public int Count { get; set; }
 
-                public override UIElement GenerateUiElement()
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
                 {
-                    throw new NotImplementedException();
+                    var tb = new TextBlock();
+                    tb.Text = "Not Yet Implemented :(";
+                    return tb;
                 }
             }
             public class ListboxType : PType
@@ -66,9 +132,30 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 [XmlArrayItem("item")]
                 public List<Data> Items { get; set; }
 
-                public override UIElement GenerateUiElement()
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
                 {
-                    throw new NotImplementedException();
+                    var cb = new ComboBox();
+                    cb.DisplayMemberPath = "Name";
+                    cb.SelectedValuePath = "Value";
+                    foreach (var it in this.Items)
+                    {
+                        cb.Items.Add(it);
+                        if (curVal != null && it.Value == curVal.String)
+                            cb.SelectedItem = it;
+                    }
+                    cb.SelectionChanged += Cb_SelectionChanged;
+                    return cb;
+                }
+
+                private void Cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+                {
+                    ComboBox cb = sender as ComboBox;
+                    PTypeDataTag tag = cb.Tag as PTypeDataTag;
+                    var data = tag.File[tag.Path];
+                    if (data == null)
+                        data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
+                    data.String = (string)cb.SelectedValue;
+                    TriggerValueChanged(cb);
                 }
             }
 

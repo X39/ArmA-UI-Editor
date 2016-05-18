@@ -137,7 +137,7 @@
                 </Grid>
                 <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
                 <Grid Grid.Column="2">
-                    <TabControl Style="{StaticResource TabControlStyle}" SelectionChanged="TabControl_SelectionChanged">
+                    <TabControl x:Name="TabControlMainView" Style="{StaticResource TabControlStyle}" SelectionChanged="TabControl_SelectionChanged">
                         <TabItem Header="Display">
                             <Canvas x:Name="ConfigRenderCanvas" AllowDrop="True" DragEnter="ConfigRenderCanvas_DragEnter" Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Drop="ConfigRenderCanvas_Drop" Background="{StaticResource UIBackgroundDark}"/>
                         </TabItem>
@@ -172,7 +172,7 @@
                 </Grid>
             </Grid>
             <Grid Grid.Row="1" Background="{StaticResource UIBlue}" Height="16">
-                <TextBlock x:Name="StatusText" MouseLeftButtonDown="StatusText_MouseLeftButtonDown"/>
+                <TextBlock x:Name="StatusText"/>
             </Grid>
         </Grid>
     </DockPanel>

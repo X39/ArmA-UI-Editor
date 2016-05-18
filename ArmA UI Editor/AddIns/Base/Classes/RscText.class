@@ -10,7 +10,7 @@
 	h = 100;
 	font = "TahomaB";
 	sizeEx = 0.04;
-	colorBackground[] = {0,0,0,0};
+	colorBackground[] = {0.5, 0.1, 0.1, 0.1};
 	colorText[] = {1,1,1,1};
 	text = "TEXT";
 	fixedWidth = 0;

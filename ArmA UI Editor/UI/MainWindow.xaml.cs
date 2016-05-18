@@ -27,6 +27,7 @@ namespace ArmA_UI_Editor.UI
         {
             public Data data;
             public Code.AddInUtil.File file;
+            public string FullyQualifiedPath;
             internal bool isMoveOperation;
             internal Point lastClickPos;
         }
@@ -35,6 +36,7 @@ namespace ArmA_UI_Editor.UI
             public bool ConfigHasChanged;
             public Data Element;
         }
+        private string CurPropertyPath = string.Empty;
         SQF.ClassParser.File configFile;
         public MainWindow()
         {
@@ -52,12 +54,25 @@ namespace ArmA_UI_Editor.UI
             sb.AppendLine("\t");
             sb.AppendLine("\tclass controls");
             sb.AppendLine("\t{");
-            sb.AppendLine("\t\tclass t : RscText\r\n\t\t{\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.5, 0.1, 0.1, 0.1};\r\n\t\t};");
+            sb.AppendLine("\t\tclass MyFirstRscText : RscText\r\n\t\t{\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.5, 0.1, 0.1, 0.1};\r\n\t\t};");
             sb.AppendLine("\t};");
             sb.AppendLine("};");
             this.ConfigTextbox.Text = sb.ToString();
             ConfigRenderCanvas.Tag = new CanvasTag { ConfigHasChanged = false, Element = null };
+            Code.AddInUtil.Properties.Property.PType.ValueChanged += PType_ValueChanged;
             this.RegenerateCurrentView();
+        }
+
+        private void PType_ValueChanged(object sender, EventArgs e)
+        {
+            using (var memStream = new MemoryStream())
+            {
+                (ConfigRenderCanvas.Tag as CanvasTag).Element.WriteOut(new StreamWriter(memStream));
+                memStream.Seek(0, SeekOrigin.Begin);
+                StreamReader reader = new StreamReader(memStream);
+                ConfigTextbox.Text = reader.ReadToEnd();
+            }
+            RegenerateCurrentView();
         }
 
         private void ListView_Initialized(object sender, EventArgs e)
@@ -216,8 +231,11 @@ namespace ArmA_UI_Editor.UI
                             el.MouseLeftButtonDown += CanvasChild_MouseLeftButtonDown;
                             el.MouseLeftButtonUp += CanvasChild_MouseLeftButtonUp;
                             el.MouseMove += CanvasChild_MouseMove;
-                            el.Tag = new CanvasDataTag { data = configFile[Code.Markup.BindConfig.CurrentClassPath], file = file, isMoveOperation = false};
-                            
+                            el.Tag = new CanvasDataTag { data = configFile[Code.Markup.BindConfig.CurrentClassPath], file = file, isMoveOperation = false, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath };
+                            if(this.CurPropertyPath == Code.Markup.BindConfig.CurrentClassPath)
+                            {
+                                LoadProperties(file.Properties, configFile[Code.Markup.BindConfig.CurrentClassPath]);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -239,7 +257,6 @@ namespace ArmA_UI_Editor.UI
             }
             el.IsHitTestVisible = true;
         }
-
         private void CanvasChild_MouseMove(object sender, MouseEventArgs e)
         {
             var el = (FrameworkElement)sender;
@@ -275,7 +292,6 @@ namespace ArmA_UI_Editor.UI
                 e.Handled = true;
             }
         }
-
         private void CanvasChild_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             CanvasDataTag tag = (CanvasDataTag)((FrameworkElement)sender).Tag;
@@ -285,14 +301,14 @@ namespace ArmA_UI_Editor.UI
             }
             else
             {
-                LoadProperties(tag.file.Properties, ((CanvasDataTag)((FrameworkElement)sender).Tag).data);
+                this.CurPropertyPath = tag.FullyQualifiedPath;
+                LoadProperties(tag.file.Properties, tag.data);
             }
             foreach (var it in ConfigRenderCanvas.Children)
             {
                 (it as UIElement).IsHitTestVisible = true;
             }
         }
-
         private void LoadProperties(Code.AddInUtil.Properties properties, Data data)
         {
             this.ElementProperties.Children.Clear();
@@ -304,28 +320,18 @@ namespace ArmA_UI_Editor.UI
                 this.ElementProperties.Children.Add(group);
                 foreach (var property in groupIt.Items)
                 {
-                    //property.PropertyType.GenerateUiElement()
-                    var epd = new { Text = property.DisplayName, Object = new TextBlock(), Path = property.FieldPath, data = data };
-                    var tb = new TextBlock();
-                    tb.Text = property.DisplayName;
-                    group.ItemsPanel.Children.Add(tb);
+                    var el = new Property();
+                    el.Title.Text = property.DisplayName;
+                    Data d = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data, property.FieldPath);
+                    var fEl = property.PropertyType.GenerateUiElement(d);
+                    el.ConfigElement.Content = fEl;
+                    fEl.Tag = new Code.AddInUtil.Properties.Property.PTypeDataTag { File = this.configFile, Path = property.FieldPath, BaseData = data };
+                    group.ItemsPanel.Children.Add(el);
                 }
             }
         }
 
-        private void StatusText_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                RegenerateCurrentView();
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\r\n" + ex.StackTrace);
-            }
-        }
-
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void TabControl_SelectionChanged(object sender, object ___IGNORE___ = null)
         {
             switch((sender as TabControl).SelectedIndex)
             {
