@@ -22,6 +22,8 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         public SQF.ClassParser.File ClassFile { get; set; }
         [XmlIgnore()]
         public AddIn Parent { get; set; }
+        [XmlIgnore()]
+        public Properties Properties { get; private set; }
 
         public File()
         {
@@ -36,7 +38,15 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         {
             this.Image = Parent.ThisPath + Image.Replace('/', '\\');
             this.__ClassPath = Parent.ThisPath + __ClassPath.Replace('/', '\\');
+            this.__XamlPath = Parent.ThisPath + __XamlPath.Replace('/', '\\');
+            this.__PropertiesPath = Parent.ThisPath + __PropertiesPath.Replace('/', '\\');
             this.ClassFile = SQF.ClassParser.File.Load(this.__ClassPath);
+            using (var reader = new System.IO.StreamReader(this.__PropertiesPath))
+            {
+                var x = new XmlSerializer(typeof(Properties));
+                var properties = (Properties)x.Deserialize(reader);
+                this.Properties = properties;
+            }
         }
     }
 }

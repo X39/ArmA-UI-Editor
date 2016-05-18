@@ -15,6 +15,8 @@ namespace ArmA_UI_Editor.Code
 
         static AddInManager _instance = new AddInManager();
         public static AddInManager Instance { get { return _instance; } }
+        public SQF.ClassParser.File MainFile;
+        public Dictionary<string, AddInUtil.File> ConfigNameFileDictionary;
         private AddInManager()
         {
             this.AddIns = new List<AddIn>();
@@ -22,6 +24,8 @@ namespace ArmA_UI_Editor.Code
 
         public void ReloadAddIns(IProgress<Tuple<double, string>> progress)
         {
+            this.MainFile = new SQF.ClassParser.File();
+            this.ConfigNameFileDictionary = new Dictionary<string, AddInUtil.File>();
             string basePath = System.AppDomain.CurrentDomain.BaseDirectory;
             if (Directory.Exists(basePath + @"AddIns\"))
             {
@@ -51,6 +55,20 @@ namespace ArmA_UI_Editor.Code
                     it.Initialize(new Progress<double>((d) => {
                         progress.Report(new Tuple<double, string>((i - 1 + d) / AddInInfoPaths.Count(), string.Format("Initializing AddIn '{0}'", it.Info.Name)));
                     }));
+
+                    for (int j = 0; j < it.Files.Count(); j++)
+                    {
+                        var file = it.Files.ElementAt(j);
+                        progress.Report(new Tuple<double, string>((j + 1) / it.Files.Count(), string.Format("Appending '{0}' to main config", it.Info.Name)));
+                        this.MainFile.AppendConfig(file.ClassFile);
+                    }
+
+                    for (int j = 0; j < it.Files.Count(); j++)
+                    {
+                        var file = it.Files.ElementAt(j);
+                        progress.Report(new Tuple<double, string>((j + 1) / it.Files.Count(), string.Format("Cross Linking '{0}'s files", it.Info.Name)));
+                        this.ConfigNameFileDictionary.Add(file.ClassFile[0].Name, file);
+                    }
                 }
             }
         }

@@ -6,13 +6,13 @@
 	style = 0x01;
 	x = 0;
 	y = 0;
-	w = 10;
-	h = 10;
+	w = 100;
+	h = 100;
 	font = "TahomaB";
 	sizeEx = 0.04;
 	colorBackground[] = {0,0,0,0};
 	colorText[] = {1,1,1,1};
-	text = "";
+	text = "TEXT";
 	fixedWidth = 0;
 	shadow = 0;
 };

@@ -7,7 +7,7 @@ using System.Windows.Markup;
 
 namespace ArmA_UI_Editor.Code.Markup
 {
-    internal class BindMultipliedValue : BindConfig
+    public class BindMultipliedValue : BindConfig
     {
         [ConstructorArgument("mul")]
         public double MultiplyBy { get; set; }
@@ -18,7 +18,9 @@ namespace ArmA_UI_Editor.Code.Markup
         {
             if (CurrentConfig == null)
                 return this.MultiplyBy;
-            var data = CurrentConfig[CurrentClassPath + this.Path];
+            var data = CurrentConfig.ReceiveField(CurrentClassPath, this.Path);
+            if (data == null)
+                throw new Exception(string.Format("Cannot locate field '{0}'", this.Path));
             return data.Number * this.MultiplyBy;
         }
     }

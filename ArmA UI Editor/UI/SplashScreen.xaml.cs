@@ -60,7 +60,15 @@ namespace ArmA_UI_Editor.UI
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message + '\n' + ex.StackTrace);
+                StringBuilder sb = new StringBuilder();
+                do
+                {
+                    sb.AppendLine(ex.Message);
+                    sb.AppendLine(ex.StackTrace);
+                    sb.AppendLine("--------------------------------------------------");
+                    ex = ex.InnerException;
+                } while (ex != null);
+                MessageBox.Show(sb.ToString());
             }
             Thread.Sleep(1000);
         }

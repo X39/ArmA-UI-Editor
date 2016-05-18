@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace ArmA_UI_Editor.Code.Markup
 {
-    internal class BindBrush : BindConfig
+    public class BindBrush : BindConfig
     {
         public BindBrush() { }
 
@@ -19,7 +19,9 @@ namespace ArmA_UI_Editor.Code.Markup
         {
             if (CurrentConfig == null)
                 return Brushes.Red;
-            var data = CurrentConfig[CurrentClassPath + this.Path];
+            var data = CurrentConfig.ReceiveField(CurrentClassPath, this.Path);
+            if (data == null)
+                throw new Exception(string.Format("Cannot locate field '{0}'", this.Path));
             var array = data.Array_Number;
             return new SolidColorBrush(Color.FromArgb((byte)(array[0] * 256), (byte)(array[1] * 256), (byte)(array[2] * 256), (byte)(array[3] * 256)));
         }

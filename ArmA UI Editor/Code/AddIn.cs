@@ -30,10 +30,12 @@ namespace ArmA_UI_Editor.Code
         public static AddIn LoadAddIn(string path)
         {
             var x = new XmlSerializer(typeof(AddIn));
-            var reader = new System.IO.StreamReader(path);
-            var addIn = (AddIn)x.Deserialize(reader);
-            addIn.ThisPath = path.Substring(0, path.LastIndexOf('\\')); ;
-            return addIn;
+            using (var reader = new System.IO.StreamReader(path))
+            {
+                var addIn = (AddIn)x.Deserialize(reader);
+                addIn.ThisPath = path.Substring(0, path.LastIndexOf('\\'));
+                return addIn;
+            }
         }
 
         public void Initialize(IProgress<double> progress)

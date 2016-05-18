@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 namespace ArmA_UI_Editor.Code.Markup
 {
-    internal class BindValue : BindConfig
+    public class BindValue : BindConfig
     {
         public BindValue() { }
 
@@ -18,7 +18,9 @@ namespace ArmA_UI_Editor.Code.Markup
         {
             if (CurrentConfig == null)
                 return "NA";
-            var data = CurrentConfig[CurrentClassPath + this.Path];
+            var data = CurrentConfig.ReceiveField(CurrentClassPath, this.Path);
+            if (data == null)
+                throw new Exception(string.Format("Cannot locate field '{0}'", this.Path));
             return data.Value;
         }
     }

@@ -9,48 +9,50 @@ using System.Windows;
 
 namespace ArmA_UI_Editor.Code.AddInUtil
 {
-    public class Properties : List<Properties.Group>
+    [Serializable]
+    [XmlRoot("root")]
+    public class Properties
     {
         public class Property
         {
-            public interface Type
+            public abstract class PType
             {
-                UIElement GenerateUiElement();
+                public abstract UIElement GenerateUiElement();
             }
-            public class StringType : Type
+            public class StringType : PType
             {
-                public UIElement GenerateUiElement()
+                public override UIElement GenerateUiElement()
                 {
                     throw new NotImplementedException();
                 }
             }
-            public class NumberType : Type
+            public class NumberType : PType
             {
-                public UIElement GenerateUiElement()
+                public override UIElement GenerateUiElement()
                 {
                     throw new NotImplementedException();
                 }
             }
-            public class BooleanType : Type
+            public class BooleanType : PType
             {
-                public UIElement GenerateUiElement()
+                public override UIElement GenerateUiElement()
                 {
                     throw new NotImplementedException();
                 }
             }
-            public class ArrayType : Type
+            public class ArrayType : PType
             {
                 [XmlElement("type")]
                 public string Type { get; set; }
                 [XmlElement("count")]
                 public int Count { get; set; }
 
-                public UIElement GenerateUiElement()
+                public override UIElement GenerateUiElement()
                 {
                     throw new NotImplementedException();
                 }
             }
-            public class ListboxType : List<ListboxType.Data>, Type
+            public class ListboxType : PType
             {
                 public class Data
                 {
@@ -60,7 +62,11 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                     public string Value { get; set; }
                 }
 
-                public UIElement GenerateUiElement()
+                [XmlArray("items")]
+                [XmlArrayItem("item")]
+                public List<Data> Items { get; set; }
+
+                public override UIElement GenerateUiElement()
                 {
                     throw new NotImplementedException();
                 }
@@ -74,13 +80,21 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             [XmlElement(ElementName = "string", Type = typeof(StringType))]
             [XmlElement(ElementName = "boolean", Type = typeof(BooleanType))]
             [XmlElement(ElementName = "array", Type = typeof(ArrayType))]
-            [XmlArray(ElementName = "listbox")]
-            public Type PropertyType { get; set; }
+            [XmlElement(ElementName = "listbox", Type = typeof(ListboxType))]
+            public PType PropertyType { get; set; }
         }
-        public class Group : List<Property>
+        public class Group
         {
             [XmlAttribute("name")]
             public string Name { get; set; }
+
+            [XmlArray("properties")]
+            [XmlArrayItem(ElementName = "property", Type = typeof(Property))]
+            public List<Property> Items { get; set; }
         }
+
+        [XmlArray("groups")]
+        [XmlArrayItem(ElementName = "group", Type = typeof(Group))]
+        public List<Properties.Group> Items { get; set; }
     }
 }

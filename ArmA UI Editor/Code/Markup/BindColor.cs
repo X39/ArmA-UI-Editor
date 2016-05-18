@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace ArmA_UI_Editor.Code.Markup
 {
-    internal class BindColor : BindConfig
+    public class BindColor : BindConfig
     {
         public BindColor() { }
 
@@ -19,7 +19,9 @@ namespace ArmA_UI_Editor.Code.Markup
         {
             if (CurrentConfig == null)
                 return Color.FromRgb(255, 0, 0);
-            var data = CurrentConfig[CurrentClassPath + this.Path];
+            var data = CurrentConfig.ReceiveField(CurrentClassPath, this.Path);
+            if (data == null)
+                throw new Exception(string.Format("Cannot locate field '{0}'", this.Path));
             var array = data.Array_Number;
             return Color.FromArgb((byte)(array[0] * 255), (byte)(array[1] * 255), (byte)(array[2] * 255), (byte)(array[3] * 255));
         }

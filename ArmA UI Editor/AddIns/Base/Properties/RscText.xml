@@ -1,61 +1,71 @@
 ﻿<root>
-  <group name="Positioning">
-    <property>
-      <number/>
-      <fieldpath>/x</fieldpath>
-      <displayname>Pos X</displayname>
-    </property>
-    <property>
-      <number/>
-      <fieldpath>/y</fieldpath>
-      <displayname>Pos Y</displayname>
-    </property>
-    <property>
-      <number/>
-      <fieldpath>/w</fieldpath>
-      <displayname>Width</displayname>
-    </property>
-    <property>
-      <number/>
-      <fieldpath>/h</fieldpath>
-      <displayname>Height</displayname>
-    </property>
-  </group>
-  <group name="Coloring">
-    <property>
-      <array>
-        <type>NUMBER</type>
-        <count>4</count>
-      </array>
-      <fieldpath>/colorBackground</fieldpath>
-      <displayname>Background Color</displayname>
-    </property>
-    <property>
-      <array>
-        <type>NUMBER</type>
-        <count>4</count>
-      </array>
-      <fieldpath>/colorText</fieldpath>
-      <displayname>Foreground Color</displayname>
-    </property>
-  </group>
-  <group name="General">
-    <property>
-      <string/>
-      <fieldpath>/text</fieldpath>
-      <displayname>Text</displayname>
-    </property>
-    <property>
-      <listbox>
-        <item display="TahomaB" value="TahomaB"/>
-      </listbox>
-      <fieldpath>/font</fieldpath>
-      <displayname>Font</displayname>
-    </property>
-    <property>
-      <number/>
-      <fieldpath>/sizeEx</fieldpath>
-      <displayname>Font Size</displayname>
-    </property>
-  </group>
+  <groups>
+    <group name="Positioning">
+      <properties>
+        <property>
+          <number/>
+          <field>/x</field>
+          <name>Pos X</name>
+        </property>
+        <property>
+          <number/>
+          <field>/y</field>
+          <name>Pos Y</name>
+        </property>
+        <property>
+          <number/>
+          <field>/w</field>
+          <name>Width</name>
+        </property>
+        <property>
+          <number/>
+          <field>/h</field>
+          <name>Height</name>
+        </property>
+      </properties>
+    </group>
+    <group name="Coloring">
+      <properties>
+        <property>
+          <array>
+            <type>NUMBER</type>
+            <count>4</count>
+          </array>
+          <field>/colorBackground</field>
+          <name>Background Color</name>
+        </property>
+        <property>
+          <array>
+            <type>NUMBER</type>
+            <count>4</count>
+          </array>
+          <field>/colorText</field>
+          <name>Foreground Color</name>
+        </property>
+      </properties>
+    </group>
+    <group name="General">
+      <properties>
+        <property>
+          <string/>
+          <field>/text</field>
+          <name>Text</name>
+        </property>
+        <property>
+          <listbox>
+            <Items>
+              <item display="TahomaB" value="TahomaB"/>
+            </Items>
+          </listbox>
+          <field>/font</field>
+          <name>Font</name>
+        </property>
+        <property>
+          <number/>
+          <field>/sizeEx</field>
+          <name>Font Size</name>
+        </property>
+      </properties>
+    </group>
+  </groups>
 </root>
