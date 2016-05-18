@@ -215,16 +215,40 @@ namespace SQF.ClassParser
             }
             return data;
         }
-        public static Data ReceiveFieldFromHirarchy(Data start, string path)
+        public static Data ReceiveFieldFromHirarchy(Data start, string path, bool createNewIfNotExisting = false)
         {
+            path = path.Trim(new char[] { '/' });
             do
             {
-                var tmpPath = path.Substring(1, path.LastIndexOf('/'));
-                if (start.Class.ContainsKey(tmpPath))
-                    start = start.Class[tmpPath];
+                var index = path.IndexOf('/');
+                string tmpPath;
+                if (index != -1)
+                    tmpPath = path.Substring(0, index);
                 else
-                    start = null;
-                path = path.Substring(tmpPath.Length + 1);
+                    tmpPath = path;
+
+                if (start.Class.ContainsKey(tmpPath))
+                {
+                    start = start.Class[tmpPath];
+                }
+                else
+                {
+                    if(createNewIfNotExisting)
+                    {
+                        Data d = new Data(new ConfigClass(), tmpPath);
+                        start.Class.Add(tmpPath, d);
+                        start = d;
+                    }
+                    else
+                    {
+                        start = null;
+                    }
+                }
+
+                if (tmpPath.Length == path.Length)
+                    path = string.Empty;
+                else
+                    path = path.Substring(tmpPath.Length + 1);
             } while (path.Length > 0 && start != null);
             return start;
         }
