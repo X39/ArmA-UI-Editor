@@ -197,10 +197,10 @@ namespace SQF.ClassParser
             }
         }
 
-        public Data ReceiveFieldFromHirarchy(string path, string field, Data start = null)
+        public Data ReceiveFieldFromHirarchy(string path, string field)
         {
-            var data = start != null ? start : this[path + field];
-            
+            var data = this[path + field];
+
             if (data == null)
             {
                 var tmpData = this[path];
@@ -214,6 +214,19 @@ namespace SQF.ClassParser
                 }
             }
             return data;
+        }
+        public Data ReceiveFieldFromHirarchy(Data start, string path)
+        {
+            do
+            {
+                var tmpPath = path.Substring(1, path.LastIndexOf('/'));
+                if (start.Class.ContainsKey(tmpPath))
+                    start = start.Class[tmpPath];
+                else
+                    start = null;
+                path = path.Substring(tmpPath.Length + 1);
+            } while (path.Length > 0 && start != null);
+            return start;
         }
     }
 }
