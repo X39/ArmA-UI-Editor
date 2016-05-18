@@ -53,9 +53,9 @@
         </property>
         <property>
           <listbox>
-            <Items>
+            <items>
               <item display="TahomaB" value="TahomaB"/>
-            </Items>
+            </items>
           </listbox>
           <field>/font</field>
           <name>Font</name>
