@@ -8,8 +8,8 @@ namespace SQF.ClassParser
 {
     public class ConfigClass : Dictionary<string, Data>
     {
-        public ConfigClass Parent { get; set; }
-        public ConfigClass(ConfigClass Parent = default(ConfigClass)) : base()
+        public Data Parent { get; set; }
+        public ConfigClass(Data Parent = default(Data)) : base()
         {
             this.Parent = Parent;
         }

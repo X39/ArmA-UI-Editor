@@ -138,29 +138,17 @@ namespace SQF.ClassParser
 		{
 		   Base = new SQF.ClassParser.File();
 		}
-		else
-		{
-		   Base.BeginEdit();
-		}
+		StringList PathList = new StringList();
 		
-		CONFIG(out data, Base);
+		CONFIG(out data, Base, PathList);
 		Base[data] = data; 
 		while (la.kind == 6) {
-			CONFIG(out data, Base);
+			CONFIG(out data, Base, PathList);
 			Base[data] = data; 
 		}
-		if(errors.count == 0)
-		{
-		   Base.EndEdit();
-		}
-		else
-		{
-		   Base.CancelEdit();
-		}
-		
 	}
 
-	void CONFIG(out Data data, ConfigClass parent) {
+	void CONFIG(out Data data, ConfigClass parent, StringList PathList) {
 		ConfigClass cc = new ConfigClass(); data = new Data(cc); Data d; 
 		Expect(6);
 		Expect(5);
@@ -173,9 +161,27 @@ namespace SQF.ClassParser
 		if (la.kind == 7) {
 			Get();
 			Expect(5);
-			if(parent.ContainsKey(t.val))
+			ConfigClass c = parent;
+			var tmpList = new StringList(PathList);
+			Data tmpData = null;
+			do
 			{
-			   cc.Parent = parent[t.val].Class;
+			   StringBuilder sb = new StringBuilder();
+			   foreach (var it in tmpList)
+			   {
+			       sb.Append('/');
+			       sb.Append(it);
+			   };
+			   sb.Append('/');
+			   sb.Append(t.val);
+			   tmpData = this.Base[sb.ToString()];
+			   
+			   tmpList.RemoveAt(tmpList.Count - 1);
+			} while (tmpList.Count > 0 && (tmpData == null || !tmpData.IsClass));
+			
+			if (c != null)
+			{
+			   cc.Parent = tmpData;
 			}
 			else
 			{
@@ -183,23 +189,25 @@ namespace SQF.ClassParser
 			};
 			
 		}
+		PathList.Add(data.Name); 
 		if (la.kind == 8) {
 			Get();
 			while (la.kind == 5 || la.kind == 6) {
 				if (la.kind == 5) {
-					FIELD(out d, data.Class);
+					FIELD(out d);
 					data.Class[d] = d; 
 				} else {
-					CONFIG(out d, data.Class);
+					CONFIG(out d, data.Class, PathList);
 					data.Class[d] = d; 
 				}
 			}
 			Expect(9);
 		}
 		Expect(10);
+		PathList.RemoveAt(PathList.Count - 1); 
 	}
 
-	void FIELD(out Data data, ConfigClass parent) {
+	void FIELD(out Data data) {
 		data = null; bool isArray = false; 
 		Expect(5);
 		string name = t.val; 
@@ -241,7 +249,7 @@ namespace SQF.ClassParser
 				}
 				data = new Data(list); 
 			} else if (la.kind == 3 || la.kind == 4) {
-				var list = new List<string>(); 
+				var list = new StringList(); 
 				STRING(out tmp);
 				list.Add(tmp.String); 
 				while (la.kind == 16) {

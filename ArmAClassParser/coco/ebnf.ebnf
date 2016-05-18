@@ -33,30 +33,16 @@ COMPILER CONFIGFILE
             {
                 Base = new SQF.ClassParser.File();
             }
-            else
-            {
-                Base.BeginEdit();
-            }
+            StringList PathList = new StringList();
             .)
             
             
-            CONFIG<out data, Base> (. Base[data] = data; .)
+            CONFIG<out data, Base, PathList> (. Base[data] = data; .)
             {
-                CONFIG<out data, Base> (. Base[data] = data; .)
+                CONFIG<out data, Base, PathList> (. Base[data] = data; .)
             }
-            
-            (.
-            if(errors.count == 0)
-            {
-                Base.EndEdit();
-            }
-            else
-            {
-                Base.CancelEdit();
-            }
-            .)
 		.
-        CONFIG<out Data data, ConfigClass parent> (. ConfigClass cc = new ConfigClass(); data = new Data(cc); Data d; .)=
+        CONFIG<out Data data, ConfigClass parent, StringList PathList> (. ConfigClass cc = new ConfigClass(); data = new Data(cc); Data d; .) =
             "class"
             T_IDENT
             (.
@@ -70,9 +56,28 @@ COMPILER CONFIGFILE
                 ':'
                 T_IDENT
                 (.
-                    if(parent.ContainsKey(t.val))
+                    ConfigClass c = parent;
+                    var tmpList = new StringList(PathList);
+                    Data tmpData = null;
+                    do
                     {
-                        cc.Parent = parent[t.val].Class;
+                        StringBuilder sb = new StringBuilder();
+                        foreach (var it in tmpList)
+                        {
+                            sb.Append('/');
+                            sb.Append(it);
+                        };
+                        sb.Append('/');
+                        sb.Append(t.val);
+                        tmpData = this.Base[sb.ToString()];
+                        if (tmpList.Count == 0)
+                            break;
+                        tmpList.RemoveAt(tmpList.Count - 1);
+                    } while (tmpData == null || !tmpData.IsClass);
+                    
+                    if (c != null)
+                    {
+                        cc.Parent = tmpData;
                     }
                     else
                     {
@@ -80,18 +85,20 @@ COMPILER CONFIGFILE
                     };
                 .)
             ]
+            (. PathList.Add(data.Name); .)
             [
                 '{'
                 {
-                    FIELD<out d, data.Class> (. data.Class[d] = d; .)
+                    FIELD<out d> (. data.Class[d] = d; .)
                     |
-                    CONFIG<out d, data.Class> (. data.Class[d] = d; .)
+                    CONFIG<out d, data.Class, PathList> (. data.Class[d] = d; .)
                 }
                 '}'
             ]
             ';'
+            (. PathList.RemoveAt(PathList.Count - 1); .)
         .
-        FIELD<out Data data, ConfigClass parent> (. data = null; bool isArray = false; .) =
+        FIELD<out Data data> (. data = null; bool isArray = false; .) =
             T_IDENT (. string name = t.val; .)
             [
                 '['
@@ -112,7 +119,7 @@ COMPILER CONFIGFILE
             (. if(data != null) data.Name = name; .)
         .
         SCALAR<out Data data> (. data = null; .)  =
-            T_SCALAR (. data = new Data(Double.Parse(t.val)); .)
+            T_SCALAR (. data = new Data(Double.Parse(t.val, System.Globalization.CultureInfo.InvariantCulture)); .)
             |
             T_HEX (. data = new Data((double)Convert.ToInt32(t.val.Substring(2), 16)); .)
         .
@@ -151,7 +158,7 @@ COMPILER CONFIGFILE
                 )
                 |
                 (
-                    (. var list = new List<string>(); .)
+                    (. var list = new StringList(); .)
                     STRING<out tmp> (. list.Add(tmp.String); .)
                     {
                         ','

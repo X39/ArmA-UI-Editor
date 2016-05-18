@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.IO;
 
 /*
  * This is pretty much bullshit dump code ...
@@ -12,16 +13,8 @@ using System.ComponentModel;
 
 namespace SQF.ClassParser
 {
-    public class File : ConfigClass, IEditableObject
+    public class File : ConfigClass
     {
-        private ConfigClass dict;
-        private ConfigClass backup;
-
-        internal File()
-        {
-            dict = new ConfigClass();
-            backup = null;
-        }
         public static File Load(string filePath)
         {
             List<string> errors = new List<string>();
@@ -31,13 +24,48 @@ namespace SQF.ClassParser
             {
                 StringBuilder sb = new StringBuilder();
                 sb.Append(string.Format("Found {0} errors during parsing {1}\n\n", parser.errors.count, filePath));
-                foreach(var s in errors)
+                foreach (var s in errors)
                 {
                     sb.AppendLine(s);
                 }
                 throw new Exception(sb.ToString());
             }
             return parser.Base;
+        }
+
+        public static File Load(Stream stream)
+        {
+            List<string> errors = new List<string>();
+            Parser parser = new Parser(new Scanner(stream), (s) => { errors.Add(s); });
+            parser.Parse();
+            if (parser.errors.count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(string.Format("Found {0} errors during parsing from stream\n\n", parser.errors.count));
+                foreach (var s in errors)
+                {
+                    sb.AppendLine(s);
+                }
+                throw new Exception(sb.ToString());
+            }
+            return parser.Base;
+        }
+        public void AppendConfig(Stream stream)
+        {
+            List<string> errors = new List<string>();
+            Parser parser = new Parser(new Scanner(stream), (s) => { errors.Add(s); });
+            parser.Base = this;
+            parser.Parse();
+            if (parser.errors.count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(string.Format("Found {0} errors during parsing from stream\n\n", parser.errors.count));
+                foreach (var s in errors)
+                {
+                    sb.AppendLine(s);
+                }
+                throw new Exception(sb.ToString());
+            }
         }
         public void AppendConfig(string filePath)
         {
@@ -56,43 +84,19 @@ namespace SQF.ClassParser
                 throw new Exception(sb.ToString());
             }
         }
-
-        public void BeginEdit()
+        public void AppendConfig(File config)
         {
-            backup = dict;
-            dict = new ConfigClass(backup);
-        }
-
-        public void CancelEdit()
-        {
-            if (backup == null)
-            {
-                dict = new ConfigClass();
-            }
-            else
-            {
-                dict = backup;
-            }
-        }
-
-        public void EndEdit()
-        {
-            if (backup != null)
-            {
-                merge(backup, dict);
-                dict = backup;
-                backup = null;
-            }
+            this.merge(this, config);
         }
 
         //TODO: replace Dictionary parameters with ConfigClass and take care that parent classes are also checked (only if they remain the same)
         private void merge(Dictionary<string, Data> origin, Dictionary<string, Data> toMerge)
         {
-            foreach(var pair in toMerge)
+            foreach (var pair in toMerge)
             {
                 if (pair.Value.IsClass)
                 {
-                    if(origin.ContainsKey(pair.Key))
+                    if (origin.ContainsKey(pair.Key))
                     {
                         merge(origin[pair.Key].Class, pair.Value.Class);
                     }
@@ -123,49 +127,43 @@ namespace SQF.ClassParser
             get { if (d == null) return null; return this[d.Name]; }
             set { if (d != null) this[d.Name] = value; }
         }
-        new public Data this[string key]
+        public Data this[int i]
+        {
+            get { return this.ElementAt(i).Value; }
+        }
+        public Data this[string key]
         {
             get
             {
-                var keys = key.Split('/');
-                var tmpDict = dict;
+                var keys = key.Split('/').Where((s) => !string.IsNullOrWhiteSpace(s));
+                return this[keys];
+            }
+            set
+            {
+                var keys = key.Split('/').Where((s) => !string.IsNullOrWhiteSpace(s));
+                this[keys] = value;
+            }
+        }
+        new public Data this[IEnumerable<string> keys]
+        {
+            get
+            {
+                ConfigClass tmpDict = this;
                 Data data = default(Data);
                 foreach (var it in keys)
                 {
                     if (string.IsNullOrWhiteSpace(it))
                         continue;
-                    if(dict.ContainsKey(key))
+                    if (tmpDict.ContainsKey(it))
                     {
-                        data = dict[key];
-                        var val = data.Value;
-                        if(val is ConfigClass)
+                        data = tmpDict[it];
+                        if (data.IsClass)
                         {
-                            tmpDict = val as ConfigClass;
-                        }
-                        else if(val is Data)
-                        {
-                            return val as Data;
+                            tmpDict = data.Class;
                         }
                         else
                         {
-                            throw new Exception();
-                        }
-                    }
-                    else if(backup != null && backup.ContainsKey(key))
-                    {
-                        data = backup[key];
-                        var val = data.Value;
-                        if (val is ConfigClass)
-                        {
-                            tmpDict = val as ConfigClass;
-                        }
-                        else if (val is Data)
-                        {
-                            return val as Data;
-                        }
-                        else
-                        {
-                            throw new Exception();
+                            return data;
                         }
                     }
                     else
@@ -177,36 +175,40 @@ namespace SQF.ClassParser
             }
             set
             {
-                var keys = key.Split('/');
-                var tmpDict = dict;
-                var tmpBackDict = backup;
+                ConfigClass tmpDict = this;
                 foreach (var it in keys)
                 {
                     if (string.IsNullOrWhiteSpace(it))
                         continue;
-                    if (it == keys.Last())
+                    if (tmpDict.ContainsKey(it))
                     {
-                        if (tmpBackDict == null || !tmpBackDict.ContainsKey(it) || !tmpBackDict[it].Equals(tmpDict[it]))
-                        {
-                            tmpDict[it] = value;
-                        }
-                    }
-                    else if (dict.ContainsKey(it))
-                    {
-                        tmpDict = dict[it].Value as ConfigClass;
-                        if (tmpBackDict != null && tmpBackDict.ContainsKey(it))
-                            tmpBackDict = tmpBackDict[it].Value as ConfigClass;
+                        tmpDict = tmpDict[it].Value as ConfigClass;
                     }
                     else
                     {
-                        dict.Add(it, new Data(new ConfigClass()));
-                        if (tmpBackDict != null && tmpBackDict.ContainsKey(it))
-                            tmpBackDict = tmpBackDict[it].Value as ConfigClass;
-                        else
-                            tmpBackDict = null;
+                        tmpDict.Add(it, value);
                     }
                 }
             }
+        }
+
+        public Data ReceiveField(string path, string field, Data start = null)
+        {
+            var data = start != null ? start : this[path + field];
+            
+            if (data == null)
+            {
+                var tmpData = this[path];
+                if (tmpData != null && tmpData.IsClass && tmpData.Class.Parent != null)
+                {
+                    do
+                    {
+                        path = path.Substring(0, path.LastIndexOf('/'));
+                        data = this[path + '/' + tmpData.Class.Parent.Name + field];
+                    } while (path.Length > 0 && data == null);
+                }
+            }
+            return data;
         }
     }
 }
