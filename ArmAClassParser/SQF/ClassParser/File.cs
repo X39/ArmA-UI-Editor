@@ -215,7 +215,7 @@ namespace SQF.ClassParser
             }
             return data;
         }
-        public Data ReceiveFieldFromHirarchy(Data start, string path)
+        public static Data ReceiveFieldFromHirarchy(Data start, string path)
         {
             do
             {
