@@ -84,8 +84,12 @@
     <Compile Include="Code\Markup\BindMultipliedValue.cs" />
     <Compile Include="Code\Markup\BindValue.cs" />
     <Compile Include="Code\Markup\BindConfig.cs" />
+    <Compile Include="Code\Utility.cs" />
     <Compile Include="UI\AddInBrowser.xaml.cs">
       <DependentUpon>AddInBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PropertyGroup.xaml.cs">
+      <DependentUpon>PropertyGroup.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
@@ -110,6 +114,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UI\PropertyGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\SplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
