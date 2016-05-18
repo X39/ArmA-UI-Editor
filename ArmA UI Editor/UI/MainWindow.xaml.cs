@@ -146,10 +146,10 @@ namespace ArmA_UI_Editor.UI
                     configFile[configFile.Count - 1].Class["controls"].Class.Add(d.Name, d);
 
                     SQF.ClassParser.Data[] sizeList = new Data[] {
-                                this.configFile.ReceiveField(Code.Markup.BindConfig.CurrentClassPath, "/x"),
-                                this.configFile.ReceiveField(Code.Markup.BindConfig.CurrentClassPath, "/y"),
-                                this.configFile.ReceiveField(Code.Markup.BindConfig.CurrentClassPath, "/w"),
-                                this.configFile.ReceiveField(Code.Markup.BindConfig.CurrentClassPath, "/h")
+                                this.configFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/x"),
+                                this.configFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/y"),
+                                this.configFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/w"),
+                                this.configFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/h")
                             };
                     Canvas.SetLeft(el, sizeList[0].Number);
                     Canvas.SetTop(el, sizeList[1].Number);
@@ -202,10 +202,10 @@ namespace ArmA_UI_Editor.UI
                             var el = (FrameworkElement)System.Windows.Markup.XamlReader.Load(stream);
                             ConfigRenderCanvas.Children.Add(el);
                             SQF.ClassParser.Data[] sizeList = new Data[] {
-                                this.configFile.ReceiveField(Code.Markup.BindConfig.CurrentClassPath, "/x"),
-                                this.configFile.ReceiveField(Code.Markup.BindConfig.CurrentClassPath, "/y"),
-                                this.configFile.ReceiveField(Code.Markup.BindConfig.CurrentClassPath, "/w"),
-                                this.configFile.ReceiveField(Code.Markup.BindConfig.CurrentClassPath, "/h")
+                                this.configFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/x"),
+                                this.configFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/y"),
+                                this.configFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/w"),
+                                this.configFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/h")
                             };
                             Canvas.SetLeft(el, sizeList[0].Number);
                             Canvas.SetTop(el, sizeList[1].Number);

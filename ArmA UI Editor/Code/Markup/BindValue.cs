@@ -18,7 +18,7 @@ namespace ArmA_UI_Editor.Code.Markup
         {
             if (CurrentConfig == null)
                 return "NA";
-            var data = CurrentConfig.ReceiveField(CurrentClassPath, this.Path);
+            var data = CurrentConfig.ReceiveFieldFromHirarchy(CurrentClassPath, this.Path);
             if (data == null)
                 throw new Exception(string.Format("Cannot locate field '{0}'", this.Path));
             return data.Value;

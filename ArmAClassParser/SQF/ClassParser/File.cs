@@ -182,17 +182,22 @@ namespace SQF.ClassParser
                         continue;
                     if (tmpDict.ContainsKey(it))
                     {
-                        tmpDict = tmpDict[it].Value as ConfigClass;
+                        tmpDict = tmpDict[it].Class;
+                    }
+                    else if(keys.Last() == it)
+                    {
+                        tmpDict.Add(it, value);
+                        value.Name = it;
                     }
                     else
                     {
-                        tmpDict.Add(it, value);
+                        tmpDict.Add(it, new Data((tmpDict = new ConfigClass()), it));
                     }
                 }
             }
         }
 
-        public Data ReceiveField(string path, string field, Data start = null)
+        public Data ReceiveFieldFromHirarchy(string path, string field, Data start = null)
         {
             var data = start != null ? start : this[path + field];
             
