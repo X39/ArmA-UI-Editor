@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArmA_UI_Editor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" MinWidth="550" Width="550" Background="{StaticResource UIBackground}" Closed="Window_Closed">
+        Title="MainWindow" Height="1080" MinWidth="1920" Width="550" Background="{StaticResource UIBackground}" Closed="Window_Closed" Icon="/ArmA UI Editor;component/Logo.ico" WindowState="Maximized">
     <!-- Little test about visual-studio like panels (only visual, required loads of implementation)
     <Window.Resources>
         <Style TargetType="{x:Type Label}" x:Key="SlidePanelLabelButtonBase">
@@ -139,7 +139,9 @@
                 <Grid Grid.Column="2">
                     <TabControl x:Name="TabControlMainView" Style="{StaticResource TabControlStyle}" SelectionChanged="TabControl_SelectionChanged">
                         <TabItem Header="Display">
-                            <Canvas x:Name="ConfigRenderCanvas" AllowDrop="True" DragEnter="ConfigRenderCanvas_DragEnter" Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Drop="ConfigRenderCanvas_Drop" Background="{StaticResource UIBackgroundDark}"/>
+                            <ScrollViewer Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <Canvas x:Name="ConfigRenderCanvas" AllowDrop="True" DragEnter="ConfigRenderCanvas_DragEnter" Drop="ConfigRenderCanvas_Drop" Background="{StaticResource UIBackgroundDark}" Width="1980" Height="1080"/>
+                            </ScrollViewer>
                         </TabItem>
                         <TabItem Header="Config">
                             <!-- ToDo: Implement & check license of: http://visualstudiogallery.msdn.microsoft.com/d9984737-275d-4919-b7c8-7a5f5f83c74c -->
@@ -171,8 +173,13 @@
                     </TabControl>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1" Background="{StaticResource UIBlue}" Height="16">
+            <Grid Grid.Row="1" Background="{StaticResource UIBlue}" Height="24">
                 <TextBlock x:Name="StatusText"/>
+                <ComboBox x:Name="DisplaySizeComboBox" SelectedIndex="0" Width="90" HorizontalAlignment="Right">
+                    <ComboBoxItem>
+                        1920x1080
+                    </ComboBoxItem>
+                </ComboBox>
             </Grid>
         </Grid>
     </DockPanel>
