@@ -61,7 +61,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
                 {
                     var tb = new TextBox();
-                    tb.Text = curVal != null ? curVal.Number.ToString() : "";
+                    tb.Text = curVal != null ? curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
                     tb.PreviewTextInput += Tb_PreviewTextInput;
                     return tb;
                 }
