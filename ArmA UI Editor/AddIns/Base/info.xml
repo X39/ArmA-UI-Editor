@@ -11,12 +11,12 @@
     <!-- Format for <updateurl>: VERSION:PACKAGEURLASZIP -->
     <updateurl></updateurl>
   </info>
-  <files>
-    <file>
+  <uielements>
+    <element>
       <!-- <displayname> contains the text which will represent this element in the toolbox -->
       <displayname>RscText</displayname>
       <!-- <image> contains 16x16px image which represents this element in the toolbox -->
-      <image>/Images/icon.png</image>
+      <image>/Images/RscText.png</image>
       <!-- <class> contains the path to the class-file which represents this element -->
       <class>/Classes/RscText.class</class>
       <!-- <xaml> contains the path to the xaml-file which represents this element
@@ -34,6 +34,9 @@
       <xaml>/Xaml/RscText.xaml</xaml>
       <!-- <properties> contains the property informations for this class -->
       <properties>/Properties/RscText.xml</properties>
-    </file>
-  </files>
+    </element>
+  </uielements>
+  <styles>
+    <style path="/Styles/DefaultDark.xaml" name="Default Dark"/>
+  </styles>
 </AddIn>

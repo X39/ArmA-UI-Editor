@@ -6,17 +6,13 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
     <Border.Background>
         <SolidColorBrush Color="{a:BindColor Path=/colorBackground}"/>
-        <!--<SolidColorBrush Color="#FFFFFFFF"/>-->
     </Border.Background>
     <TextBlock Text="{a:BindValue Path=/text}" FontSize="{a:BindMultipliedValue Path=/sizeEx, MultiplyBy=300}">
-        <!--<TextBlock Text="Test" FontSize="20">-->
         <TextBlock.Foreground>
             <SolidColorBrush Color="{a:BindColor Path=/colorText}"/>
-            <!--<SolidColorBrush Color="#FF000000"/>-->
         </TextBlock.Foreground>
         <TextBlock.Effect>
-            <DropShadowEffect ShadowDepth="{a:BindValue Path=/shadow}" Direction="330" Color="{a:BindColor Path=/colorText}" Opacity="0.3" BlurRadius="0"/>
-            <!--<DropShadowEffect ShadowDepth="1" Direction="330" Color="#000000" Opacity="0.6" BlurRadius="0"/>-->
+            <DropShadowEffect ShadowDepth="{a:BindMultipliedValue Path=/sizeEx, MultiplyBy=25}" Direction="330" Color="{a:BindColor Path=/colorText}" Opacity="0.3" BlurRadius="0"/>
         </TextBlock.Effect>
     </TextBlock>
 </Border>

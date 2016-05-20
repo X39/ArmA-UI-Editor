@@ -5,7 +5,7 @@ using System.Xml;
 namespace ArmA_UI_Editor.Code.AddInUtil
 {
     [Serializable]
-    public class File
+    public class UIElement
     {
         [XmlElement("displayname")]
         public string DisplayName { get; set; }
@@ -25,7 +25,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         [XmlIgnore()]
         public Properties Properties { get; private set; }
 
-        public File()
+        public UIElement()
         {
             this.DisplayName = default(string);
             this.Image = default(string);

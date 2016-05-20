@@ -18,9 +18,12 @@ namespace ArmA_UI_Editor.Code
 
         [XmlElement("info")]
         public AddInUtil.Info Info { get; set; }
-        [XmlArray("files")]
-        [XmlArrayItem("file")]
-        public List<AddInUtil.File> Files { get; set; }
+        [XmlArray("uielements")]
+        [XmlArrayItem("element")]
+        public List<AddInUtil.UIElement> UIElements { get; set; }
+        [XmlArray("styles")]
+        [XmlArrayItem("style")]
+        public List<AddInUtil.Style> Styles { get; set; }
 
 
         public AddIn()
@@ -40,12 +43,18 @@ namespace ArmA_UI_Editor.Code
 
         public void Initialize(IProgress<double> progress)
         {
-            for(int i = 0; i < Files.Count; i++)
+            for (int i = 0; i < UIElements.Count; i++)
             {
-                var file = Files[i];
+                var file = UIElements[i];
                 file.Parent = this;
-                progress.Report(i / Files.Count);
+                progress.Report(i / (UIElements.Count + this.Styles.Count));
                 file.Initialize();
+            }
+            for (int i = 0; i < Styles.Count; i++)
+            {
+                var style = Styles[i];
+                progress.Report(i / (UIElements.Count + this.Styles.Count));
+                style.Initialize(this.ThisPath);
             }
         }
     }

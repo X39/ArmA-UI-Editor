@@ -1,18 +1,19 @@
 ﻿class RscText
 {
-	access = 0;
-	type = 0;
-	idc = -1;
-	style = 0x01;
 	x = 0;
 	y = 0;
-	w = 100;
-	h = 100;
-	font = "TahomaB";
+	w = 64;
+	h = 16;
+	style = 0;
+	shadow = 1;
+	colorShadow[] = {0,0,0,0.5};
+	font = "RobotoCondensed";
 	sizeEx = 0.04;
-	colorBackground[] = {0.5, 0.1, 0.1, 0.1};
+	//SizeEx = "(			(			(			((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1)";
 	colorText[] = {1,1,1,1};
-	text = "TEXT";
-	fixedWidth = 0;
-	shadow = 0;
+	colorBackground[] = {0,0,0,0};
+	linespacing = 1;
+	tooltipColorText[] = {1,1,1,1};
+	tooltipColorBox[] = {1,1,1,1};
+	tooltipColorShade[] = {0,0,0,0.65};
 };

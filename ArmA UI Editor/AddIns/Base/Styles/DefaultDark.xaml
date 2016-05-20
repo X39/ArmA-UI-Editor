@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="BackgroundColorLight">#FF3F3F46</Color>
+    <Color x:Key="BackgroundColor">#FF2D2D30</Color>
+    <Color x:Key="BackgroundColorDark">#FF252526</Color>
+    <Color x:Key="BackgroundColorDarker">#FF1B1B1C</Color>
+    <Color x:Key="BlueLight">#FF59A8DE</Color>
+    <Color x:Key="Blue">#FF0E97DD</Color>
+    <Color x:Key="BlueDark">#FF007ACC</Color>
+    <Color x:Key="TextColor">#FFD0D0D0</Color>
+
+
+
+
+    <SolidColorBrush x:Key="UIBackground" Color="{StaticResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="UIBackgroundLight" Color="{StaticResource BackgroundColorLight}"/>
+    <SolidColorBrush x:Key="UIBackgroundDark" Color="{StaticResource BackgroundColorDark}"/>
+    <SolidColorBrush x:Key="UIBackgroundDarker" Color="{StaticResource BackgroundColorDarker}"/>
+    <SolidColorBrush x:Key="UIBlue" Color="{StaticResource Blue}"/>
+    <SolidColorBrush x:Key="UIBlueDark" Color="{StaticResource BlueDark}"/>
+    <SolidColorBrush x:Key="UIBlueLight" Color="{StaticResource BlueLight}"/>
+    <SolidColorBrush x:Key="DefaultTextColor" Color="{StaticResource TextColor}"/>
+
+</ResourceDictionary>

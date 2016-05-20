@@ -42,11 +42,6 @@
           <field>/colorText</field>
           <name>Foreground Color</name>
         </property>
-        <property>
-          <number/>
-          <field>/shadow</field>
-          <name>Shadow Depth</name>
-        </property>
       </properties>
     </group>
     <group name="General">
