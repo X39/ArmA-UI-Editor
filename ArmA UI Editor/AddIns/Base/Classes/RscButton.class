@@ -1,8 +1,8 @@
 ﻿class RscButton
 {
 	access = 0;
-	type = CT_BUTTON;
-	style = ST_LEFT;
+	type = 1;
+	style = 0;
 	x = 0;
 	y = 0;
 	w = 64;

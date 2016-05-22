@@ -35,6 +35,29 @@
       <!-- <properties> contains the property informations for this class -->
       <properties>/Properties/RscText.xml</properties>
     </element>
+    <element>
+      <!-- <displayname> contains the text which will represent this element in the toolbox -->
+      <displayname>RscButton</displayname>
+      <!-- <image> contains 16x16px image which represents this element in the toolbox -->
+      <image>/Images/RscButton.png</image>
+      <!-- <class> contains the path to the class-file which represents this element -->
+      <class>/Classes/RscButton.class</class>
+      <!-- <xaml> contains the path to the xaml-file which represents this element
+           xaml file contains special databinding syntax to "bind" to class attributes:
+           (please do not forget to ref xmlns:a="clr-namespace:ArmA_UI_Editor.Code.Markup")
+              
+              1. {{a:BindValue Path=/path/to/class/field}}
+              2. {{a:BindBrush Path=/path/to/class/field}}
+              3. {{a:BindColor Path=/path/to/class/field}}
+              4. {{a:BindMultipliedValue Path=/path/to/class/field, MultiplyBy=<NUMBER>}}
+              
+              Any errors happening in here will throw exceptions which are displayed
+              when an addIn is loaded (addIn will fail to load due to that)
+              The field path begins AFTER the initial class-->
+      <xaml>/Xaml/RscButton.xaml</xaml>
+      <!-- <properties> contains the property informations for this class -->
+      <properties>/Properties/RscButton.xml</properties>
+    </element>
   </uielements>
   <styles>
     <style path="/Styles/DefaultDark.xaml" name="Default Dark"/>

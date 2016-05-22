@@ -39,8 +39,32 @@
             <type>NUMBER</type>
             <count>4</count>
           </array>
+          <field>/colorBackgroundDisabled</field>
+          <name>Background Color, Disabled</name>
+        </property>
+        <property>
+          <array>
+            <type>NUMBER</type>
+            <count>4</count>
+          </array>
+          <field>/colorBackgroundActive</field>
+          <name>Background Color, Active</name>
+        </property>
+        <property>
+          <array>
+            <type>NUMBER</type>
+            <count>4</count>
+          </array>
           <field>/colorText</field>
           <name>Foreground Color</name>
+        </property>
+        <property>
+          <array>
+            <type>NUMBER</type>
+            <count>4</count>
+          </array>
+          <field>/colorDisabled</field>
+          <name>Foreground Color, Disabled</name>
         </property>
       </properties>
     </group>

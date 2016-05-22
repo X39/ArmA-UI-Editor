@@ -13,13 +13,18 @@
 
 
 
-    <SolidColorBrush x:Key="UIBackground" Color="{StaticResource BackgroundColor}"/>
-    <SolidColorBrush x:Key="UIBackgroundLight" Color="{StaticResource BackgroundColorLight}"/>
-    <SolidColorBrush x:Key="UIBackgroundDark" Color="{StaticResource BackgroundColorDark}"/>
-    <SolidColorBrush x:Key="UIBackgroundDarker" Color="{StaticResource BackgroundColorDarker}"/>
-    <SolidColorBrush x:Key="UIBlue" Color="{StaticResource Blue}"/>
-    <SolidColorBrush x:Key="UIBlueDark" Color="{StaticResource BlueDark}"/>
-    <SolidColorBrush x:Key="UIBlueLight" Color="{StaticResource BlueLight}"/>
-    <SolidColorBrush x:Key="DefaultTextColor" Color="{StaticResource TextColor}"/>
+    <SolidColorBrush x:Key="SCB_UIBackground" Color="{StaticResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="SCB_UIBackgroundLight" Color="{StaticResource BackgroundColorLight}"/>
+    <SolidColorBrush x:Key="SCB_UIBackgroundDark" Color="{StaticResource BackgroundColorDark}"/>
+    <SolidColorBrush x:Key="SCB_UIBackgroundDarker" Color="{StaticResource BackgroundColorDarker}"/>
+    <SolidColorBrush x:Key="SCB_UIBlue" Color="{StaticResource Blue}"/>
+    <SolidColorBrush x:Key="SCB_UIBlueDark" Color="{StaticResource BlueDark}"/>
+    <SolidColorBrush x:Key="SCB_UIBlueLight" Color="{StaticResource BlueLight}"/>
+    <SolidColorBrush x:Key="SCB_DefaultTextColor" Color="{StaticResource TextColor}"/>
+
+
+    <SolidColorBrush x:Key="SCB_ParseError_BorderColor" Color="Yellow"/>
+    <SolidColorBrush x:Key="SCB_ParseError_PathHeader" Color="Red"/>
+    <SolidColorBrush x:Key="SCB_ParseError_PathContent" Color="Yellow"/>
 
 </ResourceDictionary>
