@@ -9,7 +9,7 @@ namespace ArmA_UI_Editor.Code.Markup
 {
     public class BindMultipliedValue : BindConfig
     {
-        [ConstructorArgument("mul")]
+        [ConstructorArgument("MultiplyBy")]
         public double MultiplyBy { get; set; }
 
         public BindMultipliedValue() { }
