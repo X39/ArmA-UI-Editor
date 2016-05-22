@@ -146,12 +146,22 @@ COMPILER CONFIGFILE
         .
         ARRAY<out Data data> (. data = new Data(new List<Data>()); Data tmp; .) = 
             '{'
-            {
+            (
                 SCALAR<out tmp> (. data.Array.Add(tmp); .)
                 |
                 STRING<out tmp> (. data.Array.Add(tmp); .)
                 |
                 BOOLEAN<out tmp> (. data.Array.Add(tmp); .)
+            )
+            {
+                ','
+                (
+                    SCALAR<out tmp> (. data.Array.Add(tmp); .)
+                    |
+                    STRING<out tmp> (. data.Array.Add(tmp); .)
+                    |
+                    BOOLEAN<out tmp> (. data.Array.Add(tmp); .)
+                )
             }
             '}'
         .

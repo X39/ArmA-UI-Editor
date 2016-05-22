@@ -204,8 +204,8 @@ namespace SQF.ClassParser
     public class Scanner {
         const char EOL = '\n';
         const int eofSym = 0; /* pdt */
-    	const int maxT = 16;
-	const int noSym = 16;
+    	const int maxT = 17;
+	const int noSym = 17;
 
 
         public Buffer buffer; // scanner buffer
@@ -242,6 +242,7 @@ namespace SQF.ClassParser
 		start[91] = 18; 
 		start[93] = 19; 
 		start[61] = 20; 
+		start[44] = 21; 
 		start[Buffer.EOF] = -1;
 
         }
@@ -494,6 +495,8 @@ namespace SQF.ClassParser
 				{t.kind = 12; break;}
 			case 20:
 				{t.kind = 13; break;}
+			case 21:
+				{t.kind = 16; break;}
 
             }
             t.val = new String(tval, 0, tlen);

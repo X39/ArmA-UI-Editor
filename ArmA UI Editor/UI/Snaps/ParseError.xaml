@@ -1,0 +1,39 @@
+﻿<Page x:Class="ArmA_UI_Editor.UI.Snaps.ParseError"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ArmA_UI_Editor.UI.Snaps"
+      mc:Ignorable="d" 
+      Width="256"
+      Height="84"
+      Title="ParseError">
+    <Border Background="Black" BorderThickness="3" BorderBrush="{StaticResource SCB_ParseError_BorderColor}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0">
+                <Border.Background>
+                    <VisualBrush TileMode="Tile" Viewport="0, 0, 5, 5" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                        <VisualBrush.Visual>
+                            <Path Data="M 0 10 L 10 0" Stroke="{StaticResource SCB_ParseError_PathHeader}"  Opacity="1" StrokeThickness="1"/>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Border.Background>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource STR_ParseError_PathHeader}" Foreground="{StaticResource SCB_DefaultTextColor}" FontSize="12" FontWeight="ExtraBold"/>
+            </Border>
+            <Border Grid.Row="1">
+                <Border.Background>
+                    <VisualBrush TileMode="Tile" Viewport="0, 0, 5, 5" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                        <VisualBrush.Visual>
+                            <Path Data="M 0 10 L 10 0" Stroke="{StaticResource SCB_ParseError_PathContent}"  Opacity="1" StrokeThickness="1"/>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Border.Background>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource STR_ParseError_PathContent}" Foreground="{StaticResource SCB_DefaultTextColor}" FontSize="28"/>
+            </Border>
+        </Grid>
+    </Border>
+</Page>

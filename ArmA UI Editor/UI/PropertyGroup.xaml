@@ -6,14 +6,14 @@
              xmlns:local="clr-namespace:ArmA_UI_Editor.UI"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Background="{StaticResource UIBackgroundDark}">
+    <Grid Background="{StaticResource SCB_UIBackgroundDark}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Grid.Row="0" Background="Transparent" BorderThickness="0, 0, 0, 1" BorderBrush="{StaticResource UIBackgroundLight}" HorizontalContentAlignment="Stretch" Click="Button_Click" Style="{StaticResource ButtonStyle}">
+        <Button Grid.Row="0" Background="Transparent" BorderThickness="0, 0, 0, 1" BorderBrush="{StaticResource SCB_UIBackgroundLight}" HorizontalContentAlignment="Stretch" Click="Button_Click" Style="{StaticResource ButtonStyle}">
             <StackPanel Orientation="Horizontal">
-                <Path Fill="{StaticResource DefaultTextColor}" Stretch="Uniform" >
+                <Path Fill="{StaticResource SCB_DefaultTextColor}" Stretch="Uniform" >
                     <Path.Style>
                         <Style TargetType="{x:Type Path}">
                             <Setter Property="Data" Value="M 10.00,49.00 C 10.00,49.00 5.00,53.00 5.00,53.00 5.00,53.00 5.00,44.00 5.00,44.00 5.00,44.00 10.00,49.00 10.00,49.00 Z"/>
@@ -30,7 +30,7 @@
                         </Style>
                     </Path.Style>
                 </Path>
-                <TextBlock x:Name="Header" Text="NA" Foreground="{StaticResource DefaultTextColor}" TextAlignment="Left"/>
+                <TextBlock x:Name="Header" Text="NA" Foreground="{StaticResource SCB_DefaultTextColor}" TextAlignment="Left"/>
             </StackPanel>
         </Button>
         <StackPanel Grid.Row="1" Orientation="Vertical" x:Name="ItemsPanel">

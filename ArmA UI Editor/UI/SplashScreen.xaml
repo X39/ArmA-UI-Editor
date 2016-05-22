@@ -14,7 +14,7 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         Height="256"
-        Width="512" Initialized="Window_Initialized" Closed="Window_Closed" Background="{StaticResource UIBackground}" >
+        Width="512" Initialized="Window_Initialized" Closed="Window_Closed" Background="{StaticResource SCB_UIBackground}" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -44,8 +44,8 @@
             </Grid>
         </Grid>
         <Grid Grid.Row="1">
-            <ProgressBar Grid.Row="1" Name="Progress_Bar" Minimum="0" Maximum="1" Foreground="{StaticResource UIBlue}" Background="{StaticResource UIBackground}" Value="0.5" BorderThickness="0"/>
-            <TextBlock Name="Progress_Text" HorizontalAlignment="Center" Foreground="{StaticResource DefaultTextColor}" Text="Placeholder"/>
+            <ProgressBar Grid.Row="1" Name="Progress_Bar" Minimum="0" Maximum="1" Foreground="{StaticResource SCB_UIBlue}" Background="{StaticResource SCB_UIBackground}" Value="0.5" BorderThickness="0"/>
+            <TextBlock Name="Progress_Text" HorizontalAlignment="Center" Foreground="{StaticResource SCB_DefaultTextColor}" Text="Placeholder"/>
         </Grid>
     </Grid>
 </Window>

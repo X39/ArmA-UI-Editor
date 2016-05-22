@@ -89,6 +89,7 @@ namespace SQF.ClassParser
                     writer.Write(new string('\t', tabCount));
                     writer.Write(this.Name);
                     writer.Write(" = ");
+                    writer.Write(this.Number.ToString(System.Globalization.CultureInfo.InvariantCulture));
                     writer.Write(';');
                 }
                 else
@@ -103,6 +104,7 @@ namespace SQF.ClassParser
                     writer.Write(new string('\t', tabCount));
                     writer.Write(this.Name);
                     writer.Write(" = \"");
+                    writer.Write(this.String);
                     writer.Write("\";");
                 }
                 else

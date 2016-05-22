@@ -11,7 +11,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="Title" Text="NA" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch" Foreground="{StaticResource DefaultTextColor}"/>
+        <TextBlock x:Name="Title" Text="NA" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch" Foreground="{StaticResource SCB_DefaultTextColor}"/>
         <ContentPresenter x:Name="ConfigElement" Grid.Column="1" Width="Auto" HorizontalAlignment="Stretch"/>
     </Grid>
 </UserControl>

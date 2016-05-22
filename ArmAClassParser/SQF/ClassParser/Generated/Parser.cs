@@ -19,7 +19,7 @@ namespace SQF.ClassParser
 	public const int _T_STRING = 3;
 	public const int _T_STRINGTABLESTRING = 4;
 	public const int _T_IDENT = 5;
-	public const int maxT = 16;
+	public const int maxT = 17;
 
         const bool _T = true;
         const bool _x = false;
@@ -230,7 +230,7 @@ namespace SQF.ClassParser
 		} else if (la.kind == 14 || la.kind == 15) {
 			BOOLEAN(out data);
 			if(isArray) SemErr("Invalid field syntax: Located [] at field name"); 
-		} else SynErr(17);
+		} else SynErr(18);
 		Expect(10);
 		if(data != null) data.Name = name; 
 	}
@@ -238,17 +238,28 @@ namespace SQF.ClassParser
 	void ARRAY(out Data data) {
 		data = new Data(new List<Data>()); Data tmp; 
 		Expect(8);
-		while (StartOf(1)) {
+		if (la.kind == 1 || la.kind == 2) {
+			SCALAR(out tmp);
+			data.Array.Add(tmp); 
+		} else if (la.kind == 3 || la.kind == 4) {
+			STRING(out tmp);
+			data.Array.Add(tmp); 
+		} else if (la.kind == 14 || la.kind == 15) {
+			BOOLEAN(out tmp);
+			data.Array.Add(tmp); 
+		} else SynErr(19);
+		while (la.kind == 16) {
+			Get();
 			if (la.kind == 1 || la.kind == 2) {
 				SCALAR(out tmp);
 				data.Array.Add(tmp); 
 			} else if (la.kind == 3 || la.kind == 4) {
 				STRING(out tmp);
 				data.Array.Add(tmp); 
-			} else {
+			} else if (la.kind == 14 || la.kind == 15) {
 				BOOLEAN(out tmp);
 				data.Array.Add(tmp); 
-			}
+			} else SynErr(20);
 		}
 		Expect(9);
 	}
@@ -261,7 +272,7 @@ namespace SQF.ClassParser
 		} else if (la.kind == 2) {
 			Get();
 			data = new Data((double)Convert.ToInt32(t.val.Substring(2), 16)); 
-		} else SynErr(18);
+		} else SynErr(21);
 	}
 
 	void STRING(out Data data) {
@@ -272,7 +283,7 @@ namespace SQF.ClassParser
 		} else if (la.kind == 4) {
 			Get();
 			content = t.val.Substring(1); 
-		} else SynErr(19);
+		} else SynErr(22);
 		data = new Data(content);
 		
 	}
@@ -284,7 +295,7 @@ namespace SQF.ClassParser
 			flag = true; 
 		} else if (la.kind == 15) {
 			Get();
-		} else SynErr(20);
+		} else SynErr(23);
 		data = new Data(flag);
 		
 	}
@@ -301,8 +312,7 @@ namespace SQF.ClassParser
         }
         
         static readonly bool[,] set = {
-    		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x},
-		{_x,_T,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _x,_x}
+    		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x}
 
         };
     } // end Parser
@@ -337,11 +347,14 @@ namespace SQF.ClassParser
 			case 13: s = "\"=\" expected"; break;
 			case 14: s = "\"true\" expected"; break;
 			case 15: s = "\"false\" expected"; break;
-			case 16: s = "??? expected"; break;
-			case 17: s = "invalid FIELD"; break;
-			case 18: s = "invalid SCALAR"; break;
-			case 19: s = "invalid STRING"; break;
-			case 20: s = "invalid BOOLEAN"; break;
+			case 16: s = "\",\" expected"; break;
+			case 17: s = "??? expected"; break;
+			case 18: s = "invalid FIELD"; break;
+			case 19: s = "invalid ARRAY"; break;
+			case 20: s = "invalid ARRAY"; break;
+			case 21: s = "invalid SCALAR"; break;
+			case 22: s = "invalid STRING"; break;
+			case 23: s = "invalid BOOLEAN"; break;
 
                 default: s = "error " + n; break;
             }

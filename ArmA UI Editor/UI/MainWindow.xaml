@@ -5,22 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArmA_UI_Editor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" MinWidth="1920" Width="550" Background="{StaticResource UIBackground}" Closed="Window_Closed" Icon="/ArmA UI Editor;component/Logo.ico" WindowState="Maximized">
+        Title="MainWindow" Height="1080" MinWidth="512" MinHeight="512" Width="1920" Background="{StaticResource SCB_UIBackground}" Closed="Window_Closed" Icon="/ArmA UI Editor;component/Logo.ico" WindowState="Maximized">
     <!-- Little test about visual-studio like panels (only visual, required loads of implementation)
     <Window.Resources>
         <Style TargetType="{x:Type Label}" x:Key="SlidePanelLabelButtonBase">
-            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource SCB_DefaultTextColor}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Label}">
-                        <Border x:Name="BorderElement" BorderBrush="{StaticResource UIBackgroundLight}" BorderThickness="0,0,0,5" Margin="5,0,5,0">
+                        <Border x:Name="BorderElement" BorderBrush="{StaticResource SCB_UIBackgroundLight}" BorderThickness="0,0,0,5" Margin="5,0,5,0">
                             <ContentPresenter x:Name="PresenterElement"/>
                         </Border>
 
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="BorderBrush" Value="{StaticResource UIBlue}" TargetName="BorderElement"/>
-                                <Setter Property="Foreground" Value="{StaticResource UIBlue}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource SCB_UIBlue}" TargetName="BorderElement"/>
+                                <Setter Property="Foreground" Value="{StaticResource SCB_UIBlue}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -29,7 +29,7 @@
         </Style>
     </Window.Resources>
     <DockPanel>
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Background="{StaticResource UIBackground}">
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Background="{StaticResource SCB_UIBackground}">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}">
                     <Setter Property="LayoutTransform">
@@ -43,7 +43,7 @@
             <Label Content="TEST"/>
             <Label Content="TEST"/>
         </StackPanel>
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Right" Background="{StaticResource UIBackground}">
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Right" Background="{StaticResource SCB_UIBackground}">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}">
                     <Setter Property="LayoutTransform">
@@ -57,14 +57,14 @@
             <Label Content="TEST"/>
             <Label Content="TEST"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="{StaticResource UIBackground}">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="{StaticResource SCB_UIBackground}">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}"/>
             </StackPanel.Resources>
             <Label Content="TEST"/>
             <Label Content="TEST"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Background="{StaticResource UIBackground}">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Background="{StaticResource SCB_UIBackground}">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}"/>
             </StackPanel.Resources>
@@ -138,14 +138,27 @@
                 <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
                 <Grid Grid.Column="2">
                     <TabControl x:Name="TabControlMainView" Style="{StaticResource TabControlStyle}" SelectionChanged="TabControl_SelectionChanged">
-                        <TabItem Header="Display">
+                        <!--<TabItem Header="Display">
                             <ScrollViewer Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                <Canvas x:Name="ConfigRenderCanvas" AllowDrop="True" DragEnter="ConfigRenderCanvas_DragEnter" Drop="ConfigRenderCanvas_Drop" Background="{StaticResource UIBackgroundDark}" Width="1980" Height="1080"/>
+                                <Canvas x:Name="ConfigRenderCanvas" AllowDrop="True" DragEnter="ConfigRenderCanvas_DragEnter" Drop="ConfigRenderCanvas_Drop" Width="1980" Height="1080" >
+                                    <Canvas.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                                    </Canvas.LayoutTransform>
+                                    <Canvas.Background>
+                                        <VisualBrush TileMode="Tile" Viewport="0, 0, 10, 10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                            <VisualBrush.Visual>
+                                                <Path Data="M 5 0 L 5 10 M 0 5 L 10 5" Stroke="white"  Opacity="0.25"/>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Canvas.Background>
+                                </Canvas>
                             </ScrollViewer>
                         </TabItem>
                         <TabItem Header="Config">
-                            <!-- ToDo: Implement & check license of: http://visualstudiogallery.msdn.microsoft.com/d9984737-275d-4919-b7c8-7a5f5f83c74c -->
-                            <TextBox x:Name="ConfigTextbox" Background="{StaticResource UIBackgroundDark}" Foreground="{StaticResource DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="ConfigTextbox_TextChanged" AcceptsReturn="True" AcceptsTab="True"/>
+                            <TextBox x:Name="ConfigTextbox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="ConfigTextbox_TextChanged" AcceptsReturn="True" AcceptsTab="True"/>
+                        </TabItem>-->
+                        <TabItem Header="DevFrame">
+                            <Frame x:Name="frame"/>
                         </TabItem>
                     </TabControl>
                 </Grid>
@@ -156,7 +169,7 @@
                             <StackPanel x:Name="ElementProperties" Background="Transparent" Orientation="Vertical"/>
                         </TabItem>
                         <TabItem Header="Window Options">
-                            <ListView Background="Transparent" Initialized="ListView_Initialized" Foreground="{StaticResource DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0">
+                            <ListView Background="Transparent" Initialized="ListView_Initialized" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0">
                                 <ListView.Resources>
                                     <Style TargetType="GridViewColumnHeader">
                                         <Setter Property="Visibility" Value="Collapsed" />
@@ -173,7 +186,7 @@
                     </TabControl>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1" Background="{StaticResource UIBlue}" Height="24">
+            <Grid Grid.Row="1" Background="{StaticResource SCB_UIBlue}" Height="24">
                 <TextBlock x:Name="StatusText"/>
                 <ComboBox x:Name="DisplaySizeComboBox" SelectedIndex="0" Width="90" HorizontalAlignment="Right">
                     <ComboBoxItem>

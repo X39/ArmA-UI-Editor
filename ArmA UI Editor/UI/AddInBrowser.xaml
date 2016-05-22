@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArmA_UI_Editor.UI"
         mc:Ignorable="d"
-        Title="AddInBrowser" Height="384" Width="512" Background="{StaticResource UIBackground}" >
+        Title="AddInBrowser" Height="384" Width="512" Background="{StaticResource SCB_UIBackground}" >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -16,7 +16,7 @@
             <ListBoxItem>Base</ListBoxItem>
         </ListBox>
         <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
-        <ListView Grid.Column="0" Background="Transparent" Foreground="{StaticResource DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0">
+        <ListView Grid.Column="0" Background="Transparent" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0">
             <ListView.Resources>
                 <Style TargetType="GridViewColumnHeader">
                     <Setter Property="Visibility" Value="Collapsed" />

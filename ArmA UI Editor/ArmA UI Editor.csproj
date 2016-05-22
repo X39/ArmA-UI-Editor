@@ -52,6 +52,9 @@
   <PropertyGroup>
     <StartupObject>ArmA_UI_Editor.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Logo.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -74,6 +77,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ArmA_UI_Editor\Code\AddInUtil\Style.cs" />
     <Compile Include="Code\AddInManager.cs" />
     <Compile Include="Code\AddInUtil\File.cs" />
     <Compile Include="Code\AddIn.cs" />
@@ -84,6 +88,7 @@
     <Compile Include="Code\Markup\BindMultipliedValue.cs" />
     <Compile Include="Code\Markup\BindValue.cs" />
     <Compile Include="Code\Markup\BindConfig.cs" />
+    <Compile Include="Code\UI\DragDrop\UiElementsListBoxData.cs" />
     <Compile Include="Code\Utility.cs" />
     <Compile Include="UI\AddInBrowser.xaml.cs">
       <DependentUpon>AddInBrowser.xaml</DependentUpon>
@@ -94,11 +99,35 @@
     <Compile Include="UI\PropertyGroup.xaml.cs">
       <DependentUpon>PropertyGroup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SelectionOverlay.xaml.cs">
+      <DependentUpon>SelectionOverlay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Snaps\EditingWindow.xaml.cs">
+      <DependentUpon>EditingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Snaps\ParseError.xaml.cs">
+      <DependentUpon>ParseError.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SnapWindow.xaml.cs">
+      <DependentUpon>SnapWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
+    <None Include="AddIns\Base\Classes\RscButton.class">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="AddIns\Base\Xaml\RscText.xaml">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AddIns\Base\Xaml\RscButton.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AddIns\Base\Styles\DefaultDark.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Page Include="UI\AddInBrowser.xaml">
@@ -122,6 +151,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\PropertyGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SelectionOverlay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Snaps\EditingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Snaps\ParseError.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SnapWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -189,7 +234,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AddIns\Base\Images\icon.png">
+    <None Include="AddIns\Base\Images\RscText.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -200,6 +245,20 @@
     <None Include="AddIns\Base\Properties\RscText.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AddIns\Base\Images\RscButton.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AddIns\Base\Properties\RscButton.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup />
