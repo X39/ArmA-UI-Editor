@@ -22,8 +22,8 @@ namespace ArmA_UI_Editor.Code.Markup
             var data = CurrentConfig.ReceiveFieldFromHirarchy(CurrentClassPath, this.Path);
             if (data == null)
                 throw new Exception(string.Format("Cannot locate field '{0}'", this.Path));
-            var array = data.Array_Number;
-            return Color.FromArgb((byte)(array[0] * 255), (byte)(array[1] * 255), (byte)(array[2] * 255), (byte)(array[3] * 255));
+            var array = data.Array;
+            return Color.FromArgb((byte)(array[0].Number * 255), (byte)(array[1].Number * 255), (byte)(array[2].Number * 255), (byte)(array[3].Number * 255));
         }
     }
 }

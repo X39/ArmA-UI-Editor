@@ -175,9 +175,10 @@ namespace SQF.ClassParser
 			   sb.Append('/');
 			   sb.Append(t.val);
 			   tmpData = this.Base[sb.ToString()];
-			   
+			   if (tmpList.Count == 0)
+			       break;
 			   tmpList.RemoveAt(tmpList.Count - 1);
-			} while (tmpList.Count > 0 && (tmpData == null || !tmpData.IsClass));
+			} while (tmpData == null || !tmpData.IsClass);
 			
 			if (c != null)
 			{
@@ -277,7 +278,7 @@ namespace SQF.ClassParser
 		data = null; 
 		if (la.kind == 1) {
 			Get();
-			data = new Data(Double.Parse(t.val)); 
+			data = new Data(Double.Parse(t.val, System.Globalization.CultureInfo.InvariantCulture)); 
 		} else if (la.kind == 2) {
 			Get();
 			data = new Data((double)Convert.ToInt32(t.val.Substring(2), 16)); 

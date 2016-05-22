@@ -144,39 +144,15 @@ COMPILER CONFIGFILE
             data = new Data(flag);
             .)
         .
-        ARRAY<out Data data> (. data = null; Data tmp; .) = 
+        ARRAY<out Data data> (. data = new Data(new List<Data>()); Data tmp; .) = 
             '{'
-            [
-                (
-                    (. var list = new List<double>(); .)
-                    SCALAR<out tmp> (. list.Add(tmp.Number); .)
-                    {
-                        ','
-                        SCALAR<out tmp> (. list.Add(tmp.Number); .)
-                    }
-                    (. data = new Data(list); .)
-                )
+            {
+                SCALAR<out tmp> (. data.Array.Add(tmp); .)
                 |
-                (
-                    (. var list = new StringList(); .)
-                    STRING<out tmp> (. list.Add(tmp.String); .)
-                    {
-                        ','
-                        STRING<out tmp> (. list.Add(tmp.String); .)
-                    }
-                    (. data = new Data(list); .)
-                )
+                STRING<out tmp> (. data.Array.Add(tmp); .)
                 |
-                (
-                    (. var list = new List<bool>(); .)
-                    BOOLEAN<out tmp> (. list.Add(tmp.Boolean); .)
-                    {
-                        ','
-                        BOOLEAN<out tmp> (. list.Add(tmp.Boolean); .)
-                    }
-                    (. data = new Data(list); .)
-                )
-            ]
+                BOOLEAN<out tmp> (. data.Array.Add(tmp); .)
+            }
             '}'
         .
 END CONFIGFILE.
