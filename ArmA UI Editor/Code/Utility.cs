@@ -17,5 +17,21 @@ namespace ArmA_UI_Editor.Code
             stream.Seek(0, System.IO.SeekOrigin.Begin);
             return stream;
         }
+        public static System.Windows.Rect GetCanvasMetrics(this System.Windows.UIElement el)
+        {
+            var rect = new System.Windows.Rect();
+            rect.X = System.Windows.Controls.Canvas.GetLeft(el);
+            rect.Y = System.Windows.Controls.Canvas.GetTop(el);
+            rect.Width = System.Windows.Controls.Canvas.GetRight(el) - rect.X;
+            rect.Height = System.Windows.Controls.Canvas.GetBottom(el) - rect.Y;
+            return rect;
+        }
+        public static void SetCanvasMetrics(this System.Windows.UIElement el, System.Windows.Rect rect)
+        {
+            System.Windows.Controls.Canvas.SetLeft(el, rect.Left);
+            System.Windows.Controls.Canvas.SetTop(el, rect.Top);
+            System.Windows.Controls.Canvas.SetRight(el, rect.Right);
+            System.Windows.Controls.Canvas.SetBottom(el, rect.Bottom);
+        }
     }
 }
