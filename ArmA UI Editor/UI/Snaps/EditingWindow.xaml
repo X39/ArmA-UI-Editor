@@ -12,8 +12,8 @@
         <TabItem Header="{StaticResource STR_Snaps_EditingWindow_ConfigTab}">
             <TextBox x:Name="Textbox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="Textbox_TextChanged" AcceptsReturn="True" AcceptsTab="True"/>
         </TabItem>
-        <TabItem Header="{StaticResource STR_Snaps_EditingWindow_DisplayTab}">
-            <ScrollViewer Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <TabItem Header="{StaticResource STR_Snaps_EditingWindow_DisplayTab}" GotFocus="TabItem_GotFocus">
+            <ScrollViewer x:Name="ThisScrollViewer" Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" KeyDown="ScrollViewer_KeyDown">
                 <Canvas x:Name="DisplayCanvas" AllowDrop="True" Width="1980" Height="1080"
                         MouseLeftButtonDown="DisplayCanvas_MouseLeftButtonDown"
                         MouseLeftButtonUp="DisplayCanvas_MouseLeftButtonUp"
