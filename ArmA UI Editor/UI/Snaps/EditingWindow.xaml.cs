@@ -51,7 +51,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             sb.AppendLine("\tfadeIn = 0;");
             sb.AppendLine("\tfadeOut = 0;");
             sb.AppendLine("\tenableSimulation = 1;");
-            sb.AppendLine("\t");
             sb.AppendLine("\tclass controls");
             sb.AppendLine("\t{");
             sb.AppendLine("\t\tclass MyFirstRscText : RscText\r\n\t\t{\r\n\t\t\th = 64;\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.5, 0.1, 0.1, 0.1};\r\n\t\t};");
@@ -241,6 +240,40 @@ namespace ArmA_UI_Editor.UI.Snaps
         private void Textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             this.ConfigTextboxDiffersConfigInstance = true;
+            foreach(var change in e.Changes)
+            {
+                if (change.AddedLength == 1)
+                {
+                    string changedString = Textbox.Text.Substring(change.Offset, change.AddedLength);
+                    if (changedString == "\t")
+                    {
+                        //ToDo: Insert required tabs automatically
+                    }
+                }
+                else  if (change.AddedLength == 2)
+                {
+                    if (Textbox.Text.Substring(change.Offset, change.AddedLength) == "\r\n")
+                    {
+                        string before = Textbox.Text.Substring(0, change.Offset);
+                        int lastNewLineIndex = before.LastIndexOf('\n');
+                        if (lastNewLineIndex == -1)
+                            continue;
+                        int tabCount = before.LastIndexOf('\t') - lastNewLineIndex;
+                        if (tabCount < 0)
+                            continue;
+                        Textbox.Text = Textbox.Text.Insert(change.Offset + change.AddedLength, new string('\t', tabCount));
+                        Textbox.SelectionStart = change.Offset + change.AddedLength + tabCount;
+                    }
+                }
+                if (change.RemovedLength == 1)
+                {
+                    string changedString = Textbox.Text.Substring(change.Offset - change.RemovedLength, change.RemovedLength);
+                    if(changedString == "\t")
+                    {
+                        //ToDo: Remove whole tab group if only tabs are remaining in this row
+                    }
+                }
+            }
         }
 
         private void TabControlMainView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -254,6 +287,11 @@ namespace ArmA_UI_Editor.UI.Snaps
                 this.ConfigTextboxDiffersConfigInstance = false;
                 WriteConfigToScreen();
             }
+        }
+
+        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            this.ThisScrollViewer.Focus();
         }
         #endregion
 
@@ -359,9 +397,5 @@ namespace ArmA_UI_Editor.UI.Snaps
             return el;
         }
 
-        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
-        {
-            this.ThisScrollViewer.Focus();
-        }
     }
 }
