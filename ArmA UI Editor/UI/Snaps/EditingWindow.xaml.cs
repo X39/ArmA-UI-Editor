@@ -25,16 +25,27 @@ namespace ArmA_UI_Editor.UI.Snaps
     {
         public SQF.ClassParser.File ConfigFile;
         private bool ConfigTextboxDiffersConfigInstance;
+        private bool BlockWriteout;
         private SelectionOverlay SelectionOverlay_ToMove;
+        private bool SnapDisabled;
+        private int SnapGrid;
+
+        public string FilePath { get; set; }
 
 
 
-        private class TAG_CanvasChildElement
+        internal class TAG_CanvasChildElement
         {
             internal SQF.ClassParser.Data data;
             internal Code.AddInUtil.UIElement file;
 
-            public string FullyQualifiedPath { get; internal set; }
+            internal EditingWindow Owner { get; set; }
+            internal string FullyQualifiedPath { get; set; }
+
+            internal void LoadProperties()
+            {
+                throw new NotImplementedException();
+            }
         }
 
 
@@ -53,17 +64,62 @@ namespace ArmA_UI_Editor.UI.Snaps
             sb.AppendLine("\tenableSimulation = 1;");
             sb.AppendLine("\tclass controls");
             sb.AppendLine("\t{");
-            sb.AppendLine("\t\tclass MyFirstRscText : RscText\r\n\t\t{\r\n\t\t\th = 64;\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.5, 0.1, 0.1, 0.1};\r\n\t\t};");
+            sb.AppendLine("\t\tclass MyFirstRscText : RscText\r\n\t\t{\r\n\t\t\tw = 120;\r\n\t\t\th = 30;\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.5, 0.1, 0.1, 0.1};\r\n\t\t};");
             sb.AppendLine("\t};");
             sb.AppendLine("};");
 
             this.Textbox.Text = sb.ToString();
             this.ReinitConfigFileField();
             SelectionOverlay_ToMove = null;
+            SnapDisabled = true;
+            SnapGrid = 15;
+            FilePath = string.Empty;
+        }
+        public EditingWindow(string FilePath)
+        {
+            InitializeComponent();
+            using (var reader = new StreamReader(FilePath))
+            {
+                this.Textbox.Text = reader.ReadToEnd();
+            }
+
+            this.ReinitConfigFileField();
+            SelectionOverlay_ToMove = null;
+            SnapDisabled = true;
+            SnapGrid = 15;
+            this.FilePath = FilePath;
+        }
+        public string GetFileName()
+        {
+            return string.IsNullOrWhiteSpace(this.FilePath) ? this.ConfigFile[this.ConfigFile.Count - 1].Name + ".cpp" : this.FilePath.Substring(this.FilePath.LastIndexOfAny(new char[] { '\\', '/' }));
+        }
+
+        public void SaveFile()
+        {
+            if(string.IsNullOrWhiteSpace(this.FilePath))
+            {
+                var dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = this.ConfigFile[this.ConfigFile.Count - 1].Name;
+                dlg.DefaultExt = ".cpp";
+                dlg.Filter = "ArmA Class (.cpp)|*.cpp";
+                dlg.CheckPathExists = true;
+                var res = dlg.ShowDialog();
+                if(!res.HasValue || !res.Value)
+                {
+                    return;
+                }
+                this.FilePath = dlg.FileName;
+                
+            }
+            using (var writer = new StreamWriter(this.FilePath))
+            {
+                writer.Write(this.Textbox.Text);
+                writer.Flush();
+            }
         }
 
         #region SelectionOverlay Event Handler
-        private void SelectionOverlay_OnStopMove(object sender, MouseEventArgs e)
+        private void SelectionOverlay_OnStopMove(object sender, EventArgs e)
         {
             SelectionOverlay_ToMove = null;
         }
@@ -74,7 +130,48 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void SelectionOverlay_OnElementResize(object sender, SelectionOverlay.ResizeEventArgs e)
         {
-            throw new NotImplementedException();
+            bool posChangeNeeded = new SelectionOverlay.ResizeEventArgs.Direction[] {
+                SelectionOverlay.ResizeEventArgs.Direction.TopRight,
+                SelectionOverlay.ResizeEventArgs.Direction.Top,
+                SelectionOverlay.ResizeEventArgs.Direction.TopLeft,
+                SelectionOverlay.ResizeEventArgs.Direction.Left,
+                SelectionOverlay.ResizeEventArgs.Direction.BotLeft
+            }.Contains(e.Dir);
+            var metrics = e.Element.GetCanvasMetrics();
+            if(posChangeNeeded)
+            {
+                metrics.X -= e.DeltaX;
+                metrics.Y -= e.DeltaY;
+            }
+            if(metrics.Width + e.DeltaX >= 0)
+                metrics.Width += e.DeltaX;
+
+            if (metrics.Height + e.DeltaY >= 0)
+                metrics.Height += e.DeltaY;
+            e.Element.SetCanvasMetrics(metrics);
+            if (e.Element is FrameworkElement)
+            {
+                var fElement = e.Element as FrameworkElement;
+                fElement.Width = metrics.Width;
+                fElement.Height = metrics.Height;
+                var data = fElement.Tag as TAG_CanvasChildElement;
+                if (data == null)
+                    return;
+
+                if (posChangeNeeded)
+                {
+                    var field_X = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/x", true);
+                    var field_Y = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/y", true);
+
+                    field_X.String = ToSqfString(FieldTypeEnum.XField, metrics.X, 1980);
+                    field_Y.String =  ToSqfString(FieldTypeEnum.YField, metrics.Y, 1080);
+                }
+                var field_W = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/w", true);
+                var field_H = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/h", true);
+                field_W.String = ToSqfString(FieldTypeEnum.WField, metrics.Width, 1980);
+                field_H.String = ToSqfString(FieldTypeEnum.HField, metrics.Height, 1080);
+                this.ConfigTextboxDiffersConfigInstance = true;
+            }
         }
         private void SelectionOverlay_OnElementMove(object sender, SelectionOverlay.MoveEventArgs e)
         {
@@ -91,8 +188,8 @@ namespace ArmA_UI_Editor.UI.Snaps
 
                 var field_X = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/x", true);
                 var field_Y = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/y", true);
-                field_X.Number = metrics.X;
-                field_Y.Number = metrics.Y;
+                field_X.String = ToSqfString(FieldTypeEnum.XField, metrics.X, 1980);
+                field_Y.String = ToSqfString(FieldTypeEnum.YField, metrics.Y, 1080);
                 this.ConfigTextboxDiffersConfigInstance = true;
             }
         }
@@ -101,11 +198,11 @@ namespace ArmA_UI_Editor.UI.Snaps
         private void DisplayCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var arr = this.DisplayCanvas.Children;
-            System.Windows.UIElement thisElement = null;
+            System.Windows.FrameworkElement thisElement = null;
             SelectionOverlay overlay = null;
             for (int i = arr.Count - 1; i >= 0; i--)
             {
-                var it = arr[i];
+                var it = arr[i] as FrameworkElement;
                 if (it is SelectionOverlay)
                 {
                     overlay = it as SelectionOverlay;
@@ -164,6 +261,78 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            foreach (var it in this.DisplayCanvas.Children)
+            {
+                if (it is SelectionOverlay)
+                {
+                    (it as SelectionOverlay).ReleaseMove();
+                    break;
+                }
+            }
+        }
+        private void DisplayCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var arr = this.DisplayCanvas.Children;
+            System.Windows.UIElement thisElement = null;
+            SelectionOverlay overlay = null;
+            for (int i = arr.Count - 1; i >= 0; i--)
+            {
+                var it = arr[i];
+                if (it is SelectionOverlay)
+                {
+                    overlay = it as SelectionOverlay;
+                    continue;
+                }
+                var itMetrics = it.GetCanvasMetrics();
+                var mousePosRelToIt = e.GetPosition(it);
+                if (mousePosRelToIt.X <= itMetrics.Width && mousePosRelToIt.X >= 0 && mousePosRelToIt.Y <= itMetrics.Height && mousePosRelToIt.Y >= 0)
+                {
+                    thisElement = it;
+                    break;
+                }
+            }
+
+            if (thisElement == null && overlay == null)
+            {
+                ContextMenu cm = this.FindResource("ContextMenu_Canvas") as ContextMenu;
+                cm.PlacementTarget = this.DisplayCanvas;
+                cm.IsOpen = true;
+            }
+            else if (overlay != null)
+            {
+                var overlayMetrics = overlay.GetCanvasMetrics();
+                var mousePosRelToOverlay = e.GetPosition(overlay);
+                if (mousePosRelToOverlay.X > overlayMetrics.Width || mousePosRelToOverlay.X < 0 || mousePosRelToOverlay.Y > overlayMetrics.Height || mousePosRelToOverlay.Y < 0)
+                {
+                    ContextMenu cm = this.FindResource("ContextMenu_Canvas") as ContextMenu;
+                    cm.PlacementTarget = this.DisplayCanvas;
+                    cm.IsOpen = true;
+                }
+                else
+                {
+                    if(overlay.ToggledElements.Count == 1)
+                    {
+                        ContextMenu cm = this.FindResource("ContextMenu_ChildElement") as ContextMenu;
+                        cm.Tag = thisElement;
+                        cm.PlacementTarget = this.DisplayCanvas;
+                        cm.IsOpen = true;
+                    }
+                    else
+                    {
+                        ContextMenu cm = this.FindResource("ContextMenu_ChildElements") as ContextMenu;
+                        cm.Tag = overlay.ToggledElements;
+                        cm.PlacementTarget = this.DisplayCanvas;
+                        cm.IsOpen = true;
+                    }
+                }
+            }
+            else
+            {
+                ContextMenu cm = this.FindResource("ContextMenu_ChildElement") as ContextMenu;
+                cm.Tag = thisElement;
+                cm.PlacementTarget = this.DisplayCanvas;
+                cm.IsOpen = true;
+            }
         }
         private void DisplayCanvas_MouseMove(object sender, MouseEventArgs e)
         {
@@ -171,8 +340,23 @@ namespace ArmA_UI_Editor.UI.Snaps
             {
                 var pos = e.GetPosition(DisplayCanvas);
                 var oldPos = (Point)SelectionOverlay_ToMove.Tag;
-                SelectionOverlay_ToMove.Tag = pos;
-                SelectionOverlay_ToMove.DoMove(pos.X - oldPos.X, pos.Y - oldPos.Y);
+                var deltaX = pos.X - oldPos.X;
+                var deltaY = pos.Y - oldPos.Y;
+                if (!SnapDisabled)
+                {
+                    deltaX -= deltaX % SnapGrid;
+                    deltaY -= deltaY % SnapGrid;
+                }
+                if (deltaX != 0 || deltaY != 0)
+                {
+                    if (!SnapDisabled)
+                    {
+                        pos.X -= (pos.X - oldPos.X) % SnapGrid;
+                        pos.Y -= (pos.Y - oldPos.Y) % SnapGrid;
+                    }
+                    SelectionOverlay_ToMove.Tag = pos;
+                    SelectionOverlay_ToMove.DoMove(deltaX, deltaY);
+                }
             }
         }
         private void DisplayCanvas_DragEnter(object sender, DragEventArgs e)
@@ -235,10 +419,16 @@ namespace ArmA_UI_Editor.UI.Snaps
                     }
                 }
             }
+            if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                this.WriteConfigToScreen();
+                if (this.ReinitConfigFileField())
+                    this.SaveFile();
+            }
         }
-
         private void Textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            this.BlockWriteout = false;
             this.ConfigTextboxDiffersConfigInstance = true;
             foreach(var change in e.Changes)
             {
@@ -275,7 +465,19 @@ namespace ArmA_UI_Editor.UI.Snaps
                 }
             }
         }
-
+        private void Textbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if(this.ReinitConfigFileField())
+                    this.SaveFile();
+                e.Handled = true;
+            }
+        }
+        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            this.ThisScrollViewer.Focus();
+        }
         private void TabControlMainView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.TabControlMainView.SelectedIndex == 1)
@@ -288,10 +490,15 @@ namespace ArmA_UI_Editor.UI.Snaps
                 WriteConfigToScreen();
             }
         }
-
-        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
+        private void TabControlMainView_KeyDown(object sender, KeyEventArgs e)
         {
-            this.ThisScrollViewer.Focus();
+            if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                this.WriteConfigToScreen();
+                if (this.ReinitConfigFileField())
+                    this.SaveFile();
+                e.Handled = true;
+            }
         }
         #endregion
 
@@ -302,13 +509,24 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void RegenerateDisplay()
         {
-            if (this.ConfigTextboxDiffersConfigInstance)
-            {
-                this.ReinitConfigFileField();
-            }
-            this.DisplayCanvas.Children.Clear();
+            var mainWindow = App.Current.MainWindow as MainWindow;
             try
             {
+                if (this.ConfigTextboxDiffersConfigInstance || this.BlockWriteout)
+                {
+                    if(this.BlockWriteout || !this.ReinitConfigFileField())
+                    {
+                        mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
+                        mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
+                        this.DisplayCanvas.Children.Clear();
+                        Frame frame = new Frame();
+                        frame.Content = new ParseError();
+                        this.DisplayCanvas.Children.Add(frame);
+                        BlockWriteout = true;
+                        return;
+                    }
+                }
+                this.DisplayCanvas.Children.Clear();
                 var data = this.ConfigFile[this.ConfigFile.Count - 1];
                 Code.Markup.BindConfig.CurrentConfig = this.ConfigFile;
                 var uiElements = data.Class["controls"];
@@ -333,13 +551,18 @@ namespace ArmA_UI_Editor.UI.Snaps
                                 this.ConfigFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/w"),
                                 this.ConfigFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/h")
                             };
-                            Canvas.SetLeft(el, sizeList[0].Number);
-                            Canvas.SetTop(el, sizeList[1].Number);
-                            Canvas.SetRight(el, sizeList[0].Number + sizeList[2].Number);
-                            Canvas.SetBottom(el, sizeList[1].Number + sizeList[3].Number);
+                            var tmp = sizeList[0].IsNumber ? sizeList[0].Number : FromSqfString(FieldTypeEnum.XField, sizeList[0].String, 1980);
+                            Canvas.SetLeft(el, tmp);
+                            tmp += sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String, 1980);
+                            Canvas.SetRight(el, tmp);
+                            tmp = sizeList[1].IsNumber ? sizeList[1].Number : FromSqfString(FieldTypeEnum.YField, sizeList[1].String, 1080);
+                            Canvas.SetTop(el, tmp);
+                            tmp += sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String, 1080);
+                            Canvas.SetBottom(el, tmp);
+
                             el.Width = sizeList[2].Number;
                             el.Height = sizeList[3].Number;
-                            el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath };
+                            el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath, Owner = this};
                             //ToDo: When Property Panel SnapIn is finalized, reimplement rebind mechanic
                             //if (this.CurPropertyPath == Code.Markup.BindConfig.CurrentClassPath)
                             //{
@@ -349,17 +572,21 @@ namespace ArmA_UI_Editor.UI.Snaps
                         }
                     }
                 }
+                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIBlue"] as SolidColorBrush;
+                mainWindow.StatusTextbox.Text = "";
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Could not regenerate config", MessageBoxButton.OK, MessageBoxImage.Warning);
+                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
+                mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
                 this.DisplayCanvas.Children.Clear();
                 Frame frame = new Frame();
                 frame.Content = new ParseError();
                 this.DisplayCanvas.Children.Add(frame);
+                Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
             }
         }
-        public void ReinitConfigFileField()
+        public bool ReinitConfigFileField()
         {
             try
             {
@@ -370,15 +597,24 @@ namespace ArmA_UI_Editor.UI.Snaps
                     this.ConfigFile.AppendConfig(stream);
                 }
                 this.ConfigTextboxDiffersConfigInstance = false;
-
+                var mainWindow = App.Current.MainWindow as MainWindow;
+                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIBlue"] as SolidColorBrush;
+                mainWindow.StatusTextbox.Text = "";
+                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Parse Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                var mainWindow = App.Current.MainWindow as MainWindow;
+                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
+                mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
+                Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
             }
+            return false;
         }
         private void WriteConfigToScreen()
         {
+            if (BlockWriteout)
+                return;
             using (var memStream = new MemoryStream())
             {
                 this.ConfigFile[this.ConfigFile.Count - 1].WriteOut(new StreamWriter(memStream));
@@ -397,5 +633,274 @@ namespace ArmA_UI_Editor.UI.Snaps
             return el;
         }
 
+        #region ContextMenu Click EventHandlers
+        #region ChildElement ContextMenu
+        private void ContextMenu_ChildElement_FitToGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var mi = sender as MenuItem;
+            var cm = mi.Parent as ContextMenu;
+            if (cm.Tag is FrameworkElement)
+            {
+                var el = cm.Tag as FrameworkElement;
+                if (el.Tag is TAG_CanvasChildElement)
+                {
+                    var tag = el.Tag as TAG_CanvasChildElement;
+                    var snapGrid = tag.Owner.SnapGrid;
+                    var metricts = Code.Utility.GetCanvasMetrics(el);
+                    double tmp;
+                    tmp = metricts.Right % snapGrid;
+                    var deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                    tmp = metricts.Bottom % snapGrid;
+                    var deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                    if (deltaX != 0 || deltaY != 0)
+                        SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.BotRight, deltaX, deltaY, el));
+                }
+            }
+        }
+        private void ContextMenu_ChildElement_SnapToGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var mi = sender as MenuItem;
+            var cm = mi.Parent as ContextMenu;
+            if (cm.Tag is FrameworkElement)
+            {
+                var el = cm.Tag as FrameworkElement;
+                if (el.Tag is TAG_CanvasChildElement)
+                {
+                    var tag = el.Tag as TAG_CanvasChildElement;
+                    var snapGrid = tag.Owner.SnapGrid;
+                    var metricts = Code.Utility.GetCanvasMetrics(el);
+                    double tmp;
+                    tmp = metricts.X % snapGrid;
+                    var deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                    tmp = metricts.Y % snapGrid;
+                    var deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                    if (deltaX != 0 || deltaY != 0)
+                        SelectionOverlay_OnElementMove(cm, new SelectionOverlay.MoveEventArgs(deltaX, deltaY, el));
+                }
+            }
+        }
+        private void ContextMenu_ChildElement_SnapFitToGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var mi = sender as MenuItem;
+            var cm = mi.Parent as ContextMenu;
+            if (cm.Tag is FrameworkElement)
+            {
+                var el = cm.Tag as FrameworkElement;
+                if (el.Tag is TAG_CanvasChildElement)
+                {
+                    var tag = el.Tag as TAG_CanvasChildElement;
+                    var snapGrid = tag.Owner.SnapGrid;
+                    var metricts = Code.Utility.GetCanvasMetrics(el);
+                    double tmp;
+                    tmp = metricts.Right % snapGrid;
+                    var deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                    tmp = metricts.Bottom % snapGrid;
+                    var deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                    if (deltaX != 0 || deltaY != 0)
+                        SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.BotRight, deltaX, deltaY, el));
+
+                    metricts = Code.Utility.GetCanvasMetrics(el);
+                    tmp = metricts.X % snapGrid;
+                    deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                    tmp = metricts.Y % snapGrid;
+                    deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                    if (deltaX != 0 || deltaY != 0)
+                        SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.TopLeft, -deltaX, -deltaY, el));
+                }
+            }
+        }
+        private void ContextMenu_ChildElement_Properties_Click(object sender, RoutedEventArgs e)
+        {
+            var cm = sender as ContextMenu;
+            if (cm.Tag is FrameworkElement)
+            {
+                var el = cm.Tag as FrameworkElement;
+                if (el.Tag is TAG_CanvasChildElement)
+                {
+                    var tag = el.Tag as TAG_CanvasChildElement;
+                    tag.LoadProperties();
+                }
+            }
+        }
+        #endregion
+        #region ChildElements ContextMenu
+        private void ContextMenu_ChildElements_FitToGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var mi = sender as MenuItem;
+            var cm = mi.Parent as ContextMenu;
+            if (cm.Tag is List<FrameworkElement>)
+            {
+                foreach (var el in cm.Tag as List<FrameworkElement>)
+                {
+                    if (el.Tag is TAG_CanvasChildElement)
+                    {
+                        var tag = el.Tag as TAG_CanvasChildElement;
+                        var snapGrid = tag.Owner.SnapGrid;
+                        var metricts = Code.Utility.GetCanvasMetrics(el);
+                        double tmp;
+                        tmp = metricts.Right % snapGrid;
+                        var deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                        tmp = metricts.Bottom % snapGrid;
+                        var deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                        if (deltaX != 0 || deltaY != 0)
+                            SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.BotRight, deltaX, deltaY, el));
+                    }
+                }
+                foreach(var it in this.DisplayCanvas.Children)
+                {
+                    if(it is SelectionOverlay)
+                    {
+                        (it as SelectionOverlay).UpdateMetrics();
+                        break;
+                    }
+                }
+            }
+        }
+        private void ContextMenu_ChildElements_SnapToGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var mi = sender as MenuItem;
+            var cm = mi.Parent as ContextMenu;
+            if (cm.Tag is List<FrameworkElement>)
+            {
+                foreach (var el in cm.Tag as List<FrameworkElement>)
+                {
+                    if (el.Tag is TAG_CanvasChildElement)
+                    {
+                        var tag = el.Tag as TAG_CanvasChildElement;
+                        var snapGrid = tag.Owner.SnapGrid;
+                        var metricts = Code.Utility.GetCanvasMetrics(el);
+                        double tmp;
+                        tmp = metricts.X % snapGrid;
+                        var deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                        tmp = metricts.Y % snapGrid;
+                        var deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                        if (deltaX != 0 || deltaY != 0)
+                            SelectionOverlay_OnElementMove(cm, new SelectionOverlay.MoveEventArgs(deltaX, deltaY, el));
+                    }
+                }
+                foreach (var it in this.DisplayCanvas.Children)
+                {
+                    if (it is SelectionOverlay)
+                    {
+                        (it as SelectionOverlay).UpdateMetrics();
+                        break;
+                    }
+                }
+            }
+        }
+        private void ContextMenu_ChildElements_SnapFitToGrid_Click(object sender, RoutedEventArgs e)
+        {
+            var mi = sender as MenuItem;
+            var cm = mi.Parent as ContextMenu;
+            if (cm.Tag is List<FrameworkElement>)
+            {
+                foreach (var el in cm.Tag as List<FrameworkElement>)
+                {
+                    if (el.Tag is TAG_CanvasChildElement)
+                    {
+                        var tag = el.Tag as TAG_CanvasChildElement;
+                        var snapGrid = tag.Owner.SnapGrid;
+                        var metricts = Code.Utility.GetCanvasMetrics(el);
+                        double tmp;
+                        tmp = metricts.Right % snapGrid;
+                        var deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                        tmp = metricts.Bottom % snapGrid;
+                        var deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                        if (deltaX != 0 || deltaY != 0)
+                            SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.BotRight, deltaX, deltaY, el));
+
+                        metricts = Code.Utility.GetCanvasMetrics(el);
+                        tmp = metricts.X % snapGrid;
+                        deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                        tmp = metricts.Y % snapGrid;
+                        deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+                        if (deltaX != 0 || deltaY != 0)
+                            SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.TopLeft, -deltaX, -deltaY, el));
+                    }
+                }
+                foreach (var it in this.DisplayCanvas.Children)
+                {
+                    if (it is SelectionOverlay)
+                    {
+                        (it as SelectionOverlay).UpdateMetrics();
+                        break;
+                    }
+                }
+            }
+        }
+        #endregion
+        #region Canvas ContextMenu
+        private void ContextMenu_Canvas_EnableSnapGrid_Click(object sender, RoutedEventArgs e)
+        {
+            this.SnapDisabled = !this.SnapDisabled;
+        }
+        #endregion
+        #endregion
+
+        public enum FieldTypeEnum
+        {
+            XField,
+            YField,
+            WField,
+            HField
+        }
+        public string ToSqfString(FieldTypeEnum fieldType, double data, double max)
+        {
+            string SQFCommand1;
+            string SQFCommand2;
+            switch (fieldType)
+            {
+                case FieldTypeEnum.XField:
+                case FieldTypeEnum.WField:
+                    SQFCommand1 = "SafeZoneX";
+                    SQFCommand2 = "SafeZoneW";
+                    break;
+                case FieldTypeEnum.YField:
+                case FieldTypeEnum.HField:
+                    SQFCommand1 = "SafeZoneY";
+                    SQFCommand2 = "SafeZoneH";
+                    break;
+                default:
+                    throw new Exception();
+            }
+
+            StringBuilder builder = new StringBuilder();
+            builder.Append('(');
+            builder.Append(data.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            builder.Append(" / ");
+            builder.Append(max.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            builder.Append(')');
+
+            builder.Append(" / ");
+
+            builder.Append('(');
+            builder.Append(SQFCommand1);
+            builder.Append(" + ");
+            builder.Append(SQFCommand2);
+            builder.Append(')');
+            return builder.ToString();
+        }
+        public double FromSqfString(FieldTypeEnum fieldType, string data, double max)
+        {
+            data = data.ToUpper();
+            switch (fieldType)
+            {
+                case FieldTypeEnum.XField:
+                case FieldTypeEnum.WField:
+                    data = data.Replace("SAFEZONEX", "0");
+                    data = data.Replace("SAFEZONEW", "1");
+                    break;
+                case FieldTypeEnum.YField:
+                case FieldTypeEnum.HField:
+                    data = data.Replace("SAFEZONEY", "0");
+                    data = data.Replace("SAFEZONEH", "1");
+                    break;
+                default:
+                    throw new Exception();
+            }
+
+            var dt = new System.Data.DataTable();
+            return (double.Parse(dt.Compute(data, "").ToString())) * max;
+        }
     }
 }

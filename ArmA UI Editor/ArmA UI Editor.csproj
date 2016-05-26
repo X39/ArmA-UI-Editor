@@ -55,6 +55,21 @@
   <PropertyGroup>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>X39_VisualStuidio_Key.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>17838967006EAA889EB82E25B9CB9C972DCB2355</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>X39_VisualStuidio_Key.pfx</ManifestKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -78,6 +93,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ArmA_UI_Editor\Code\AddInUtil\Style.cs" />
+    <Compile Include="asapJson\JsonNode.cs" />
     <Compile Include="Code\AddInManager.cs" />
     <Compile Include="Code\AddInUtil\File.cs" />
     <Compile Include="Code\AddIn.cs" />
@@ -89,7 +105,9 @@
     <Compile Include="Code\Markup\BindValue.cs" />
     <Compile Include="Code\Markup\BindConfig.cs" />
     <Compile Include="Code\UI\DragDrop\UiElementsListBoxData.cs" />
+    <Compile Include="Code\UpdateManager.cs" />
     <Compile Include="Code\Utility.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="UI\AddInBrowser.xaml.cs">
       <DependentUpon>AddInBrowser.xaml</DependentUpon>
     </Compile>
@@ -130,6 +148,7 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="X39_VisualStuidio_Key.pfx" />
     <Page Include="UI\AddInBrowser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -214,6 +233,10 @@
       <Project>{2e1b48ad-1de2-457e-ae85-8230969296bf}</Project>
       <Name>ArmAClassParser</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{ab1bed91-bedf-485c-b697-2d0db1dc7d47}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="AddIns\Base\info.xml">
@@ -261,7 +284,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Settings.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ArmA_UI_Editor.UI"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp" MouseMove="Grid_MouseMove" MouseLeave="Grid_MouseLeave" >
+    <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp" MouseMove="Grid_MouseMove">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>

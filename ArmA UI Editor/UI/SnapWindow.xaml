@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="{StaticResource SCB_UIBlueDark}">
+        <Grid Grid.Row="0" Background="{StaticResource SCB_SnapWindow_OutterBackground}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -22,13 +22,13 @@
                 <Rectangle.Fill>
                     <VisualBrush TileMode="Tile" Viewport="0,0,2,2" ViewportUnits="Absolute" Viewbox="0,0,2,2" ViewboxUnits="Absolute">
                         <VisualBrush.Visual>
-                            <Rectangle Fill="{StaticResource SCB_UIBlueLight}" Width="1" Height="1"/>
+                            <Rectangle Fill="{StaticResource SCB_SnapWindow_HeaderDotsColor}" Width="1" Height="1"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </Rectangle.Fill>
             </Rectangle>
-            <Button Grid.Column="2" x:Name="PinWindow" Click="PinWindow_Click" Style="{StaticResource ButtonStyle}">
-                <Path Fill="{StaticResource SCB_DefaultTextColor}" Stretch="Uniform" Height="8" Margin="4">
+            <Button Grid.Column="2" x:Name="PinWindow" Click="PinWindow_Click" Style="{StaticResource ButtonStyle}" Width="16">
+                <Path Fill="{StaticResource SCB_DefaultTextColor}" Stretch="Uniform" Width="8" Height="8">
                     <Path.Style>
                         <Style TargetType="{x:Type Path}">
                             <Setter Property="Data" Value="M 691.00,128.00 C 691.00,128.00 691.00,281.00 691.00,281.00 691.00,281.00 716.00,281.00 716.00,281.00 716.00,281.00 716.00,307.00 716.00,307.00 716.00,307.00 640.00,307.00 640.00,307.00 640.00,307.00 640.00,409.00 640.00,409.00 640.00,409.00 614.00,409.00 614.00,409.00 614.00,409.00 614.00,307.00 614.00,307.00 614.00,307.00 537.00,307.00 537.00,307.00 537.00,307.00 537.00,281.00 537.00,281.00 537.00,281.00 563.00,281.00 563.00,281.00 563.00,281.00 563.00,128.00 563.00,128.00 563.00,128.00 691.00,128.00 691.00,128.00 Z M 588.00,153.00 C 588.00,153.00 588.00,281.00 588.00,281.00 588.00,281.00 640.00,281.00 640.00,281.00 640.00,281.00 640.00,153.00 640.00,153.00 640.00,153.00 588.00,153.00 588.00,153.00 Z"/>
@@ -44,7 +44,9 @@
                     </Path.Style>
                 </Path>
             </Button>
-            <Frame x:Name="ContentFrame" Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch"/>
         </Grid>
+        <Border Grid.Row="1" BorderBrush="{StaticResource SCB_SnapWindow_OutterBackground}" BorderThickness="1" Background="{StaticResource SCB_SnapWindow_InnerBackground}">
+            <Frame x:Name="ContentFrame" Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch"/>
+        </Border>
     </Grid>
 </UserControl>

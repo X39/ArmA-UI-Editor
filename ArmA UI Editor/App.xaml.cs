@@ -35,5 +35,49 @@ namespace ArmA_UI_Editor
             App.Current.Shutdown();
             e.Handled = true;
         }
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            for (var i = 0; i < e.Args.Count(); i++)
+            {
+                string arg = e.Args[i];
+                bool hasNext = i + 1 < e.Args.Count();
+                if (System.IO.File.Exists(arg))
+                {
+                    //ToDo: Open file tab
+                }
+                else
+                {
+                    switch(arg.ToUpper())
+                    {
+                        case "LOGLEVEL":
+                            if (!hasNext)
+                                break;
+                            switch(e.Args[i + 1].ToUpper())
+                            {
+                                case "0":
+                                case "DEBUG":
+                                    Logger.Instance.LoggingLevel = Logger.LogLevel.DEBUG;
+                                    break;
+                                case "1":
+                                case "VERBOSE":
+                                case "V":
+                                    Logger.Instance.LoggingLevel = Logger.LogLevel.VERBOSE;
+                                    break;
+
+                            }
+                            break;
+                        case "LOGFILE":
+                            if (!hasNext)
+                                break;
+                            Logger.Instance.setLogFile(e.Args[i + 1]);
+                            break;
+                        default:
+                            Logger.Instance.log(Logger.LogLevel.WARNING, "Unknown Startup parameter '" + arg + "'");
+                            break;
+                    }
+                }
+            }
+        }
     }
 }

@@ -137,7 +137,7 @@
                 </Grid>
                 <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
                 <Grid Grid.Column="2">
-                    <TabControl x:Name="TabControlMainView" Style="{StaticResource TabControlStyle}" SelectionChanged="TabControl_SelectionChanged">
+                    <TabControl x:Name="TabControlMainView" Style="{StaticResource TabControlStyle}">
                         <!--<TabItem Header="Display">
                             <ScrollViewer Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                 <Canvas x:Name="ConfigRenderCanvas" AllowDrop="True" DragEnter="ConfigRenderCanvas_DragEnter" Drop="ConfigRenderCanvas_Drop" Width="1980" Height="1080" >
@@ -158,7 +158,7 @@
                             <TextBox x:Name="ConfigTextbox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="ConfigTextbox_TextChanged" AcceptsReturn="True" AcceptsTab="True"/>
                         </TabItem>-->
                         <TabItem Header="DevFrame">
-                            <Frame x:Name="frame"/>
+                            <Frame x:Name="frame" Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch"/>
                         </TabItem>
                     </TabControl>
                 </Grid>
@@ -186,13 +186,13 @@
                     </TabControl>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1" Background="{StaticResource SCB_UIBlue}" Height="24">
-                <TextBlock x:Name="StatusText"/>
-                <ComboBox x:Name="DisplaySizeComboBox" SelectedIndex="0" Width="90" HorizontalAlignment="Right">
+            <Grid x:Name="StatusBar" x:FieldModifier="public" Grid.Row="1" Background="{StaticResource SCB_UIBlue}" Height="24">
+                <TextBlock x:Name="StatusTextbox" x:FieldModifier="public" Foreground="{StaticResource SCB_DefaultTextColor}" Text="FOOOBAR!!!" VerticalAlignment="Center" Margin="8, 0, 0, 0"/>
+                <!--<ComboBox x:Name="DisplaySizeComboBox" SelectedIndex="0" Width="90" HorizontalAlignment="Right">
                     <ComboBoxItem>
                         1920x1080
                     </ComboBoxItem>
-                </ComboBox>
+                </ComboBox>-->
             </Grid>
         </Grid>
     </DockPanel>

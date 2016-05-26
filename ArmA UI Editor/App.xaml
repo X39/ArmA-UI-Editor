@@ -4,7 +4,9 @@
              xmlns:local="clr-namespace:ArmA_UI_Editor"
              xmlns:clr="clr-namespace:System;assembly=mscorlib"
              StartupUri="UI/SplashScreen.xaml"
-             ShutdownMode="OnExplicitShutdown" DispatcherUnhandledException="Application_DispatcherUnhandledException"
+             ShutdownMode="OnExplicitShutdown"
+             DispatcherUnhandledException="Application_DispatcherUnhandledException"
+             Startup="Application_Startup"
              >
     <Application.Resources>
         <ResourceDictionary>
@@ -17,18 +19,32 @@
                     <SolidColorBrush x:Key="SCB_UIBlue" Color="#FF0E97DD"/>
                     <SolidColorBrush x:Key="SCB_UIBlueDark" Color="#FF007ACC"/>
                     <SolidColorBrush x:Key="SCB_UIBlueLight" Color="#FF59A8DE"/>
+                    <SolidColorBrush x:Key="SCB_UIRed" Color="#FFDD0E0E"/>
+                    <SolidColorBrush x:Key="SCB_UIRedDark" Color="#FFA60000"/>
+                    <SolidColorBrush x:Key="SCB_UIRedLight" Color="#FFFF4B4B"/>
                     <SolidColorBrush x:Key="SCB_DefaultTextColor" Color="#FFD0D0D0"/>
 
                     <SolidColorBrush x:Key="SCB_ParseError_BorderColor" Color="Yellow"/>
                     <SolidColorBrush x:Key="SCB_ParseError_PathHeader" Color="Red"/>
                     <SolidColorBrush x:Key="SCB_ParseError_PathContent" Color="Yellow"/>
+
+                    <SolidColorBrush x:Key="SCB_SnapWindow_OutterBackground" Color="#FF007ACC"/>
+                    <SolidColorBrush x:Key="SCB_SnapWindow_InnerBackground" Color="#FF1B1B1C"/>
+                    <SolidColorBrush x:Key="SCB_SnapWindow_HeaderDotsColor" Color="#FF59A8DE"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="Strings">
                     <clr:String x:Key="STR_Snaps_EditingWindow_DisplayTab">Display</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ConfigTab">Config</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping">SnapToGrid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_Properties">Properties</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapElementToGrid">Snap to Grid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_FitElementToGrid">Resize to Grid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapFitElementToGrid">Snap &amp; Resize to Grid</clr:String>
 
                     <clr:String x:Key="STR_ParseError_PathHeader">PARSE ERROR</clr:String>
                     <clr:String x:Key="STR_ParseError_PathContent">INVALID CONFIG</clr:String>
+
+                    <clr:String x:Key="STR_CODE_EditingWindow_ConfigParsingError">Parse Error</clr:String>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="GlobalStyles">
                     <Style TargetType="{x:Type GridSplitter}" x:Key="GridSplitterStyle">

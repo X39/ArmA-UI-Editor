@@ -52,10 +52,11 @@ namespace ArmA_UI_Editor.UI
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            BackgroundWorker worker = ((BackgroundWorker)sender);
             try
             {
                 Code.AddInManager.Instance.ReloadAddIns(new Progress<Tuple<double, string>>((t) => {
-                    ((BackgroundWorker)sender).ReportProgress((int)(t.Item1 * 100), t.Item2);
+                    worker.ReportProgress((int)(t.Item1 * 100), t.Item2);
                 }));
             }
             catch(Exception ex)
@@ -70,6 +71,32 @@ namespace ArmA_UI_Editor.UI
                 } while (ex != null);
                 MessageBox.Show(sb.ToString());
             }
+            worker.ReportProgress(0, "Checking for Update ...");
+#if DEBUG
+            var updateResultTask = Code.UpdateManager.Instance.CheckForUpdate(@"http://x39.io/api.php?action=projects&project=ArmA-UI-Editor");
+            double d = 0;
+            while(!updateResultTask.IsCompleted)
+            {
+                d += 0.01;
+                Thread.Sleep(100);
+                worker.ReportProgress((int)(d * 100), "Checking for Update ...");
+            }
+            var updateResult = updateResultTask.Result;
+            if(updateResult.IsAvailable)
+            {
+                worker.ReportProgress(100, string.Format("Update {0} available", updateResult.NewVersion.ToString()));
+                if (MessageBox.Show(string.Format("Update {0} is available for the ArmA-UI-Editor\nDo you want to update now?\n\nChoosing [Yes] will open your webbrowser and download the updated setup.exe\nThe ArmA-UI-Editor itself will then get closed.", updateResult.NewVersion.ToString()), "Update Available <3", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    //ToDo: use internal update mechanism and do not rely on browser
+                    System.Diagnostics.Process.Start(updateResult.DownloadUrl);
+                    App.Current.Shutdown();
+                }
+            }
+            else
+            {
+                worker.ReportProgress(100, "No Update available");
+            }
+#endif
             Thread.Sleep(1000);
         }
 

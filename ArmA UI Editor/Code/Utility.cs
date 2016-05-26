@@ -33,5 +33,24 @@ namespace ArmA_UI_Editor.Code
             System.Windows.Controls.Canvas.SetRight(el, rect.Right);
             System.Windows.Controls.Canvas.SetBottom(el, rect.Bottom);
         }
+        public static T FindParentInHirarchy<T>(this System.Windows.FrameworkElement el) where T : System.Windows.FrameworkElement
+        {
+            while(el != null)
+            {
+                if(el.Parent is T)
+                {
+                    return el as T;
+                }
+                else if(el.Parent is System.Windows.FrameworkElement)
+                {
+                    el = el.Parent as System.Windows.FrameworkElement;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
     }
 }

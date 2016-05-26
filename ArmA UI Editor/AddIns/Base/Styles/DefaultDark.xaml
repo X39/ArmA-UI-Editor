@@ -27,4 +27,8 @@
     <SolidColorBrush x:Key="SCB_ParseError_PathHeader" Color="Red"/>
     <SolidColorBrush x:Key="SCB_ParseError_PathContent" Color="Yellow"/>
 
+    <SolidColorBrush x:Key="SCB_SnapWindow_OutterBackground" Color="{StaticResource BlueDark}"/>
+    <SolidColorBrush x:Key="SCB_SnapWindow_InnerBackground" Color="{StaticResource BackgroundColorDarker}"/>
+    <SolidColorBrush x:Key="SCB_SnapWindow_HeaderDotsColor" Color="{StaticResource BlueLight}"/>
+
 </ResourceDictionary>
