@@ -85,11 +85,10 @@ namespace ArmA_UI_Editor.UI
             if(updateResult.IsAvailable)
             {
                 worker.ReportProgress(100, string.Format("Update {0} available", updateResult.NewVersion.ToString()));
-                if (MessageBox.Show(string.Format("Update {0} is available for the ArmA-UI-Editor\nDo you want to update now?\n\nChoosing [Yes] will open your webbrowser and download the updated setup.exe\nThe ArmA-UI-Editor itself will then get closed.", updateResult.NewVersion.ToString()), "Update Available <3", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                if (MessageBox.Show(string.Format("Update {0} is available for the ArmA-UI-Editor\nDo you want to update now?\n\nChoosing [Yes] will open your webbrowser and download the updated setup.exe.", updateResult.NewVersion.ToString()), "Update Available <3", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                 {
                     //ToDo: use internal update mechanism and do not rely on browser
                     System.Diagnostics.Process.Start(updateResult.DownloadUrl);
-                    App.Current.Shutdown();
                 }
             }
             else
