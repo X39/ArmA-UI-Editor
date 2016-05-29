@@ -48,17 +48,17 @@ namespace ArmA_UI_Editor.Code
             {
                 if (responseNode.getValue_Object()["success"].getValue_Boolean())
                 {
-                    var version = new Version(responseNode.getValue_Object()["version"].getValue_String());
+                    var version = new Version(responseNode.getValue_Object()["content"].getValue_Object()["version"].getValue_String());
                     var curVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
-                    if(!(version.Major > curVersion.Major || version.Minor > curVersion.Minor ||version.Revision > curVersion.Revision))
+                    if(!(version.Major > curVersion.Major || version.Minor > curVersion.Minor || version.Build > curVersion.Build))
                     {
                         return new Update(url, false);
                     }
 
                     string downloadInfo_Name = string.Empty;
                     string downloadInfo_Url = string.Empty;
-                    foreach (var node in responseNode.getValue_Object()["download"].getValue_Array())
+                    foreach (var node in responseNode.getValue_Object()["content"].getValue_Object()["download"].getValue_Array())
                     {
                         downloadInfo_Name = node.getValue_Object()["name"].getValue_String();
                         downloadInfo_Url = node.getValue_Object()["link"].getValue_String();
