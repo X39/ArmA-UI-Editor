@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ArmA_UI_Editor.UI.Snaps
+namespace ArmA_UI_Editor.UI
 {
     /// <summary>
     /// Interaction logic for ParseError.xaml

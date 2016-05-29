@@ -105,6 +105,7 @@
     <Compile Include="Code\Markup\BindValue.cs" />
     <Compile Include="Code\Markup\BindConfig.cs" />
     <Compile Include="Code\UI\DragDrop\UiElementsListBoxData.cs" />
+    <Compile Include="Code\Interface\ISnapWindow.cs" />
     <Compile Include="Code\UpdateManager.cs" />
     <Compile Include="Code\Utility.cs" />
     <Compile Include="Settings.cs" />
@@ -120,11 +121,20 @@
     <Compile Include="UI\SelectionOverlay.xaml.cs">
       <DependentUpon>SelectionOverlay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SnapDocker.xaml.cs">
+      <DependentUpon>SnapDocker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Snaps\EditingWindow.xaml.cs">
       <DependentUpon>EditingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Snaps\ParseError.xaml.cs">
+    <Compile Include="UI\Snaps\OutputWindow.xaml.cs">
+      <DependentUpon>OutputWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ParseError.xaml.cs">
       <DependentUpon>ParseError.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Snaps\PropertyWindow.xaml.cs">
+      <DependentUpon>PropertyWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SnapWindow.xaml.cs">
       <DependentUpon>SnapWindow.xaml</DependentUpon>
@@ -177,11 +187,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\SnapDocker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Snaps\EditingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Snaps\ParseError.xaml">
+    <Page Include="UI\Snaps\OutputWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ParseError.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Snaps\PropertyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -271,9 +293,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="AddIns\Base\Images\RscButton.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -288,6 +307,9 @@
     <None Include="Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

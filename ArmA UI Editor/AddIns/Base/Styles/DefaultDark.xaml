@@ -8,8 +8,10 @@
     <Color x:Key="BlueLight">#FF59A8DE</Color>
     <Color x:Key="Blue">#FF0E97DD</Color>
     <Color x:Key="BlueDark">#FF007ACC</Color>
+    <Color x:Key="RedLight">#FFFF4B4B</Color>
+    <Color x:Key="Red">#FFDD0E0E</Color>
+    <Color x:Key="RedDark">#FFA60000</Color>
     <Color x:Key="TextColor">#FFD0D0D0</Color>
-
 
 
 
@@ -20,6 +22,9 @@
     <SolidColorBrush x:Key="SCB_UIBlue" Color="{StaticResource Blue}"/>
     <SolidColorBrush x:Key="SCB_UIBlueDark" Color="{StaticResource BlueDark}"/>
     <SolidColorBrush x:Key="SCB_UIBlueLight" Color="{StaticResource BlueLight}"/>
+    <SolidColorBrush x:Key="SCB_UIRed" Color="{StaticResource Red}"/>
+    <SolidColorBrush x:Key="SCB_UIRedDark" Color="{StaticResource RedDark}"/>
+    <SolidColorBrush x:Key="SCB_UIRedLight" Color="{StaticResource RedLight}"/>
     <SolidColorBrush x:Key="SCB_DefaultTextColor" Color="{StaticResource TextColor}"/>
 
 

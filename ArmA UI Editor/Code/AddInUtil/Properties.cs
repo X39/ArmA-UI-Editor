@@ -39,6 +39,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                     var tb = new TextBox();
                     tb.Text = curVal != null ? curVal.String : "";
                     tb.PreviewTextInput += Tb_PreviewTextInput;
+                    tb.ToolTip = App.Current.Resources["STR_CODE_Property_String"] as String;
                     return tb;
                 }
 
@@ -63,6 +64,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                     var tb = new TextBox();
                     tb.Text = curVal != null ? curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
                     tb.PreviewTextInput += Tb_PreviewTextInput;
+                    tb.ToolTip = App.Current.Resources["STR_CODE_Property_Number"] as String;
                     return tb;
                 }
 
@@ -90,6 +92,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                     if(curVal != null)
                         cb.SelectedIndex = curVal.Boolean ? 0 : 1;
                     cb.SelectionChanged += Cb_SelectionChanged;
+                    cb.ToolTip = App.Current.Resources["STR_CODE_Property_Boolean"] as String;
                     return cb;
                 }
 
@@ -113,9 +116,121 @@ namespace ArmA_UI_Editor.Code.AddInUtil
 
                 public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
                 {
-                    var tb = new TextBlock();
-                    tb.Text = "Not Yet Implemented :(";
+                    var tb = new TextBox();
+                    StringBuilder builder = new StringBuilder();
+                    bool isFirst = true;
+                    if (curVal != null)
+                    {
+                        foreach (var it in curVal.Array)
+                        {
+                            if (!isFirst)
+                                builder.Append(", ");
+                            isFirst = false;
+                            builder.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", it.Value));
+                            switch (Type.ToUpper())
+                            {
+                                case "NUMBER":
+                                    if (!it.IsNumber)
+                                        throw new Exception();
+                                    break;
+                                case "STRING":
+                                    if (!it.IsString)
+                                        throw new Exception();
+                                    break;
+                                case "BOOLEAN":
+                                    if (!it.IsBoolean)
+                                        throw new Exception();
+                                    break;
+                                default:
+                                    throw new Exception();
+                            }
+                        }
+                        tb.Text = builder.ToString();
+                    }
+                    tb.TextChanged += Tb_TextChanged;
+                    tb.PreviewTextInput += Tb_PreviewTextInput;
+                    switch (Type.ToUpper())
+                    {
+                        case "NUMBER":
+                            tb.ToolTip = string.Format(System.Globalization.CultureInfo.InvariantCulture, App.Current.Resources["STR_CODE_Property_Array"] as String, App.Current.Resources["STR_CODE_Property_Number"] as String, this.Count);
+                            break;
+                        case "STRING":
+                            tb.ToolTip = string.Format(System.Globalization.CultureInfo.InvariantCulture, App.Current.Resources["STR_CODE_Property_Array"] as String, App.Current.Resources["STR_CODE_Property_String"] as String, this.Count);
+                            break;
+                        case "BOOLEAN":
+                            tb.ToolTip = string.Format(System.Globalization.CultureInfo.InvariantCulture, App.Current.Resources["STR_CODE_Property_Array"] as String, App.Current.Resources["STR_CODE_Property_Boolean"] as String, this.Count);
+                            break;
+                        default:
+                            throw new Exception();
+                    }
                     return tb;
+                }
+
+                private void Tb_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+                {
+                    if (e.Text.Contains('\r'))
+                    {
+                        using (var memStream = new System.IO.MemoryStream())
+                        {
+                            var writer = new System.IO.StreamWriter(memStream);
+                            writer.Write("class myClass{arr[]={");
+                            writer.Write((sender as TextBox).Text);
+                            writer.Write("};};");
+                            writer.Flush();
+                            memStream.Seek(0, System.IO.SeekOrigin.Begin);
+                            var mainWindow = App.Current.MainWindow as ArmA_UI_Editor.UI.MainWindow;
+                            try
+                            {
+                                var file = SQF.ClassParser.File.Load(memStream);
+                                if (file["/myClass/arr"].Array.Count != this.Count)
+                                    throw new Exception();
+
+                                mainWindow.SetStatusbarText("", false);
+                                PTypeDataTag tag = (sender as TextBox).Tag as PTypeDataTag;
+                                var data = tag.File[tag.Path];
+                                if (data == null)
+                                    data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
+                                data.Array = file["/myClass/arr"].Array;
+                                TriggerValueChanged(sender);
+                            }
+                            catch
+                            {
+                                mainWindow.SetStatusbarText("Invalid Property", true);
+                            }
+                        }
+                    }
+                }
+
+                private void Tb_TextChanged(object sender, TextChangedEventArgs e)
+                {
+                    using (var memStream = new System.IO.MemoryStream())
+                    {
+                        var writer = new System.IO.StreamWriter(memStream);
+                        writer.Write("class myClass{arr[]={");
+                        writer.Write((sender as TextBox).Text);
+                        writer.Write("};};");
+                        writer.Flush();
+                        memStream.Seek(0, System.IO.SeekOrigin.Begin);
+                        var mainWindow = App.Current.MainWindow as ArmA_UI_Editor.UI.MainWindow;
+                        try
+                        {
+                            var file = SQF.ClassParser.File.Load(memStream);
+                            mainWindow.SetStatusbarText("", false);
+                            if (!(sender as TextBox).Text.Contains('\r') || file["/myClass/arr"].Array.Count != this.Count)
+                                return;
+
+                            PTypeDataTag tag = (sender as TextBox).Tag as PTypeDataTag;
+                            var data = tag.File[tag.Path];
+                            if (data == null)
+                                data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
+                            data.Array = file["/myClass/arr"].Array;
+                            TriggerValueChanged(sender);
+                        }
+                        catch
+                        {
+                            mainWindow.SetStatusbarText("Invalid Property", true);
+                        }
+                    }
                 }
             }
             public class ListboxType : PType
@@ -144,6 +259,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                             cb.SelectedItem = it;
                     }
                     cb.SelectionChanged += Cb_SelectionChanged;
+                    cb.ToolTip = App.Current.Resources["STR_CODE_Property_ValueList"] as String;
                     return cb;
                 }
 

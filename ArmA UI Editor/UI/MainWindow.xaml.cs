@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.IO;
 using ArmA_UI_Editor.Code;
 using SQF.ClassParser;
+using ArmA_UI_Editor.UI.Snaps;
 
 namespace ArmA_UI_Editor.UI
 {
@@ -24,7 +25,6 @@ namespace ArmA_UI_Editor.UI
     public partial class MainWindow : Window
     {
         private string CurPropertyPath = string.Empty;
-        private FrameworkElement currentSelected;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,6 +32,15 @@ namespace ArmA_UI_Editor.UI
             sWindow.Header.Text = "MyUiConfig.cpp";
             sWindow.ContentFrame.Content = new Snaps.EditingWindow();
             frame.Content = sWindow;
+            this.OutputWindowFrame.Content = new Snaps.OutputWindow();
+
+
+            sWindow = new SnapWindow();
+            sWindow.Header.Text = "Properties";
+            var el = new Snaps.PropertyWindow();
+            sWindow.ContentFrame.Content = el;
+            el.LoadSnap();
+            this.PropertiesFrame.Content = sWindow;
         }
 
         private void ListView_Initialized(object sender, EventArgs e)
@@ -79,6 +88,12 @@ namespace ArmA_UI_Editor.UI
             }
         }
 
+        internal static void DisplaySnap(Code.Interface.ISnapWindow snap)
+        {
+            //ToDo: Implement load mechanism
+            snap.LoadSnap();
+        }
+
         private void ConfigRenderCanvas_DragOver(object sender, DragEventArgs e)
         {
         }
@@ -88,6 +103,19 @@ namespace ArmA_UI_Editor.UI
             if(e.Data.GetDataPresent("File"))
             {
                 e.Effects = DragDropEffects.None;
+            }
+        }
+        public void SetStatusbarText(string text, bool isError)
+        {
+            if (isError)
+            {
+                this.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
+                this.StatusTextbox.Text = text;
+            }
+            else
+            {
+                this.StatusBar.Background = App.Current.Resources["SCB_UIBlue"] as SolidColorBrush;
+                this.StatusTextbox.Text = text;
             }
         }
 

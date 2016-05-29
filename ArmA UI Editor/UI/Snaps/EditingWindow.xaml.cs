@@ -15,13 +15,14 @@ using System.Windows.Shapes;
 using System.IO;
 using ArmA_UI_Editor.Code;
 using ArmA_UI_Editor.Code.AddInUtil;
+using SQF.ClassParser;
 
 namespace ArmA_UI_Editor.UI.Snaps
 {
     /// <summary>
     /// Interaction logic for EditingWindow.xaml
     /// </summary>
-    public partial class EditingWindow : Page
+    public partial class EditingWindow : Page, Code.Interface.ISnapWindow
     {
         public SQF.ClassParser.File ConfigFile;
         private bool ConfigTextboxDiffersConfigInstance;
@@ -38,16 +39,31 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             internal SQF.ClassParser.Data data;
             internal Code.AddInUtil.UIElement file;
+            internal EditingWindow Window;
 
             internal EditingWindow Owner { get; set; }
             internal string FullyQualifiedPath { get; set; }
 
             internal void LoadProperties()
             {
-                throw new NotImplementedException();
+                PropertyWindow pWindow = PropertyWindow.GetDisplayWindow();
+                pWindow.LoadProperties(this.file.Properties, data, Window);
             }
         }
 
+        internal void Redraw()
+        {
+            switch(this.TabControlMainView.SelectedIndex)
+            {
+                case 0:
+                    this.WriteConfigToScreen();
+                    break;
+                case 1:
+                    this.WriteConfigToScreen();
+                    this.RegenerateDisplay();
+                    break;
+            }
+        }
 
         public EditingWindow()
         {
@@ -237,6 +253,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 overlay = this.CreateSelectionOverlay();
                 this.DisplayCanvas.Children.Add(overlay);
                 overlay.ToggleElement(thisElement);
+                (thisElement.Tag as TAG_CanvasChildElement).LoadProperties();
             }
             else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
@@ -504,7 +521,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void AddElementToDisplay(FrameworkElement el, SQF.ClassParser.Data data, Rect position)
         {
-
+            throw new NotImplementedException();
         }
 
         public void RegenerateDisplay()
@@ -560,9 +577,11 @@ namespace ArmA_UI_Editor.UI.Snaps
                             tmp += sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String, 1080);
                             Canvas.SetBottom(el, tmp);
 
-                            el.Width = sizeList[2].Number;
-                            el.Height = sizeList[3].Number;
-                            el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath, Owner = this};
+                            tmp = sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String, 1980);
+                            el.Width = tmp;
+                            tmp = sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String, 1080);
+                            el.Height = tmp;
+                            el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath, Owner = this, Window = this };
                             //ToDo: When Property Panel SnapIn is finalized, reimplement rebind mechanic
                             //if (this.CurPropertyPath == Code.Markup.BindConfig.CurrentClassPath)
                             //{
@@ -598,15 +617,13 @@ namespace ArmA_UI_Editor.UI.Snaps
                 }
                 this.ConfigTextboxDiffersConfigInstance = false;
                 var mainWindow = App.Current.MainWindow as MainWindow;
-                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIBlue"] as SolidColorBrush;
-                mainWindow.StatusTextbox.Text = "";
+                mainWindow.SetStatusbarText("", false);
                 return true;
             }
             catch (Exception ex)
             {
                 var mainWindow = App.Current.MainWindow as MainWindow;
-                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
-                mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
+                mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
                 Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
             }
             return false;
@@ -901,6 +918,16 @@ namespace ArmA_UI_Editor.UI.Snaps
 
             var dt = new System.Data.DataTable();
             return (double.Parse(dt.Compute(data, "").ToString())) * max;
+        }
+
+        public void UnloadSnap()
+        {
+            
+        }
+
+        public void LoadSnap()
+        {
+            
         }
     }
 }

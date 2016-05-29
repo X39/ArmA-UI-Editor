@@ -27,6 +27,10 @@ public class Logger
     private static Logger _instance;
     public static Logger Instance { get { if (_instance == null) _instance = new Logger(); return _instance; } }
     private StreamWriter fstream;
+    private StreamWriter outStream;
+    public Stream CurrentStream { get; private set; }
+
+    public event EventHandler<string> OnLog;
 
     private LogLevel lastLogLevel;
     private LogLevel minLogLevel;
@@ -36,10 +40,17 @@ public class Logger
         String filePath = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss") + ".log";
         lastLogLevel = LogLevel.CONTINUE;
         minLogLevel = LogLevel.INFO;
+        this.outStream = new StreamWriter(Console.OpenStandardOutput());
+        this.CurrentStream = Console.OpenStandardOutput();
     }
     ~Logger()
     {
         this.close();
+    }
+    public void SetStream(Stream stream)
+    {
+        this.CurrentStream = stream;
+        this.outStream = new StreamWriter(stream);
     }
     public void setLogFile(string path)
     {
@@ -51,7 +62,7 @@ public class Logger
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Could not initiate the logger: " + ex.Message);
+            outStream.WriteLine("Could not initiate the logger: " + ex.Message);
             this.fstream = null;
         }
     }
@@ -62,11 +73,13 @@ public class Logger
         if (lastLogLevel < minLogLevel)
             return;
         String line = logLevelTranslated[(int)l] + "\t" + msg;
-        Console.WriteLine(line);
+        outStream.WriteLine(line);
         if (this.fstream != null)
             fstream.WriteLine(line);
         if (logAction != null)
             logAction.Invoke(line);
+        if (this.OnLog != null)
+            this.OnLog(this, line);
     }
     public void close()
     {
