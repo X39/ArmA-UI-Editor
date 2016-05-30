@@ -72,21 +72,21 @@ namespace ArmA_UI_Editor.UI
                 } while (ex != null);
                 MessageBox.Show(sb.ToString());
             }
-            worker.ReportProgress(0, "Checking for Update ...");
-#if DEBUG
+#if _DEBUG
+            worker.ReportProgress(0, App.Current.Resources["STR_CODE_SplashScreen_CheckingForUpdate"] as String);
             var updateResultTask = Code.UpdateManager.Instance.CheckForUpdate(@"http://x39.io/api.php?action=projects&project=ArmA-UI-Editor");
             double d = 0;
             while(!updateResultTask.IsCompleted)
             {
                 d += 0.01;
                 Thread.Sleep(100);
-                worker.ReportProgress((int)(d * 100), "Checking for Update ...");
+                worker.ReportProgress((int)(d * 100), App.Current.Resources["STR_CODE_SplashScreen_CheckingForUpdate"] as String);
             }
             var updateResult = updateResultTask.Result;
             if(updateResult.IsAvailable)
             {
-                worker.ReportProgress(100, string.Format("Update {0} available", updateResult.NewVersion.ToString()));
-                if (MessageBox.Show(string.Format("Update {0} is available for the ArmA-UI-Editor\nDo you want to update now?", updateResult.NewVersion.ToString()), "Update Available <3", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                worker.ReportProgress(100, string.Format(App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableMessage"] as String, updateResult.NewVersion.ToString()));
+                if (MessageBox.Show(string.Format(App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableMessage"] as String, updateResult.NewVersion.ToString()), App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableHeader"] as String, MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                 {
                     //ToDo: use internal update mechanism and do not rely on browser
                     var downRes = Code.UpdateManager.Instance.DownloadUpdate(updateResult, new Progress<Tuple<double, long>>((val) => {
