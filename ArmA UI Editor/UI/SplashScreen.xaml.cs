@@ -72,7 +72,7 @@ namespace ArmA_UI_Editor.UI
                 } while (ex != null);
                 MessageBox.Show(sb.ToString());
             }
-#if NOT DEBUG
+#if !DEBUG
             worker.ReportProgress(0, App.Current.Resources["STR_CODE_SplashScreen_CheckingForUpdate"] as String);
             var updateResultTask = Code.UpdateManager.Instance.CheckForUpdate(@"http://x39.io/api.php?action=projects&project=ArmA-UI-Editor");
             double d = 0;
