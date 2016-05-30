@@ -22,6 +22,7 @@ namespace ArmA_UI_Editor.UI
     public partial class SplashScreen : Window
     {
         private bool isFinished = false;
+        private bool doShutdown = false;
         public SplashScreen()
         {
             InitializeComponent();
@@ -46,7 +47,7 @@ namespace ArmA_UI_Editor.UI
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Progress_Bar.Value = e.ProgressPercentage / 100;
+            Progress_Bar.Value = e.ProgressPercentage / (double)100;
             Progress_Text.Text = e.UserState as string;
         }
 
@@ -85,10 +86,18 @@ namespace ArmA_UI_Editor.UI
             if(updateResult.IsAvailable)
             {
                 worker.ReportProgress(100, string.Format("Update {0} available", updateResult.NewVersion.ToString()));
-                if (MessageBox.Show(string.Format("Update {0} is available for the ArmA-UI-Editor\nDo you want to update now?\n\nChoosing [Yes] will open your webbrowser and download the updated setup.exe.", updateResult.NewVersion.ToString()), "Update Available <3", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                if (MessageBox.Show(string.Format("Update {0} is available for the ArmA-UI-Editor\nDo you want to update now?", updateResult.NewVersion.ToString()), "Update Available <3", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                 {
                     //ToDo: use internal update mechanism and do not rely on browser
-                    System.Diagnostics.Process.Start(updateResult.DownloadUrl);
+                    var downRes = Code.UpdateManager.Instance.DownloadUpdate(updateResult, new Progress<Tuple<double, long>>((val) => {
+                        worker.ReportProgress((int)((val.Item1 / val.Item2) * 100), string.Format("Downloading update ({0}kb/{1}kb)", (long)val.Item1 / 1024, val.Item2 / 1024));
+                    }));
+                    while (!downRes.IsCompleted)
+                    {
+                        Thread.Sleep(100);
+                    }
+                    System.Diagnostics.Process.Start(downRes.Result);
+                    doShutdown = true;
                 }
             }
             else
@@ -101,7 +110,11 @@ namespace ArmA_UI_Editor.UI
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            if (isFinished)
+            if(doShutdown)
+            {
+                App.Current.Shutdown();
+            }
+            else if (isFinished)
             {
                 App.Current.MainWindow = new MainWindow();
                 App.Current.MainWindow.Show();

@@ -73,5 +73,30 @@ namespace ArmA_UI_Editor.Code
             }
             return new Update(url, false);
         }
+
+        internal async Task<string> DownloadUpdate(Update updt, IProgress<Tuple<double, long>> prog)
+        {
+            var response = (await this.Client.GetAsync(updt.DownloadUrl, HttpCompletionOption.ResponseHeadersRead)).Content;
+            var tmpFile = System.IO.Path.GetTempPath() + "ArmAUIEditor\\" + updt.DownloadName;
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetTempPath() + "ArmAUIEditor\\");
+            double curLen = 0;
+            using (var fStream = System.IO.File.Create(tmpFile))
+            {
+                using (var hStream = await response.ReadAsStreamAsync())
+                {
+                    while(true)
+                    {
+                        byte[] buffer = new byte[256];
+                        var readBytes = hStream.Read(buffer, 0, buffer.Length);
+                        if (readBytes == 0)
+                            break;
+                        fStream.Write(buffer, 0, readBytes);
+                        curLen += readBytes;
+                        prog.Report(new Tuple<double, long>(curLen, response.Headers.ContentLength.Value));
+                    }
+                }
+            }
+            return tmpFile;
+        }
     }
 }
