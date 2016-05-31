@@ -565,7 +565,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                             throw new Exception("Cannot create new elements from scratch in this version of 'ArmA UI Editor'");
                         }
                         var file = AddInManager.Instance.ConfigNameFileDictionary[pair.Value.Class.Parent.Name];
-                        using (FileStream stream = System.IO.File.Open(file.__XamlPath, FileMode.Open))
+                        using (FileStream stream = System.IO.File.OpenRead(file.__XamlPath))
                         {
                             Code.Markup.BindConfig.CurrentClassPath = '/' + data.Name + "/controls/" + pair.Value.Name;
                             var el = (FrameworkElement)System.Windows.Markup.XamlReader.Load(stream);
