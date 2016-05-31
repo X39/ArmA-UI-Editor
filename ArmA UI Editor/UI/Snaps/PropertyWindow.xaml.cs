@@ -60,7 +60,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                     var el = new Property();
                     el.Title.Text = property.DisplayName;
                     Data d = File.ReceiveFieldFromHirarchy(data, property.FieldPath);
-                    var fEl = property.PropertyType.GenerateUiElement(d);
+                    var fEl = property.PropertyType.GenerateUiElement(d, window);
                     el.ConfigElement.Content = fEl;
                     fEl.Tag = new Code.AddInUtil.Properties.Property.PTypeDataTag { File = window.ConfigFile, Path = property.FieldPath, BaseData = data };
                     group.ItemsPanel.Children.Add(el);
@@ -71,11 +71,15 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         internal static PropertyWindow GetDisplayWindow()
         {
-            if(_Instance == null)
+            if (_Instance == null)
             {
                 MainWindow.DisplaySnap(new PropertyWindow());
             }
             return _Instance;
+        }
+        internal static bool HasDisplayWindow()
+        {
+            return _Instance != null;
         }
 
         public void UnloadSnap()

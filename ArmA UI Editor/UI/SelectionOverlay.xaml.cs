@@ -68,6 +68,7 @@ namespace ArmA_UI_Editor.UI
         private ResizeEventArgs.Direction? ResizeDirection;
         public event EventHandler<MoveEventArgs> OnElementMove;
         public event EventHandler<ResizeEventArgs> OnElementResize;
+        public event EventHandler<FrameworkElement> OnOperationFinalized;
 
         public event EventHandler<System.Windows.Input.MouseEventArgs> OnStartMove;
         public event EventHandler<EventArgs> OnStopMove;
@@ -77,10 +78,11 @@ namespace ArmA_UI_Editor.UI
 
 
 
-        public SelectionOverlay()
+        public SelectionOverlay(bool mouseDownOnCreate = true)
         {
             ToggledElements = new List<FrameworkElement>();
-            MoveState = MoveStateEnum.PREPARE;
+            if(mouseDownOnCreate)
+                MoveState = MoveStateEnum.PREPARE;
             ResizeDirection = null;
             InitializeComponent();
         }
@@ -270,6 +272,11 @@ namespace ArmA_UI_Editor.UI
                 if (this.OnStopMove != null)
                 {
                     this.OnStopMove(this, new EventArgs());
+                }
+                if(this.OnOperationFinalized != null)
+                {
+                    foreach(var e in this.ToggledElements)
+                        this.OnOperationFinalized(this, e);
                 }
                 this.ResizeDirection = null;
             }

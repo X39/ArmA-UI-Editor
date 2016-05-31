@@ -31,7 +31,12 @@ namespace ArmA_UI_Editor
                 }
                 writer.Flush();
             }
+#if DEBUG
+            System.Diagnostics.Process.Start("crash.txt");
+#else
             MessageBox.Show("An unhandled exception was found ...\nPlease report the crash.txt at https://github.com/X39/ArmA-UI-Editor/issues/new\nThe issue will be fixed ASAP :)\n\nSorry for your lost work (in case you did not saved) ...", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+#endif
+
             App.Current.Shutdown();
             e.Handled = true;
         }
@@ -66,14 +71,17 @@ namespace ArmA_UI_Editor
                                     break;
 
                             }
+                            i++;
                             break;
                         case "LOGFILE":
                             if (!hasNext)
                                 break;
                             Logger.Instance.setLogFile(e.Args[i + 1]);
+                            i++;
                             break;
                         default:
                             Logger.Instance.log(Logger.LogLevel.WARNING, "Unknown Startup parameter '" + arg + "'");
+                            i++;
                             break;
                     }
                 }

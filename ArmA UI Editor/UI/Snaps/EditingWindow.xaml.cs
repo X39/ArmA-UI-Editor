@@ -179,13 +179,13 @@ namespace ArmA_UI_Editor.UI.Snaps
                     var field_X = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/x", true);
                     var field_Y = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/y", true);
 
-                    field_X.String = ToSqfString(FieldTypeEnum.XField, metrics.X, 1980);
-                    field_Y.String =  ToSqfString(FieldTypeEnum.YField, metrics.Y, 1080);
+                    field_X.String = ToSqfString(FieldTypeEnum.XField, metrics.X);
+                    field_Y.String =  ToSqfString(FieldTypeEnum.YField, metrics.Y);
                 }
                 var field_W = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/w", true);
                 var field_H = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/h", true);
-                field_W.String = ToSqfString(FieldTypeEnum.WField, metrics.Width, 1980);
-                field_H.String = ToSqfString(FieldTypeEnum.HField, metrics.Height, 1080);
+                field_W.String = ToSqfString(FieldTypeEnum.WField, metrics.Width);
+                field_H.String = ToSqfString(FieldTypeEnum.HField, metrics.Height);
                 this.ConfigTextboxDiffersConfigInstance = true;
             }
         }
@@ -204,9 +204,16 @@ namespace ArmA_UI_Editor.UI.Snaps
 
                 var field_X = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/x", true);
                 var field_Y = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/y", true);
-                field_X.String = ToSqfString(FieldTypeEnum.XField, metrics.X, 1980);
-                field_Y.String = ToSqfString(FieldTypeEnum.YField, metrics.Y, 1080);
+                field_X.String = ToSqfString(FieldTypeEnum.XField, metrics.X);
+                field_Y.String = ToSqfString(FieldTypeEnum.YField, metrics.Y);
                 this.ConfigTextboxDiffersConfigInstance = true;
+            }
+        }
+        private void SelectionOverlay_OnOperationFinalized(object sender, FrameworkElement e)
+        {
+            if (PropertyWindow.HasDisplayWindow() && PropertyWindow.GetDisplayWindow().CurrentProperties == (e.Tag as TAG_CanvasChildElement).file.Properties)
+            {
+                (e.Tag as TAG_CanvasChildElement).LoadProperties();
             }
         }
         #endregion
@@ -272,6 +279,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                     overlay = this.CreateSelectionOverlay();
                     this.DisplayCanvas.Children.Add(overlay);
                     overlay.ToggleElement(thisElement);
+                    (thisElement.Tag as TAG_CanvasChildElement).LoadProperties();
                 }
             }
             e.Handled = true;
@@ -568,26 +576,27 @@ namespace ArmA_UI_Editor.UI.Snaps
                                 this.ConfigFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/w"),
                                 this.ConfigFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/h")
                             };
-                            var tmp = sizeList[0].IsNumber ? sizeList[0].Number : FromSqfString(FieldTypeEnum.XField, sizeList[0].String, 1980);
+                            var tmp = sizeList[0].IsNumber ? sizeList[0].Number : FromSqfString(FieldTypeEnum.XField, sizeList[0].String);
                             Canvas.SetLeft(el, tmp);
-                            tmp += sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String, 1980);
+                            tmp += sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String);
                             Canvas.SetRight(el, tmp);
-                            tmp = sizeList[1].IsNumber ? sizeList[1].Number : FromSqfString(FieldTypeEnum.YField, sizeList[1].String, 1080);
+                            tmp = sizeList[1].IsNumber ? sizeList[1].Number : FromSqfString(FieldTypeEnum.YField, sizeList[1].String);
                             Canvas.SetTop(el, tmp);
-                            tmp += sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String, 1080);
+                            tmp += sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
                             Canvas.SetBottom(el, tmp);
 
-                            tmp = sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String, 1980);
+                            tmp = sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String);
                             el.Width = tmp;
-                            tmp = sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String, 1080);
+                            tmp = sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
                             el.Height = tmp;
                             el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath, Owner = this, Window = this };
-                            //ToDo: When Property Panel SnapIn is finalized, reimplement rebind mechanic
-                            //if (this.CurPropertyPath == Code.Markup.BindConfig.CurrentClassPath)
-                            //{
-                            //    currentSelected = el;
-                            //    LoadProperties(file.Properties, configFile[Code.Markup.BindConfig.CurrentClassPath]);
-                            //}
+                            if (PropertyWindow.HasDisplayWindow() && PropertyWindow.GetDisplayWindow().CurrentData != null && PropertyWindow.GetDisplayWindow().CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
+                            {
+                                var overlay = this.CreateSelectionOverlay(false);
+                                this.DisplayCanvas.Children.Add(overlay);
+                                overlay.ToggleElement(el);
+                                (el.Tag as TAG_CanvasChildElement).LoadProperties();
+                            }
                         }
                     }
                 }
@@ -640,13 +649,14 @@ namespace ArmA_UI_Editor.UI.Snaps
                 this.Textbox.Text = reader.ReadToEnd();
             }
         }
-        private SelectionOverlay CreateSelectionOverlay()
+        private SelectionOverlay CreateSelectionOverlay(bool mouseDownOnCreate = true)
         {
-            var el = new SelectionOverlay();
+            var el = new SelectionOverlay(mouseDownOnCreate);
             el.OnElementMove += SelectionOverlay_OnElementMove;
             el.OnElementResize += SelectionOverlay_OnElementResize;
             el.OnStartMove += SelectionOverlay_OnStartMove;
             el.OnStopMove += SelectionOverlay_OnStopMove;
+            el.OnOperationFinalized += SelectionOverlay_OnOperationFinalized;
             return el;
         }
 
@@ -728,7 +738,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void ContextMenu_ChildElement_Properties_Click(object sender, RoutedEventArgs e)
         {
-            var cm = sender as ContextMenu;
+            var mi = sender as MenuItem;
+            var cm = mi.Parent as ContextMenu;
             if (cm.Tag is FrameworkElement)
             {
                 var el = cm.Tag as FrameworkElement;
@@ -861,21 +872,24 @@ namespace ArmA_UI_Editor.UI.Snaps
             WField,
             HField
         }
-        public string ToSqfString(FieldTypeEnum fieldType, double data, double max)
+        public string ToSqfString(FieldTypeEnum fieldType, double data)
         {
             string SQFCommand1;
             string SQFCommand2;
+            double max;
             switch (fieldType)
             {
                 case FieldTypeEnum.XField:
                 case FieldTypeEnum.WField:
                     SQFCommand1 = "SafeZoneX";
                     SQFCommand2 = "SafeZoneW";
+                    max = 1980;
                     break;
                 case FieldTypeEnum.YField:
                 case FieldTypeEnum.HField:
                     SQFCommand1 = "SafeZoneY";
                     SQFCommand2 = "SafeZoneH";
+                    max = 1080;
                     break;
                 default:
                     throw new Exception();
@@ -897,20 +911,23 @@ namespace ArmA_UI_Editor.UI.Snaps
             builder.Append(')');
             return builder.ToString();
         }
-        public double FromSqfString(FieldTypeEnum fieldType, string data, double max)
+        public double FromSqfString(FieldTypeEnum fieldType, string data)
         {
             data = data.ToUpper();
+            double max;
             switch (fieldType)
             {
                 case FieldTypeEnum.XField:
                 case FieldTypeEnum.WField:
                     data = data.Replace("SAFEZONEX", "0");
                     data = data.Replace("SAFEZONEW", "1");
+                    max = 1980;
                     break;
                 case FieldTypeEnum.YField:
                 case FieldTypeEnum.HField:
                     data = data.Replace("SAFEZONEY", "0");
                     data = data.Replace("SAFEZONEH", "1");
+                    max = 1080;
                     break;
                 default:
                     throw new Exception();

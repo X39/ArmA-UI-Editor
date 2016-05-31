@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
+using ArmA_UI_Editor.UI.Snaps;
 
 namespace ArmA_UI_Editor.Code.AddInUtil
 {
@@ -24,7 +25,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             }
             public abstract class PType
             {
-                public abstract FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal);
+                public abstract FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window);
                 public static event EventHandler ValueChanged;
                 protected void TriggerValueChanged(object sender)
                 {
@@ -34,7 +35,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             }
             public class StringType : PType
             {
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
                 {
                     var tb = new TextBox();
                     tb.Text = curVal != null ? curVal.String : "";
@@ -59,10 +60,38 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             }
             public class NumberType : PType
             {
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
+                private EditingWindow Window;
+
+                [XmlAttribute("conversion")]
+                public string Conversion { get; set; }
+
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
                 {
                     var tb = new TextBox();
-                    tb.Text = curVal != null ? curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
+                    this.Window = window;
+                    if(curVal != null)
+                    {
+                        if (string.IsNullOrWhiteSpace(Conversion))
+                            Conversion = string.Empty;
+                        switch (Conversion.ToUpper())
+                        {
+                            default:
+                                tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                break;
+                            case "SCREENX":
+                                if(curVal.IsNumber)
+                                    tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                else
+                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.XField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                break;
+                            case "SCREENY":
+                                if (curVal.IsNumber)
+                                    tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                else
+                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.YField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                break;
+                        }
+                    }
                     tb.PreviewTextInput += Tb_PreviewTextInput;
                     tb.ToolTip = App.Current.Resources["STR_CODE_Property_Number"] as String;
                     return tb;
@@ -77,14 +106,25 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         var data = tag.File[tag.Path];
                         if (data == null)
                             data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
-                        data.Number = double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture);
+                        switch (Conversion.ToUpper())
+                        {
+                            default:
+                                data.Number = double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture);
+                                break;
+                            case "SCREENX":
+                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.XField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                break;
+                            case "SCREENY":
+                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.YField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                break;
+                        }
                         TriggerValueChanged(tb);
                     }
                 }
             }
             public class BooleanType : PType
             {
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
                 {
                     var cb = new ComboBox();
                     cb.Items.Add("true");
@@ -114,7 +154,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 [XmlElement("count")]
                 public int Count { get; set; }
 
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
                 {
                     var tb = new TextBox();
                     StringBuilder builder = new StringBuilder();
@@ -247,7 +287,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 [XmlArrayItem("item")]
                 public List<Data> Items { get; set; }
 
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal)
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
                 {
                     var cb = new ComboBox();
                     cb.DisplayMemberPath = "Name";

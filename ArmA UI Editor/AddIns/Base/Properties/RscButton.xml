@@ -3,22 +3,22 @@
     <group name="Positioning">
       <properties>
         <property>
-          <number/>
+          <number conversion="ScreenX"/>
           <field>/x</field>
           <name>Pos X</name>
         </property>
         <property>
-          <number/>
+          <number conversion="ScreenY"/>
           <field>/y</field>
           <name>Pos Y</name>
         </property>
         <property>
-          <number/>
+          <number conversion="ScreenX"/>
           <field>/w</field>
           <name>Width</name>
         </property>
         <property>
-          <number/>
+          <number conversion="ScreenY"/>
           <field>/h</field>
           <name>Height</name>
         </property>
