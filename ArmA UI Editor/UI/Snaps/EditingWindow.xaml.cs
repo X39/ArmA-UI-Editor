@@ -874,41 +874,51 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public string ToSqfString(FieldTypeEnum fieldType, double data)
         {
-            string SQFCommand1;
-            string SQFCommand2;
             double max;
+            StringBuilder builder = new StringBuilder();
             switch (fieldType)
             {
                 case FieldTypeEnum.XField:
-                case FieldTypeEnum.WField:
-                    SQFCommand1 = "SafeZoneX";
-                    SQFCommand2 = "SafeZoneW";
                     max = 1980;
+                    builder.Append("SafeZoneX + ");
+                    builder.Append('(');
+                    builder.Append(data.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    builder.Append(" / ");
+                    builder.Append(max.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    builder.Append(')');
+                    builder.Append(" * SafeZoneW");
                     break;
                 case FieldTypeEnum.YField:
-                case FieldTypeEnum.HField:
-                    SQFCommand1 = "SafeZoneY";
-                    SQFCommand2 = "SafeZoneH";
                     max = 1080;
+                    builder.Append("SafeZoneY + ");
+                    builder.Append('(');
+                    builder.Append(data.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    builder.Append(" / ");
+                    builder.Append(max.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    builder.Append(')');
+                    builder.Append(" * SafeZoneH");
+                    break;
+                case FieldTypeEnum.WField:
+                    max = 1980;
+                    builder.Append('(');
+                    builder.Append(data.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    builder.Append(" / ");
+                    builder.Append(max.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    builder.Append(')');
+                    builder.Append(" * SafeZoneW");
+                    break;
+                case FieldTypeEnum.HField:
+                    max = 1080;
+                    builder.Append('(');
+                    builder.Append(data.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    builder.Append(" / ");
+                    builder.Append(max.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                    builder.Append(')');
+                    builder.Append(" * SafeZoneH");
                     break;
                 default:
                     throw new Exception();
             }
-
-            StringBuilder builder = new StringBuilder();
-            builder.Append('(');
-            builder.Append(data.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            builder.Append(" / ");
-            builder.Append(max.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            builder.Append(')');
-
-            builder.Append(" / ");
-
-            builder.Append('(');
-            builder.Append(SQFCommand1);
-            builder.Append(" + ");
-            builder.Append(SQFCommand2);
-            builder.Append(')');
             return builder.ToString();
         }
         public double FromSqfString(FieldTypeEnum fieldType, string data)
