@@ -79,7 +79,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                                 tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 break;
                             case "SCREENX":
-                                if(curVal.IsNumber)
+                                if (curVal.IsNumber)
                                     tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 else
                                     tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.XField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
@@ -89,6 +89,18 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                                     tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 else
                                     tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.YField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                break;
+                            case "SCREENW":
+                                if (curVal.IsNumber)
+                                    tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                else
+                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.WField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                break;
+                            case "SCREENH":
+                                if (curVal.IsNumber)
+                                    tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                else
+                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.HField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 break;
                         }
                     }
@@ -116,6 +128,12 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                                 break;
                             case "SCREENY":
                                 data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.YField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                break;
+                            case "SCREENW":
+                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.WField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                break;
+                            case "SCREENH":
+                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.HField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
                                 break;
                         }
                         TriggerValueChanged(tb);

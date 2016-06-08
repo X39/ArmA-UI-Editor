@@ -13,12 +13,12 @@
           <name>Pos Y</name>
         </property>
         <property>
-          <number conversion="ScreenX"/>
+          <number conversion="ScreenW"/>
           <field>/w</field>
           <name>Width</name>
         </property>
         <property>
-          <number conversion="ScreenY"/>
+          <number conversion="ScreenH"/>
           <field>/h</field>
           <name>Height</name>
         </property>
