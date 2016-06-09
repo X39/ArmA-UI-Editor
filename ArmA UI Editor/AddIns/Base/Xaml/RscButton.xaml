@@ -3,10 +3,16 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:a="clr-namespace:ArmA_UI_Editor.Code.Markup;assembly=ArmA UI Editor"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      
+      BorderThickness="{a:BindThickness Path=/borderSize}"
+    >
     <Border.Background>
         <SolidColorBrush Color="{a:BindColor Path=/colorBackground}"/>
     </Border.Background>
+    <Border.BorderBrush>
+        <SolidColorBrush Color="{a:BindColor Path=/colorBorder}"/>
+    </Border.BorderBrush>
     <TextBlock Text="{a:BindValue Path=/text}" FontSize="{a:BindMultipliedValue Path=/sizeEx, MultiplyBy=300}">
         <TextBlock.Foreground>
             <SolidColorBrush Color="{a:BindColor Path=/colorText}"/>

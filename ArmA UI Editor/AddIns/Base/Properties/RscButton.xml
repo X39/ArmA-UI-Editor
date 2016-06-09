@@ -66,6 +66,14 @@
           <field>/colorDisabled</field>
           <name>Foreground Color, Disabled</name>
         </property>
+        <property>
+          <array>
+            <type>NUMBER</type>
+            <count>4</count>
+          </array>
+          <field>/colorBorder</field>
+          <name>Border Color</name>
+        </property>
       </properties>
     </group>
     <group name="General">
@@ -88,6 +96,11 @@
           <number/>
           <field>/sizeEx</field>
           <name>Font Size</name>
+        </property>
+        <property>
+          <number/>
+          <field>/borderSize</field>
+          <name>Border Thickness</name>
         </property>
       </properties>
     </group>
