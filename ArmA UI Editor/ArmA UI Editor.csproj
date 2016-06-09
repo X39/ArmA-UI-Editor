@@ -102,6 +102,7 @@
     <Compile Include="Code\Markup\BindColor.cs" />
     <Compile Include="Code\Markup\BindBrush.cs" />
     <Compile Include="Code\Markup\BindMultipliedValue.cs" />
+    <Compile Include="Code\Markup\BindThickness.cs" />
     <Compile Include="Code\Markup\BindValue.cs" />
     <Compile Include="Code\Markup\BindConfig.cs" />
     <Compile Include="Code\UI\DragDrop\UiElementsListBoxData.cs" />
