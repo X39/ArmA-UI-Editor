@@ -60,6 +60,10 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             }
             public class NumberType : PType
             {
+                public NumberType()
+                {
+                    this.Conversion = string.Empty;
+                }
                 private EditingWindow Window;
 
                 [XmlAttribute("conversion")]
