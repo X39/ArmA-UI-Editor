@@ -1,0 +1,16 @@
+﻿class IGUIBack
+{
+	type = 0;
+	idc = 124;
+	style = 128;
+	text = "";
+	colorText[] = {0,0,0,0};
+	font = "RobotoCondensed";
+	sizeEx = 0;
+	shadow = 0;
+	x = 0;
+	y = 0;
+	w = 20;
+	h = 20;
+	colorBackground[] = {0.2,0.2,0.2,0.4};
+};
