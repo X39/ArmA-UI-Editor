@@ -16,7 +16,7 @@ namespace ArmA_UI_Editor.Code
         static AddInManager _instance = new AddInManager();
         public static AddInManager Instance { get { return _instance; } }
         public SQF.ClassParser.File MainFile;
-        public Dictionary<string, AddInUtil.UIElement> ConfigNameFileDictionary;
+        private Dictionary<string, AddInUtil.UIElement> ConfigNameFileDictionary;
         private AddInManager()
         {
             this.AddIns = new List<AddIn>();
@@ -71,6 +71,12 @@ namespace ArmA_UI_Editor.Code
                     }
                 }
             }
+        }
+        public AddInUtil.UIElement GetElement(string s)
+        {
+            var el = this.ConfigNameFileDictionary[s];
+            
+            return el;
         }
     }
 }

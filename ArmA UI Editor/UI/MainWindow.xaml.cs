@@ -32,8 +32,9 @@ namespace ArmA_UI_Editor.UI
             sWindow.Header.Text = "MyUiConfig.cpp";
             sWindow.ContentFrame.Content = new Snaps.EditingWindow();
             frame.Content = sWindow;
-            this.OutputWindowFrame.Content = new Snaps.OutputWindow();
-
+            var outWindow = new Snaps.OutputWindow();
+            this.OutputWindowFrame.Content = outWindow;
+            MainWindow.DisplaySnap(outWindow);
 
             sWindow = new SnapWindow();
             sWindow.Header.Text = "Properties";

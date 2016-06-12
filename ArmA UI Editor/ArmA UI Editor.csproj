@@ -103,6 +103,7 @@
     <Compile Include="Code\Markup\BindBrush.cs" />
     <Compile Include="Code\Markup\BindMultipliedValue.cs" />
     <Compile Include="Code\Markup\BindThickness.cs" />
+    <Compile Include="Code\Markup\BindImage.cs" />
     <Compile Include="Code\Markup\BindValue.cs" />
     <Compile Include="Code\Markup\BindConfig.cs" />
     <Compile Include="Code\UI\DragDrop\UiElementsListBoxData.cs" />
@@ -149,6 +150,9 @@
     <None Include="AddIns\Base\Classes\RscButton.class">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="AddIns\Base\Classes\RscCombo.class">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="AddIns\Base\Xaml\RscText.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -165,6 +169,10 @@
     <None Include="X39_VisualStuidio_Key.pfx" />
     <None Include="AddIns\Base\Xaml\IGUIBack.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AddIns\Base\Xaml\RscCombo.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -327,6 +335,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AddIns\Base\Properties\IGUIBack.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AddIns\Base\Properties\RscCombo.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AddIns\Base\Images\RscCombo\MainArrowEnabled.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AddIns\Base\Images\RscCombo\RscCombo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

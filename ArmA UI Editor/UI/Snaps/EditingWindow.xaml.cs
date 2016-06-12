@@ -564,10 +564,14 @@ namespace ArmA_UI_Editor.UI.Snaps
                         {
                             throw new Exception("Cannot create new elements from scratch in this version of 'ArmA UI Editor'");
                         }
-                        var file = AddInManager.Instance.ConfigNameFileDictionary[pair.Value.Class.Parent.Name];
+                        var file = AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name);
                         using (FileStream stream = System.IO.File.OpenRead(file.__XamlPath))
                         {
+                            
                             Code.Markup.BindConfig.CurrentClassPath = '/' + data.Name + "/controls/" + pair.Value.Name;
+
+                            ArmA_UI_Editor.Code.Markup.BindConfig.CurrentPath = file.Parent.ThisPath;
+
                             var el = (FrameworkElement)System.Windows.Markup.XamlReader.Load(stream);
                             this.DisplayCanvas.Children.Add(el);
                             SQF.ClassParser.Data[] sizeList = new SQF.ClassParser.Data[] {
@@ -603,15 +607,25 @@ namespace ArmA_UI_Editor.UI.Snaps
                 mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIBlue"] as SolidColorBrush;
                 mainWindow.StatusTextbox.Text = "";
             }
-            catch (Exception ex)
+            catch(SQF.ClassParser.File.ParseException ex)
             {
+                Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
                 mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
                 mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
                 this.DisplayCanvas.Children.Clear();
                 Frame frame = new Frame();
                 frame.Content = new ParseError();
                 this.DisplayCanvas.Children.Add(frame);
+            }
+            catch (Exception ex)
+            {
                 Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
+                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
+                mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
+                this.DisplayCanvas.Children.Clear();
+                Frame frame = new Frame();
+                frame.Content = new ParseError();
+                this.DisplayCanvas.Children.Add(frame);
             }
         }
         public bool ReinitConfigFileField()
