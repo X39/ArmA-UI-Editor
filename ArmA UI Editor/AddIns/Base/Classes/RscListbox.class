@@ -2,8 +2,8 @@
 {
 	x = 0;
 	y = 0;
-	w = 0.3;
-	h = 0.3;
+	w = 120;
+	h = 80;
 	style = 16;
 	font = "RobotoCondensed";
 	sizeEx = 0.04;
@@ -11,7 +11,6 @@
 	colorShadow[] = {0,0,0,0.5};
 	colorText[] = {1,1,1,1};
 	colorDisabled[] = {1,1,1,0.25};
-	colorScrollbar[] = {1,0,0,0};
 	colorSelect[] = {0,0,0,1};
 	colorSelect2[] = {0,0,0,1};
 	colorSelectBackground[] = {0.95,0.95,0.95,1};
@@ -32,7 +31,7 @@
 	tooltipColorBox[] = {1,1,1,1};
 	tooltipColorShade[] = {0,0,0,0.65};
 	soundSelect[] = {"\A3\ui_f\data\sound\RscListbox\soundSelect",0.09,1};
-	class ListScrollBar: ScrollBar
+	class ListScrollBar : ScrollBar
 	{
 		color[] = {1,1,1,1};
 		autoScrollEnabled = 1;

@@ -54,6 +54,13 @@
       <xaml>/Xaml/RscPicture.xaml</xaml>
       <properties>/Properties/RscPicture.xml</properties>
     </element>
+    <element>
+      <displayname>RscListBox</displayname>
+      <image>/Images/RscListBox/RscListBox.png</image>
+      <class>/Classes/RscListBox.class</class>
+      <xaml>/Xaml/RscListBox.xaml</xaml>
+      <properties>/Properties/RscListBox.xml</properties>
+    </element>
   </uielements>
   <styles>
     <style path="/Styles/DefaultDark.xaml" name="Default Dark"/>
