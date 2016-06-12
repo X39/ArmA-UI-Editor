@@ -40,6 +40,13 @@
       <xaml>/Xaml/RscCombo.xaml</xaml>
       <properties>/Properties/RscCombo.xml</properties>
     </element>
+    <element>
+      <displayname>RscEdit</displayname>
+      <image>/Images/RscEdit.png</image>
+      <class>/Classes/RscEdit.class</class>
+      <xaml>/Xaml/RscEdit.xaml</xaml>
+      <properties>/Properties/RscEdit.xml</properties>
+    </element>
   </uielements>
   <styles>
     <style path="/Styles/DefaultDark.xaml" name="Default Dark"/>

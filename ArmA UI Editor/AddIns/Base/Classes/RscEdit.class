@@ -1,0 +1,20 @@
+﻿class RscEdit
+{
+	x = 0;
+	y = 0;
+	w = 64;
+	h = 16;
+	style = "0x00 + 0x40";
+	font = "RobotoCondensed";
+	shadow = 2;
+	sizeEx = 0.04;
+	colorBackground[] = {0,0,0,0};
+	colorText[] = {0.95,0.95,0.95,1};
+	colorDisabled[] = {1,1,1,0.25};
+	colorSelection[] = {0.5,1,0.25,1};
+	canModify = 1;
+	text = "Default Text";
+	tooltipColorText[] = {1,1,1,1};
+	tooltipColorBox[] = {1,1,1,1};
+	tooltipColorShade[] = {0,0,0,0.65};
+};

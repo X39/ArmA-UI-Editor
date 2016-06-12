@@ -1,0 +1,91 @@
+﻿<root>
+  <groups>
+    <group name="Positioning">
+      <properties>
+        <property>
+          <number conversion="ScreenX"/>
+          <field>/x</field>
+          <name>Pos X</name>
+        </property>
+        <property>
+          <number conversion="ScreenY"/>
+          <field>/y</field>
+          <name>Pos Y</name>
+        </property>
+        <property>
+          <number conversion="ScreenW"/>
+          <field>/w</field>
+          <name>Width</name>
+        </property>
+        <property>
+          <number conversion="ScreenH"/>
+          <field>/h</field>
+          <name>Height</name>
+        </property>
+      </properties>
+    </group>
+    <group name="Coloring">
+      <properties>
+        <property>
+          <array>
+            <type>NUMBER</type>
+            <count>4</count>
+          </array>
+          <field>/colorBackground</field>
+          <name>Background Color</name>
+        </property>
+        <property>
+          <array>
+            <type>NUMBER</type>
+            <count>4</count>
+          </array>
+          <field>/colorText</field>
+          <name>Foreground Color</name>
+        </property>
+        <property>
+          <number/>
+          <field>/shadow</field>
+          <name>Shadow Depth</name>
+        </property>
+        <property>
+          <number/>
+          <field>/colorSelection</field>
+          <name>Selection Color</name>
+        </property>
+      </properties>
+    </group>
+    <group name="General">
+      <properties>
+        <property>
+          <string/>
+          <field>/text</field>
+          <name>Default Text</name>
+        </property>
+        <property>
+          <listbox>
+            <items>
+              <item display="TahomaB" value="TahomaB"/>
+            </items>
+          </listbox>
+          <field>/font</field>
+          <name>Font</name>
+        </property>
+        <property>
+          <number/>
+          <field>/sizeEx</field>
+          <name>Font Size</name>
+        </property>
+        <property>
+          <listbox>
+            <items>
+              <item display="ReadOnly" value="0" as="Number"/>
+              <item display="CanModify" value="1" as="Number"/>
+            </items>
+          </listbox>
+          <field>/canModify</field>
+          <name>Modification mode</name>
+        </property>
+      </properties>
+    </group>
+  </groups>
+</root>
