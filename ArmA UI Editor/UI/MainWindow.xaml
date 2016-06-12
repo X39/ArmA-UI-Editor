@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArmA_UI_Editor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" MinWidth="512" MinHeight="512" Width="1920" Background="{StaticResource SCB_UIBackground}" Closed="Window_Closed" Icon="/ArmA UI Editor;component/Logo.ico" WindowState="Maximized">
+        Title="MainWindow" Height="1080" MinWidth="512" MinHeight="512" Width="1920" Background="{StaticResource SCB_UIBackground}" Closed="Window_Closed" Icon="/ArmA UI Editor;component/Logo_V2.ico" WindowState="Maximized">
     <!-- Little test about visual-studio like panels (only visual, required loads of implementation)
     <Window.Resources>
         <Style TargetType="{x:Type Label}" x:Key="SlidePanelLabelButtonBase">
