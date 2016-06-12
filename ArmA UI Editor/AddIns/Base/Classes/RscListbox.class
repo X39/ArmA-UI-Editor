@@ -1,0 +1,40 @@
+﻿class RscListBox
+{
+	x = 0;
+	y = 0;
+	w = 0.3;
+	h = 0.3;
+	style = 16;
+	font = "RobotoCondensed";
+	sizeEx = 0.04;
+	shadow = 0;
+	colorShadow[] = {0,0,0,0.5};
+	colorText[] = {1,1,1,1};
+	colorDisabled[] = {1,1,1,0.25};
+	colorScrollbar[] = {1,0,0,0};
+	colorSelect[] = {0,0,0,1};
+	colorSelect2[] = {0,0,0,1};
+	colorSelectBackground[] = {0.95,0.95,0.95,1};
+	colorSelectBackground2[] = {1,1,1,0.5};
+	period = 1.2;
+	colorBackground[] = {0,0,0,0.3};
+	maxHistoryDelay = 1;
+	colorPicture[] = {1,1,1,1};
+	colorPictureSelected[] = {1,1,1,1};
+	colorPictureDisabled[] = {1,1,1,0.25};
+	colorPictureRight[] = {1,1,1,1};
+	colorPictureRightSelected[] = {1,1,1,1};
+	colorPictureRightDisabled[] = {1,1,1,0.25};
+	colorTextRight[] = {1,1,1,1};
+	colorSelectRight[] = {0,0,0,1};
+	colorSelect2Right[] = {0,0,0,1};
+	tooltipColorText[] = {1,1,1,1};
+	tooltipColorBox[] = {1,1,1,1};
+	tooltipColorShade[] = {0,0,0,0.65};
+	soundSelect[] = {"\A3\ui_f\data\sound\RscListbox\soundSelect",0.09,1};
+	class ListScrollBar: ScrollBar
+	{
+		color[] = {1,1,1,1};
+		autoScrollEnabled = 1;
+	};
+};

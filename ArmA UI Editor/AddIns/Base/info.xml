@@ -47,6 +47,13 @@
       <xaml>/Xaml/RscEdit.xaml</xaml>
       <properties>/Properties/RscEdit.xml</properties>
     </element>
+    <element>
+      <displayname>RscPicture</displayname>
+      <image>/Images/RscPicture.png</image>
+      <class>/Classes/RscPicture.class</class>
+      <xaml>/Xaml/RscPicture.xaml</xaml>
+      <properties>/Properties/RscPicture.xml</properties>
+    </element>
   </uielements>
   <styles>
     <style path="/Styles/DefaultDark.xaml" name="Default Dark"/>
