@@ -34,12 +34,12 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Margin="5">
-                    <TextBlock Text="ArmA UI Editor" Foreground="White" FontSize="24" FontWeight="Bold"/>
-                    <TextBlock Name="VersionLabel" Text="Version X.X.X" Foreground="White" FontSize="12" FontWeight="Bold"/>
+                    <TextBlock Text="ArmA UI Editor" Foreground="White" FontSize="32" FontWeight="Bold"/>
+                    <TextBlock Name="VersionLabel" Text="Version X.X.X" Foreground="White" FontSize="18" FontWeight="Bold"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                    <TextBlock Text="Communitymade Tool" Foreground="White" FontSize="6" TextAlignment="Right"/>
-                    <TextBlock Text="Image © Bohemia Interactive" Foreground="White" FontSize="6" TextAlignment="Right"/>
+                    <TextBlock Text="Communitymade Tool" Foreground="White" FontSize="8" TextAlignment="Right"/>
+                    <TextBlock Text="Image © Bohemia Interactive" Foreground="White" FontSize="8" TextAlignment="Right"/>
                 </StackPanel>
             </Grid>
         </Grid>
