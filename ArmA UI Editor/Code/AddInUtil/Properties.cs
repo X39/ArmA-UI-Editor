@@ -299,10 +299,18 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             {
                 public class Data
                 {
+                    public Data()
+                    {
+                        this.Name = string.Empty;
+                        this.Value = string.Empty;
+                        this.Type = string.Empty;
+                    }
                     [XmlAttribute("display")]
                     public string Name { get; set; }
                     [XmlAttribute("value")]
                     public string Value { get; set; }
+                    [XmlAttribute("as")]
+                    public string Type { get; set; }
                 }
 
                 [XmlArray("items")]
@@ -317,7 +325,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                     foreach (var it in this.Items)
                     {
                         cb.Items.Add(it);
-                        if (curVal != null && it.Value == curVal.String)
+                        if (curVal != null && it.Value == string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", curVal.Value))
                             cb.SelectedItem = it;
                     }
                     cb.SelectionChanged += Cb_SelectionChanged;
@@ -332,8 +340,17 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                     var data = tag.File[tag.Path];
                     if (data == null)
                         data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
-                    data.String = (string)cb.SelectedValue;
-                    TriggerValueChanged(cb);
+                    Data d = cb.Items[cb.SelectedIndex] as Data;
+                    switch (d.Type.ToUpper())
+                    {
+                        default:
+                            data.String = d.Value;
+                            break;
+                        case "NUMBER":
+                            data.Number = double.Parse(d.Value, System.Globalization.CultureInfo.InvariantCulture);
+                            break;
+                    }
+                    TriggerValueChanged(data.Value);
                 }
             }
 
