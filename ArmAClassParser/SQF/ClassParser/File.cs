@@ -15,6 +15,10 @@ namespace SQF.ClassParser
 {
     public class File : ConfigClass
     {
+        public class ParseException : Exception
+        {
+            public ParseException(string s) : base(s) { }
+        }
         public static File Load(string filePath)
         {
             List<string> errors = new List<string>();
@@ -28,7 +32,7 @@ namespace SQF.ClassParser
                 {
                     sb.AppendLine(s);
                 }
-                throw new Exception(sb.ToString());
+                throw new ParseException(sb.ToString());
             }
             return parser.Base;
         }
@@ -46,7 +50,7 @@ namespace SQF.ClassParser
                 {
                     sb.AppendLine(s);
                 }
-                throw new Exception(sb.ToString());
+                throw new ParseException(sb.ToString());
             }
             return parser.Base;
         }
@@ -64,7 +68,7 @@ namespace SQF.ClassParser
                 {
                     sb.AppendLine(s);
                 }
-                throw new Exception(sb.ToString());
+                throw new ParseException(sb.ToString());
             }
         }
         public void AppendConfig(string filePath)
@@ -81,7 +85,7 @@ namespace SQF.ClassParser
                 {
                     sb.AppendLine(s);
                 }
-                throw new Exception(sb.ToString());
+                throw new ParseException(sb.ToString());
             }
         }
         public void AppendConfig(File config)
