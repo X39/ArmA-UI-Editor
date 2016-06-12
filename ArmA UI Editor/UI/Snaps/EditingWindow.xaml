@@ -58,7 +58,7 @@
                         </Grid>
                     </ControlTemplate>
                 </ScrollViewer.Template>
-                <Canvas x:Name="DisplayCanvas" AllowDrop="True" Width="1980" Height="1080"
+                <Canvas x:Name="DisplayCanvas" AllowDrop="True" Width="1920" Height="1080"
                         MouseLeftButtonDown="DisplayCanvas_MouseLeftButtonDown"
                         MouseLeftButtonUp="DisplayCanvas_MouseLeftButtonUp"
                         MouseRightButtonDown="DisplayCanvas_MouseRightButtonDown"
