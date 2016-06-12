@@ -13,7 +13,7 @@
     <Border.BorderBrush>
         <SolidColorBrush Color="{a:BindColor Path=/colorBorder}"/>
     </Border.BorderBrush>
-    <TextBlock Text="{a:BindValue Path=/text}" FontSize="{a:BindMultipliedValue Path=/sizeEx, MultiplyBy=300}">
+    <TextBlock Text="{a:BindValue Path=/text}" FontSize="{a:BindMultipliedValue Path=/sizeEx, MultiplyBy=300}" VerticalAlignment="Center">
         <TextBlock.Foreground>
             <SolidColorBrush Color="{a:BindColor Path=/colorText}"/>
         </TextBlock.Foreground>

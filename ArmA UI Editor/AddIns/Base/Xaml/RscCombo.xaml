@@ -1,0 +1,25 @@
+﻿<Border
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:a="clr-namespace:ArmA_UI_Editor.Code.Markup;assembly=ArmA UI Editor"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
+    <Border.Background>
+        <SolidColorBrush Color="{a:BindColor Path=/colorBackground}"/>
+    </Border.Background>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Text="RscCombo" FontSize="{a:BindMultipliedValue Path=/sizeEx, MultiplyBy=300}" VerticalAlignment="Center">
+            <TextBlock.Foreground>
+                <SolidColorBrush Color="{a:BindColor Path=/colorText}"/>
+            </TextBlock.Foreground>
+            <TextBlock.Effect>
+                <DropShadowEffect ShadowDepth="{a:BindMultipliedValue Path=/sizeEx, MultiplyBy=25}" Direction="330" Color="{a:BindColor Path=/colorText}" Opacity="0.3" BlurRadius="0"/>
+            </TextBlock.Effect>
+        </TextBlock>
+        <Image Grid.Column="1" Source="{a:BindImage Path=/Images/RscCombo/MainArrowEnabled.png}" HorizontalAlignment="Stretch" Height="Auto"/>
+    </Grid>
+</Border>

@@ -8,7 +8,7 @@
         <SolidColorBrush Color="{a:BindColor Path=/colorBackground}"/>
         <!--<SolidColorBrush Color="#FFFFFFFF"/>-->
     </Border.Background>
-    <TextBlock Text="{a:BindValue Path=/text}" FontSize="{a:BindMultipliedValue Path=/sizeEx, MultiplyBy=300}">
+    <TextBlock Text="{a:BindValue Path=/text}" FontSize="{a:BindMultipliedValue Path=/sizeEx, MultiplyBy=300}" VerticalAlignment="Center">
         <!--<TextBlock Text="Test" FontSize="20">-->
         <TextBlock.Foreground>
             <SolidColorBrush Color="{a:BindColor Path=/colorText}"/>

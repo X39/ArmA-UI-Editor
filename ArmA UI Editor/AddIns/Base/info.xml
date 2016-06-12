@@ -33,6 +33,13 @@
       <xaml>/Xaml/IGUIBack.xaml</xaml>
       <properties>/Properties/IGUIBack.xml</properties>
     </element>
+    <element>
+      <displayname>RscCombo</displayname>
+      <image>/Images/RscCombo/RscCombo.png</image>
+      <class>/Classes/RscCombo.class</class>
+      <xaml>/Xaml/RscCombo.xaml</xaml>
+      <properties>/Properties/RscCombo.xml</properties>
+    </element>
   </uielements>
   <styles>
     <style path="/Styles/DefaultDark.xaml" name="Default Dark"/>

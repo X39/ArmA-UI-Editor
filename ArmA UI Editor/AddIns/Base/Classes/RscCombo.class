@@ -6,8 +6,8 @@
 	shadow = 0;
 	x = 0;
 	y = 0;
-	w = 0.12;
-	h = 0.035;
+	w = 60;
+	h = 20;
 	colorSelect[] = {0,0,0,1};
 	colorText[] = {1,1,1,1};
 	colorBackground[] = {0,0,0,1};
