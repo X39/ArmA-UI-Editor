@@ -8,26 +8,13 @@
         Title="AddInBrowser" Height="384" Width="512" Background="{StaticResource SCB_UIBackground}" >
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*" MinWidth="128"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*" MinWidth="128"/>
         </Grid.ColumnDefinitions>
-        <ListBox Grid.Column="0">
-            <ListBoxItem>Base</ListBoxItem>
-        </ListBox>
-        <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
-        <ListView Grid.Column="0" Background="Transparent" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0">
-            <ListView.Resources>
-                <Style TargetType="GridViewColumnHeader">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </Style>
-            </ListView.Resources>
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Text}"/>
-                    <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Object}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <ListBox x:Name="lb_AddIns" Grid.Column="0" Style="{StaticResource ListBoxStyle}" SelectionChanged="lb_AddIns_SelectionChanged"/>
+        <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1" Background="{StaticResource SCB_UIBackgroundDark}" Width="5"/>
+        <StackPanel x:Name="sp_AddInContent" Grid.Column="2" Background="Transparent" Orientation="Vertical">
+        </StackPanel>
     </Grid>
 </Window>
