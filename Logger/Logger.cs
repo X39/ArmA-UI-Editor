@@ -68,11 +68,21 @@ public class Logger
     }
     public void log(LogLevel l, string msg, Action<string> logAction = null)
     {
+        bool isInitial = true;
+        foreach(var s in msg.Split('\n'))
+        {
+            doLog(isInitial ? l : LogLevel.CONTINUE, s, logAction);
+            isInitial = false;
+        }
+
+    }
+    private void doLog(LogLevel l, string msg, Action<string> logAction = null)
+    {
         if (l != LogLevel.CONTINUE)
             lastLogLevel = l;
         if (lastLogLevel < minLogLevel)
             return;
-        String line = logLevelTranslated[(int)l] + "\t" + msg;
+        String line = logLevelTranslated[(int)l] + msg;
         outStream.WriteLine(line);
         if (this.fstream != null)
             fstream.WriteLine(line);
