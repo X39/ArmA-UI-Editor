@@ -107,13 +107,26 @@ COMPILER CONFIGFILE
             ]
             '='
             (
-                ARRAY<out data> (. if(!isArray) SemErr("Invalid field syntax: Missing [] at field name"); .)
-                |
-                SCALAR<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
-                |
-                STRING<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
-                |
-                BOOLEAN<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
+                (. StringBuilder builder = new StringBuilder(); .)
+                (
+                    ARRAY<out data> (. if(!isArray) SemErr("Invalid field syntax: Missing [] at field name"); .)
+                    |
+                    SCALAR<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
+                    |
+                    STRING<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
+                    |
+                    BOOLEAN<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
+                    |
+                    ANY (. data = new Data(t.val); .)
+                )
+                [
+                    (. builder.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", data.Value)); .)
+                    ANY (. builder.Append(' '); builder.Append(t.val); .)
+                    {
+                        ANY (. builder.Append(' '); builder.Append(t.val); .)
+                    }
+                    (. data = new Data(builder.ToString()); .)
+                ]
             )
             ';'
             (. if(data != null) data.Name = name; .)
