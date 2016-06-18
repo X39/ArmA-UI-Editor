@@ -23,7 +23,7 @@ namespace ArmA_UI_Editor.Code.Markup
             if (data == null)
                 throw new Exception(string.Format("Cannot locate field '{0}'", this.Path));
             var array = data.Array;
-            return new SolidColorBrush(Color.FromArgb((byte)(array[0].Number * 256), (byte)(array[1].Number * 256), (byte)(array[2].Number * 256), (byte)(array[3].Number * 256)));
+            return new SolidColorBrush(Color.FromArgb((byte)(array[3].Number * 256), (byte)(array[0].Number * 256), (byte)(array[1].Number * 256), (byte)(array[2].Number * 256)));
         }
     }
 }
