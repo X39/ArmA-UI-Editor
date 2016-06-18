@@ -44,6 +44,10 @@
                     <clr:String x:Key="STR_ParseError_PathHeader">PARSE ERROR</clr:String>
                     <clr:String x:Key="STR_ParseError_PathContent">INVALID CONFIG</clr:String>
 
+                    <clr:String x:Key="STR_AddInBrowser_ContextMenu_OpenClassFile">Open Class File</clr:String>
+                    <clr:String x:Key="STR_AddInBrowser_ContextMenu_OpenXamlFile">Open XAML File</clr:String>
+                    <clr:String x:Key="STR_AddInBrowser_ContextMenu_OpenPropertiesFile">Open Properties File</clr:String>
+
                     <clr:String x:Key="STR_CODE_EditingWindow_ConfigParsingError">Parse Error</clr:String>
 
 

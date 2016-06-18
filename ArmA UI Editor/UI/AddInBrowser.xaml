@@ -5,12 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArmA_UI_Editor.UI"
         mc:Ignorable="d"
-        Title="AddInBrowser" Height="384" Width="512" Background="{StaticResource SCB_UIBackground}" >
+        Title="AddInBrowser" MinHeight="512" MinWidth="768" Height="512" Width="768" Background="{StaticResource SCB_UIBackground}" Icon="/ArmA UI Editor;component/Logo_V2.ico" >
+    <Window.Resources>
+        <ContextMenu x:Key="ContextMenu_UIElements">
+            <MenuItem Header="{StaticResource STR_AddInBrowser_ContextMenu_OpenClassFile}" Click="ContextMenu_OpenClassFile_Click"/>
+            <MenuItem Header="{StaticResource STR_AddInBrowser_ContextMenu_OpenXamlFile}" Click="ContextMenu_OpenXamlFile_Click"/>
+            <MenuItem Header="{StaticResource STR_AddInBrowser_ContextMenu_OpenPropertiesFile}" Click="ContextMenu_OpenPropertiesFile_Click"/>
+        </ContextMenu>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" MinWidth="128"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="2*" MinWidth="128"/>
+            <ColumnDefinition Width="4*" MinWidth="128"/>
         </Grid.ColumnDefinitions>
         <ListBox x:Name="lb_AddIns" Grid.Column="0" Style="{StaticResource ListBoxStyle}" SelectionChanged="lb_AddIns_SelectionChanged"/>
         <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1" Background="{StaticResource SCB_UIBackgroundDark}" Width="5"/>

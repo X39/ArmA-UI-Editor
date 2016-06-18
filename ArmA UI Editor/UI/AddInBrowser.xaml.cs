@@ -22,7 +22,26 @@ namespace ArmA_UI_Editor.UI
     {
         [DllImport("shell32.dll")]
         static extern int FindExecutable(string lpFile, string lpDirectory, [Out] StringBuilder lpResult);
-
+        private static void openFile(string path)
+        {
+            var builder = new StringBuilder();
+            int res = FindExecutable(path, null, builder);
+            switch (res)
+            {
+                case 31:
+                    System.Diagnostics.Process.Start("notepad.exe", path);
+                    break;
+                case 2:
+                case 3:
+                case 5:
+                case 8:
+                    MessageBox.Show("Unable to open " + path + "\r\n" + res, "whoops", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    break;
+                default:
+                    System.Diagnostics.Process.Start(builder.ToString(), path);
+                    break;
+            }
+        }
 
         public AddInBrowser()
         {
@@ -91,6 +110,7 @@ namespace ArmA_UI_Editor.UI
             foreach (var it in addin.UIElements)
             {
                 StackPanel panel = new StackPanel();
+                panel.Tag = it;
                 panel.Orientation = Orientation.Horizontal;
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(it.Image));
@@ -111,24 +131,15 @@ namespace ArmA_UI_Editor.UI
                 {
                     if (e.ClickCount == 2)
                     {
-                        var builder = new StringBuilder();
-                        int res = FindExecutable(it.__ClassPath, null, builder);
-                        switch (res)
-                        {
-                            case 31:
-                                System.Diagnostics.Process.Start("notepad.exe", it.__ClassPath);
-                                break;
-                            case 2:
-                            case 3:
-                            case 5:
-                            case 8:
-                                MessageBox.Show("Unable to open " + it.__ClassPath + "\r\n" + res, "whoops", MessageBoxButton.OK, MessageBoxImage.Warning);
-                                break;
-                            default:
-                                System.Diagnostics.Process.Start(builder.ToString(), it.__ClassPath);
-                                break;
-                        }
+                        openFile(it.__ClassPath);
                     }
+                };
+                panel.MouseRightButtonDown += (sender, e) =>
+                {
+                    ContextMenu cm = this.FindResource("ContextMenu_UIElements") as ContextMenu;
+                    cm.Tag = it;
+                    cm.PlacementTarget = sender as UIElement;
+                    cm.IsOpen = true;
                 };
                 panel.Children.Add(tb);
                 pg.ItemsPanel.Children.Add(panel);
@@ -160,6 +171,19 @@ namespace ArmA_UI_Editor.UI
                 pg.ItemsPanel.Children.Add(tb);
             }
 
+        }
+
+        private void ContextMenu_OpenClassFile_Click(object sender, RoutedEventArgs e)
+        {
+            openFile((((sender as MenuItem).Parent as ContextMenu).Tag as Code.AddInUtil.UIElement).__ClassPath);
+        }
+        private void ContextMenu_OpenXamlFile_Click(object sender, RoutedEventArgs e)
+        {
+            openFile((((sender as MenuItem).Parent as ContextMenu).Tag as Code.AddInUtil.UIElement).__XamlPath);
+        }
+        private void ContextMenu_OpenPropertiesFile_Click(object sender, RoutedEventArgs e)
+        {
+            openFile((((sender as MenuItem).Parent as ContextMenu).Tag as Code.AddInUtil.UIElement).__PropertiesPath);
         }
     }
 }
