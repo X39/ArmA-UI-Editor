@@ -10,7 +10,8 @@
       Title="EditingWindow">
     <Page.Resources>
         <ContextMenu x:Key="ContextMenu_Canvas">
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping}" IsCheckable="True" IsChecked="{Binding SnapDisabled, RelativeSource={RelativeSource AncestorType=Page}}" Click="ContextMenu_Canvas_EnableSnapGrid_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping}" IsCheckable="True" IsChecked="{Binding SnapEnabled, RelativeSource={RelativeSource AncestorType=Page}}"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleBackground}" IsCheckable="True" IsChecked="{Binding BackgroundEnabled, RelativeSource={RelativeSource AncestorType=Page}}"/>
         </ContextMenu>
         <ContextMenu x:Key="ContextMenu_ChildElement">
             <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapElementToGrid}" Click="ContextMenu_ChildElement_SnapToGrid_Click"/>
@@ -68,13 +69,30 @@
                     <Canvas.LayoutTransform>
                         <ScaleTransform ScaleX="1" ScaleY="1"/>
                     </Canvas.LayoutTransform>
-                    <Canvas.Background>
-                        <VisualBrush TileMode="Tile" Viewport="0, 0, 15, 15" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
-                            <VisualBrush.Visual>
-                                <Path Data="M 0 0 L 0 10 M 0 0 L 10 0" Stroke="white" Opacity="0.1"/>
-                            </VisualBrush.Visual>
-                        </VisualBrush>
-                    </Canvas.Background>
+                    <Canvas.Style>
+                        <Style TargetType="Canvas">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:EditingWindow}}, Path=BackgroundEnabled}" Value="False">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush TileMode="Tile" Viewport="0, 0, 15, 15" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                                <VisualBrush.Visual>
+                                                    <Path Data="M 0 0 L 0 10 M 0 0 L 10 0" Stroke="white" Opacity="0.1"/>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:EditingWindow}}, Path=BackgroundEnabled}" Value="True">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="Red"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Canvas.Style>
                 </Canvas>
             </ScrollViewer>
         </TabItem>

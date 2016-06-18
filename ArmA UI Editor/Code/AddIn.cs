@@ -53,6 +53,7 @@ namespace ArmA_UI_Editor.Code
             for (int i = 0; i < Styles.Count; i++)
             {
                 var style = Styles[i];
+                style.Parent = this;
                 progress.Report(i / (UIElements.Count + this.Styles.Count));
                 style.Initialize(this.ThisPath);
             }

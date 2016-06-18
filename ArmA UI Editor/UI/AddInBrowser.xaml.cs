@@ -165,7 +165,7 @@ namespace ArmA_UI_Editor.UI
                 {
                     if (e.ClickCount == 2)
                     {
-                        MessageBox.Show("Style switch not yet implemented :(", "whoops", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        it.LoadStyle();
                     }
                 };
                 pg.ItemsPanel.Children.Add(tb);

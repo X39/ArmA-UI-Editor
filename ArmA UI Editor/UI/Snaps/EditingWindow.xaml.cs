@@ -28,7 +28,12 @@ namespace ArmA_UI_Editor.UI.Snaps
         private bool ConfigTextboxDiffersConfigInstance;
         private bool BlockWriteout;
         private SelectionOverlay SelectionOverlay_ToMove;
-        private bool SnapDisabled;
+
+        public static readonly DependencyProperty SnapDisabledProperty = DependencyProperty.Register("SnapDisabled", typeof(bool), typeof(PropertyGroup));
+        public bool SnapEnabled { get { return (bool)GetValue(SnapDisabledProperty); } set { SetValue(SnapDisabledProperty, value); } }
+        public static readonly DependencyProperty BackgroundEnabledProperty = DependencyProperty.Register("BackgroundEnabled", typeof(bool), typeof(PropertyGroup));
+        public bool BackgroundEnabled { get { return (bool)GetValue(BackgroundEnabledProperty); } set { SetValue(BackgroundEnabledProperty, value); } }
+
         private int SnapGrid;
 
         public string FilePath { get; set; }
@@ -87,7 +92,8 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.Textbox.Text = sb.ToString();
             this.ReinitConfigFileField();
             SelectionOverlay_ToMove = null;
-            SnapDisabled = true;
+            SnapEnabled = false;
+            BackgroundEnabled = false;
             SnapGrid = 15;
             FilePath = string.Empty;
         }
@@ -101,7 +107,8 @@ namespace ArmA_UI_Editor.UI.Snaps
 
             this.ReinitConfigFileField();
             SelectionOverlay_ToMove = null;
-            SnapDisabled = true;
+            SnapEnabled = false;
+            BackgroundEnabled = false;
             SnapGrid = 15;
             this.FilePath = FilePath;
         }
@@ -367,14 +374,14 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var oldPos = (Point)SelectionOverlay_ToMove.Tag;
                 var deltaX = pos.X - oldPos.X;
                 var deltaY = pos.Y - oldPos.Y;
-                if (!SnapDisabled)
+                if (SnapEnabled)
                 {
                     deltaX -= deltaX % SnapGrid;
                     deltaY -= deltaY % SnapGrid;
                 }
                 if (deltaX != 0 || deltaY != 0)
                 {
-                    if (!SnapDisabled)
+                    if (SnapEnabled)
                     {
                         pos.X -= (pos.X - oldPos.X) % SnapGrid;
                         pos.Y -= (pos.Y - oldPos.Y) % SnapGrid;
@@ -871,12 +878,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
         }
         #endregion
-        #region Canvas ContextMenu
-        private void ContextMenu_Canvas_EnableSnapGrid_Click(object sender, RoutedEventArgs e)
-        {
-            this.SnapDisabled = !this.SnapDisabled;
-        }
-        #endregion
         #endregion
 
         public enum FieldTypeEnum
@@ -970,5 +971,6 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             
         }
+
     }
 }

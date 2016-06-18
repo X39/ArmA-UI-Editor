@@ -77,7 +77,7 @@
     -->
     <DockPanel>
         <Menu DockPanel.Dock="Top" Style="{StaticResource MenuStyle}">
-            <MenuItem Header="_File">
+            <!--<MenuItem Header="_File">
                 <MenuItem Header="_Open"/>
                 <MenuItem Header="_Save"/>
                 <Separator/>
@@ -89,18 +89,9 @@
                     <MenuItem Header="Entry"/>
                     <MenuItem Header="Entry"/>
                 </MenuItem>
-            </MenuItem>
-            <MenuItem Header="_Settings">
-                <MenuItem Header="_DisplayAddInBrowser" Click="MenuItem_Click"/>
-                <x:Code>
-                    <![CDATA[
-                            private void MenuItem_Click(object sender, RoutedEventArgs e)
-                            {
-                                var tmp = new AddInBrowser();
-                                tmp.Show();
-                            }
-                            ]]>
-                </x:Code>
+            </MenuItem>-->
+            <MenuItem Header="{StaticResource STR_MainWindow_Settings}">
+                <MenuItem Header="{StaticResource STR_MainWindow_Settings_ShowAddInBrowser}" Click="MenuItem_Settings_ShowAddInBrowser_Click"/>
             </MenuItem>
         </Menu>
         <Grid>
@@ -140,30 +131,7 @@
                 </Grid>
                 <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
                 <Grid Grid.Column="2">
-                    <TabControl x:Name="TabControlMainView" Style="{StaticResource TabControlStyle}">
-                        <!--<TabItem Header="Display">
-                            <ScrollViewer Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                <Canvas x:Name="ConfigRenderCanvas" AllowDrop="True" DragEnter="ConfigRenderCanvas_DragEnter" Drop="ConfigRenderCanvas_Drop" Width="1980" Height="1080" >
-                                    <Canvas.LayoutTransform>
-                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
-                                    </Canvas.LayoutTransform>
-                                    <Canvas.Background>
-                                        <VisualBrush TileMode="Tile" Viewport="0, 0, 10, 10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
-                                            <VisualBrush.Visual>
-                                                <Path Data="M 5 0 L 5 10 M 0 5 L 10 5" Stroke="white"  Opacity="0.25"/>
-                                            </VisualBrush.Visual>
-                                        </VisualBrush>
-                                    </Canvas.Background>
-                                </Canvas>
-                            </ScrollViewer>
-                        </TabItem>
-                        <TabItem Header="Config">
-                            <TextBox x:Name="ConfigTextbox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="ConfigTextbox_TextChanged" AcceptsReturn="True" AcceptsTab="True"/>
-                        </TabItem>-->
-                        <TabItem Header="DevFrame">
-                            <Frame x:Name="frame" Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch"/>
-                        </TabItem>
-                    </TabControl>
+                    <Frame x:Name="frame" Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch"/>
                 </Grid>
                 <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="3"/>
                 <Grid Grid.Column="4">

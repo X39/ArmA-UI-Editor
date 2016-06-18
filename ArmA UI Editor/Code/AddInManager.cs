@@ -22,6 +22,11 @@ namespace ArmA_UI_Editor.Code
             this.AddIns = new List<AddIn>();
         }
 
+        /// <summary>
+        /// Will Reload all AddIns !AND the settings!
+        /// Has to be callen at least once during startup
+        /// </summary>
+        /// <param name="progress">progress "report" function</param>
         public void ReloadAddIns(IProgress<Tuple<double, string>> progress)
         {
             this.MainFile = new SQF.ClassParser.File();
@@ -71,6 +76,7 @@ namespace ArmA_UI_Editor.Code
                     }
                 }
             }
+            Settings.Deserialize();
         }
         public AddInUtil.UIElement GetElement(string s)
         {

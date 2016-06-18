@@ -120,6 +120,12 @@ namespace ArmA_UI_Editor.UI
             }
         }
 
+        private void MenuItem_Settings_ShowAddInBrowser_Click(object sender, RoutedEventArgs e)
+        {
+            var tmp = new AddInBrowser();
+            tmp.ShowDialog();
+        }
+
         //private void LoadProperties(Code.AddInUtil.Properties properties, Data data)
         //{
         //    this.ElementProperties.Children.Clear();

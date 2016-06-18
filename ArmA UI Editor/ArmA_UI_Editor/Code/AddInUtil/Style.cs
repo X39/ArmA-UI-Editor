@@ -19,6 +19,8 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         public string Name;
         [XmlIgnore]
         public System.Windows.ResourceDictionary Resources;
+        [XmlIgnore]
+        public AddIn Parent;
 
         public Style() { }
         public void Initialize(string basePath)
@@ -32,6 +34,13 @@ namespace ArmA_UI_Editor.Code.AddInUtil
 
         public void LoadStyle()
         {
+            if(Settings.Instance.UsedStyle != this)
+            {
+                Settings.Instance.UsedStyle = this;
+            }
+            return;
+            /*
+            //RTE due to accessing frozen app context
             foreach(var it in Resources.Keys)
             {
                 if(it is string && Resources[it] is SolidColorBrush)
@@ -43,7 +52,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         App.Current.Resources[key] = Resources[key];
                     }
                 }
-            }
+            }*/
         }
     }
 }

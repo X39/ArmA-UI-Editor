@@ -33,9 +33,13 @@
                     <SolidColorBrush x:Key="SCB_SnapWindow_HeaderDotsColor" Color="#FF59A8DE"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="Strings">
+                    <clr:String x:Key="STR_MainWindow_Settings">Settings</clr:String>
+                    <clr:String x:Key="STR_MainWindow_Settings_ShowAddInBrowser">Show AddIn Browser</clr:String>
+                    
                     <clr:String x:Key="STR_Snaps_EditingWindow_DisplayTab">Display</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ConfigTab">Config</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping">SnapToGrid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleBackground">Background Image</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_Properties">Properties</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapElementToGrid">Snap to Grid</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_FitElementToGrid">Resize to Grid</clr:String>
