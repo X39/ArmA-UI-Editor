@@ -20,11 +20,19 @@ namespace ArmA_UI_Editor
             try
             {
                 var x = new XmlSerializer(typeof(Settings));
-                using (var stream = new System.IO.StreamReader("Settings.xml"))
+                using (var stream = new System.IO.StreamReader(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ArmA-UI-Editor", "Settings.xml")))
                 {
                     var obj = (Settings)x.Deserialize(stream);
                     return obj;
                 }
+            }
+            catch (System.IO.DirectoryNotFoundException)
+            {
+                return new Settings();
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                return new Settings();
             }
             catch (System.InvalidOperationException ex)
             {
@@ -36,7 +44,11 @@ namespace ArmA_UI_Editor
             if (preventSave)
                 return;
             var x = new XmlSerializer(typeof(Settings));
-            using (var stream = new System.IO.StreamWriter("Settings.xml"))
+            if(!System.IO.Directory.Exists(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ArmA-UI-Editor")))
+            {
+                System.IO.Directory.CreateDirectory(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ArmA-UI-Editor"));
+            }
+            using (var stream = new System.IO.StreamWriter(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ArmA-UI-Editor", "Settings.xml")))
             {
                 x.Serialize(stream, this);
             }
