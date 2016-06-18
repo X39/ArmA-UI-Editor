@@ -569,7 +569,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                     {
                         if (pair.Value.Class.Parent == null)
                         {
-                            throw new Exception(string.Format("Cannot create new elements from scratch in this version of 'ArmA UI Editor'\n missing parent of '{0}' in AddIns", pair.Value.Name));
+                            throw new Exception(string.Format("Cannot create new elements from scratch in this version of 'ArmA UI Editor'\nmissing parent of '{0}' in AddIns", pair.Value.Name));
                         }
                         var file = AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name);
                         using (FileStream stream = System.IO.File.OpenRead(file.__XamlPath))
