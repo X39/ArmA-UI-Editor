@@ -6,7 +6,7 @@
     <description>Base Add-in containing most base elements available in ArmA 3</description>
     <!-- <author> should contain the authors comma separated-->
     <author>X39</author>
-    <!-- Format for <version>: MAJOR '.' MINOR '.' REVISION '-' [ ADDITION ] -->
+    <!-- Format for <version>: MAJOR '.' MINOR '.' REVISION [ '-' ADDITION ] -->
     <version>1.0.0</version>
     <!-- Format for <updateurl>: VERSION:PACKAGEURLASZIP -->
     <updateurl></updateurl>
