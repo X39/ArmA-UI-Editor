@@ -72,37 +72,45 @@ namespace ArmA_UI_Editor.UI
                 } while (ex != null);
                 MessageBox.Show(sb.ToString());
             }
+            /////////////////////////////////////////////////////
+            //Settings.Instance is allowed to be used from here//
+            /////////////////////////////////////////////////////
 #if !DEBUG
-            worker.ReportProgress(0, App.Current.Resources["STR_CODE_SplashScreen_CheckingForUpdate"] as String);
-            var updateResultTask = Code.UpdateManager.Instance.CheckForUpdate(@"http://x39.io/api.php?action=projects&project=ArmA-UI-Editor");
-            double d = 0;
-            while(!updateResultTask.IsCompleted)
+            if (Settings.Instance.SearchUpdateOnStart)
             {
-                d += 0.01;
-                Thread.Sleep(100);
-                worker.ReportProgress((int)(d * 100), App.Current.Resources["STR_CODE_SplashScreen_CheckingForUpdate"] as String);
-            }
-            var updateResult = updateResultTask.Result;
-            if(updateResult.IsAvailable)
-            {
-                worker.ReportProgress(100, string.Format(App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableMessage"] as String, updateResult.NewVersion.ToString()));
-                if (MessageBox.Show(string.Format(App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableMessage"] as String, updateResult.NewVersion.ToString()), App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableHeader"] as String, MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                worker.ReportProgress(0, App.Current.Resources["STR_CODE_SplashScreen_CheckingForUpdate"] as String);
+                var updateResultTask = Code.UpdateManager.Instance.CheckForUpdate(@"http://x39.io/api.php?action=projects&project=ArmA-UI-Editor");
+                double d = 0;
+                while (!updateResultTask.IsCompleted)
                 {
-                    //ToDo: use internal update mechanism and do not rely on browser
-                    var downRes = Code.UpdateManager.Instance.DownloadUpdate(updateResult, new Progress<Tuple<double, long>>((val) => {
-                        worker.ReportProgress((int)((val.Item1 / val.Item2) * 100), string.Format("Downloading update ({0}kb/{1}kb)", (long)val.Item1 / 1024, val.Item2 / 1024));
-                    }));
-                    while (!downRes.IsCompleted)
-                    {
-                        Thread.Sleep(100);
-                    }
-                    System.Diagnostics.Process.Start(downRes.Result);
-                    doShutdown = true;
+                    d += 0.01;
+                    Thread.Sleep(100);
+                    worker.ReportProgress((int)(d * 100), App.Current.Resources["STR_CODE_SplashScreen_CheckingForUpdate"] as String);
                 }
-            }
-            else
-            {
-                worker.ReportProgress(100, "No Update available");
+                var updateResult = updateResultTask.Result;
+                if (updateResult.IsAvailable)
+                {
+                    worker.ReportProgress(100, string.Format(App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableMessage"] as String, updateResult.NewVersion.ToString()));
+                    if (MessageBox.Show(string.Format(App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableMessage"] as String, updateResult.NewVersion.ToString()), App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableHeader"] as String, MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                    {
+                        //ToDo: use internal update mechanism and do not rely on browser
+                        var downRes = Code.UpdateManager.Instance.DownloadUpdate(updateResult, new Progress<Tuple<double, long>>((val) =>
+                        {
+                            worker.ReportProgress((int)((val.Item1 / val.Item2) * 100), string.Format("Downloading update ({0}kb/{1}kb)", (long)val.Item1 / 1024, val.Item2 / 1024));
+                        }));
+                        while (!downRes.IsCompleted)
+                        {
+                            Thread.Sleep(100);
+                        }
+                        System.Diagnostics.Process.Start(downRes.Result);
+                        doShutdown = true;
+                    }
+                }
+                else
+                {
+                    worker.ReportProgress(100, "No Update available");
+                }
+
             }
 #endif
             Thread.Sleep(1000);
