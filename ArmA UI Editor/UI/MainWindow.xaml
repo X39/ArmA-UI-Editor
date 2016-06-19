@@ -92,6 +92,7 @@
             </MenuItem>-->
             <MenuItem Header="{StaticResource STR_MainWindow_Settings}">
                 <MenuItem Header="{StaticResource STR_MainWindow_Settings_ShowAddInBrowser}" Click="MenuItem_Settings_ShowAddInBrowser_Click"/>
+                <MenuItem Header="{StaticResource STR_MainWindow_Settings_ShowSettingsWindow}" Click="MenuItem_Settings_ShowSettingsWindow_Click"/>
             </MenuItem>
             <MenuItem Header="{StaticResource STR_MainWindow_Help}">
                 <MenuItem Header="{StaticResource STR_MainWindow_Help_ReportBug}" Click="MenuItem_Help_ReportBug_Click"/>

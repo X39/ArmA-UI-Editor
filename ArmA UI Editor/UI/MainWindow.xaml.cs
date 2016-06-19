@@ -141,6 +141,12 @@ namespace ArmA_UI_Editor.UI
             System.Diagnostics.Process.Start("https://github.com/X39/ArmA-UI-Editor/issues/new");
         }
 
+        private void MenuItem_Settings_ShowSettingsWindow_Click(object sender, RoutedEventArgs e)
+        {
+            var tmp = new SettingsViewer();
+            tmp.Show();
+        }
+
         //private void LoadProperties(Code.AddInUtil.Properties properties, Data data)
         //{
         //    this.ElementProperties.Children.Clear();
