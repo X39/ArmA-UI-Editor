@@ -126,6 +126,21 @@ namespace ArmA_UI_Editor.UI
             tmp.ShowDialog();
         }
 
+        private void MenuItem_Donate_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("As this is currently in alpha, i do not accept donations for this 'Product'.\nIf you still want to donate some $$$ then please head over to the forums and write me a PN.\n\nKindly regards, X39", "Not in Alpha", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void MenuItem_Help_OpenDocumentation_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/X39/ArmA-UI-Editor/wiki");
+        }
+
+        private void MenuItem_Help_ReportBug_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/X39/ArmA-UI-Editor/issues/new");
+        }
+
         //private void LoadProperties(Code.AddInUtil.Properties properties, Data data)
         //{
         //    this.ElementProperties.Children.Clear();

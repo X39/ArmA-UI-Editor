@@ -93,6 +93,11 @@
             <MenuItem Header="{StaticResource STR_MainWindow_Settings}">
                 <MenuItem Header="{StaticResource STR_MainWindow_Settings_ShowAddInBrowser}" Click="MenuItem_Settings_ShowAddInBrowser_Click"/>
             </MenuItem>
+            <MenuItem Header="{StaticResource STR_MainWindow_Help}">
+                <MenuItem Header="{StaticResource STR_MainWindow_Help_ReportBug}" Click="MenuItem_Help_ReportBug_Click"/>
+                <MenuItem Header="{StaticResource STR_MainWindow_Help_OpenDocumentation}" Click="MenuItem_Help_OpenDocumentation_Click"/>
+            </MenuItem>
+            <MenuItem Header="Donate &lt;3" Click="MenuItem_Donate_Click"/>
         </Menu>
         <Grid>
             <Grid.RowDefinitions>
