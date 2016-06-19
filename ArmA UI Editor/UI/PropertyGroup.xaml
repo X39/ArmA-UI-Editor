@@ -30,7 +30,7 @@
                         </Style>
                     </Path.Style>
                 </Path>
-                <TextBlock x:Name="Header" Text="NA" Foreground="{StaticResource SCB_DefaultTextColor}" TextAlignment="Left"/>
+                <TextBlock Text="{Binding Header, RelativeSource={RelativeSource AncestorType={x:Type local:PropertyGroup}}}" Foreground="{StaticResource SCB_DefaultTextColor}" TextAlignment="Left"/>
             </StackPanel>
         </Button>
         <StackPanel Grid.Row="1" Orientation="Vertical" x:Name="ItemsPanel">

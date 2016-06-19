@@ -23,6 +23,9 @@ namespace ArmA_UI_Editor.UI
         public static readonly DependencyProperty IsExpanedProperty = DependencyProperty.Register("IsExpaned", typeof(bool), typeof(PropertyGroup));
         public bool IsExpaned { get { return (bool)GetValue(IsExpanedProperty); } set { SetValue(IsExpanedProperty, value); } }
 
+        public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(string), typeof(PropertyGroup));
+        public string Header { get { return (string)GetValue(HeaderProperty); } set { SetValue(HeaderProperty, value); } }
+
         public PropertyGroup()
         {
             InitializeComponent();

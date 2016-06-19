@@ -76,7 +76,7 @@ namespace ArmA_UI_Editor.UI
             UI.PropertyGroup pg;
 
             pg = new PropertyGroup();
-            pg.Header.Text = "Author info";
+            pg.Header = "Author info";
             this.sp_AddInContent.Children.Add(pg);
             {
                 Property p;
@@ -105,7 +105,7 @@ namespace ArmA_UI_Editor.UI
             }
 
             pg = new PropertyGroup();
-            pg.Header.Text = "UI-Elements";
+            pg.Header = "UI-Elements";
             this.sp_AddInContent.Children.Add(pg);
             foreach (var it in addin.UIElements)
             {
@@ -146,7 +146,7 @@ namespace ArmA_UI_Editor.UI
             }
 
             pg = new PropertyGroup();
-            pg.Header.Text = "Styles";
+            pg.Header = "Styles";
             this.sp_AddInContent.Children.Add(pg);
             foreach (var it in addin.Styles)
             {
