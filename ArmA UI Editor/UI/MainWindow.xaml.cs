@@ -123,7 +123,7 @@ namespace ArmA_UI_Editor.UI
         private void MenuItem_Settings_ShowAddInBrowser_Click(object sender, RoutedEventArgs e)
         {
             var tmp = new AddInBrowser();
-            tmp.ShowDialog();
+            tmp.Show();
         }
 
         private void MenuItem_Donate_Click(object sender, RoutedEventArgs e)
