@@ -34,7 +34,8 @@
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="Strings">
                     <clr:String x:Key="STR_MainWindow_Settings">Settings</clr:String>
-                    <clr:String x:Key="STR_MainWindow_Settings_ShowAddInBrowser">Show AddIn Browser</clr:String>
+                    <clr:String x:Key="STR_MainWindow_Settings_ShowAddInBrowser">Display AddIn Browser</clr:String>
+                    <clr:String x:Key="STR_MainWindow_Settings_ShowSettingsWindow">Options</clr:String>
 
                     <clr:String x:Key="STR_MainWindow_Help">Help</clr:String>
                     <clr:String x:Key="STR_MainWindow_Help_ReportBug">Report a Bug</clr:String>
