@@ -4,8 +4,53 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArmA_UI_Editor.UI"
+        xmlns:g="clr-namespace:ArmA_UI_Editor"
         mc:Ignorable="d"
         Title="SettingsViewer" Height="300" Width="512" Background="{StaticResource SCB_UIBackground}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Page x:Key="General_Privacy">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Foreground="{StaticResource SCB_DefaultTextColor}" Background="{StaticResource SCB_UIBackgroundDark}" Padding="4" FontSize="16" FontWeight="Bold" TextAlignment="Center" Margin="0, 0, 0, 4">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} - {1}">
+                                <Binding Source="{StaticResource STR_SettingsWindow_General}"/>
+                                <Binding Source="{StaticResource STR_SettingsWindow_General_Privacy}"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Foreground="{StaticResource SCB_DefaultTextColor}" Text="{StaticResource STR_SettingsWindow_General_Privacy_AutoReportCrashes}"/>
+                        <CheckBox Grid.Column="1" IsChecked="{Binding AutoReportCrash, Source={x:Static g:Settings.Instance}}" HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+            </Page>
+            <Page x:Key="General_Updates">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Foreground="{StaticResource SCB_DefaultTextColor}" Background="{StaticResource SCB_UIBackgroundDark}" Padding="4" FontSize="16" FontWeight="Bold" TextAlignment="Center" Margin="0, 0, 0, 4">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} - {1}">
+                                <Binding Source="{StaticResource STR_SettingsWindow_General}"/>
+                                <Binding Source="{StaticResource STR_SettingsWindow_General_Updates}"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Foreground="{StaticResource SCB_DefaultTextColor}" Text="{StaticResource STR_SettingsWindow_General_Updates_SearchOnStart}"/>
+                        <CheckBox Grid.Column="1" IsChecked="{Binding SearchUpdateOnStart, Source={x:Static g:Settings.Instance}}" HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+            </Page>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -13,11 +58,12 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
-            <local:Group Header="General">
-                <TextBox Text="test"/>
-                <TextBox Text="test"/>
+            <local:Group Header="{StaticResource STR_SettingsWindow_General}">
+                <Button Content="{StaticResource STR_SettingsWindow_General_Privacy}" Foreground="{StaticResource SCB_DefaultTextColor}" Style="{StaticResource ButtonStyle}" Click="btn_privacy_Click"/>
+                <Button Content="{StaticResource STR_SettingsWindow_General_Updates}" Foreground="{StaticResource SCB_DefaultTextColor}" Style="{StaticResource ButtonStyle}" Click="btn_updates_Click"/>
             </local:Group>
         </StackPanel>
-        <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1" Background="{StaticResource SCB_UIBackgroundDark}" Width="5"/>
+        <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1" Background="{StaticResource SCB_UIBackgroundDarker}" Width="5"/>
+        <Frame x:Name="ContentFrame" Grid.Column="2" Content="{StaticResource General_Privacy}" Margin="4" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>

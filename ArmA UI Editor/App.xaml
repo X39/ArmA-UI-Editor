@@ -41,6 +41,14 @@
                     <clr:String x:Key="STR_MainWindow_Help_ReportBug">Report a Bug</clr:String>
                     <clr:String x:Key="STR_MainWindow_Help_OpenDocumentation">Open Documentation</clr:String>
 
+
+                    <clr:String x:Key="STR_SettingsWindow_General">General</clr:String>
+                    <clr:String x:Key="STR_SettingsWindow_General_Privacy">Privacy</clr:String>
+                    <clr:String x:Key="STR_SettingsWindow_General_Privacy_AutoReportCrashes">Auto-Report Crashes</clr:String>
+                    <clr:String x:Key="STR_SettingsWindow_General_Updates">Updates</clr:String>
+                    <clr:String x:Key="STR_SettingsWindow_General_Updates_SearchOnStart">Search for update on startup</clr:String>
+
+
                     <clr:String x:Key="STR_Snaps_EditingWindow_DisplayTab">Display</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ConfigTab">Config</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping">SnapToGrid</clr:String>

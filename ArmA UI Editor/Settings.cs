@@ -38,6 +38,11 @@ namespace ArmA_UI_Editor
             {
                 return new Settings();
             }
+            catch(Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message + "\n\nSettings got wiped.", "Settings parse error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                return new Settings();
+            }
         }
         public void Save()
         {
@@ -71,24 +76,38 @@ namespace ArmA_UI_Editor
                 switch (reader.Name.ToUpper())
                 {
                     case "USED-STYLE":
-                        reader.Read();
-                        var stylePath = reader.Value.ToUpper().Split('/');
-                        if (stylePath.Count() <= 1)
-                            break;
-                        foreach (var addin in Code.AddInManager.Instance.AddIns)
                         {
-                            if(addin.Info.Name.ToUpper() == stylePath[0])
-                            {
-                                foreach(var style in addin.Styles)
-                                {
-                                    if(style.Name.ToUpper() == stylePath[1])
-                                    {
-                                        UsedStyle.LoadStyle();
-                                        break;
-                                    }
-                                }
+                            reader.Read();
+                            var stylePath = reader.Value.ToUpper().Split('/');
+                            if (stylePath.Count() <= 1)
                                 break;
+                            foreach (var addin in Code.AddInManager.Instance.AddIns)
+                            {
+                                if (addin.Info.Name.ToUpper() == stylePath[0])
+                                {
+                                    foreach (var style in addin.Styles)
+                                    {
+                                        if (style.Name.ToUpper() == stylePath[1])
+                                        {
+                                            UsedStyle.LoadStyle();
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
                             }
+                        }
+                        break;
+                    case "AUTO-REPORT-CRASH":
+                        {
+                            reader.Read();
+                            this.AutoReportCrash = bool.Parse(reader.Value);
+                        }
+                        break;
+                    case "SEARCH-UPDATE-ON-START":
+                        {
+                            reader.Read();
+                            this.SearchUpdateOnStart = bool.Parse(reader.Value);
                         }
                         break;
                 }
@@ -104,15 +123,27 @@ namespace ArmA_UI_Editor
                 writer.WriteStartElement("used-style");
                 writer.WriteString(this.UsedStyle.Parent.Info.Name + '/' + this.UsedStyle.Name);
                 writer.WriteEndElement();
+                writer.WriteStartElement("auto-report-crash");
+                writer.WriteString(this.AutoReportCrash.ToString());
+                writer.WriteEndElement();
+                writer.WriteStartElement("search-update-on-start");
+                writer.WriteString(this.SearchUpdateOnStart.ToString());
+                writer.WriteEndElement();
             }
         }
         #endregion
 
         private Code.AddInUtil.Style _UsedStyle;
         public Code.AddInUtil.Style UsedStyle { get { return _UsedStyle; } set { this._UsedStyle = value; Save(); } }
+        private bool _AutoReportCrash;
+        public bool AutoReportCrash { get { return _AutoReportCrash; } set { this._AutoReportCrash = value; Save(); } }
+        private bool _SearchUpdateOnStart;
+        public bool SearchUpdateOnStart { get { return _SearchUpdateOnStart; } set { this._SearchUpdateOnStart = value; Save(); } }
         private Settings()
         {
-            UsedStyle = null;
+            _UsedStyle = null;
+            _AutoReportCrash = true;
+            _SearchUpdateOnStart = true;
         }
     }
 }

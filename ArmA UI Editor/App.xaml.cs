@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Net.Http;
 
 namespace ArmA_UI_Editor
 {
@@ -18,6 +19,7 @@ namespace ArmA_UI_Editor
 #if DEBUG
             System.Diagnostics.Debugger.Break();
 #endif
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
             using (var writer = new System.IO.StreamWriter("crash.txt", false))
             {
                 var ex = e.Exception;
@@ -25,7 +27,9 @@ namespace ArmA_UI_Editor
                 while (ex != null)
                 {
                     writer.WriteLine(ex.Message);
+                    builder.AppendLine(ex.Message);
                     writer.WriteLine(ex.StackTrace.Replace("\r", new string('\t', tabCount) + '\n'));
+                    builder.AppendLine(ex.StackTrace.Replace("\r", new string('\t', tabCount) + '\n'));
                     ex = ex.InnerException;
                     tabCount++;
                 }
@@ -34,7 +38,22 @@ namespace ArmA_UI_Editor
 #if DEBUG
             System.Diagnostics.Process.Start("crash.txt");
 #else
-            MessageBox.Show("An unhandled exception was found ...\nPlease report the crash.txt at https://github.com/X39/ArmA-UI-Editor/issues/new\nThe issue will be fixed ASAP :)\n\nSorry for your lost work (in case you did not saved) ...", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            if(Settings.Instance.AutoReportCrash)
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var content = new FormUrlEncodedContent(new[]
+                    {
+                        new KeyValuePair<string, string>("content", builder.ToString())
+                    });
+                    var response = client.PostAsync("http://x39.io/api.php?action=report&project=ArmA-UI-Editor", content).Result;
+                }
+                MessageBox.Show("An unhandled exception was found ...\nThe crash-log got reported (can be changed at Settings -> Options)\nThe issue will be fixed ASAP :)\n\nSorry for your lost work (in case you did not saved) ...", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                MessageBox.Show("An unhandled exception was found ...\nPlease report the crash.txt at https://github.com/X39/ArmA-UI-Editor/issues/new\nThe issue will be fixed ASAP :)\n\nSorry for your lost work (in case you did not saved) ...", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 #endif
 
             App.Current.Shutdown();
