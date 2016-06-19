@@ -123,6 +123,9 @@
     <Compile Include="UI\SelectionOverlay.xaml.cs">
       <DependentUpon>SelectionOverlay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SettingsViewer.xaml.cs">
+      <DependentUpon>SettingsViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SnapDocker.xaml.cs">
       <DependentUpon>SnapDocker.xaml</DependentUpon>
     </Compile>
@@ -221,6 +224,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\SelectionOverlay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SettingsViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
