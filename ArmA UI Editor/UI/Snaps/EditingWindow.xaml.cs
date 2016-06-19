@@ -514,7 +514,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void TabItem_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.ThisScrollViewer.Focus();
+           // this.ThisScrollViewer.Focus();
         }
         private void TabControlMainView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1013,6 +1013,22 @@ namespace ArmA_UI_Editor.UI.Snaps
                 case "200%":
                     this.ViewScale = 2;
                     break;
+            }
+        }
+
+        private void GridScaleBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if(!e.Text.All((c) => char.IsDigit(c)))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void GridScaleBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if((sender as TextBox).Text.Length > 0)
+            {
+                this.SnapGrid = int.Parse((sender as TextBox).Text);
             }
         }
     }
