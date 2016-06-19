@@ -29,12 +29,16 @@ namespace ArmA_UI_Editor.UI.Snaps
         private bool BlockWriteout;
         private SelectionOverlay SelectionOverlay_ToMove;
 
-        public static readonly DependencyProperty SnapDisabledProperty = DependencyProperty.Register("SnapDisabled", typeof(bool), typeof(PropertyGroup));
+        public static readonly DependencyProperty SnapDisabledProperty = DependencyProperty.Register("SnapDisabled", typeof(bool), typeof(EditingWindow));
         public bool SnapEnabled { get { return (bool)GetValue(SnapDisabledProperty); } set { SetValue(SnapDisabledProperty, value); } }
-        public static readonly DependencyProperty BackgroundEnabledProperty = DependencyProperty.Register("BackgroundEnabled", typeof(bool), typeof(PropertyGroup));
+        public static readonly DependencyProperty BackgroundEnabledProperty = DependencyProperty.Register("BackgroundEnabled", typeof(bool), typeof(EditingWindow));
         public bool BackgroundEnabled { get { return (bool)GetValue(BackgroundEnabledProperty); } set { SetValue(BackgroundEnabledProperty, value); } }
 
-        private int SnapGrid;
+        public static readonly DependencyProperty SnapGridProperty = DependencyProperty.Register("SnapGrid", typeof(Rect), typeof(EditingWindow));
+        public int SnapGrid { get { return (int)((Rect)GetValue(SnapGridProperty)).Width; } set { SetValue(SnapGridProperty, new Rect(0, 0, value, value)); } }
+
+        public static readonly DependencyProperty ViewScaleProperty = DependencyProperty.Register("ViewScale", typeof(double), typeof(EditingWindow));
+        public double ViewScale { get { return (double)GetValue(ViewScaleProperty); } set { SetValue(ViewScaleProperty, value); } }
 
         public string FilePath { get; set; }
 
@@ -95,6 +99,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             SnapEnabled = false;
             BackgroundEnabled = false;
             SnapGrid = 15;
+            ViewScale = 1;
             FilePath = string.Empty;
         }
         public EditingWindow(string FilePath)
@@ -110,6 +115,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             SnapEnabled = false;
             BackgroundEnabled = false;
             SnapGrid = 15;
+            ViewScale = 1;
             this.FilePath = FilePath;
         }
         public string GetFileName()
@@ -972,5 +978,42 @@ namespace ArmA_UI_Editor.UI.Snaps
             
         }
 
+        private void SizesBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+            switch((cb.SelectedValue as ComboBoxItem).Content as string)
+            {
+                case "20%":
+                    this.ViewScale = 0.2;
+                    break;
+                case "40%":
+                    this.ViewScale = 0.4;
+                    break;
+                case "60%":
+                    this.ViewScale = 0.6;
+                    break;
+                case "80%":
+                    this.ViewScale = 0.8;
+                    break;
+                case "100%":
+                    this.ViewScale = 1;
+                    break;
+                case "120%":
+                    this.ViewScale = 1.2;
+                    break;
+                case "140%":
+                    this.ViewScale = 1.4;
+                    break;
+                case "160%":
+                    this.ViewScale = 1.6;
+                    break;
+                case "180%":
+                    this.ViewScale = 1.8;
+                    break;
+                case "200%":
+                    this.ViewScale = 2;
+                    break;
+            }
+        }
     }
 }
