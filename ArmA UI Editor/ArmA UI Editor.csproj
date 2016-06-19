@@ -117,8 +117,8 @@
     <Compile Include="UI\Property.xaml.cs">
       <DependentUpon>Property.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\PropertyGroup.xaml.cs">
-      <DependentUpon>PropertyGroup.xaml</DependentUpon>
+    <Compile Include="UI\Group.xaml.cs">
+      <DependentUpon>Group.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SelectionOverlay.xaml.cs">
       <DependentUpon>SelectionOverlay.xaml</DependentUpon>
@@ -219,7 +219,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\PropertyGroup.xaml">
+    <Page Include="UI\Group.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

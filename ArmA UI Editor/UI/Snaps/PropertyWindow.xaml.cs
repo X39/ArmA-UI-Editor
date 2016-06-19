@@ -51,7 +51,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.PropertyStack.Children.Clear();
             foreach (var groupIt in properties.Items)
             {
-                var group = new PropertyGroup();
+                var group = new Group();
                 group.IsExpaned = true;
                 group.Header = groupIt.Name;
                 this.PropertyStack.Children.Add(group);

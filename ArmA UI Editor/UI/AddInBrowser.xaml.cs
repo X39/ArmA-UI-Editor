@@ -73,9 +73,9 @@ namespace ArmA_UI_Editor.UI
         private void LoadAddin(Code.AddIn addin)
         {
             this.sp_AddInContent.Children.Clear();
-            UI.PropertyGroup pg;
+            UI.Group pg;
 
-            pg = new PropertyGroup();
+            pg = new Group();
             pg.Header = "Author info";
             this.sp_AddInContent.Children.Add(pg);
             {
@@ -104,7 +104,7 @@ namespace ArmA_UI_Editor.UI
                 p.ConfigElement.Content = tb;
             }
 
-            pg = new PropertyGroup();
+            pg = new Group();
             pg.Header = "UI-Elements";
             this.sp_AddInContent.Children.Add(pg);
             foreach (var it in addin.UIElements)
@@ -145,7 +145,7 @@ namespace ArmA_UI_Editor.UI
                 pg.ItemsPanel.Children.Add(panel);
             }
 
-            pg = new PropertyGroup();
+            pg = new Group();
             pg.Header = "Styles";
             this.sp_AddInContent.Children.Add(pg);
             foreach (var it in addin.Styles)

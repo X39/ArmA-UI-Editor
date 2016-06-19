@@ -13,10 +13,10 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
-            <local:PropertyGroup Header="General">
+            <local:Group Header="General">
                 <TextBox Text="test"/>
                 <TextBox Text="test"/>
-            </local:PropertyGroup>
+            </local:Group>
         </StackPanel>
         <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1" Background="{StaticResource SCB_UIBackgroundDark}" Width="5"/>
     </Grid>

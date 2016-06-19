@@ -20,19 +20,19 @@ namespace ArmA_UI_Editor.UI
     /// Interaction logic for PropertyGroup.xaml
     /// </summary>
     [ContentProperty("Children")]
-    public partial class PropertyGroup : UserControl
+    public partial class Group : UserControl
     {
-        public static readonly DependencyPropertyKey ChildrenProperty = DependencyProperty.RegisterReadOnly("Children", typeof(UIElementCollection), typeof(PropertyGroup), new PropertyMetadata());
+        public static readonly DependencyPropertyKey ChildrenProperty = DependencyProperty.RegisterReadOnly("Children", typeof(UIElementCollection), typeof(Group), new PropertyMetadata());
 
         public UIElementCollection Children { get { return (UIElementCollection)GetValue(ChildrenProperty.DependencyProperty); } private set { SetValue(ChildrenProperty, value); } }
 
-        public static readonly DependencyProperty IsExpanedProperty = DependencyProperty.Register("IsExpaned", typeof(bool), typeof(PropertyGroup));
+        public static readonly DependencyProperty IsExpanedProperty = DependencyProperty.Register("IsExpaned", typeof(bool), typeof(Group));
         public bool IsExpaned { get { return (bool)GetValue(IsExpanedProperty); } set { SetValue(IsExpanedProperty, value); } }
 
-        public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(string), typeof(PropertyGroup));
+        public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(string), typeof(Group));
         public string Header { get { return (string)GetValue(HeaderProperty); } set { SetValue(HeaderProperty, value); } }
 
-        public PropertyGroup()
+        public Group()
         {
             InitializeComponent();
             this.IsExpaned = true;
