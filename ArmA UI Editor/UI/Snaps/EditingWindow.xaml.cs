@@ -89,7 +89,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             sb.AppendLine("\tenableSimulation = 1;");
             sb.AppendLine("\tclass controls");
             sb.AppendLine("\t{");
-            sb.AppendLine("\t\tclass MyFirstRscText : RscText\r\n\t\t{\r\n\t\t\tw = \"(120 / 1980) * SafeZoneW\";\r\n\t\t\th = \"(30 / 1080) * SafeZoneH\";\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.5, 0.1, 0.1, 0.1};\r\n\t\t};");
+            sb.AppendLine("\t\tclass MyFirstRscText : RscText\r\n\t\t{\r\n\t\t\tw = \"(120 / 1980) * SafeZoneW\";\r\n\t\t\th = \"(30 / 1080) * SafeZoneH\";\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.1, 0.1, 0.1, 0.5};\r\n\t\t};");
             sb.AppendLine("\t};");
             sb.AppendLine("};");
 
