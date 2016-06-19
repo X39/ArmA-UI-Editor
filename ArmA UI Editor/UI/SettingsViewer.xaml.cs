@@ -23,5 +23,14 @@ namespace ArmA_UI_Editor.UI
         {
             InitializeComponent();
         }
+
+        private void btn_privacy_Click(object sender, RoutedEventArgs e)
+        {
+            this.ContentFrame.Content = this.Resources["General_Privacy"] as Page;
+        }
+        private void btn_updates_Click(object sender, RoutedEventArgs e)
+        {
+            this.ContentFrame.Content = this.Resources["General_Updates"] as Page;
+        }
     }
 }
