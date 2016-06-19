@@ -35,7 +35,11 @@
                 <ResourceDictionary x:Name="Strings">
                     <clr:String x:Key="STR_MainWindow_Settings">Settings</clr:String>
                     <clr:String x:Key="STR_MainWindow_Settings_ShowAddInBrowser">Show AddIn Browser</clr:String>
-                    
+
+                    <clr:String x:Key="STR_MainWindow_Help">Help</clr:String>
+                    <clr:String x:Key="STR_MainWindow_Help_ReportBug">Report a Bug</clr:String>
+                    <clr:String x:Key="STR_MainWindow_Help_OpenDocumentation">Open Documentation</clr:String>
+
                     <clr:String x:Key="STR_Snaps_EditingWindow_DisplayTab">Display</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ConfigTab">Config</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping">SnapToGrid</clr:String>
