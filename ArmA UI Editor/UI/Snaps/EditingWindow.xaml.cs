@@ -42,10 +42,18 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public string FilePath { get; set; }
 
+        private bool HasChanges;
+
 
         public void UnloadSnap()
         {
-
+            if (HasChanges)
+            {
+                if (MessageBox.Show("Do you want to save?", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    SaveFile();
+                }
+            }
         }
 
         public void LoadSnap()
@@ -110,6 +118,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             SnapGrid = 15;
             ViewScale = 1;
             FilePath = string.Empty;
+            HasChanges = true;
         }
         public EditingWindow(string FilePath)
         {
@@ -126,6 +135,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             SnapGrid = 15;
             ViewScale = 1;
             this.FilePath = FilePath;
+            HasChanges = false;
         }
         public string GetFileName()
         {
@@ -154,6 +164,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 writer.Write(this.Textbox.Text);
                 writer.Flush();
             }
+            HasChanges = false;
         }
 
         #region SelectionOverlay Event Handler
@@ -526,6 +537,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void Textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            HasChanges = true;
             this.BlockWriteout = false;
             this.ConfigTextboxDiffersConfigInstance = true;
             foreach(var change in e.Changes)
