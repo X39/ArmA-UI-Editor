@@ -66,6 +66,7 @@
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping">SnapToGrid</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleBackground">Background Image</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_Properties">Properties</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_Delete">Delete</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapElementToGrid">Snap to Grid</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_FitElementToGrid">Resize to Grid</clr:String>
                     <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapFitElementToGrid">Snap &amp; Resize to Grid</clr:String>

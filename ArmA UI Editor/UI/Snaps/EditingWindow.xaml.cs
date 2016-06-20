@@ -166,6 +166,36 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             HasChanges = false;
         }
+        private bool RemoveSelectedElements()
+        {
+            foreach (var it in this.DisplayCanvas.Children)
+            {
+                if (it is SelectionOverlay)
+                {
+                    var overlay = it as SelectionOverlay;
+                    foreach (var el in overlay.ToggledElements)
+                    {
+                        if (el is FrameworkElement)
+                        {
+                            var fElement = el as FrameworkElement;
+                            RemoveElement(fElement);
+                        }
+                    }
+                    DisplayCanvas.Children.Remove(overlay);
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void RemoveElement(FrameworkElement el)
+        {
+            var data = this.ConfigFile[this.ConfigFile.Count - 1];
+            var uiElements = data.Class["controls"];
+            var tagData = el.Tag as TAG_CanvasChildElement;
+            uiElements.Class.Remove(tagData.data.Name);
+            this.ConfigTextboxDiffersConfigInstance = true;
+            DisplayCanvas.Children.Remove(el);
+        }
 
         #region SelectionOverlay Event Handler
         private void SelectionOverlay_OnStopMove(object sender, EventArgs e)
@@ -504,29 +534,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             if(e.Key == Key.Delete)
             {
-                foreach(var it in this.DisplayCanvas.Children)
-                {
-                    if(it is SelectionOverlay)
-                    {
-                        var overlay = it as SelectionOverlay;
-                        var data = this.ConfigFile[this.ConfigFile.Count - 1];
-                        var uiElements = data.Class["controls"];
-                        foreach (var el in overlay.ToggledElements)
-                        {
-                            if(el is FrameworkElement)
-                            {
-                                var fElement = el as FrameworkElement;
-                                var tagData = fElement.Tag as TAG_CanvasChildElement;
-                                uiElements.Class.Remove(tagData.data.Name);
-                                this.ConfigTextboxDiffersConfigInstance = true;
-                            }
-                            DisplayCanvas.Children.Remove(el);
-                        }
-                        DisplayCanvas.Children.Remove(overlay);
-                        e.Handled = true;
-                        break;
-                    }
-                }
+                if(this.RemoveSelectedElements())
+                    e.Handled = true;
             }
             if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
@@ -535,6 +544,8 @@ namespace ArmA_UI_Editor.UI.Snaps
                     this.SaveFile();
             }
         }
+
+
         private void Textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             HasChanges = true;
@@ -848,6 +859,20 @@ namespace ArmA_UI_Editor.UI.Snaps
                     tag.LoadProperties();
                 }
             }
+        }
+        private void ContextMenu_ChildElement_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            var mi = sender as MenuItem;
+            var cm = mi.Parent as ContextMenu;
+            if (cm.Tag is FrameworkElement)
+            {
+                var el = cm.Tag as FrameworkElement;
+                RemoveElement(el);
+            }
+        }
+        private void ContextMenu_ChildElements_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveSelectedElements();
         }
         #endregion
         #region ChildElements ContextMenu
