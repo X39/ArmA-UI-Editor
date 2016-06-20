@@ -98,7 +98,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             sb.AppendLine("\tenableSimulation = 1;");
             sb.AppendLine("\tclass controls");
             sb.AppendLine("\t{");
-            sb.AppendLine("\t\tclass MyFirstRscText : RscText\r\n\t\t{\r\n\t\t\tw = \"(120 / 1980) * SafeZoneW\";\r\n\t\t\th = \"(30 / 1080) * SafeZoneH\";\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.1, 0.1, 0.1, 0.5};\r\n\t\t};");
+            sb.AppendLine("\t\tclass MyFirstRscText : RscText\r\n\t\t{\r\n\t\t\tw = \"(120 / 1920) * SafeZoneW\";\r\n\t\t\th = \"(30 / 1080) * SafeZoneH\";\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.1, 0.1, 0.1, 0.5};\r\n\t\t};");
             sb.AppendLine("\t};");
             sb.AppendLine("};");
 
@@ -960,7 +960,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             switch (fieldType)
             {
                 case FieldTypeEnum.XField:
-                    max = 1980;
+                    max = 1920;
                     builder.Append("SafeZoneX + ");
                     builder.Append('(');
                     builder.Append(data.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -980,7 +980,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                     builder.Append(" * SafeZoneH");
                     break;
                 case FieldTypeEnum.WField:
-                    max = 1980;
+                    max = 1920;
                     builder.Append('(');
                     builder.Append(data.ToString(System.Globalization.CultureInfo.InvariantCulture));
                     builder.Append(" / ");
@@ -1012,7 +1012,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 case FieldTypeEnum.WField:
                     data = data.Replace("SAFEZONEX", "0");
                     data = data.Replace("SAFEZONEW", "1");
-                    max = 1980;
+                    max = 1920;
                     break;
                 case FieldTypeEnum.YField:
                 case FieldTypeEnum.HField:
