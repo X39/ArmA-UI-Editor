@@ -7,7 +7,17 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Label>
-        <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SnapLabel}}, Path=Text}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SnapLabel}}, Path=Text}"/>
+            <Button x:Name="btnCloseLabel" Grid.Column="2" Style="{StaticResource ButtonStyle}" Background="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Label}}, Path=Background}" Padding="4">
+                <Path Data="M 0,5 L 45,50 50,45 5,0 M 100,5 L 5,100 0,95 95,0 M 95,100 L 50,55 55,50 100,95" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Label}}, Path=Foreground}" StrokeThickness="1" Stretch="Uniform" Width="8" Height="8"/>
+            </Button>
+        </Grid>
         <Label.Style>
             <Style TargetType="{x:Type Label}">
                 <Setter Property="Foreground" Value="{StaticResource SCB_DefaultTextColor}"/>
@@ -27,7 +37,7 @@
                                     <Setter Property="Foreground" Value="{StaticResource SCB_UIBlue}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SnapLabel}}, Path=DockedAt}" Value="{x:Static Dock.Left}">
-                                    <Setter Property="BorderThickness" Value="0,0,5,0"/>
+                                    <Setter Property="BorderThickness" Value="0,5,0,0"/>
                                     <Setter Property="LayoutTransform">
                                         <Setter.Value>
                                             <RotateTransform Angle="90"/>
@@ -38,15 +48,15 @@
                                     <Setter Property="BorderThickness" Value="0,0,0,5"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SnapLabel}}, Path=DockedAt}" Value="{x:Static Dock.Bottom}">
-                                    <Setter Property="BorderThickness" Value="5,0,0,0"/>
+                                    <Setter Property="BorderThickness" Value="0,5,0,0"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SnapLabel}}, Path=DockedAt}" Value="{x:Static Dock.Right}">
+                                    <Setter Property="BorderThickness" Value="0,0,0,5"/>
                                     <Setter Property="LayoutTransform">
                                         <Setter.Value>
                                             <RotateTransform Angle="90"/>
                                         </Setter.Value>
                                     </Setter>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SnapLabel}}, Path=DockedAt}" Value="{x:Static Dock.Right}">
-                                    <Setter Property="BorderThickness" Value="5,0,0,0"/>
                                 </DataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>

@@ -5,7 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ArmA_UI_Editor.UI.Snaps"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      MinWidth="150"
+      MinHeight="150"
+      Height="150"
+      d:DesignHeight="150" d:DesignWidth="150"
       Title="OutputWindow">
 
     <TextBox x:Name="LogBox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" IsReadOnly="True" FontFamily="Courier New"/>

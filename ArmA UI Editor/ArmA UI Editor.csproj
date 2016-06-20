@@ -141,6 +141,9 @@
     <Compile Include="UI\ParseError.xaml.cs">
       <DependentUpon>ParseError.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Snaps\ToolboxWindow.xaml.cs">
+      <DependentUpon>ToolboxWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Snaps\PropertyWindow.xaml.cs">
       <DependentUpon>PropertyWindow.xaml</DependentUpon>
     </Compile>
@@ -253,6 +256,10 @@
     <Page Include="UI\ParseError.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Snaps\ToolboxWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Snaps\PropertyWindow.xaml">
       <SubType>Designer</SubType>

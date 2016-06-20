@@ -23,12 +23,27 @@ namespace ArmA_UI_Editor.UI
         public static readonly DependencyProperty PinnedProperty = DependencyProperty.Register("Pinned", typeof(bool), typeof(SnapWindow));
         public bool Pinned { get { return (bool)GetValue(PinnedProperty); } set { SetValue(PinnedProperty, value); } }
 
-        internal Code.Interface.ISnapWindow Window { get { return this.ContentFrame.Content as Code.Interface.ISnapWindow; } }
+        public static readonly DependencyProperty HeaderVisibleProperty = DependencyProperty.Register("HeaderVisible", typeof(bool), typeof(SnapWindow));
+        public bool HeaderVisible { get { return (bool)GetValue(HeaderVisibleProperty); } set { SetValue(HeaderVisibleProperty, value); } }
+
+        internal Code.Interface.ISnapWindow Window { get { return this.WindowContent as Code.Interface.ISnapWindow; } }
+        public static readonly DependencyProperty WindowProperty = DependencyProperty.Register("Window", typeof(object), typeof(SnapWindow));
+        public object WindowContent { get { return GetValue(WindowProperty); } set { SetValue(WindowProperty, value); } }
 
         public SnapWindow()
         {
             InitializeComponent();
             Pinned = false;
+            HeaderVisible = true;
+        }
+        internal SnapWindow(Code.Interface.ISnapWindow Window, string HeaderText)
+        {
+            InitializeComponent();
+            Pinned = false;
+            HeaderVisible = true;
+
+            this.WindowContent = Window;
+            this.Header.Text = HeaderText;
         }
 
         private void PinWindow_Click(object sender, RoutedEventArgs e)

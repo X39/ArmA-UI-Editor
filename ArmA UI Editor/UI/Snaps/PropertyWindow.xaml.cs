@@ -73,7 +73,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             if (_Instance == null)
             {
-                MainWindow.DisplaySnap(new PropertyWindow());
+                (App.Current.MainWindow as MainWindow).Docker.AddSnap(new SnapWindow(new PropertyWindow(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
             }
             return _Instance;
         }

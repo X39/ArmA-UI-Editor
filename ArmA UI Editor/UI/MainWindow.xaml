@@ -77,19 +77,17 @@
     -->
     <DockPanel>
         <Menu DockPanel.Dock="Top" Style="{StaticResource MenuStyle}">
-            <!--<MenuItem Header="_File">
-                <MenuItem Header="_Open"/>
-                <MenuItem Header="_Save"/>
-                <Separator/>
-                <MenuItem Header="SubMenuTest">
-                    <MenuItem Header="Entry"/>
-                    <MenuItem Header="Entry"/>
-                    <MenuItem Header="Entry"/>
-                    <Separator/>
-                    <MenuItem Header="Entry"/>
-                    <MenuItem Header="Entry"/>
-                </MenuItem>
-            </MenuItem>-->
+            <MenuItem Header="{StaticResource STR_MainWindow_File}">
+                <MenuItem Header="{StaticResource STR_MainWindow_File_New}" Click="MenuItem_File_New_Click"/>
+                <MenuItem Header="{StaticResource STR_MainWindow_File_Open}" Click="MenuItem_File_Open_Click"/>
+                <MenuItem Header="{StaticResource STR_MainWindow_File_Save}" Click="MenuItem_File_Save_Click" IsEnabled="False" ToolTip="Please press CTRL+S instead"/>
+                <MenuItem Header="{StaticResource STR_MainWindow_File_SaveAs}" Click="MenuItem_File_Save_Click" IsEnabled="False" ToolTip="Please press CTRL+S instead"/>
+            </MenuItem>
+            <MenuItem Header="{StaticResource STR_MainWindow_View}">
+                <MenuItem Header="{StaticResource STR_Window_Toolbox}" Click="MenuItem_View_Toolbox_Click"/>
+                <MenuItem Header="{StaticResource STR_Window_Properties}" Click="MenuItem_View_Properties_Click"/>
+                <MenuItem Header="{StaticResource STR_Window_Output}" Click="MenuItem_View_Output_Click"/>
+            </MenuItem>
             <MenuItem Header="{StaticResource STR_MainWindow_Settings}">
                 <MenuItem Header="{StaticResource STR_MainWindow_Settings_ShowAddInBrowser}" Click="MenuItem_Settings_ShowAddInBrowser_Click"/>
                 <MenuItem Header="{StaticResource STR_MainWindow_Settings_ShowSettingsWindow}" Click="MenuItem_Settings_ShowSettingsWindow_Click"/>
@@ -98,13 +96,18 @@
                 <MenuItem Header="{StaticResource STR_MainWindow_Help_ReportBug}" Click="MenuItem_Help_ReportBug_Click"/>
                 <MenuItem Header="{StaticResource STR_MainWindow_Help_OpenDocumentation}" Click="MenuItem_Help_OpenDocumentation_Click"/>
             </MenuItem>
-            <MenuItem Header="Donate &lt;3" Click="MenuItem_Donate_Click"/>
+            <MenuItem Header="{StaticResource STR_MainWindow_Donate}" Click="MenuItem_Donate_Click"/>
         </Menu>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Frame x:Name="frame" Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch" NavigationUIVisibility="Hidden"/>
+            </Grid>
+
+            <!--
             <Grid Margin="3" Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" MinWidth="128"/>
@@ -137,7 +140,7 @@
                 </Grid>
                 <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="1"/>
                 <Grid Grid.Column="2">
-                    <Frame x:Name="frame" Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch"/>
+                    <Frame x:Name="frame" Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch" NavigationUIVisibility="Hidden"/>
                 </Grid>
                 <GridSplitter Style="{StaticResource GridSplitterStyle}" Grid.Column="3"/>
                 <Grid Grid.Column="4">
@@ -163,13 +166,9 @@
                     </TabControl>
                 </Grid>
             </Grid>
+            -->
             <Grid x:Name="StatusBar" x:FieldModifier="public" Grid.Row="1" Background="{StaticResource SCB_UIBlue}" Height="24">
                 <TextBlock x:Name="StatusTextbox" x:FieldModifier="public" Foreground="{StaticResource SCB_DefaultTextColor}" Text="" VerticalAlignment="Center" Margin="8, 0, 0, 0"/>
-                <!--<ComboBox x:Name="DisplaySizeComboBox" SelectedIndex="0" Width="90" HorizontalAlignment="Right">
-                    <ComboBoxItem>
-                        1920x1080
-                    </ComboBoxItem>
-                </ComboBox>-->
             </Grid>
         </Grid>
     </DockPanel>

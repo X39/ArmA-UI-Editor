@@ -12,6 +12,16 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Background="{StaticResource SCB_SnapWindow_OutterBackground}">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HeaderVisible, RelativeSource={RelativeSource AncestorType={x:Type local:SnapWindow}}}" Value="false">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -46,7 +56,7 @@
             </Button>
         </Grid>
         <Border Grid.Row="1" BorderBrush="{StaticResource SCB_SnapWindow_OutterBackground}" BorderThickness="1" Background="{StaticResource SCB_SnapWindow_InnerBackground}">
-            <Frame x:Name="ContentFrame" Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch"/>
+            <Frame Height="Auto" HorizontalAlignment="Stretch" Width="Auto" VerticalAlignment="Stretch" Content="{Binding Window, RelativeSource={RelativeSource AncestorType={x:Type local:SnapWindow}}}"/>
         </Border>
     </Grid>
 </UserControl>
