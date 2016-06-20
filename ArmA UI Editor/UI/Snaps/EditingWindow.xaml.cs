@@ -43,6 +43,15 @@ namespace ArmA_UI_Editor.UI.Snaps
         public string FilePath { get; set; }
 
 
+        public void UnloadSnap()
+        {
+
+        }
+
+        public void LoadSnap()
+        {
+
+        }
 
         internal class TAG_CanvasChildElement
         {
@@ -231,6 +240,57 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         #endregion
         #region XAML Event Handler
+        private void SizesBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+            switch ((cb.SelectedValue as ComboBoxItem).Content as string)
+            {
+                case "20%":
+                    this.ViewScale = 0.2;
+                    break;
+                case "40%":
+                    this.ViewScale = 0.4;
+                    break;
+                case "60%":
+                    this.ViewScale = 0.6;
+                    break;
+                case "80%":
+                    this.ViewScale = 0.8;
+                    break;
+                case "100%":
+                    this.ViewScale = 1;
+                    break;
+                case "120%":
+                    this.ViewScale = 1.2;
+                    break;
+                case "140%":
+                    this.ViewScale = 1.4;
+                    break;
+                case "160%":
+                    this.ViewScale = 1.6;
+                    break;
+                case "180%":
+                    this.ViewScale = 1.8;
+                    break;
+                case "200%":
+                    this.ViewScale = 2;
+                    break;
+            }
+        }
+        private void GridScaleBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!e.Text.All((c) => char.IsDigit(c)))
+            {
+                e.Handled = true;
+            }
+        }
+        private void GridScaleBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if ((sender as TextBox).Text.Length > 0)
+            {
+                this.SnapGrid = int.Parse((sender as TextBox).Text);
+            }
+        }
         private void DisplayCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var arr = this.DisplayCanvas.Children;
@@ -968,68 +1028,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             return (double.Parse(dt.Compute(data, "").ToString())) * max;
         }
 
-        public void UnloadSnap()
-        {
-            
-        }
 
-        public void LoadSnap()
-        {
-            
-        }
 
-        private void SizesBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox cb = sender as ComboBox;
-            switch((cb.SelectedValue as ComboBoxItem).Content as string)
-            {
-                case "20%":
-                    this.ViewScale = 0.2;
-                    break;
-                case "40%":
-                    this.ViewScale = 0.4;
-                    break;
-                case "60%":
-                    this.ViewScale = 0.6;
-                    break;
-                case "80%":
-                    this.ViewScale = 0.8;
-                    break;
-                case "100%":
-                    this.ViewScale = 1;
-                    break;
-                case "120%":
-                    this.ViewScale = 1.2;
-                    break;
-                case "140%":
-                    this.ViewScale = 1.4;
-                    break;
-                case "160%":
-                    this.ViewScale = 1.6;
-                    break;
-                case "180%":
-                    this.ViewScale = 1.8;
-                    break;
-                case "200%":
-                    this.ViewScale = 2;
-                    break;
-            }
-        }
-
-        private void GridScaleBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            if(!e.Text.All((c) => char.IsDigit(c)))
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void GridScaleBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if((sender as TextBox).Text.Length > 0)
-            {
-                this.SnapGrid = int.Parse((sender as TextBox).Text);
-            }
-        }
     }
 }
