@@ -1,0 +1,23 @@
+﻿<Page x:Class="ArmA_UI_Editor.UI.Snaps.ToolboxWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ArmA_UI_Editor.UI.Snaps"
+      mc:Ignorable="d"
+      MinWidth="256"
+      MinHeight="256"
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="PropertyWindow">
+
+    <ListBox x:Name="ToolBox" Initialized="ToolBox_Initialized" Style="{StaticResource ListBoxStyle}" MouseMove="ToolBox_MouseMove" MouseLeftButtonDown="ToolBox_MouseLeftButtonDown">
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal" MouseLeftButtonDown="ToolBox_MouseLeftButtonDown">
+                    <Image Margin="0, 0, 3, 0" Source="{Binding Image}" MouseLeftButtonDown="ToolBox_MouseLeftButtonDown"/>
+                    <TextBlock Text="{Binding DisplayName}" MouseLeftButtonDown="ToolBox_MouseLeftButtonDown"/>
+                </StackPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</Page>
