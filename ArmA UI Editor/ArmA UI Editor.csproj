@@ -129,6 +129,9 @@
     <Compile Include="UI\SnapDocker.xaml.cs">
       <DependentUpon>SnapDocker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SnapLabel.xaml.cs">
+      <DependentUpon>SnapLabel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Snaps\EditingWindow.xaml.cs">
       <DependentUpon>EditingWindow.xaml</DependentUpon>
     </Compile>
@@ -232,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\SnapDocker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SnapLabel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -23,6 +23,8 @@ namespace ArmA_UI_Editor.UI
         public static readonly DependencyProperty PinnedProperty = DependencyProperty.Register("Pinned", typeof(bool), typeof(SnapWindow));
         public bool Pinned { get { return (bool)GetValue(PinnedProperty); } set { SetValue(PinnedProperty, value); } }
 
+        internal Code.Interface.ISnapWindow Window { get { return this.ContentFrame.Content as Code.Interface.ISnapWindow; } }
+
         public SnapWindow()
         {
             InitializeComponent();
@@ -32,6 +34,23 @@ namespace ArmA_UI_Editor.UI
         private void PinWindow_Click(object sender, RoutedEventArgs e)
         {
             this.Pinned = !this.Pinned;
+        }
+        public bool IsDisplayed
+        {
+            get
+            {
+                return this.Visibility == Visibility.Visible;
+            }
+        }
+        public void DisplaySnap(Frame frame)
+        {
+            frame.Content = this;
+            this.Visibility = Visibility.Visible;
+        }
+
+        public void HideSnap()
+        {
+            this.Visibility = Visibility.Collapsed;
         }
     }
 }

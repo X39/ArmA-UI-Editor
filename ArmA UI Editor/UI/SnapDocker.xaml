@@ -11,10 +11,11 @@
     <Page.Resources>
         <Style TargetType="{x:Type Label}" x:Key="SlidePanelLabelButtonBase">
             <Setter Property="Foreground" Value="{StaticResource SCB_DefaultTextColor}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,5"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Label}">
-                        <Border x:Name="BorderElement" BorderBrush="{StaticResource SCB_UIBackgroundLight}" BorderThickness="0,0,0,5" Margin="5,0,5,0">
+                        <Border x:Name="BorderElement" BorderBrush="{StaticResource SCB_UIBackgroundLight}" BorderThickness="{TemplateBinding BorderThickness}" Margin="5,0,5,0">
                             <ContentPresenter x:Name="PresenterElement"/>
                         </Border>
 
@@ -30,49 +31,13 @@
         </Style>
     </Page.Resources>
     <DockPanel>
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Background="{StaticResource SCB_UIBackground}">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}">
-                    <Setter Property="LayoutTransform">
-                        <Setter.Value>
-                            <RotateTransform Angle="90"/>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </StackPanel.Resources>
-
-            <Label Content="TEST"/>
-            <Label Content="TEST"/>
-        </StackPanel>
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Right" Background="{StaticResource SCB_UIBackground}">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}">
-                    <Setter Property="LayoutTransform">
-                        <Setter.Value>
-                            <RotateTransform Angle="270"/>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </StackPanel.Resources>
-
-            <Label Content="TEST"/>
-            <Label Content="TEST"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Background="{StaticResource SCB_UIBackground}">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}"/>
-            </StackPanel.Resources>
-            <Label Content="TEST"/>
-            <Label Content="TEST"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Background="{StaticResource SCB_UIBackground}">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type Label}" BasedOn="{StaticResource SlidePanelLabelButtonBase}"/>
-            </StackPanel.Resources>
-
-            <Label Content="TEST"/>
-            <Label Content="TEST"/>
-        </StackPanel>
-        <Frame/>
+        <StackPanel x:Name="SP_Left" Orientation="Vertical" DockPanel.Dock="Left" Background="{StaticResource SCB_UIBackground}"/>
+        <Frame x:Name="F_Left" DockPanel.Dock="Left" NavigationUIVisibility="Hidden"/>
+        <StackPanel x:Name="SP_Right" Orientation="Vertical" DockPanel.Dock="Right" Background="{StaticResource SCB_UIBackground}"/>
+        <Frame x:Name="F_Right" DockPanel.Dock="Right" NavigationUIVisibility="Hidden"/>
+        <StackPanel x:Name="SP_Bottom" Orientation="Horizontal" DockPanel.Dock="Bottom" Background="{StaticResource SCB_UIBackground}"/>
+        <Frame x:Name="F_Bottom" DockPanel.Dock="Bottom" NavigationUIVisibility="Hidden"/>
+        <StackPanel x:Name="SP_Top" Orientation="Horizontal" DockPanel.Dock="Top" Background="{StaticResource SCB_UIBackground}"/>
+        <Frame x:Name="F_Top" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" NavigationUIVisibility="Hidden"/>
     </DockPanel>
 </Page>
