@@ -20,6 +20,23 @@ namespace ArmA_UI_Editor.UI
     /// </summary>
     public partial class SnapDocker : Page
     {
+        #region events
+        public class OnSnapFocusChangeEventArgs : EventArgs
+        {
+            SnapWindow SnapWindow;
+            Dock Dock;
+            public OnSnapFocusChangeEventArgs(SnapWindow SnapWindow, Dock Dock)
+            {
+                this.SnapWindow = SnapWindow;
+                this.Dock = Dock;
+            }
+        }
+        /// <summary>
+        /// Raised when any focus changes.
+        /// event args SnapWindow might contain null if current focus got removed completly!
+        /// </summary>
+        public event EventHandler<OnSnapFocusChangeEventArgs> OnSnapFocusChange;
+        #endregion
         private class TAG_Label
         {
             public SnapWindow window;
@@ -100,6 +117,8 @@ namespace ArmA_UI_Editor.UI
             else
             {
                 frame.Content = null;
+                if (OnSnapFocusChange != null)
+                    OnSnapFocusChange(this, new OnSnapFocusChangeEventArgs(null, label.DockedAt));
             }
             panel.Children.Remove(label);
         }
@@ -148,6 +167,13 @@ namespace ArmA_UI_Editor.UI
             {
                 tag.window.DisplaySnap(frame);
                 l.IsDisplayed = true;
+                if (OnSnapFocusChange != null)
+                    OnSnapFocusChange(this, new OnSnapFocusChangeEventArgs(tag.window, l.DockedAt));
+            }
+            else
+            {
+                if (OnSnapFocusChange != null)
+                    OnSnapFocusChange(this, new OnSnapFocusChangeEventArgs(null, l.DockedAt));
             }
         }
         public List<T> FindSnaps<T>()
