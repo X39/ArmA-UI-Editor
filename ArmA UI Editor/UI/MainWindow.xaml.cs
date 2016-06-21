@@ -32,10 +32,10 @@ namespace ArmA_UI_Editor.UI
             this.Docker = new SnapDocker();
             this.frame.Content = this.Docker;
 
-            this.Docker.AddSnap(new SnapWindow(new Snaps.EditingWindow(), "MyUiConfig.cpp"), Dock.Top);
-            this.Docker.AddSnap(new SnapWindow(new Snaps.OutputWindow(), App.Current.Resources["STR_Window_Output"] as string), Dock.Bottom);
-            this.Docker.AddSnap(new SnapWindow(new Snaps.PropertyWindow(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
-            this.Docker.AddSnap(new SnapWindow(new Snaps.ToolboxWindow(), App.Current.Resources["STR_Window_Toolbox"] as string), Dock.Left);
+            this.Docker.AddSnap(new SnapWindow(new Snaps.EditingSnap(), "MyUiConfig.cpp"), Dock.Top);
+            this.Docker.AddSnap(new SnapWindow(new Snaps.OutputSnap(), App.Current.Resources["STR_Window_Output"] as string), Dock.Bottom);
+            this.Docker.AddSnap(new SnapWindow(new Snaps.PropertySnap(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
+            this.Docker.AddSnap(new SnapWindow(new Snaps.ToolboxSnap(), App.Current.Resources["STR_Window_Toolbox"] as string), Dock.Left);
         }
 
         private void ListView_Initialized(object sender, EventArgs e)
@@ -105,7 +105,7 @@ namespace ArmA_UI_Editor.UI
 
         private void MenuItem_File_New_Click(object sender, RoutedEventArgs e)
         {
-            this.Docker.AddSnap(new SnapWindow(new Snaps.EditingWindow(), "MyUiConfig.cpp"), Dock.Top);
+            this.Docker.AddSnap(new SnapWindow(new Snaps.EditingSnap(), "MyUiConfig.cpp"), Dock.Top);
         }
 
         private void MenuItem_File_Open_Click(object sender, RoutedEventArgs e)
@@ -121,7 +121,7 @@ namespace ArmA_UI_Editor.UI
                 return;
             }
 
-            this.Docker.AddSnap(new SnapWindow(new Snaps.EditingWindow(dlg.FileName), System.IO.Path.GetFileName(dlg.FileName)), Dock.Top);
+            this.Docker.AddSnap(new SnapWindow(new Snaps.EditingSnap(dlg.FileName), System.IO.Path.GetFileName(dlg.FileName)), Dock.Top);
         }
 
         private void MenuItem_File_Save_Click(object sender, RoutedEventArgs e)
@@ -131,26 +131,26 @@ namespace ArmA_UI_Editor.UI
 
         private void MenuItem_View_Toolbox_Click(object sender, RoutedEventArgs e)
         {
-            var elList = Docker.FindSnaps<Snaps.ToolboxWindow>();
+            var elList = Docker.FindSnaps<Snaps.ToolboxSnap>();
             if (elList.Count == 0)
             {
-                this.Docker.AddSnap(new SnapWindow(new Snaps.ToolboxWindow(), App.Current.Resources["STR_Window_Toolbox"] as string), Dock.Left);
+                this.Docker.AddSnap(new SnapWindow(new Snaps.ToolboxSnap(), App.Current.Resources["STR_Window_Toolbox"] as string), Dock.Left);
             }
         }
         private void MenuItem_View_Properties_Click(object sender, RoutedEventArgs e)
         {
-            var elList = Docker.FindSnaps<Snaps.PropertyWindow>();
+            var elList = Docker.FindSnaps<Snaps.PropertySnap>();
             if (elList.Count == 0)
             {
-                this.Docker.AddSnap(new SnapWindow(new Snaps.PropertyWindow(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
+                this.Docker.AddSnap(new SnapWindow(new Snaps.PropertySnap(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
             }
         }
         private void MenuItem_View_Output_Click(object sender, RoutedEventArgs e)
         {
-            var elList = Docker.FindSnaps<Snaps.OutputWindow>();
+            var elList = Docker.FindSnaps<Snaps.OutputSnap>();
             if(elList.Count == 0)
             {
-                this.Docker.AddSnap(new SnapWindow(new Snaps.OutputWindow(), App.Current.Resources["STR_Window_Output"] as string), Dock.Bottom);
+                this.Docker.AddSnap(new SnapWindow(new Snaps.OutputSnap(), App.Current.Resources["STR_Window_Output"] as string), Dock.Bottom);
             }
         }
 

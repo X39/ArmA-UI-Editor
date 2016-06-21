@@ -20,14 +20,14 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// <summary>
     /// Interaction logic for PropertyWindow.xaml
     /// </summary>
-    public partial class PropertyWindow : Page, Code.Interface.ISnapWindow
+    public partial class PropertySnap : Page, Code.Interface.ISnapWindow
     {
-        private static PropertyWindow _Instance;
+        private static PropertySnap _Instance;
         public Data CurrentData { get; private set; }
         public Code.AddInUtil.Properties CurrentProperties { get; private set; }
-        public EditingWindow CurrentWindow { get; private set; }
+        public EditingSnap CurrentWindow { get; private set; }
 
-        public PropertyWindow()
+        public PropertySnap()
         {
             InitializeComponent();
         }
@@ -42,11 +42,11 @@ namespace ArmA_UI_Editor.UI.Snaps
             (App.Current.MainWindow as MainWindow).SetStatusbarText(e, true);
         }
 
-        ~PropertyWindow()
+        ~PropertySnap()
         {
 
         }
-        public void LoadProperties(Code.AddInUtil.Properties properties, SQF.ClassParser.Data data, EditingWindow window)
+        public void LoadProperties(Code.AddInUtil.Properties properties, SQF.ClassParser.Data data, EditingSnap window)
         {
             this.CurrentProperties = properties;
             this.CurrentData = data;
@@ -73,11 +73,11 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
 
 
-        internal static PropertyWindow GetDisplayWindow()
+        internal static PropertySnap GetDisplayWindow()
         {
             if (_Instance == null)
             {
-                (App.Current.MainWindow as MainWindow).Docker.AddSnap(new SnapWindow(new PropertyWindow(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
+                (App.Current.MainWindow as MainWindow).Docker.AddSnap(new SnapWindow(new PropertySnap(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
             }
             return _Instance;
         }

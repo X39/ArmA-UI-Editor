@@ -25,7 +25,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             }
             public abstract class PType
             {
-                public abstract FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window);
+                public abstract FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window);
                 public static event EventHandler ValueChanged;
                 public static event EventHandler<string> OnError;
                 protected void TriggerValueChanged(object sender)
@@ -41,7 +41,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             }
             public class StringType : PType
             {
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window)
                 {
                     var tb = new TextBox();
                     tb.Text = curVal != null ? curVal.String : "";
@@ -70,12 +70,12 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 {
                     this.Conversion = string.Empty;
                 }
-                private EditingWindow Window;
+                private EditingSnap Window;
 
                 [XmlAttribute("conversion")]
                 public string Conversion { get; set; }
 
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window)
                 {
                     var tb = new TextBox();
                     this.Window = window;
@@ -92,25 +92,25 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                                 if (curVal.IsNumber)
                                     tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 else
-                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.XField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.XField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 break;
                             case "SCREENY":
                                 if (curVal.IsNumber)
                                     tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 else
-                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.YField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.YField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 break;
                             case "SCREENW":
                                 if (curVal.IsNumber)
                                     tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 else
-                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.WField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.WField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 break;
                             case "SCREENH":
                                 if (curVal.IsNumber)
                                     tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 else
-                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.HField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.HField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
                                 break;
                         }
                     }
@@ -136,16 +136,16 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                                     data.Number = double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture);
                                     break;
                                 case "SCREENX":
-                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.XField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.XField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
                                     break;
                                 case "SCREENY":
-                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.YField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.YField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
                                     break;
                                 case "SCREENW":
-                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.WField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.WField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
                                     break;
                                 case "SCREENH":
-                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.HField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.HField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
                                     break;
                             }
                             TriggerValueChanged(tb);
@@ -159,7 +159,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             }
             public class BooleanType : PType
             {
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window)
                 {
                     var cb = new ComboBox();
                     cb.Items.Add("true");
@@ -189,7 +189,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 [XmlElement("count")]
                 public int Count { get; set; }
 
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window)
                 {
                     var tb = new TextBox();
                     StringBuilder builder = new StringBuilder();
@@ -328,7 +328,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 [XmlArrayItem("item")]
                 public List<Data> Items { get; set; }
 
-                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window)
+                public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window)
                 {
                     var cb = new ComboBox();
                     cb.DisplayMemberPath = "Name";

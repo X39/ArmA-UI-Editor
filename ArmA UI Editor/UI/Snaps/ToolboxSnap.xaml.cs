@@ -20,12 +20,12 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// <summary>
     /// Interaction logic for PropertyWindow.xaml
     /// </summary>
-    public partial class ToolboxWindow : Page, Code.Interface.ISnapWindow
+    public partial class ToolboxSnap : Page, Code.Interface.ISnapWindow
     {
         public Data CurrentData { get; private set; }
         public Code.AddInUtil.Properties CurrentProperties { get; private set; }
 
-        public ToolboxWindow()
+        public ToolboxSnap()
         {
             InitializeComponent();
         }

@@ -22,22 +22,22 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// <summary>
     /// Interaction logic for EditingWindow.xaml
     /// </summary>
-    public partial class EditingWindow : Page, Code.Interface.ISnapWindow
+    public partial class EditingSnap : Page, Code.Interface.ISnapWindow
     {
         public SQF.ClassParser.File ConfigFile;
         private bool ConfigTextboxDiffersConfigInstance;
         private bool BlockWriteout;
         private SelectionOverlay SelectionOverlay_ToMove;
 
-        public static readonly DependencyProperty SnapDisabledProperty = DependencyProperty.Register("SnapDisabled", typeof(bool), typeof(EditingWindow));
+        public static readonly DependencyProperty SnapDisabledProperty = DependencyProperty.Register("SnapDisabled", typeof(bool), typeof(EditingSnap));
         public bool SnapEnabled { get { return (bool)GetValue(SnapDisabledProperty); } set { SetValue(SnapDisabledProperty, value); } }
-        public static readonly DependencyProperty BackgroundEnabledProperty = DependencyProperty.Register("BackgroundEnabled", typeof(bool), typeof(EditingWindow));
+        public static readonly DependencyProperty BackgroundEnabledProperty = DependencyProperty.Register("BackgroundEnabled", typeof(bool), typeof(EditingSnap));
         public bool BackgroundEnabled { get { return (bool)GetValue(BackgroundEnabledProperty); } set { SetValue(BackgroundEnabledProperty, value); } }
 
-        public static readonly DependencyProperty SnapGridProperty = DependencyProperty.Register("SnapGrid", typeof(Rect), typeof(EditingWindow));
+        public static readonly DependencyProperty SnapGridProperty = DependencyProperty.Register("SnapGrid", typeof(Rect), typeof(EditingSnap));
         public int SnapGrid { get { return (int)((Rect)GetValue(SnapGridProperty)).Width; } set { SetValue(SnapGridProperty, new Rect(0, 0, value, value)); } }
 
-        public static readonly DependencyProperty ViewScaleProperty = DependencyProperty.Register("ViewScale", typeof(double), typeof(EditingWindow));
+        public static readonly DependencyProperty ViewScaleProperty = DependencyProperty.Register("ViewScale", typeof(double), typeof(EditingSnap));
         public double ViewScale { get { return (double)GetValue(ViewScaleProperty); } set { SetValue(ViewScaleProperty, value); } }
 
         public string FilePath { get; set; }
@@ -65,14 +65,14 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             internal SQF.ClassParser.Data data;
             internal Code.AddInUtil.UIElement file;
-            internal EditingWindow Window;
+            internal EditingSnap Window;
 
-            internal EditingWindow Owner { get; set; }
+            internal EditingSnap Owner { get; set; }
             internal string FullyQualifiedPath { get; set; }
 
             internal void LoadProperties()
             {
-                PropertyWindow pWindow = PropertyWindow.GetDisplayWindow();
+                PropertySnap pWindow = PropertySnap.GetDisplayWindow();
                 pWindow.LoadProperties(this.file.Properties, data, Window);
             }
         }
@@ -91,7 +91,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
         }
 
-        public EditingWindow()
+        public EditingSnap()
         {
             InitializeComponent();
             StringBuilder sb = new StringBuilder();
@@ -120,7 +120,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             FilePath = string.Empty;
             HasChanges = true;
         }
-        public EditingWindow(string FilePath)
+        public EditingSnap(string FilePath)
         {
             InitializeComponent();
             using (var reader = new StreamReader(FilePath))
@@ -274,7 +274,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void SelectionOverlay_OnOperationFinalized(object sender, FrameworkElement e)
         {
-            if (PropertyWindow.HasDisplayWindow() && PropertyWindow.GetDisplayWindow().CurrentProperties == (e.Tag as TAG_CanvasChildElement).file.Properties)
+            if (PropertySnap.HasDisplayWindow() && PropertySnap.GetDisplayWindow().CurrentProperties == (e.Tag as TAG_CanvasChildElement).file.Properties)
             {
                 (e.Tag as TAG_CanvasChildElement).LoadProperties();
             }
@@ -690,7 +690,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                             tmp = sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
                             el.Height = tmp;
                             el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath, Owner = this, Window = this };
-                            if (PropertyWindow.HasDisplayWindow() && PropertyWindow.GetDisplayWindow().CurrentData != null && PropertyWindow.GetDisplayWindow().CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
+                            if (PropertySnap.HasDisplayWindow() && PropertySnap.GetDisplayWindow().CurrentData != null && PropertySnap.GetDisplayWindow().CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
                             {
                                 var overlay = this.CreateSelectionOverlay(false);
                                 this.DisplayCanvas.Children.Add(overlay);

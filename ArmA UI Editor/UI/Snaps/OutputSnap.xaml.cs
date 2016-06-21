@@ -18,9 +18,9 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// <summary>
     /// Interaction logic for OutputWindow.xaml
     /// </summary>
-    public partial class OutputWindow : Page, Code.Interface.ISnapWindow
+    public partial class OutputSnap : Page, Code.Interface.ISnapWindow
     {
-        public OutputWindow()
+        public OutputSnap()
         {
             InitializeComponent();
         }
