@@ -27,10 +27,16 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             {
                 public abstract FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingWindow window);
                 public static event EventHandler ValueChanged;
+                public static event EventHandler<string> OnError;
                 protected void TriggerValueChanged(object sender)
                 {
                     if (ValueChanged != null)
                         ValueChanged(sender, new EventArgs());
+                }
+                protected void TriggerError(object sender, string msg)
+                {
+                    if (OnError != null)
+                        OnError(sender, msg);
                 }
             }
             public class StringType : PType
@@ -122,25 +128,32 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         var data = tag.File[tag.Path];
                         if (data == null)
                             data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
-                        switch (Conversion.ToUpper())
+                        try
                         {
-                            default:
-                                data.Number = double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture);
-                                break;
-                            case "SCREENX":
-                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.XField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
-                                break;
-                            case "SCREENY":
-                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.YField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
-                                break;
-                            case "SCREENW":
-                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.WField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
-                                break;
-                            case "SCREENH":
-                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.HField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
-                                break;
+                            switch (Conversion.ToUpper())
+                            {
+                                default:
+                                    data.Number = double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture);
+                                    break;
+                                case "SCREENX":
+                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.XField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                    break;
+                                case "SCREENY":
+                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.YField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                    break;
+                                case "SCREENW":
+                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.WField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                    break;
+                                case "SCREENH":
+                                    data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingWindow.FieldTypeEnum.HField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                    break;
+                            }
+                            TriggerValueChanged(tb);
                         }
-                        TriggerValueChanged(tb);
+                        catch (Exception ex)
+                        {
+                            TriggerError(tb, ex.Message);
+                        }
                     }
                 }
             }
@@ -246,8 +259,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                                 var file = SQF.ClassParser.File.Load(memStream);
                                 if (file["/myClass/arr"].Array.Count != this.Count)
                                     throw new Exception();
-
-                                mainWindow.SetStatusbarText("", false);
+                                
                                 PTypeDataTag tag = (sender as TextBox).Tag as PTypeDataTag;
                                 var data = tag.File[tag.Path];
                                 if (data == null)
@@ -257,7 +269,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                             }
                             catch
                             {
-                                mainWindow.SetStatusbarText("Invalid Property", true);
+                                TriggerError(sender, "Invalid Property");
                             }
                         }
                     }
@@ -277,7 +289,6 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         try
                         {
                             var file = SQF.ClassParser.File.Load(memStream);
-                            mainWindow.SetStatusbarText("", false);
                             if (!(sender as TextBox).Text.Contains('\r') || file["/myClass/arr"].Array.Count != this.Count)
                                 return;
 
@@ -290,7 +301,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         }
                         catch
                         {
-                            mainWindow.SetStatusbarText("Invalid Property", true);
+                            TriggerError(sender, "Invalid Property");
                         }
                     }
                 }

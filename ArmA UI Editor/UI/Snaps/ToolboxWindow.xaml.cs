@@ -24,17 +24,10 @@ namespace ArmA_UI_Editor.UI.Snaps
     {
         public Data CurrentData { get; private set; }
         public Code.AddInUtil.Properties CurrentProperties { get; private set; }
-        public EditingWindow CurrentWindow { get; private set; }
 
         public ToolboxWindow()
         {
             InitializeComponent();
-            Code.AddInUtil.Properties.Property.PType.ValueChanged += PType_ValueChanged;
-        }
-
-        private void PType_ValueChanged(object sender, EventArgs e)
-        {
-            CurrentWindow.Redraw();
         }
 
         public void UnloadSnap()

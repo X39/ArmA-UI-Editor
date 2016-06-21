@@ -30,12 +30,16 @@ namespace ArmA_UI_Editor.UI.Snaps
         public PropertyWindow()
         {
             InitializeComponent();
-            Code.AddInUtil.Properties.Property.PType.ValueChanged += PType_ValueChanged;
         }
 
         private void PType_ValueChanged(object sender, EventArgs e)
         {
             CurrentWindow.Redraw();
+            (App.Current.MainWindow as MainWindow).SetStatusbarText("", false);
+        }
+        private void PType_OnError(object sender, string e)
+        {
+            (App.Current.MainWindow as MainWindow).SetStatusbarText(e, true);
         }
 
         ~PropertyWindow()
@@ -84,12 +88,17 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void UnloadSnap()
         {
+            Code.AddInUtil.Properties.Property.PType.ValueChanged -= PType_ValueChanged;
+            Code.AddInUtil.Properties.Property.PType.OnError -= PType_OnError;
             _Instance = null;
         }
+
 
         public void LoadSnap()
         {
             _Instance = this;
+            Code.AddInUtil.Properties.Property.PType.ValueChanged += PType_ValueChanged;
+            Code.AddInUtil.Properties.Property.PType.OnError += PType_OnError;
         }
     }
 }
