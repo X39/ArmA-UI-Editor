@@ -170,5 +170,21 @@ namespace ArmA_UI_Editor.UI
             }
             return list;
         }
+        public SnapWindow GetFocusedSnapWindow(Dock dock)
+        {
+            switch(dock)
+            {
+                default:
+                    throw new ArgumentException();
+                case Dock.Top:
+                    return F_Top.Content as SnapWindow;
+                case Dock.Left:
+                    return F_Left.Content as SnapWindow;
+                case Dock.Bottom:
+                    return F_Bottom.Content as SnapWindow;
+                case Dock.Right:
+                    return F_Right.Content as SnapWindow;
+            }
+        }
     }
 }
