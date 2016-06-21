@@ -6,9 +6,30 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using System.Windows.Markup;
 
 namespace ArmA_UI_Editor
 {
+
+    public class HasIgnoreUpdate : MarkupExtension
+    {
+        public string Path { get; set; }
+        public static string CurrentPath { get; set; }
+
+        public static SQF.ClassParser.File CurrentConfig;
+        public static string CurrentClassPath;
+
+        public HasIgnoreUpdate() { }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            var version = Settings.Instance.IgnoreUpdate;
+            var curVersion = Code.UpdateManager.Instance.AppVersion;
+            
+            return Settings.Instance.IgnoreUpdate != null && (version.Major >= curVersion.Major && version.Minor >= curVersion.Minor && version.Build >= curVersion.Build && version.Minor >= curVersion.Minor) && !version.Equals(curVersion);
+        }
+    }
+
     [XmlRoot("settings")]
     public class Settings : IXmlSerializable
     {

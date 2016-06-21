@@ -23,6 +23,7 @@
                     <SolidColorBrush x:Key="SCB_UIRedDark" Color="#FFA60000"/>
                     <SolidColorBrush x:Key="SCB_UIRedLight" Color="#FFFF4B4B"/>
                     <SolidColorBrush x:Key="SCB_DefaultTextColor" Color="#FFD0D0D0"/>
+                    <SolidColorBrush x:Key="SCB_DefaultTextColorDisabled" Color="#FF747474"/>
 
                     <SolidColorBrush x:Key="SCB_ParseError_BorderColor" Color="Yellow"/>
                     <SolidColorBrush x:Key="SCB_ParseError_PathHeader" Color="Red"/>
@@ -59,6 +60,8 @@
                     <clr:String x:Key="STR_SettingsWindow_General_Privacy_AutoReportCrashes">Auto-Report Crashes</clr:String>
                     <clr:String x:Key="STR_SettingsWindow_General_Updates">Updates</clr:String>
                     <clr:String x:Key="STR_SettingsWindow_General_Updates_SearchOnStart">Search for update on startup</clr:String>
+                    <clr:String x:Key="STR_SettingsWindow_General_Updates_SkipVersion">Skip Version</clr:String>
+                    <clr:String x:Key="STR_SettingsWindow_General_Updates_SkipVersion_ClearTooltip">Clears current ignore version</clr:String>
 
 
                     <clr:String x:Key="STR_Snaps_EditingWindow_DisplayTab">Display</clr:String>
@@ -90,7 +93,7 @@
                     <clr:String x:Key="STR_CODE_SplashScreen_CheckingForUpdate">Checking for Update ...</clr:String>
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableMessage">Update {0} available\nDo you want to update now?</clr:String>
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableHeader">Update Available &lt;3</clr:String>
-                    <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableText">Update {0} is available for the ArmA-UI-Editor\nDo you want to update now?</clr:String>
+                    <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableText">Update {0} is available for the ArmA-UI-Editor\nDo you want to update now?\n(cancel will ignore this update)</clr:String>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="GlobalStyles">
                     <Style TargetType="{x:Type GridSplitter}" x:Key="GridSplitterStyle">
@@ -400,9 +403,9 @@
                                             <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource SCB_UIBackgroundLight}"/>
                                         </Trigger>
                                         <Trigger Property="IsEnabled" Value="False">
-                                            <Setter Property="Background" TargetName="border" Value="#FFD6D6D6"/>
-                                            <Setter Property="BorderBrush" TargetName="border" Value="#FF818181"/>
-                                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="Black"/>
+                                            <Setter Property="Background" TargetName="border" Value="{StaticResource SCB_UIBackgroundLight}"/>
+                                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource SCB_UIBackgroundDarker}"/>
+                                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource SCB_DefaultTextColorDisabled}"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>

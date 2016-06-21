@@ -88,22 +88,31 @@ namespace ArmA_UI_Editor.UI
                     worker.ReportProgress((int)(d * 100), App.Current.Resources["STR_CODE_SplashScreen_CheckingForUpdate"] as String);
                 }
                 var updateResult = updateResultTask.Result;
-                if (updateResult.IsAvailable)
+                if (updateResult.IsAvailable && !updateResult.NewVersion.Equals(Settings.Instance.IgnoreUpdate))
                 {
                     worker.ReportProgress(100, string.Format(App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableMessage"] as String, updateResult.NewVersion.ToString()));
-                    if (MessageBox.Show(string.Format(App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableMessage"] as String, updateResult.NewVersion.ToString()), App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableHeader"] as String, MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                    var dlgResult = MessageBox.Show(string.Format(App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableMessage"] as String, updateResult.NewVersion.ToString()), App.Current.Resources["STR_CODE_SplashScreen_UpdateAvailableHeader"] as String, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+                    switch(dlgResult)
                     {
-                        //ToDo: use internal update mechanism and do not rely on browser
-                        var downRes = Code.UpdateManager.Instance.DownloadUpdate(updateResult, new Progress<Tuple<double, long>>((val) =>
-                        {
-                            worker.ReportProgress((int)((val.Item1 / val.Item2) * 100), string.Format("Downloading update ({0}kb/{1}kb)", (long)val.Item1 / 1024, val.Item2 / 1024));
-                        }));
-                        while (!downRes.IsCompleted)
-                        {
-                            Thread.Sleep(100);
-                        }
-                        System.Diagnostics.Process.Start(downRes.Result);
-                        doShutdown = true;
+                        case MessageBoxResult.Yes:
+                            {
+                                var downRes = Code.UpdateManager.Instance.DownloadUpdate(updateResult, new Progress<Tuple<double, long>>((val) =>
+                                {
+                                    worker.ReportProgress((int)((val.Item1 / val.Item2) * 100), string.Format("Downloading update ({0}kb/{1}kb)", (long)val.Item1 / 1024, val.Item2 / 1024));
+                                }));
+                                while (!downRes.IsCompleted)
+                                {
+                                    Thread.Sleep(100);
+                                }
+                                System.Diagnostics.Process.Start(downRes.Result);
+                                doShutdown = true;
+                            }
+                            break;
+                        case MessageBoxResult.Cancel:
+                            {
+                                Settings.Instance.IgnoreUpdate = updateResult.NewVersion;
+                            }
+                            break;
                     }
                 }
                 else

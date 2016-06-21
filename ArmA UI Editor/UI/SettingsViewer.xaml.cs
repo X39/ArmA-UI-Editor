@@ -32,5 +32,10 @@ namespace ArmA_UI_Editor.UI
         {
             this.ContentFrame.Content = this.Resources["General_Updates"] as Page;
         }
+
+        private void btn_updates_SkipVersion_Clear_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.IgnoreUpdate = Code.UpdateManager.Instance.AppVersion;
+        }
     }
 }
