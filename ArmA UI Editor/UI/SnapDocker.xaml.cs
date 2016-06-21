@@ -23,8 +23,8 @@ namespace ArmA_UI_Editor.UI
         #region events
         public class OnSnapFocusChangeEventArgs : EventArgs
         {
-            SnapWindow SnapWindow;
-            Dock Dock;
+            public SnapWindow SnapWindow;
+            public Dock Dock;
             public OnSnapFocusChangeEventArgs(SnapWindow SnapWindow, Dock Dock)
             {
                 this.SnapWindow = SnapWindow;
