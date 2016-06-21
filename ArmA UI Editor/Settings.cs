@@ -73,9 +73,9 @@ namespace ArmA_UI_Editor
             do
             {
                 reader.Read();
-                switch (reader.Name.ToUpper())
+                switch (reader.Name.ToLower())
                 {
-                    case "USED-STYLE":
+                    case "used-style":
                         {
                             reader.Read();
                             var stylePath = reader.Value.ToUpper().Split('/');
@@ -98,16 +98,22 @@ namespace ArmA_UI_Editor
                             }
                         }
                         break;
-                    case "AUTO-REPORT-CRASH":
+                    case "auto-report-crash":
                         {
                             reader.Read();
                             this.AutoReportCrash = bool.Parse(reader.Value);
                         }
                         break;
-                    case "SEARCH-UPDATE-ON-START":
+                    case "search-update-on-start":
                         {
                             reader.Read();
                             this.SearchUpdateOnStart = bool.Parse(reader.Value);
+                        }
+                        break;
+                    case "ignore-update":
+                        {
+                            reader.Read();
+                            this.IgnoreUpdate = System.Version.Parse(reader.Value);
                         }
                         break;
                 }
@@ -129,6 +135,9 @@ namespace ArmA_UI_Editor
                 writer.WriteStartElement("search-update-on-start");
                 writer.WriteString(this.SearchUpdateOnStart.ToString());
                 writer.WriteEndElement();
+                writer.WriteStartElement("ignore-update");
+                writer.WriteString(this.IgnoreUpdate.ToString());
+                writer.WriteEndElement();
             }
         }
         #endregion
@@ -139,11 +148,14 @@ namespace ArmA_UI_Editor
         public bool AutoReportCrash { get { return _AutoReportCrash; } set { this._AutoReportCrash = value; Save(); } }
         private bool _SearchUpdateOnStart;
         public bool SearchUpdateOnStart { get { return _SearchUpdateOnStart; } set { this._SearchUpdateOnStart = value; Save(); } }
+        private System.Version _IgnoreUpdate;
+        public System.Version IgnoreUpdate { get { return _IgnoreUpdate; } set { this._IgnoreUpdate = value; Save(); } }
         private Settings()
         {
             _UsedStyle = null;
             _AutoReportCrash = true;
             _SearchUpdateOnStart = true;
+            _IgnoreUpdate = Code.UpdateManager.Instance.AppVersion;
         }
     }
 }
