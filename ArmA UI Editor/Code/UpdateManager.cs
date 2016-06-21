@@ -33,6 +33,8 @@ namespace ArmA_UI_Editor.Code
 
         public static UpdateManager Instance { get { return _Instance; } }
 
+        public Version AppVersion { get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version; } }
+
         public UpdateManager()
         {
             this.Client = new HttpClient();
@@ -49,9 +51,9 @@ namespace ArmA_UI_Editor.Code
                 if (responseNode.getValue_Object()["success"].getValue_Boolean())
                 {
                     var version = new Version(responseNode.getValue_Object()["content"].getValue_Object()["version"].getValue_String());
-                    var curVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                    var curVersion = this.AppVersion;
 
-                    if(!(version.Major > curVersion.Major || version.Minor > curVersion.Minor || version.Build > curVersion.Build))
+                    if(!(version.Major > curVersion.Major || version.Minor > curVersion.Minor || version.Build > curVersion.Build || version.Minor > curVersion.Minor))
                     {
                         return new Update(url, false);
                     }
