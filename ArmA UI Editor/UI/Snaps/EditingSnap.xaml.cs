@@ -628,24 +628,34 @@ namespace ArmA_UI_Editor.UI.Snaps
             throw new NotImplementedException();
         }
 
+        public bool TryRefreshAll()
+        {
+            if (this.ConfigTextboxDiffersConfigInstance || this.BlockWriteout)
+            {
+                if (this.BlockWriteout || !this.ReinitConfigFileField())
+                {
+                    var mainWindow = App.Current.MainWindow as MainWindow;
+                    mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
+                    mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
+                    this.DisplayCanvas.Children.Clear();
+                    Frame frame = new Frame();
+                    frame.Content = new ParseError();
+                    this.DisplayCanvas.Children.Add(frame);
+                    BlockWriteout = true;
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public void RegenerateDisplay()
         {
             var mainWindow = App.Current.MainWindow as MainWindow;
             try
             {
-                if (this.ConfigTextboxDiffersConfigInstance || this.BlockWriteout)
+                if (!this.TryRefreshAll())
                 {
-                    if(this.BlockWriteout || !this.ReinitConfigFileField())
-                    {
-                        mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
-                        mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
-                        this.DisplayCanvas.Children.Clear();
-                        Frame frame = new Frame();
-                        frame.Content = new ParseError();
-                        this.DisplayCanvas.Children.Add(frame);
-                        BlockWriteout = true;
-                        return;
-                    }
+                    return;
                 }
                 this.DisplayCanvas.Children.Clear();
                 var data = this.ConfigFile[this.ConfigFile.Count - 1];
@@ -1065,7 +1075,20 @@ namespace ArmA_UI_Editor.UI.Snaps
             return (double.Parse(dt.Compute(data, "").ToString())) * max;
         }
 
-
-
+        public List<Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>> GetUiElements()
+        {
+            var list = new List<Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>>();
+            if (TryRefreshAll())
+            {
+                var data = this.ConfigFile[this.ConfigFile.Count - 1];
+                var uiElements = data.Class["controls"];
+                var controls = uiElements.Class;
+                foreach (var pair in controls)
+                {
+                    list.Add(new Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>(AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name), pair));
+                }
+            }
+            return list;
+        }
     }
 }
