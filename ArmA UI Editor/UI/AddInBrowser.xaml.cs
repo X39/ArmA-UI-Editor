@@ -84,24 +84,24 @@ namespace ArmA_UI_Editor.UI
 
                 p = new Property();
                 pg.ItemsPanel.Children.Add(p);
-                p.Title.Text = "Author";
+                p.Header = "Author";
                 tb = new TextBlock(new Run(addin.Info.Author));
                 tb.Foreground = App.Current.Resources["SCB_DefaultTextColor"] as SolidColorBrush;
-                p.ConfigElement.Content = tb;
+                p.Children.Add(tb);
 
                 p = new Property();
                 pg.ItemsPanel.Children.Add(p);
-                p.Title.Text = "Description";
+                p.Header = "Description";
                 tb = new TextBlock(new Run(addin.Info.Description));
                 tb.Foreground = App.Current.Resources["SCB_DefaultTextColor"] as SolidColorBrush;
-                p.ConfigElement.Content = tb;
+                p.Children.Add(tb);
 
                 p = new Property();
                 pg.ItemsPanel.Children.Add(p);
-                p.Title.Text = "Version";
+                p.Header = "Version";
                 tb = new TextBlock(new Run(addin.Info.Version));
                 tb.Foreground = App.Current.Resources["SCB_DefaultTextColor"] as SolidColorBrush;
-                p.ConfigElement.Content = tb;
+                p.Children.Add(tb);
             }
 
             pg = new Group();

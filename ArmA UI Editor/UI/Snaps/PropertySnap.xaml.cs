@@ -46,6 +46,19 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
 
         }
+        private void AddDefaultProperties()
+        {
+            var group = new Group();
+            group.Header = "Default";
+            Property p = new Property();
+            TextBox tb = new TextBox();
+            tb.PreviewTextInput += TextBox_ClassName_PreviewTextInput;
+            tb.Text = this.CurrentData.Name;
+            p.Children.Add(tb);
+            p.Header = "Class Name";
+            group.Children.Add(p);
+            this.PropertyStack.Children.Add(group);
+        }
         public void LoadProperties(Code.AddInUtil.Properties properties, SQF.ClassParser.Data data, EditingSnap window)
         {
             this.CurrentProperties = properties;
@@ -53,6 +66,8 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.CurrentWindow = window;
 
             this.PropertyStack.Children.Clear();
+            this.AddDefaultProperties();
+
             foreach (var groupIt in properties.Items)
             {
                 var group = new Group();
@@ -62,16 +77,15 @@ namespace ArmA_UI_Editor.UI.Snaps
                 foreach (var property in groupIt.Items)
                 {
                     var el = new Property();
-                    el.Title.Text = property.DisplayName;
+                    el.Header = property.DisplayName;
                     Data d = File.ReceiveFieldFromHirarchy(data, property.FieldPath);
                     var fEl = property.PropertyType.GenerateUiElement(d, window);
-                    el.ConfigElement.Content = fEl;
+                    el.Children.Add(fEl);
                     fEl.Tag = new Code.AddInUtil.Properties.Property.PTypeDataTag { File = window.ConfigFile, Path = property.FieldPath, BaseData = data };
                     group.ItemsPanel.Children.Add(el);
                 }
             }
         }
-
 
         internal static PropertySnap GetDisplayWindow()
         {
@@ -99,6 +113,15 @@ namespace ArmA_UI_Editor.UI.Snaps
             _Instance = this;
             Code.AddInUtil.Properties.Property.PType.ValueChanged += PType_ValueChanged;
             Code.AddInUtil.Properties.Property.PType.OnError += PType_OnError;
+        }
+
+        private void TextBox_ClassName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if(e.Text.Contains('\r'))
+            {
+                this.CurrentData.Name = (sender as TextBox).Text.Trim(new[] { ' ' });
+                CurrentWindow.TryRefreshAll(1);
+            }
         }
     }
 }

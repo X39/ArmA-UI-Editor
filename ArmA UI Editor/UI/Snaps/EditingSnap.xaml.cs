@@ -375,7 +375,19 @@ namespace ArmA_UI_Editor.UI.Snaps
             if (overlay == null)
             {
                 overlay = this.CreateOrGetSelectionOverlay();
-                this.DisplayCanvas.Children.Add(overlay);
+                if (this.DisplayCanvas.Children.Contains(overlay))
+                {
+                    List<FrameworkElement> list = new List<FrameworkElement>();
+                    list.AddRange(overlay.ToggledElements);
+                    foreach (var it in list)
+                    {
+                        overlay.ToggleElement(it);
+                    }
+                }
+                else
+                {
+                    this.DisplayCanvas.Children.Add(overlay);
+                }
                 overlay.ToggleElement(thisElement);
                 (thisElement.Tag as TAG_CanvasChildElement).LoadProperties();
             }
@@ -635,12 +647,26 @@ namespace ArmA_UI_Editor.UI.Snaps
             throw new NotImplementedException();
         }
 
-        public bool TryRefreshAll()
+        public bool TryRefreshAll(int dir = 0)
         {
-            if(ConfigTextboxDiffersConfigInstance)
-                return WriteConfigToScreen(true) && RegenerateDisplay();
+            if (dir == 0)
+            {
+                if (ConfigTextboxDiffersConfigInstance)
+                    return WriteConfigToScreen(true) && RegenerateDisplay();
+                else
+                    return RegenerateDisplay() && WriteConfigToScreen(true);
+            }
             else
-                return RegenerateDisplay() && WriteConfigToScreen(true);
+            {
+                if(dir == 1)
+                {
+                    return WriteConfigToScreen(true) && RegenerateDisplay();
+                }
+                else
+                {
+                    return RegenerateDisplay() && WriteConfigToScreen(true);
+                }
+            }
         }
 
         public bool RegenerateDisplay()
