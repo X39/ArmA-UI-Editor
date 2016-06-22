@@ -116,7 +116,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.Textbox.Text = sb.ToString();
             this.ReinitConfigFileField();
             SelectionOverlay_ToMove = null;
-            SnapEnabled = false;
+            SnapEnabled = true;
             BackgroundEnabled = false;
             SnapGrid = 15;
             ViewScale = 1;
@@ -133,7 +133,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
             this.ReinitConfigFileField();
             SelectionOverlay_ToMove = null;
-            SnapEnabled = false;
+            SnapEnabled = true;
             BackgroundEnabled = false;
             SnapGrid = 15;
             ViewScale = 1;
