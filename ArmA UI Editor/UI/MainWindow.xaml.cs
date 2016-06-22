@@ -35,8 +35,8 @@ namespace ArmA_UI_Editor.UI
             this.Docker.AddSnap(new SnapWindow(new Snaps.EditingSnap(), "MyUiConfig.cpp"), Dock.Top);
             this.Docker.AddSnap(new SnapWindow(new Snaps.OutputSnap(), App.Current.Resources["STR_Window_Output"] as string), Dock.Bottom);
             this.Docker.AddSnap(new SnapWindow(new Snaps.PropertySnap(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
-            this.Docker.AddSnap(new SnapWindow(new Snaps.ToolboxSnap(), App.Current.Resources["STR_Window_Toolbox"] as string), Dock.Left);
             this.Docker.AddSnap(new SnapWindow(new Snaps.ZIndexSnap(), App.Current.Resources["STR_Window_ZIndex"] as string), Dock.Left);
+            this.Docker.AddSnap(new SnapWindow(new Snaps.ToolboxSnap(), App.Current.Resources["STR_Window_Toolbox"] as string), Dock.Left);
         }
 
         private void ListView_Initialized(object sender, EventArgs e)
