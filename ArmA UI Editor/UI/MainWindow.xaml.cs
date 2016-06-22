@@ -160,7 +160,7 @@ namespace ArmA_UI_Editor.UI
             var elList = Docker.FindSnaps<Snaps.ZIndexSnap>();
             if(elList.Count == 0)
             {
-                this.Docker.AddSnap(new SnapWindow(new Snaps.ZIndexSnap(), App.Current.Resources["STR_Window_ZIndex"] as string), Dock.Le);
+                this.Docker.AddSnap(new SnapWindow(new Snaps.ZIndexSnap(), App.Current.Resources["STR_Window_ZIndex"] as string), Dock.Left);
             }
         }
 
