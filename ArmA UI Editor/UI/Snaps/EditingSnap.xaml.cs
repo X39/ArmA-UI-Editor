@@ -24,6 +24,9 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// </summary>
     public partial class EditingSnap : Page, Code.Interface.ISnapWindow
     {
+        #region Events
+        public event EventHandler OnUiElementsChanged;
+        #endregion
         public SQF.ClassParser.File ConfigFile;
         private bool ConfigTextboxDiffersConfigInstance;
         private bool BlockWriteout;
@@ -79,7 +82,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         internal void Redraw()
         {
-            switch(this.TabControlMainView.SelectedIndex)
+            switch (this.TabControlMainView.SelectedIndex)
             {
                 case 0:
                     this.WriteConfigToScreen();
@@ -144,7 +147,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void SaveFile()
         {
-            if(string.IsNullOrWhiteSpace(this.FilePath))
+            if (string.IsNullOrWhiteSpace(this.FilePath))
             {
                 var dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = this.ConfigFile[this.ConfigFile.Count - 1].Name;
@@ -152,12 +155,12 @@ namespace ArmA_UI_Editor.UI.Snaps
                 dlg.Filter = "ArmA Class (.cpp)|*.cpp";
                 dlg.CheckPathExists = true;
                 var res = dlg.ShowDialog();
-                if(!res.HasValue || !res.Value)
+                if (!res.HasValue || !res.Value)
                 {
                     return;
                 }
                 this.FilePath = dlg.FileName;
-                
+
             }
             using (var writer = new StreamWriter(this.FilePath))
             {
@@ -217,12 +220,12 @@ namespace ArmA_UI_Editor.UI.Snaps
                 SelectionOverlay.ResizeEventArgs.Direction.BotLeft
             }.Contains(e.Dir);
             var metrics = e.Element.GetCanvasMetrics();
-            if(posChangeNeeded)
+            if (posChangeNeeded)
             {
                 metrics.X -= e.DeltaX;
                 metrics.Y -= e.DeltaY;
             }
-            if(metrics.Width + e.DeltaX >= 0)
+            if (metrics.Width + e.DeltaX >= 0)
                 metrics.Width += e.DeltaX;
 
             if (metrics.Height + e.DeltaY >= 0)
@@ -243,7 +246,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                     var field_Y = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/y", true);
 
                     field_X.String = ToSqfString(FieldTypeEnum.XField, metrics.X);
-                    field_Y.String =  ToSqfString(FieldTypeEnum.YField, metrics.Y);
+                    field_Y.String = ToSqfString(FieldTypeEnum.YField, metrics.Y);
                 }
                 var field_W = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/w", true);
                 var field_H = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/h", true);
@@ -355,7 +358,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             if (thisElement == null)
             {
-                if(overlay != null)
+                if (overlay != null)
                 {
                     var overlayMetrics = overlay.GetCanvasMetrics();
                     var mousePosRelToOverlay = e.GetPosition(overlay);
@@ -371,14 +374,14 @@ namespace ArmA_UI_Editor.UI.Snaps
 
             if (overlay == null)
             {
-                overlay = this.CreateSelectionOverlay();
+                overlay = this.CreateOrGetSelectionOverlay();
                 this.DisplayCanvas.Children.Add(overlay);
                 overlay.ToggleElement(thisElement);
                 (thisElement.Tag as TAG_CanvasChildElement).LoadProperties();
             }
             else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
-                if(!overlay.ToggleElement(thisElement))
+                if (!overlay.ToggleElement(thisElement))
                 {
                     this.DisplayCanvas.Children.Remove(overlay);
                 }
@@ -390,7 +393,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 if (mousePosRelToOverlay.X > overlayMetrics.Width || mousePosRelToOverlay.X < 0 || mousePosRelToOverlay.Y > overlayMetrics.Height || mousePosRelToOverlay.Y < 0)
                 {
                     this.DisplayCanvas.Children.Remove(overlay);
-                    overlay = this.CreateSelectionOverlay();
+                    overlay = this.CreateOrGetSelectionOverlay();
                     this.DisplayCanvas.Children.Add(overlay);
                     overlay.ToggleElement(thisElement);
                     (thisElement.Tag as TAG_CanvasChildElement).LoadProperties();
@@ -449,7 +452,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 }
                 else
                 {
-                    if(overlay.ToggledElements.Count == 1)
+                    if (overlay.ToggledElements.Count == 1)
                     {
                         ContextMenu cm = this.FindResource("ContextMenu_ChildElement") as ContextMenu;
                         cm.Tag = thisElement;
@@ -475,7 +478,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if(SelectionOverlay_ToMove != null)
+            if (SelectionOverlay_ToMove != null)
             {
                 var pos = e.GetPosition(DisplayCanvas);
                 var oldPos = (Point)SelectionOverlay_ToMove.Tag;
@@ -507,18 +510,19 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_Drop(object sender, DragEventArgs e)
         {
+                return;
             var data = (e.Data.GetData("UiElementsListBoxData") as Code.UI.DragDrop.UiElementsListBoxData);
             var d = new SQF.ClassParser.Data(new SQF.ClassParser.ConfigClass(data.ElementData.ClassFile[0]));
 
             var mousePos = e.GetPosition(this.DisplayCanvas);
-            
+
             d.Class["x"] = new SQF.ClassParser.Data(mousePos.X, "x");
             d.Class["y"] = new SQF.ClassParser.Data(mousePos.Y, "y");
 
             string name = d.Name = "My" + data.ElementData.ClassFile.ElementAt(0).Key;
             int count = 0;
             var targetClass = this.ConfigFile[this.ConfigFile.Count - 1].Class["controls"].Class;
-            while(targetClass.ContainsKey(name))
+            while (targetClass.ContainsKey(name))
             {
                 count++;
                 name = d.Name + count.ToString();
@@ -529,12 +533,14 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.WriteConfigToScreen();
             this.RegenerateDisplay();
             this.ThisScrollViewer.Focus();
+            if (OnUiElementsChanged != null)
+                OnUiElementsChanged(this, new EventArgs());
         }
         private void ScrollViewer_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Delete)
+            if (e.Key == Key.Delete)
             {
-                if(this.RemoveSelectedElements())
+                if (this.RemoveSelectedElements())
                     e.Handled = true;
             }
             if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
@@ -551,7 +557,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             HasChanges = true;
             this.BlockWriteout = false;
             this.ConfigTextboxDiffersConfigInstance = true;
-            foreach(var change in e.Changes)
+            foreach (var change in e.Changes)
             {
                 if (change.AddedLength == 1)
                 {
@@ -561,7 +567,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                         //ToDo: Insert required tabs automatically
                     }
                 }
-                else  if (change.AddedLength == 2)
+                else if (change.AddedLength == 2)
                 {
                     if (Textbox.Text.Substring(change.Offset, change.AddedLength) == "\r\n")
                     {
@@ -579,7 +585,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 if (change.RemovedLength == 1)
                 {
                     string changedString = Textbox.Text.Substring(change.Offset - change.RemovedLength, change.RemovedLength);
-                    if(changedString == "\t")
+                    if (changedString == "\t")
                     {
                         //ToDo: Remove whole tab group if only tabs are remaining in this row
                     }
@@ -590,14 +596,14 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                if(this.ReinitConfigFileField())
+                if (this.ReinitConfigFileField())
                     this.SaveFile();
                 e.Handled = true;
             }
         }
         private void TabItem_GotFocus(object sender, RoutedEventArgs e)
         {
-           // this.ThisScrollViewer.Focus();
+            // this.ThisScrollViewer.Focus();
         }
         private void TabControlMainView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -630,32 +636,37 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public bool TryRefreshAll()
         {
-            if (this.ConfigTextboxDiffersConfigInstance || this.BlockWriteout)
-            {
-                if (this.BlockWriteout || !this.ReinitConfigFileField())
-                {
-                    var mainWindow = App.Current.MainWindow as MainWindow;
-                    mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
-                    mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
-                    this.DisplayCanvas.Children.Clear();
-                    Frame frame = new Frame();
-                    frame.Content = new ParseError();
-                    this.DisplayCanvas.Children.Add(frame);
-                    BlockWriteout = true;
-                    return false;
-                }
-            }
-            return true;
+            if(ConfigTextboxDiffersConfigInstance)
+                return WriteConfigToScreen(true) && RegenerateDisplay();
+            else
+                return RegenerateDisplay() && WriteConfigToScreen(true);
         }
 
-        public void RegenerateDisplay()
+        public bool RegenerateDisplay()
         {
             var mainWindow = App.Current.MainWindow as MainWindow;
             try
             {
-                if (!this.TryRefreshAll())
+                if (this.ConfigTextboxDiffersConfigInstance || this.BlockWriteout)
                 {
-                    return;
+                    if (this.BlockWriteout || !this.ReinitConfigFileField())
+                    {
+                        mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
+                        mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
+                        this.DisplayCanvas.Children.Clear();
+                        Frame frame = new Frame();
+                        frame.Content = new ParseError();
+                        this.DisplayCanvas.Children.Add(frame);
+                        BlockWriteout = true;
+                        return false;
+                    }
+                }
+                int initialCount = 0;
+                foreach (var it in this.DisplayCanvas.Children)
+                {
+                    if (it is SelectionOverlay)
+                        continue;
+                    initialCount++;
                 }
                 this.DisplayCanvas.Children.Clear();
                 var data = this.ConfigFile[this.ConfigFile.Count - 1];
@@ -664,6 +675,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 if (uiElements != null && uiElements.IsClass)
                 {
                     var controls = uiElements.Class;
+                    int index = 0;
                     foreach (var pair in controls)
                     {
                         if (pair.Value.Class.Parent == null)
@@ -673,7 +685,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                         var file = AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name);
                         using (FileStream stream = System.IO.File.OpenRead(file.__XamlPath))
                         {
-                            
+
                             Code.Markup.BindConfig.CurrentClassPath = '/' + data.Name + "/controls/" + pair.Value.Name;
 
                             ArmA_UI_Editor.Code.Markup.BindConfig.CurrentPath = file.Parent.ThisPath;
@@ -694,6 +706,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                             Canvas.SetTop(el, tmp);
                             tmp += sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
                             Canvas.SetBottom(el, tmp);
+                            Canvas.SetZIndex(el, index);
 
                             tmp = sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String);
                             el.Width = tmp;
@@ -702,18 +715,26 @@ namespace ArmA_UI_Editor.UI.Snaps
                             el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath, Owner = this, Window = this };
                             if (PropertySnap.HasDisplayWindow() && PropertySnap.GetDisplayWindow().CurrentData != null && PropertySnap.GetDisplayWindow().CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
                             {
-                                var overlay = this.CreateSelectionOverlay(false);
+                                var overlay = this.CreateOrGetSelectionOverlay(false);
                                 this.DisplayCanvas.Children.Add(overlay);
                                 overlay.ToggleElement(el);
                                 (el.Tag as TAG_CanvasChildElement).LoadProperties();
                             }
                         }
+                        index++;
                     }
                 }
                 mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIBlue"] as SolidColorBrush;
                 mainWindow.StatusTextbox.Text = "";
+                foreach (var it in this.DisplayCanvas.Children)
+                {
+                    initialCount--;
+                }
+                if (initialCount != 0 && this.OnUiElementsChanged != null)
+                    OnUiElementsChanged(this, new EventArgs());
+                return true;
             }
-            catch(SQF.ClassParser.File.ParseException ex)
+            catch (SQF.ClassParser.File.ParseException ex)
             {
                 Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
                 mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
@@ -733,6 +754,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 frame.Content = new ParseError();
                 this.DisplayCanvas.Children.Add(frame);
             }
+            return false;
         }
         public bool ReinitConfigFileField()
         {
@@ -757,10 +779,10 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             return false;
         }
-        private void WriteConfigToScreen()
+        private bool WriteConfigToScreen(bool force = false)
         {
-            if (BlockWriteout)
-                return;
+            if (BlockWriteout && !force)
+                return false;
             using (var memStream = new MemoryStream())
             {
                 this.ConfigFile[this.ConfigFile.Count - 1].WriteOut(new StreamWriter(memStream));
@@ -768,15 +790,30 @@ namespace ArmA_UI_Editor.UI.Snaps
                 StreamReader reader = new StreamReader(memStream);
                 this.Textbox.Text = reader.ReadToEnd();
             }
+            return true;
         }
-        private SelectionOverlay CreateSelectionOverlay(bool mouseDownOnCreate = true)
+        private SelectionOverlay CreateOrGetSelectionOverlay(bool mouseDownOnCreate = true)
         {
-            var el = new SelectionOverlay(mouseDownOnCreate);
-            el.OnElementMove += SelectionOverlay_OnElementMove;
-            el.OnElementResize += SelectionOverlay_OnElementResize;
-            el.OnStartMove += SelectionOverlay_OnStartMove;
-            el.OnStopMove += SelectionOverlay_OnStopMove;
-            el.OnOperationFinalized += SelectionOverlay_OnOperationFinalized;
+
+            SelectionOverlay el = null;
+            foreach(var it in this.DisplayCanvas.Children)
+            {
+                if(it is SelectionOverlay)
+                {
+                    el = it as SelectionOverlay;
+                    break;
+                }
+            }
+            if (el == null)
+            {
+                el = new SelectionOverlay(mouseDownOnCreate);
+                el.OnElementMove += SelectionOverlay_OnElementMove;
+                el.OnElementResize += SelectionOverlay_OnElementResize;
+                el.OnStartMove += SelectionOverlay_OnStartMove;
+                el.OnStopMove += SelectionOverlay_OnStopMove;
+                el.OnOperationFinalized += SelectionOverlay_OnOperationFinalized;
+                Canvas.SetZIndex(el, 10000);
+            }
             return el;
         }
 
@@ -908,9 +945,9 @@ namespace ArmA_UI_Editor.UI.Snaps
                             SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.BotRight, deltaX, deltaY, el));
                     }
                 }
-                foreach(var it in this.DisplayCanvas.Children)
+                foreach (var it in this.DisplayCanvas.Children)
                 {
-                    if(it is SelectionOverlay)
+                    if (it is SelectionOverlay)
                     {
                         (it as SelectionOverlay).UpdateMetrics();
                         break;
@@ -1078,17 +1115,58 @@ namespace ArmA_UI_Editor.UI.Snaps
         public List<Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>> GetUiElements()
         {
             var list = new List<Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>>();
-            if (TryRefreshAll())
+            if (ConfigTextboxDiffersConfigInstance)
+                TryRefreshAll();
+            var data = this.ConfigFile[this.ConfigFile.Count - 1];
+            var uiElements = data.Class["controls"];
+            var controls = uiElements.Class;
+            foreach (var pair in controls)
             {
-                var data = this.ConfigFile[this.ConfigFile.Count - 1];
-                var uiElements = data.Class["controls"];
-                var controls = uiElements.Class;
-                foreach (var pair in controls)
-                {
-                    list.Add(new Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>(AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name), pair));
-                }
+                list.Add(new Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>(AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name), pair));
             }
             return list;
+        }
+        public void SwapUiIndexies(string name1, string name2)
+        {
+            TryRefreshAll();
+            var data = this.ConfigFile[this.ConfigFile.Count - 1];
+            var uiElements = data.Class["controls"];
+            var controls = uiElements.Class;
+            int index1 = -1;
+            int index2 = -1;
+            for (int i = 0; i < controls.Count; i++)
+            {
+                var it = controls.ElementAt(i);
+                if (it.Key == name1)
+                {
+                    index1 = i;
+                }
+                else if (it.Key == name2)
+                {
+                    index2 = i;
+                }
+                if (index1 != -1 && index2 != -1)
+                {
+                    break;
+                }
+            }
+            if (index1 == -1 || index2 == -1)
+                throw new ArgumentException("Cannot find given classname(s)");
+            uiElements.Class = new ConfigClass();
+            for (int i = 0; i < controls.Count; i++)
+            {
+                var it = controls.ElementAt(i);
+                if (i == index1)
+                {
+                    it = controls.ElementAt(index2);
+                }
+                else if(i == index2)
+                {
+                    it = controls.ElementAt(index1);
+                }
+                uiElements.Class.Add(it.Key, it.Value);
+            }
+            TryRefreshAll();
         }
     }
 }

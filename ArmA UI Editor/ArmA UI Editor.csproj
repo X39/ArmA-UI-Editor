@@ -132,20 +132,23 @@
     <Compile Include="UI\SnapLabel.xaml.cs">
       <DependentUpon>SnapLabel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Snaps\EditingWindow.xaml.cs">
-      <DependentUpon>EditingWindow.xaml</DependentUpon>
+    <Compile Include="UI\Snaps\EditingSnap.xaml.cs">
+      <DependentUpon>EditingSnap.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Snaps\OutputWindow.xaml.cs">
-      <DependentUpon>OutputWindow.xaml</DependentUpon>
+    <Compile Include="UI\Snaps\OutputSnap.xaml.cs">
+      <DependentUpon>OutputSnap.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\ParseError.xaml.cs">
       <DependentUpon>ParseError.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Snaps\ToolboxWindow.xaml.cs">
-      <DependentUpon>ToolboxWindow.xaml</DependentUpon>
+    <Compile Include="UI\Snaps\ZIndexSnap.xaml.cs">
+      <DependentUpon>ZIndexSnap.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Snaps\PropertyWindow.xaml.cs">
-      <DependentUpon>PropertyWindow.xaml</DependentUpon>
+    <Compile Include="UI\Snaps\ToolboxSnap.xaml.cs">
+      <DependentUpon>ToolboxSnap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Snaps\PropertySnap.xaml.cs">
+      <DependentUpon>PropertySnap.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SnapWindow.xaml.cs">
       <DependentUpon>SnapWindow.xaml</DependentUpon>
@@ -245,11 +248,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Snaps\EditingWindow.xaml">
+    <Page Include="UI\Snaps\EditingSnap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Snaps\OutputWindow.xaml">
+    <Page Include="UI\Snaps\OutputSnap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -257,11 +260,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Snaps\ToolboxWindow.xaml">
+    <Page Include="UI\Snaps\ZIndexSnap.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Snaps\PropertyWindow.xaml">
+    <Page Include="UI\Snaps\ToolboxSnap.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Snaps\PropertySnap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

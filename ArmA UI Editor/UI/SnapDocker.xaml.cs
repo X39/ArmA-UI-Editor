@@ -23,11 +23,13 @@ namespace ArmA_UI_Editor.UI
         #region events
         public class OnSnapFocusChangeEventArgs : EventArgs
         {
-            public SnapWindow SnapWindow;
+            public SnapWindow SnapWindowLast;
+            public SnapWindow SnapWindowNew;
             public Dock Dock;
-            public OnSnapFocusChangeEventArgs(SnapWindow SnapWindow, Dock Dock)
+            public OnSnapFocusChangeEventArgs(SnapWindow SnapWindowNew, SnapWindow SnapWindowLast, Dock Dock)
             {
-                this.SnapWindow = SnapWindow;
+                this.SnapWindowNew = SnapWindowNew;
+                this.SnapWindowLast = SnapWindowLast;
                 this.Dock = Dock;
             }
         }
@@ -116,9 +118,9 @@ namespace ArmA_UI_Editor.UI
             }
             else
             {
-                frame.Content = null;
                 if (OnSnapFocusChange != null)
-                    OnSnapFocusChange(this, new OnSnapFocusChangeEventArgs(null, label.DockedAt));
+                    OnSnapFocusChange(this, new OnSnapFocusChangeEventArgs(null, GetFocusedSnapWindow(label.DockedAt), label.DockedAt));
+                frame.Content = null;
             }
             panel.Children.Remove(label);
         }
@@ -151,6 +153,7 @@ namespace ArmA_UI_Editor.UI
                     frame = F_Right;
                     break;
             }
+            var currentWindow = GetFocusedSnapWindow(l.DockedAt);
             foreach (var it in panel.Children)
             {
                 if (it is SnapLabel)
@@ -168,15 +171,15 @@ namespace ArmA_UI_Editor.UI
                 tag.window.DisplaySnap(frame);
                 l.IsDisplayed = true;
                 if (OnSnapFocusChange != null)
-                    OnSnapFocusChange(this, new OnSnapFocusChangeEventArgs(tag.window, l.DockedAt));
+                    OnSnapFocusChange(this, new OnSnapFocusChangeEventArgs(tag.window, currentWindow, l.DockedAt));
             }
             else
             {
                 if (OnSnapFocusChange != null)
-                    OnSnapFocusChange(this, new OnSnapFocusChangeEventArgs(null, l.DockedAt));
+                    OnSnapFocusChange(this, new OnSnapFocusChangeEventArgs(null, currentWindow, l.DockedAt));
             }
         }
-        public List<T> FindSnaps<T>()
+        public List<T> FindSnaps<T>(bool onlyFocused = false)
         {
             var list = new List<T>();
             foreach (var panel in new [] { SP_Right, SP_Left, SP_Bottom, SP_Top })
@@ -187,7 +190,7 @@ namespace ArmA_UI_Editor.UI
                     {
                         SnapLabel label = it as SnapLabel;
                         TAG_Label tag = label.Tag as TAG_Label;
-                        if(tag.window.WindowContent is T)
+                        if(tag.window.WindowContent is T && (!onlyFocused || label.IsDisplayed))
                         {
                             list.Add((T)tag.window.WindowContent);
                         }

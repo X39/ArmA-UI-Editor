@@ -42,6 +42,7 @@
 
                     <clr:String x:Key="STR_MainWindow_View">View</clr:String>
                     <clr:String x:Key="STR_Window_Toolbox">Toolbox</clr:String>
+                    <clr:String x:Key="STR_Window_ZIndex">Z-Index</clr:String>
                     <clr:String x:Key="STR_Window_Properties">Properties</clr:String>
                     <clr:String x:Key="STR_Window_Output">Output</clr:String>
 
@@ -331,6 +332,23 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
+                    <Style TargetType="{x:Type ListBoxItem}" x:Key="ListBoxItemStyle">
+                        <Setter Property="Foreground" Value="{StaticResource SCB_DefaultTextColor}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="true">
+                                            <Setter Property="Background" Value="{StaticResource SCB_UIBlue}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
                     <Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="Background" Value="{StaticResource SCB_UIBackgroundDark}" />
@@ -341,27 +359,7 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="ItemContainerStyle">
-                            <Setter.Value>
-                                <Style TargetType="{x:Type ListBoxItem}">
-                                    <Setter Property="Foreground" Value="{StaticResource SCB_DefaultTextColor}" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="ListBoxItem">
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsSelected" Value="true">
-                                                        <Setter Property="Background" Value="{StaticResource SCB_UIBlue}" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Setter.Value>
-                        </Setter>
+                        <Setter Property="ItemContainerStyle" Value="{StaticResource ListBoxItemStyle}"/>
                     </Style>
                     <Style TargetType="{x:Type Button}" x:Key="ButtonStyle">
                         <Setter Property="FocusVisualStyle">
