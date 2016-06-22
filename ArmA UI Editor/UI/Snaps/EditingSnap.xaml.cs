@@ -510,6 +510,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_Drop(object sender, DragEventArgs e)
         {
+            if (!e.Data.GetDataPresent("UiElementsListBoxData"))
                 return;
             var data = (e.Data.GetData("UiElementsListBoxData") as Code.UI.DragDrop.UiElementsListBoxData);
             var d = new SQF.ClassParser.Data(new SQF.ClassParser.ConfigClass(data.ElementData.ClassFile[0]));
