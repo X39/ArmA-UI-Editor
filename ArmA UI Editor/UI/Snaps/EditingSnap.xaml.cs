@@ -152,7 +152,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = this.ConfigFile[this.ConfigFile.Count - 1].Name;
                 dlg.DefaultExt = ".cpp";
-                dlg.Filter = "ArmA Class (.cpp)|*.cpp";
+                dlg.Filter = "ArmA Class (.cpp)|*.cpp|ArmA Class (.hpp)|*.hpp";
                 dlg.CheckPathExists = true;
                 var res = dlg.ShowDialog();
                 if (!res.HasValue || !res.Value)
