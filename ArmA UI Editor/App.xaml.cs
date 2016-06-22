@@ -20,7 +20,8 @@ namespace ArmA_UI_Editor
             System.Diagnostics.Debugger.Break();
 #endif
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            using (var writer = new System.IO.StreamWriter("crash.txt", false))
+            var path = System.IO.Path.Combine(new[] { Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "ArmAUiEditorCrash.txt" });
+            using (var writer = new System.IO.StreamWriter(path, false))
             {
                 var ex = e.Exception;
                 int tabCount = 0;
@@ -36,7 +37,7 @@ namespace ArmA_UI_Editor
                 writer.Flush();
             }
 #if DEBUG
-            System.Diagnostics.Process.Start("crash.txt");
+            System.Diagnostics.Process.Start(path);
 #else
             if(Settings.Instance.AutoReportCrash)
             {
@@ -52,7 +53,7 @@ namespace ArmA_UI_Editor
             }
             else
             {
-                MessageBox.Show("An unhandled exception was found ...\nPlease report the crash.txt at https://github.com/X39/ArmA-UI-Editor/issues/new\nThe issue will be fixed ASAP :)\n\nSorry for your lost work (in case you did not saved) ...", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format("An unhandled exception was found ...\nPlease report the crash at https://github.com/X39/ArmA-UI-Editor/issues/new\nThe issue will be fixed ASAP :)\nA CrashLog got created at '{0}'\n\nSorry for your lost work (in case you did not saved) ...", path), "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 #endif
 
