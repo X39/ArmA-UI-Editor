@@ -19,6 +19,7 @@
                 <MenuItem Header="{StaticResource STR_Window_Properties}" Click="MenuItem_View_Properties_Click"/>
                 <MenuItem Header="{StaticResource STR_Window_Output}" Click="MenuItem_View_Output_Click"/>
                 <MenuItem Header="{StaticResource STR_Window_ZIndex}" Click="MenuItem_View_ZIndex_Click"/>
+                <MenuItem Header="{StaticResource STR_Window_DialogProperties}" Click="MenuItem_View_DialogProperties_Click"/>
             </MenuItem>
             <MenuItem Header="{StaticResource STR_MainWindow_Settings}">
                 <MenuItem Header="{StaticResource STR_MainWindow_Settings_ShowAddInBrowser}" Click="MenuItem_Settings_ShowAddInBrowser_Click"/>

@@ -141,6 +141,9 @@
     <Compile Include="UI\ParseError.xaml.cs">
       <DependentUpon>ParseError.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Snaps\DialogPropertiesSnap.xaml.cs">
+      <DependentUpon>DialogPropertiesSnap.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Snaps\ZIndexSnap.xaml.cs">
       <DependentUpon>ZIndexSnap.xaml</DependentUpon>
     </Compile>
@@ -259,6 +262,10 @@
     <Page Include="UI\ParseError.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Snaps\DialogPropertiesSnap.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Snaps\ZIndexSnap.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -441,6 +448,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\back1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="AddIns\Base\Events\RscButton.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
