@@ -46,6 +46,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         public string FilePath { get; set; }
 
         private bool HasChanges;
+        public int AllowedCount { get { return int.MaxValue; } }
+        public Dock DefaultDock { get { return Dock.Top; } }
 
 
         public void UnloadSnap()
@@ -75,7 +77,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
             internal void LoadProperties()
             {
-                PropertySnap pWindow = PropertySnap.GetDisplayWindow();
+                PropertySnap pWindow = MainWindow.TryGet().GetSnapInstance<PropertySnap>();
                 pWindow.LoadProperties(this.file.Properties, data, Window);
             }
         }
@@ -277,7 +279,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void SelectionOverlay_OnOperationFinalized(object sender, FrameworkElement e)
         {
-            if (PropertySnap.HasDisplayWindow() && PropertySnap.GetDisplayWindow().CurrentProperties == (e.Tag as TAG_CanvasChildElement).file.Properties)
+            var snaps = MainWindow.TryGet().Docker.FindSnaps<PropertySnap>();
+            if (snaps.Count > 0 && (snaps[0]).CurrentProperties == (e.Tag as TAG_CanvasChildElement).file.Properties)
             {
                 (e.Tag as TAG_CanvasChildElement).LoadProperties();
             }
@@ -671,7 +674,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public bool RegenerateDisplay()
         {
-            var mainWindow = App.Current.MainWindow as MainWindow;
+            var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
             try
             {
                 if (this.ConfigTextboxDiffersConfigInstance || this.BlockWriteout)
@@ -740,7 +743,8 @@ namespace ArmA_UI_Editor.UI.Snaps
                             tmp = sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
                             el.Height = tmp;
                             el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath, Owner = this, Window = this };
-                            if (PropertySnap.HasDisplayWindow() && PropertySnap.GetDisplayWindow().CurrentData != null && PropertySnap.GetDisplayWindow().CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
+                            var snaps = MainWindow.TryGet().Docker.FindSnaps<PropertySnap>();
+                            if (snaps.Count > 0 && (snaps[0]).CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
                             {
                                 var overlay = this.CreateOrGetSelectionOverlay(false);
                                 this.DisplayCanvas.Children.Add(overlay);
@@ -794,13 +798,13 @@ namespace ArmA_UI_Editor.UI.Snaps
                     this.ConfigFile.AppendConfig(stream);
                 }
                 this.ConfigTextboxDiffersConfigInstance = false;
-                var mainWindow = App.Current.MainWindow as MainWindow;
+                var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
                 mainWindow.SetStatusbarText("", false);
                 return true;
             }
             catch (Exception ex)
             {
-                var mainWindow = App.Current.MainWindow as MainWindow;
+                var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
                 mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
                 Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
             }

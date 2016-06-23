@@ -9,7 +9,7 @@
       MinWidth="384"
       MinHeight="384"
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="PropertyWindow">
+      Title="{StaticResource STR_Window_Properties}">
 
     <StackPanel x:Name="PropertyStack" Background="Transparent" Orientation="Vertical"/>
 </Page>

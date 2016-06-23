@@ -22,10 +22,12 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// </summary>
     public partial class PropertySnap : Page, Code.Interface.ISnapWindow
     {
-        private static PropertySnap _Instance;
         public Data CurrentData { get; private set; }
         public Code.AddInUtil.Properties CurrentProperties { get; private set; }
         public EditingSnap CurrentWindow { get; private set; }
+
+        public int AllowedCount { get { return 1; } }
+        public Dock DefaultDock { get { return Dock.Right; } }
 
         public PropertySnap()
         {
@@ -35,17 +37,13 @@ namespace ArmA_UI_Editor.UI.Snaps
         private void PType_ValueChanged(object sender, EventArgs e)
         {
             CurrentWindow.Redraw();
-            (App.Current.MainWindow as MainWindow).SetStatusbarText("", false);
+            (ArmA_UI_Editor.UI.MainWindow.TryGet()).SetStatusbarText("", false);
         }
         private void PType_OnError(object sender, string e)
         {
-            (App.Current.MainWindow as MainWindow).SetStatusbarText(e, true);
+            (ArmA_UI_Editor.UI.MainWindow.TryGet()).SetStatusbarText(e, true);
         }
 
-        ~PropertySnap()
-        {
-
-        }
         private void AddDefaultProperties()
         {
             var group = new Group();
@@ -87,30 +85,15 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
         }
 
-        internal static PropertySnap GetDisplayWindow()
-        {
-            if (_Instance == null)
-            {
-                (App.Current.MainWindow as MainWindow).Docker.AddSnap(new SnapWindow(new PropertySnap(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
-            }
-            return _Instance;
-        }
-        internal static bool HasDisplayWindow()
-        {
-            return _Instance != null;
-        }
-
         public void UnloadSnap()
         {
             Code.AddInUtil.Properties.Property.PType.ValueChanged -= PType_ValueChanged;
             Code.AddInUtil.Properties.Property.PType.OnError -= PType_OnError;
-            _Instance = null;
         }
 
 
         public void LoadSnap()
         {
-            _Instance = this;
             Code.AddInUtil.Properties.Property.PType.ValueChanged += PType_ValueChanged;
             Code.AddInUtil.Properties.Property.PType.OnError += PType_OnError;
         }

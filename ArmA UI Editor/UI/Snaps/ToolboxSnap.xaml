@@ -8,7 +8,7 @@
       MinWidth="192"
       MinHeight="192"
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="PropertyWindow">
+      Title="{StaticResource STR_Window_Toolbox}">
 
     <ListBox x:Name="ToolBox" Initialized="ToolBox_Initialized" Style="{StaticResource ListBoxStyle}" MouseMove="ToolBox_MouseMove" MouseLeftButtonDown="ToolBox_MouseLeftButtonDown">
         <ListBox.ItemTemplate>

@@ -45,6 +45,7 @@
                     <clr:String x:Key="STR_Window_ZIndex">Z-Index</clr:String>
                     <clr:String x:Key="STR_Window_Properties">Properties</clr:String>
                     <clr:String x:Key="STR_Window_Output">Output</clr:String>
+                    <clr:String x:Key="STR_Window_EditingWindow">MyUiConfig.cpp</clr:String>
 
                     <clr:String x:Key="STR_MainWindow_Settings">Settings</clr:String>
                     <clr:String x:Key="STR_MainWindow_Settings_ShowAddInBrowser">Display AddIn Browser</clr:String>

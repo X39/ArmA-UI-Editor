@@ -24,6 +24,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             InitializeComponent();
         }
+        public int AllowedCount { get { return 1; } }
+        public Dock DefaultDock { get { return Dock.Bottom; } }
 
         public void LoadSnap()
         {

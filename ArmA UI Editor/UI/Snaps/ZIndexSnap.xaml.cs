@@ -30,6 +30,8 @@ namespace ArmA_UI_Editor.UI.Snaps
             public List<Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>> Tuple;
             public EditingSnap EditingSnap;
         }
+        public int AllowedCount { get { return 1; } }
+        public Dock DefaultDock { get { return Dock.Left; } }
 
         public ZIndexSnap()
         {
@@ -38,13 +40,13 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void UnloadSnap()
         {
-            (App.Current.MainWindow as MainWindow).Docker.OnSnapFocusChange -= Docker_OnSnapFocusChange;
+            (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange -= Docker_OnSnapFocusChange;
         }
 
         public void LoadSnap()
         {
-            (App.Current.MainWindow as MainWindow).Docker.OnSnapFocusChange += Docker_OnSnapFocusChange;
-            var EditingSnaps = (App.Current.MainWindow as MainWindow).Docker.FindSnaps<EditingSnap>(true);
+            (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange += Docker_OnSnapFocusChange;
+            var EditingSnaps = (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.FindSnaps<EditingSnap>(true);
             if(EditingSnaps.Count > 0)
             {
                 SubscribeEditingSnap(EditingSnaps[0]);

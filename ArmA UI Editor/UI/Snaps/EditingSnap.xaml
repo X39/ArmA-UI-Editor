@@ -7,7 +7,7 @@
       xmlns:a="clr-namespace:ArmA_UI_Editor.Code.Markup"
       mc:Ignorable="d" 
       d:DesignHeight="512" d:DesignWidth="738"
-      Title="EditingWindow">
+      Title="{StaticResource STR_Window_EditingWindow}">
     <Page.Resources>
         <ContextMenu x:Key="ContextMenu_Canvas">
             <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping}" IsCheckable="True" IsChecked="{Binding SnapEnabled, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"/>

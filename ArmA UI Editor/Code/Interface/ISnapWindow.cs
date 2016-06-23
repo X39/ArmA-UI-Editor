@@ -7,9 +7,13 @@ using System.Windows.Controls;
 
 namespace ArmA_UI_Editor.Code.Interface
 {
-    internal interface ISnapWindow
+    public interface ISnapWindow
     {
+        
         void UnloadSnap();
         void LoadSnap();
+        int AllowedCount { get; }
+        string Title { get; }
+        Dock DefaultDock { get; }
     }
 }

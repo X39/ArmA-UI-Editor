@@ -199,6 +199,37 @@ namespace ArmA_UI_Editor.UI
             }
             return list;
         }
+        public SnapLabel GetFirstSnapLabel<T>(T snap) where T : Code.Interface.ISnapWindow
+        {
+            foreach (var panel in new[] { SP_Right, SP_Left, SP_Bottom, SP_Top })
+            {
+                foreach (var it in panel.Children)
+                {
+                    if (it is SnapLabel)
+                    {
+                        SnapLabel label = it as SnapLabel;
+                        TAG_Label tag = label.Tag as TAG_Label;
+                        if (tag.window.Window.Equals(snap))
+                        {
+                            return label;
+                        }
+                    }
+                }
+            }
+            throw new ArgumentException("Snap not yet added");
+        }
+        public void FocusSnap<T>(T snap) where T : Code.Interface.ISnapWindow
+        {
+            var label = GetFirstSnapLabel(snap);
+            if (!label.IsDisplayed)
+                this.SnapLabel_MouseLeftButtonDown(label, null);
+        }
+        public void UnfocusSnap<T>(T snap) where T : Code.Interface.ISnapWindow
+        {
+            var label = GetFirstSnapLabel(snap);
+            if (label.IsDisplayed)
+                this.SnapLabel_MouseLeftButtonDown(label, null);
+        }
         public SnapWindow GetFocusedSnapWindow(Dock dock)
         {
             switch(dock)

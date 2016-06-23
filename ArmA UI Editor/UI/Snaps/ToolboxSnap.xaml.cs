@@ -24,6 +24,8 @@ namespace ArmA_UI_Editor.UI.Snaps
     {
         public Data CurrentData { get; private set; }
         public Code.AddInUtil.Properties CurrentProperties { get; private set; }
+        public int AllowedCount { get { return 1; } }
+        public Dock DefaultDock { get { return Dock.Left; } }
 
         public ToolboxSnap()
         {

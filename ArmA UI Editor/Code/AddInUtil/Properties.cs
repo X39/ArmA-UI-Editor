@@ -253,7 +253,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                             writer.Write("};};");
                             writer.Flush();
                             memStream.Seek(0, System.IO.SeekOrigin.Begin);
-                            var mainWindow = App.Current.MainWindow as ArmA_UI_Editor.UI.MainWindow;
+                            var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
                             try
                             {
                                 var file = SQF.ClassParser.File.Load(memStream);
@@ -285,7 +285,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         writer.Write("};};");
                         writer.Flush();
                         memStream.Seek(0, System.IO.SeekOrigin.Begin);
-                        var mainWindow = App.Current.MainWindow as ArmA_UI_Editor.UI.MainWindow;
+                        var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
                         try
                         {
                             var file = SQF.ClassParser.File.Load(memStream);

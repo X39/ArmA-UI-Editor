@@ -31,13 +31,76 @@ namespace ArmA_UI_Editor.UI
             InitializeComponent();
             this.Docker = new SnapDocker();
             this.frame.Content = this.Docker;
-
-            this.Docker.AddSnap(new SnapWindow(new Snaps.EditingSnap(), "MyUiConfig.cpp"), Dock.Top);
-            this.Docker.AddSnap(new SnapWindow(new Snaps.OutputSnap(), App.Current.Resources["STR_Window_Output"] as string), Dock.Bottom);
-            this.Docker.AddSnap(new SnapWindow(new Snaps.PropertySnap(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
-            this.Docker.AddSnap(new SnapWindow(new Snaps.ZIndexSnap(), App.Current.Resources["STR_Window_ZIndex"] as string), Dock.Left);
-            this.Docker.AddSnap(new SnapWindow(new Snaps.ToolboxSnap(), App.Current.Resources["STR_Window_Toolbox"] as string), Dock.Left);
+            
+            this.AddToDockerOrFocus<EditingSnap>();
+            this.AddToDockerOrFocus<OutputSnap>();
+            this.AddToDockerOrFocus<PropertySnap>();
+            this.AddToDockerOrFocus<ZIndexSnap>();
+            this.AddToDockerOrFocus<ToolboxSnap>();
         }
+        public static MainWindow TryGet()
+        {
+            if (App.Current.MainWindow is MainWindow)
+                return App.Current.MainWindow as MainWindow;
+            else
+                return null;
+        }
+        #region Docker interaction
+        public T NewSnapInstance<T>() where T : Code.Interface.ISnapWindow
+        {
+            return (T)typeof(T).GetConstructor(Type.EmptyTypes).Invoke(null);
+        }
+        public void AddToDockerOrFocus<T>() where T : Code.Interface.ISnapWindow
+        {
+            var instances = this.GetSnapInstances<T>();
+            if (instances.Length == 0)
+            {
+                this.AddToDocker<T>();
+            }
+            else
+            {
+                this.Docker.FocusSnap(instances[0]);
+            }
+        }
+        public void AddToDocker<T>() where T : Code.Interface.ISnapWindow
+        {
+            AddToDocker(this.NewSnapInstance<T>());
+        }
+        public void AddToDocker<T>(T content) where T : Code.Interface.ISnapWindow
+        {
+            if (content.AllowedCount == 1 && this.HasSnapInstance<T>())
+            {
+                throw new ArgumentException("Cannot add snap to window due to snap already existing");
+            }
+            //ToDo: Save positions of snaps in settings and load them afterwards
+            this.Docker.AddSnap(new SnapWindow(content, content.Title), content.DefaultDock);
+        }
+
+        public bool HasSnapInstance<T>() where T : Code.Interface.ISnapWindow
+        {
+            return this.Docker.FindSnaps<T>().Count != 0;
+        }
+        public T GetSnapInstance<T>() where T : Code.Interface.ISnapWindow
+        {
+            var list = this.Docker.FindSnaps<T>();
+            if (list.Count == 0)
+            {
+                T t = this.NewSnapInstance<T>();
+                list.Add(t);
+                AddToDocker(t);
+            }
+            if (list[0].AllowedCount != 1)
+            {
+                throw new ArgumentException("Cannot get snaps with AllowdCount > 1 using this function");
+            }
+            return list[0];
+        }
+        public T[] GetSnapInstances<T>() where T : Code.Interface.ISnapWindow
+        {
+            var list = this.Docker.FindSnaps<T>();
+            return list.ToArray();
+        }
+        #endregion
 
         private void ListView_Initialized(object sender, EventArgs e)
         {
@@ -131,58 +194,20 @@ namespace ArmA_UI_Editor.UI
 
         private void MenuItem_View_Toolbox_Click(object sender, RoutedEventArgs e)
         {
-            var elList = Docker.FindSnaps<Snaps.ToolboxSnap>();
-            if (elList.Count == 0)
-            {
-                this.Docker.AddSnap(new SnapWindow(new Snaps.ToolboxSnap(), App.Current.Resources["STR_Window_Toolbox"] as string), Dock.Left);
-            }
+            this.AddToDockerOrFocus<ToolboxSnap>();
         }
         private void MenuItem_View_Properties_Click(object sender, RoutedEventArgs e)
         {
-            var elList = Docker.FindSnaps<Snaps.PropertySnap>();
-            if (elList.Count == 0)
-            {
-                this.Docker.AddSnap(new SnapWindow(new Snaps.PropertySnap(), App.Current.Resources["STR_Window_Properties"] as string), Dock.Right);
-            }
+            this.AddToDockerOrFocus<PropertySnap>();
         }
         private void MenuItem_View_Output_Click(object sender, RoutedEventArgs e)
         {
-            var elList = Docker.FindSnaps<Snaps.OutputSnap>();
-            if(elList.Count == 0)
-            {
-                this.Docker.AddSnap(new SnapWindow(new Snaps.OutputSnap(), App.Current.Resources["STR_Window_Output"] as string), Dock.Bottom);
-            }
+            this.AddToDockerOrFocus<OutputSnap>();
         }
 
         private void MenuItem_View_ZIndex_Click(object sender, RoutedEventArgs e)
         {
-            var elList = Docker.FindSnaps<Snaps.ZIndexSnap>();
-            if(elList.Count == 0)
-            {
-                this.Docker.AddSnap(new SnapWindow(new Snaps.ZIndexSnap(), App.Current.Resources["STR_Window_ZIndex"] as string), Dock.Left);
-            }
+            this.AddToDockerOrFocus<ZIndexSnap>();
         }
-
-        //private void LoadProperties(Code.AddInUtil.Properties properties, Data data)
-        //{
-        //    this.ElementProperties.Children.Clear();
-        //    foreach (var groupIt in properties.Items)
-        //    {
-        //        var group = new PropertyGroup();
-        //        group.IsExpaned = true;
-        //        group.Header.Text = groupIt.Name;
-        //        this.ElementProperties.Children.Add(group);
-        //        foreach (var property in groupIt.Items)
-        //        {
-        //            var el = new Property();
-        //            el.Title.Text = property.DisplayName;
-        //            Data d = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data, property.FieldPath);
-        //            var fEl = property.PropertyType.GenerateUiElement(d);
-        //            el.ConfigElement.Content = fEl;
-        //            fEl.Tag = new Code.AddInUtil.Properties.Property.PTypeDataTag { File = this.configFile, Path = property.FieldPath, BaseData = data };
-        //            group.ItemsPanel.Children.Add(el);
-        //        }
-        //    }
-        //}
     }
 }

@@ -9,7 +9,7 @@
       MinHeight="150"
       Height="150"
       d:DesignHeight="150" d:DesignWidth="150"
-      Title="OutputWindow">
+      Title="{StaticResource STR_Window_Output}">
 
     <TextBox x:Name="LogBox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" IsReadOnly="True" FontFamily="Courier New"/>
 </Page>
