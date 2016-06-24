@@ -1,0 +1,173 @@
+﻿<root>
+    <event>
+        <name>onMouseEnter</name>
+        <description>The mouse pointer enters the control area.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onMouseExit</name>
+        <description>The mouse pointer exits the control area.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onSetFocus</name>
+        <description>Input focus is on control. It now begins to accept keyboard input.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onKillFocus</name>
+        <description>Input focus is no longer on control. It no longer accepts keyboard input.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onTimer</name>
+        <description>After amount of time given by setTimer function.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onVideoStopped</name>
+        <description>Activated every time video ends (when looped, handler is executed after every finished loop).</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onCanDestroy</name>
+        <description>Ask this control if dialog can be closed (used for validation of contained data).</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">Exit Code</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onDestroy</name>
+        <description>Destroying control</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">Exit Code</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onMouseZChanged</name>
+        <description>Fires when mouse wheel position is changed. Does not fire on disabled control. Checked with CT_EDIT type in v1.50.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">Scrollbar change</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onChar</name>
+        <description>When some readable characters is recognised.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">Char code</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onIMEChar</name>
+        <description>When IME character is recognized (used in Korean and other eastern languages).</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">Char code</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onIMEComposition</name>
+        <description>When partial IME character is recognized (used in Korean and other eastern languages).</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">Char code</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onMouseButtonDown</name>
+        <description>Pressing a mouse button. Followed by theonMouseButtonUp event.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">Pressed Button</arg>
+            <arg index="2" type="SCALAR">X Coordinate relative to control</arg>
+            <arg index="3" type="SCALAR">Y Coordinate relative to control</arg>
+            <arg index="4" type="BOOL">SHIFT state</arg>
+            <arg index="5" type="BOOL">CTRL state</arg>
+            <arg index="6" type="BOOL">ALT state</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onMouseButtonUp</name>
+        <description>Releasing a mouse button. Follows theonMouseButtonDown event.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">Pressed Button</arg>
+            <arg index="2" type="SCALAR">X Coordinate relative to control</arg>
+            <arg index="3" type="SCALAR">Y Coordinate relative to control</arg>
+            <arg index="4" type="BOOL">SHIFT state</arg>
+            <arg index="5" type="BOOL">CTRL state</arg>
+            <arg index="6" type="BOOL">ALT state</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onMouseButtonDblClick</name>
+        <description>Pressing and releasing a mouse button twice within very short time.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">Pressed Button</arg>
+            <arg index="2" type="SCALAR">X Coordinate relative to control</arg>
+            <arg index="3" type="SCALAR">Y Coordinate relative to control</arg>
+            <arg index="4" type="BOOL">SHIFT state</arg>
+            <arg index="5" type="BOOL">CTRL state</arg>
+            <arg index="6" type="BOOL">ALT state</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onMouseMoving</name>
+        <description>Fires continuously while moving the mouse with a certain interval.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">X Coordinate relative to control</arg>
+            <arg index="2" type="SCALAR">Y Coordinate relative to control</arg>
+            <arg index="3" type="?">mouseOver ??</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onMouseHolding</name>
+        <description>Fires continuously while mouse is not moving with a certain interval.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">X Coordinate relative to control</arg>
+            <arg index="2" type="SCALAR">Y Coordinate relative to control</arg>
+            <arg index="3" type="?">mouseOver ??</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onKeyDown</name>
+        <description>Pressing any keyboard key. Fired before the onKeyUp event.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">DIK keyboard code</arg>
+            <arg index="2" type="BOOL">SHIFT state</arg>
+            <arg index="3" type="BOOL">CTRL state</arg>
+            <arg index="4" type="BOOL">ALT state</arg>
+        </arguments>
+    </event>
+    <event>
+        <name>onKeyUp</name>
+        <description>Releasing any keyboard key. Fired after the onKeyDown event.</description>
+        <arguments>
+            <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+            <arg index="1" type="SCALAR">DIK keyboard code</arg>
+            <arg index="2" type="BOOL">SHIFT state</arg>
+            <arg index="3" type="BOOL">CTRL state</arg>
+            <arg index="4" type="BOOL">ALT state</arg>
+        </arguments>
+    </event>
+</root>

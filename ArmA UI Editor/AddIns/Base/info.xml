@@ -18,6 +18,10 @@
       <class>/Classes/RscText.class</class>
       <xaml>/Xaml/RscText.xaml</xaml>
       <properties>/Properties/RscText.xml</properties>
+      <events>/Events/RscText.xml</events>
+      <events>/Events/onLBDrop.xml</events>
+      <events>/Events/Generic.xml</events>
+      <events>/Events/onMouseButtonClick.xml</events>
     </element>
     <element>
       <displayname>RscButton</displayname>
@@ -25,6 +29,10 @@
       <class>/Classes/RscButton.class</class>
       <xaml>/Xaml/RscButton.xaml</xaml>
       <properties>/Properties/RscButton.xml</properties>
+      <events>/Events/RscButton.xml</events>
+      <events>/Events/onLBDrop.xml</events>
+      <events>/Events/Generic.xml</events>
+      <events>/Events/onMouseButtonClick.xml</events>
     </element>
     <element>
       <displayname>IGUIBack</displayname>
@@ -32,6 +40,7 @@
       <class>/Classes/IGUIBack.class</class>
       <xaml>/Xaml/IGUIBack.xaml</xaml>
       <properties>/Properties/IGUIBack.xml</properties>
+      <events>/Events/Generic.xml</events>
     </element>
     <element>
       <displayname>RscCombo</displayname>
@@ -39,6 +48,10 @@
       <class>/Classes/RscCombo.class</class>
       <xaml>/Xaml/RscCombo.xaml</xaml>
       <properties>/Properties/RscCombo.xml</properties>
+      <events>/Events/onLBSelChanged.xml</events>
+      <events>/Events/onLBDrop.xml</events>
+      <events>/Events/Generic.xml</events>
+      <events>/Events/onMouseButtonClick.xml</events>
     </element>
     <element>
       <displayname>RscEdit</displayname>
@@ -46,6 +59,10 @@
       <class>/Classes/RscEdit.class</class>
       <xaml>/Xaml/RscEdit.xaml</xaml>
       <properties>/Properties/RscEdit.xml</properties>
+      <events>/Events/RscEdit.xml</events>
+      <events>/Events/onLBDrop.xml</events>
+      <events>/Events/Generic.xml</events>
+      <events>/Events/onMouseButtonClick.xml</events>
     </element>
     <element>
       <displayname>RscPicture</displayname>
@@ -53,6 +70,7 @@
       <class>/Classes/RscPicture.class</class>
       <xaml>/Xaml/RscPicture.xaml</xaml>
       <properties>/Properties/RscPicture.xml</properties>
+      <events>/Events/Generic.xml</events>
     </element>
     <element>
       <displayname>RscListBox</displayname>
@@ -60,6 +78,11 @@
       <class>/Classes/RscListBox.class</class>
       <xaml>/Xaml/RscListBox.xaml</xaml>
       <properties>/Properties/RscListBox.xml</properties>
+      <events>/Events/RscListBox.xml</events>
+      <events>/Events/onLBSelChanged.xml</events>
+      <events>/Events/onLBDrop.xml</events>
+      <events>/Events/onMouseButtonClick.xml</events>
+      <events>/Events/Generic.xml</events>
     </element>
   </uielements>
   <styles>
