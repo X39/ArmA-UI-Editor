@@ -87,7 +87,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onLoad", true);
                 data.String = tb.Text;
-                this.CurrentEditingSnap.TryRefreshAll(1);
+                this.CurrentEditingSnap.Redraw();
             }
         }
         private void tb_onLoad_Initialized(object sender, EventArgs e)
@@ -106,7 +106,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             Utility.tb_PreviewTextInput_Ident_DoHandle(sender, e, () =>
             {
                 this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1].Name = (sender as TextBox).Text;
-                this.CurrentEditingSnap.TryRefreshAll(1);
+                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_ClassName_Initialized(object sender, EventArgs e)
@@ -126,7 +126,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onUnload", true);
                 data.String = tb.Text;
-                this.CurrentEditingSnap.TryRefreshAll(1);
+                this.CurrentEditingSnap.Redraw();
             }
         }
         private void tb_onUnload_Initialized(object sender, EventArgs e)
@@ -147,7 +147,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/duration", true);
                 data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
-                this.CurrentEditingSnap.TryRefreshAll(1);
+                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_duration_Initialized(object sender, EventArgs e)
@@ -168,7 +168,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeIn", true);
                 data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
-                this.CurrentEditingSnap.TryRefreshAll(1);
+                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_fadeIn_Initialized(object sender, EventArgs e)
@@ -189,7 +189,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeOut", true);
                 data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
-                this.CurrentEditingSnap.TryRefreshAll(1);
+                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_fadeOut_Initialized(object sender, EventArgs e)
@@ -210,7 +210,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/idd", true);
                 data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
-                this.CurrentEditingSnap.TryRefreshAll(1);
+                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_Idd_Initialized(object sender, EventArgs e)
@@ -231,7 +231,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
             var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/enableSimulation", true);
             data.Number = value;
-            this.CurrentEditingSnap.TryRefreshAll(1);
+            this.CurrentEditingSnap.Redraw();
         }
         private void cb_enableSimulation_Initialized(object sender, EventArgs e)
         {
