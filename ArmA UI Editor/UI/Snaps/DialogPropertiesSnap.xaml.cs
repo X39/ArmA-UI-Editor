@@ -77,34 +77,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
         }
 
-        private void tb_PreviewTextInput_Numeric_DoHandle(object sender, TextCompositionEventArgs e, Action a)
-        {
-            TextBox tb = sender as TextBox;
-            if (e.Text.Contains('\r'))
-            {
-                if (tb.Text.Length == 0)
-                    return;
-                a.Invoke();
-            }
-            else
-            {
-                var currentSelection = tb.SelectionStart;
-                string text = tb.Text;
-                if(tb.SelectionLength > 0)
-                {
-                    text = text.Remove(tb.SelectionStart, tb.SelectionLength);
-                }
-                text = text.Insert(tb.SelectionStart, e.Text);
-                currentSelection += e.Text.Length;
-                if (text.IsNumeric())
-                {
-                    tb.Text = text;
-                    tb.SelectionStart = currentSelection;
-                }
-            }
-            e.Handled = true;
-        }
-
         private void tb_onLoad_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (e.Text.Contains('\r'))
@@ -131,20 +103,11 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void tb_ClassName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text.Contains('\r'))
+            Utility.tb_PreviewTextInput_Ident_DoHandle(sender, e, () =>
             {
-                TextBox tb = sender as TextBox;
-                string text = tb.Text.Trim(new[] { ' ' });
-                if (!text.IsValidIdentifier())
-                {
-                    MessageBox.Show("Non-Valid Identifier");
-                }
-                else
-                {
-                    this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1].Name = text;
-                    this.CurrentEditingSnap.TryRefreshAll(1);
-                }
-            }
+                this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1].Name = (sender as TextBox).Text;
+                this.CurrentEditingSnap.TryRefreshAll(1);
+            });
         }
         private void tb_ClassName_Initialized(object sender, EventArgs e)
         {
@@ -179,7 +142,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void tb_duration_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/duration", true);
@@ -200,7 +163,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void tb_fadeIn_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeIn", true);
@@ -221,7 +184,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void tb_fadeOut_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeOut", true);
@@ -242,7 +205,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void tb_Idd_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
                 var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
                 var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/idd", true);

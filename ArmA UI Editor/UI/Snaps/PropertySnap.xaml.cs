@@ -49,15 +49,29 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             var group = new Group();
             group.Header = "Default";
-            Property p = new Property();
-            TextBox tb = new TextBox();
+            this.PropertyStack.Children.Add(group);
+            Property p;
+            TextBox tb;
+            Data d;
+
+            p = new Property();
+            tb = new TextBox();
             tb.PreviewTextInput += TextBox_ClassName_PreviewTextInput;
             tb.Text = this.CurrentData.Name;
             p.Children.Add(tb);
             p.Header = "Class Name";
             group.Children.Add(p);
-            this.PropertyStack.Children.Add(group);
         }
+
+        private void TextBox_ClassName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Utility.tb_PreviewTextInput_Ident_DoHandle(sender, e, () =>
+            {
+                this.CurrentData.Name = (sender as TextBox).Text;
+                CurrentWindow.TryRefreshAll(1);
+            });
+        }
+
         public void LoadProperties(Code.AddInUtil.Properties properties, SQF.ClassParser.Data data, EditingSnap window)
         {
             this.CurrentProperties = properties;
@@ -91,30 +105,10 @@ namespace ArmA_UI_Editor.UI.Snaps
             Code.AddInUtil.Properties.Property.PType.ValueChanged -= PType_ValueChanged;
             Code.AddInUtil.Properties.Property.PType.OnError -= PType_OnError;
         }
-
-
         public void LoadSnap()
         {
             Code.AddInUtil.Properties.Property.PType.ValueChanged += PType_ValueChanged;
             Code.AddInUtil.Properties.Property.PType.OnError += PType_OnError;
-        }
-
-        private void TextBox_ClassName_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            if (e.Text.Contains('\r'))
-            {
-                TextBox tb = sender as TextBox;
-                string text = tb.Text.Trim(new[] { ' ' });
-                if(!text.IsValidIdentifier())
-                {
-                    MessageBox.Show("Non-Valid Identifier");
-                }
-                else
-                {
-                    this.CurrentData.Name = text;
-                    CurrentWindow.TryRefreshAll(1);
-                }
-            }
         }
     }
 }

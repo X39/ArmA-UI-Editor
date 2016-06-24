@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows;
 
 namespace ArmA_UI_Editor.Code
 {
@@ -93,6 +96,52 @@ namespace ArmA_UI_Editor.Code
                 }
             }
             return true;
+        }
+
+
+        public static void tb_PreviewTextInput_Numeric_DoHandle(object sender, TextCompositionEventArgs e, Action a)
+        {
+            TextBox tb = sender as TextBox;
+            if (e.Text.Contains('\r'))
+            {
+                if (tb.Text.Length == 0)
+                    return;
+                a.Invoke();
+            }
+            else
+            {
+                var currentSelection = tb.SelectionStart;
+                string text = tb.Text;
+                if (tb.SelectionLength > 0)
+                {
+                    text = text.Remove(tb.SelectionStart, tb.SelectionLength);
+                }
+                text = text.Insert(tb.SelectionStart, e.Text);
+                currentSelection += e.Text.Length;
+                if (text.IsNumeric())
+                {
+                    tb.Text = text;
+                    tb.SelectionStart = currentSelection;
+                }
+            }
+            e.Handled = true;
+        }
+        public static void tb_PreviewTextInput_Ident_DoHandle(object sender, TextCompositionEventArgs e, Action a)
+        {
+            if (e.Text.Contains('\r'))
+            {
+                TextBox tb = sender as TextBox;
+                string text = tb.Text.Trim(new[] { ' ' });
+                if (!text.IsValidIdentifier())
+                {
+                    MessageBox.Show("Non-Valid Identifier");
+                }
+                else
+                {
+                    a.Invoke();
+                }
+                e.Handled = true;
+            }
         }
     }
 }
