@@ -58,6 +58,7 @@ namespace ArmA_UI_Editor.Code
         public static bool IsNumeric(this string s)
         {
             bool dot = false;
+            bool allowMinus = true;
             foreach (var c in s)
             {
                 if (!char.IsDigit(c))
@@ -66,11 +67,16 @@ namespace ArmA_UI_Editor.Code
                     {
                         dot = true;
                     }
+                    else if (c == '-' && allowMinus)
+                    {
+                        //empty
+                    }
                     else
                     {
                         return false;
                     }
                 }
+                allowMinus = false;
             }
             return true;
         }
@@ -79,16 +85,18 @@ namespace ArmA_UI_Editor.Code
             bool allowDigits = false;
             foreach (var c in s)
             {
+                if (c == ' ')
+                    return false;
                 if(allowDigits)
                 {
-                    if (!char.IsLetterOrDigit(c))
+                    if (!char.IsLetterOrDigit(c) && c != '_')
                     {
                         return false;
                     }
                 }
                 else
                 {
-                    if (!char.IsLetter(c))
+                    if (!char.IsLetter(c) && c != '_')
                     {
                         return false;
                     }
@@ -97,11 +105,37 @@ namespace ArmA_UI_Editor.Code
             }
             return true;
         }
+        public static void ClearWhitespaces(this TextBox tb)
+        {
+            string text = tb.Text;
+            if(text.Contains(' '))
+            {
+                int curStart = tb.SelectionStart;
+                StringBuilder builder = new StringBuilder(text.Length);
+                foreach(char c in text)
+                {
+                    if (c == ' ')
+                    {
+                        if (builder.Length < curStart)
+                        {
+                            curStart--;
+                        }
+                    }
+                    else
+                    {
+                        builder.Append(c);
+                    }
+                }
+                tb.Text = builder.ToString();
+                tb.SelectionStart = curStart;
+            }
+        }
 
 
         public static void tb_PreviewTextInput_Numeric_DoHandle(object sender, TextCompositionEventArgs e, Action a)
         {
             TextBox tb = sender as TextBox;
+            tb.ClearWhitespaces();
             if (e.Text.Contains('\r'))
             {
                 if (tb.Text.Length == 0)
@@ -128,20 +162,31 @@ namespace ArmA_UI_Editor.Code
         }
         public static void tb_PreviewTextInput_Ident_DoHandle(object sender, TextCompositionEventArgs e, Action a)
         {
+            TextBox tb = sender as TextBox;
+            tb.ClearWhitespaces();
             if (e.Text.Contains('\r'))
             {
-                TextBox tb = sender as TextBox;
-                string text = tb.Text.Trim(new[] { ' ' });
-                if (!text.IsValidIdentifier())
-                {
-                    MessageBox.Show("Non-Valid Identifier");
-                }
-                else
-                {
-                    a.Invoke();
-                }
-                e.Handled = true;
+                if (tb.Text.Length == 0)
+                    return;
+                a.Invoke();
             }
+            else
+            {
+                var currentSelection = tb.SelectionStart;
+                string text = tb.Text;
+                if (tb.SelectionLength > 0)
+                {
+                    text = text.Remove(tb.SelectionStart, tb.SelectionLength);
+                }
+                text = text.Insert(tb.SelectionStart, e.Text);
+                currentSelection += e.Text.Length;
+                if (text.IsValidIdentifier())
+                {
+                    tb.Text = text;
+                    tb.SelectionStart = currentSelection;
+                }
+            }
+            e.Handled = true;
         }
     }
 }
