@@ -61,8 +61,29 @@ namespace ArmA_UI_Editor.UI.Snaps
             p.Children.Add(tb);
             p.Header = "Class Name";
             group.Children.Add(p);
+
+            p = new Property();
+            tb = new TextBox();
+            tb.PreviewTextInput += TextBox_IDC_PreviewTextInput;
+            d = SQF.ClassParser.File.ReceiveFieldFromHirarchy(this.CurrentData, "idc", false);
+            if(d != null && d.IsNumber)
+            {
+                tb.Text = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", d.Number);
+            }
+            p.Children.Add(tb);
+            p.Header = "IDC";
+            group.Children.Add(p);
         }
 
+        private void TextBox_IDC_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            {
+                SQF.ClassParser.File.ReceiveFieldFromHirarchy(this.CurrentData, "idc", true).Number = double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                CurrentWindow.Redraw();
+                (ArmA_UI_Editor.UI.MainWindow.TryGet()).SetStatusbarText("", false);
+            });
+        }
         private void TextBox_ClassName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Utility.tb_PreviewTextInput_Ident_DoHandle(sender, e, () =>
