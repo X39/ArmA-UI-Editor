@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ArmA_UI_Editor.Code.AddInUtil;
 using SQF.ClassParser;
+using ArmA_UI_Editor.Code;
 
 namespace ArmA_UI_Editor.UI.Snaps
 {
@@ -100,10 +101,19 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void TextBox_ClassName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if(e.Text.Contains('\r'))
+            if (e.Text.Contains('\r'))
             {
-                this.CurrentData.Name = (sender as TextBox).Text.Trim(new[] { ' ' });
-                CurrentWindow.TryRefreshAll(1);
+                TextBox tb = sender as TextBox;
+                string text = tb.Text.Trim(new[] { ' ' });
+                if(!text.IsValidIdentifier())
+                {
+                    MessageBox.Show("Non-Valid Identifier");
+                }
+                else
+                {
+                    this.CurrentData.Name = text;
+                    CurrentWindow.TryRefreshAll(1);
+                }
             }
         }
     }

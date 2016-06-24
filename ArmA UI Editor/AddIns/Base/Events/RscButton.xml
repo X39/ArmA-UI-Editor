@@ -1,0 +1,9 @@
+﻿<root>
+  <event>
+    <name>onLoad</name>
+    <description>Triggered when ui element is loaded</description>
+    <arguments>
+      <arg index="0" type="CONTROL">Control element that gets loaded</arg>
+    </arguments>
+  </event>
+</root>

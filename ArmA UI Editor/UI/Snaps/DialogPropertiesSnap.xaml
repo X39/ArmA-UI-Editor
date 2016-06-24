@@ -11,5 +11,38 @@
       d:DesignHeight="300" d:DesignWidth="300"
       Title="{StaticResource STR_Window_DialogProperties}">
 
-    <StackPanel x:FieldModifier="private" x:Name="PropertyStack" Background="Transparent" Orientation="Vertical"/>
+    <Page.Resources>
+        <Page x:Key="WindowProperties">
+            <StackPanel Orientation="Vertical" Background="{StaticResource SCB_UIBackground}">
+                <ui:Property Header="Class Name">
+                    <TextBox PreviewTextInput="tb_ClassName_PreviewTextInput" Initialized="tb_ClassName_Initialized"/>
+                </ui:Property>
+                <ui:Property Header="idd">
+                    <TextBox PreviewTextInput="tb_Idd_PreviewTextInput" Initialized="tb_Idd_Initialized"/>
+                </ui:Property>
+                <ui:Property Header="onLoad">
+                    <TextBox PreviewTextInput="tb_onLoad_PreviewTextInput" Initialized="tb_onLoad_Initialized"/>
+                </ui:Property>
+                <ui:Property Header="onUnload">
+                    <TextBox PreviewTextInput="tb_onUnload_PreviewTextInput" Initialized="tb_onUnload_Initialized"/>
+                </ui:Property>
+                <ui:Property Header="duration">
+                    <TextBox PreviewTextInput="tb_duration_PreviewTextInput" Initialized="tb_duration_Initialized"/>
+                </ui:Property>
+                <ui:Property Header="fadeIn">
+                    <TextBox PreviewTextInput="tb_fadeIn_PreviewTextInput" Initialized="tb_fadeIn_Initialized"/>
+                </ui:Property>
+                <ui:Property Header="fadeOut">
+                    <TextBox PreviewTextInput="tb_fadeOut_PreviewTextInput" Initialized="tb_fadeOut_Initialized"/>
+                </ui:Property>
+                <ui:Property Header="enableSimulation">
+                    <ComboBox SelectionChanged="cb_enableSimulation_SelectionChanged" Initialized="cb_enableSimulation_Initialized">
+                        <ComboBoxItem Content="True"/>
+                        <ComboBoxItem Content="False"/>
+                    </ComboBox>
+                </ui:Property>
+            </StackPanel>
+        </Page>
+    </Page.Resources>
+    <Frame NavigationUIVisibility="Hidden" x:Name="ThisFrame" x:FieldModifier="private"/>
 </Page>

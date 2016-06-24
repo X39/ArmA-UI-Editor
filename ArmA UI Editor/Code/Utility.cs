@@ -52,5 +52,47 @@ namespace ArmA_UI_Editor.Code
             }
             return null;
         }
+        public static bool IsNumeric(this string s)
+        {
+            bool dot = false;
+            foreach (var c in s)
+            {
+                if (!char.IsDigit(c))
+                {
+                    if (c == '.' && !dot)
+                    {
+                        dot = true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        public static bool IsValidIdentifier(this string s)
+        {
+            bool allowDigits = false;
+            foreach (var c in s)
+            {
+                if(allowDigits)
+                {
+                    if (!char.IsLetterOrDigit(c))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (!char.IsLetter(c))
+                    {
+                        return false;
+                    }
+                    allowDigits = true;
+                }
+            }
+            return true;
+        }
     }
 }

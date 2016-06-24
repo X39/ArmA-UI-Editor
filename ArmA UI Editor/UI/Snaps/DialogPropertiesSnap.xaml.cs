@@ -15,20 +15,19 @@ using System.Windows.Shapes;
 using ArmA_UI_Editor.Code.AddInUtil;
 using SQF.ClassParser;
 using System.Windows.Markup;
+using ArmA_UI_Editor.Code;
 
 
 namespace ArmA_UI_Editor.UI.Snaps
 {
-    [ContentProperty("Children")]
     public partial class DialogPropertiesSnap : Page, Code.Interface.ISnapWindow
     {
         public int AllowedCount { get { return 1; } }
         public Dock DefaultDock { get { return Dock.Right; } }
 
-        public static readonly DependencyPropertyKey ChildrenProperty = DependencyProperty.RegisterReadOnly("Children", typeof(UIElementCollection), typeof(Property), new PropertyMetadata());
-        public UIElementCollection Children { get { return (UIElementCollection)GetValue(ChildrenProperty.DependencyProperty); } private set { SetValue(ChildrenProperty, value); } }
         private EditingSnap _CurrentEditingSnap;
-        private EditingSnap CurrentEditingSnap {
+        private EditingSnap CurrentEditingSnap
+        {
             get
             {
                 return this._CurrentEditingSnap;
@@ -36,13 +35,16 @@ namespace ArmA_UI_Editor.UI.Snaps
             set
             {
                 this._CurrentEditingSnap = value;
+                if (value != null)
+                {
+                    ThisFrame.Content = this.Resources["WindowProperties"];
+                }
             }
         }
 
         public DialogPropertiesSnap()
         {
             InitializeComponent();
-            this.Children = this.PropertyStack.Children;
             _CurrentEditingSnap = null;
         }
         public void UnloadSnap()
@@ -72,6 +74,210 @@ namespace ArmA_UI_Editor.UI.Snaps
             else if(e.SnapWindowNew.Window is EditingSnap)
             {
                 this.CurrentEditingSnap = e.SnapWindowNew.Window as EditingSnap;
+            }
+        }
+
+        private void tb_PreviewTextInput_Numeric_DoHandle(object sender, TextCompositionEventArgs e, Action a)
+        {
+            TextBox tb = sender as TextBox;
+            if (e.Text.Contains('\r'))
+            {
+                if (tb.Text.Length == 0)
+                    return;
+                a.Invoke();
+            }
+            else
+            {
+                var currentSelection = tb.SelectionStart;
+                string text = tb.Text;
+                if(tb.SelectionLength > 0)
+                {
+                    text = text.Remove(tb.SelectionStart, tb.SelectionLength);
+                }
+                text = text.Insert(tb.SelectionStart, e.Text);
+                currentSelection += e.Text.Length;
+                if (text.IsNumeric())
+                {
+                    tb.Text = text;
+                    tb.SelectionStart = currentSelection;
+                }
+            }
+            e.Handled = true;
+        }
+
+        private void tb_onLoad_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text.Contains('\r'))
+            {
+                TextBox tb = sender as TextBox;
+                if (tb.Text.Length == 0)
+                    return;
+                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onLoad", true);
+                data.String = tb.Text;
+                this.CurrentEditingSnap.TryRefreshAll(1);
+            }
+        }
+        private void tb_onLoad_Initialized(object sender, EventArgs e)
+        {
+            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onLoad", false);
+            if (data != null && data.IsString)
+            {
+                TextBox tb = sender as TextBox;
+                tb.Text = data.String;
+            }
+        }
+
+        private void tb_ClassName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text.Contains('\r'))
+            {
+                TextBox tb = sender as TextBox;
+                string text = tb.Text.Trim(new[] { ' ' });
+                if (!text.IsValidIdentifier())
+                {
+                    MessageBox.Show("Non-Valid Identifier");
+                }
+                else
+                {
+                    this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1].Name = text;
+                    this.CurrentEditingSnap.TryRefreshAll(1);
+                }
+            }
+        }
+        private void tb_ClassName_Initialized(object sender, EventArgs e)
+        {
+            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+            TextBox tb = sender as TextBox;
+            tb.Text = uiConfigClass.Name;
+        }
+
+        private void tb_onUnload_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text.Contains('\r'))
+            {
+                TextBox tb = sender as TextBox;
+                if (tb.Text.Length == 0)
+                    return;
+                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onUnload", true);
+                data.String = tb.Text;
+                this.CurrentEditingSnap.TryRefreshAll(1);
+            }
+        }
+        private void tb_onUnload_Initialized(object sender, EventArgs e)
+        {
+            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onUnload", false);
+            if (data != null && data.IsString)
+            {
+                TextBox tb = sender as TextBox;
+                tb.Text = data.String;
+            }
+        }
+
+        private void tb_duration_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            {
+                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/duration", true);
+                data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                this.CurrentEditingSnap.TryRefreshAll(1);
+            });
+        }
+        private void tb_duration_Initialized(object sender, EventArgs e)
+        {
+            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/duration", false);
+            if (data != null && data.IsNumber)
+            {
+                TextBox tb = sender as TextBox;
+                tb.Text = data.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        private void tb_fadeIn_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            {
+                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeIn", true);
+                data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                this.CurrentEditingSnap.TryRefreshAll(1);
+            });
+        }
+        private void tb_fadeIn_Initialized(object sender, EventArgs e)
+        {
+            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeIn", false);
+            if (data != null && data.IsNumber)
+            {
+                TextBox tb = sender as TextBox;
+                tb.Text = data.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        private void tb_fadeOut_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            {
+                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeOut", true);
+                data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                this.CurrentEditingSnap.TryRefreshAll(1);
+            });
+        }
+        private void tb_fadeOut_Initialized(object sender, EventArgs e)
+        {
+            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeOut", false);
+            if (data != null && data.IsNumber)
+            {
+                TextBox tb = sender as TextBox;
+                tb.Text = data.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        private void tb_Idd_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            {
+                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/idd", true);
+                data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                this.CurrentEditingSnap.TryRefreshAll(1);
+            });
+        }
+        private void tb_Idd_Initialized(object sender, EventArgs e)
+        {
+            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/idd", false);
+            if (data != null && data.IsNumber)
+            {
+                TextBox tb = sender as TextBox;
+                tb.Text = data.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        private void cb_enableSimulation_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+            int value = bool.Parse((cb.SelectedValue as ComboBoxItem).Content as string) ? 1 : 0;
+            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/enableSimulation", true);
+            data.Number = value;
+            this.CurrentEditingSnap.TryRefreshAll(1);
+        }
+        private void cb_enableSimulation_Initialized(object sender, EventArgs e)
+        {
+            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
+            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/enableSimulation", false);
+            if (data != null && data.IsNumber)
+            {
+                ComboBox cb = sender as ComboBox;
+                cb.SelectedIndex = data.Number > 0 ? 1 : 0;
             }
         }
     }

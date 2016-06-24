@@ -102,16 +102,15 @@ namespace ArmA_UI_Editor.UI.Snaps
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("class NewArmAUI");
             sb.AppendLine("{");
-            sb.AppendLine("\tidd = -1;");
-            sb.AppendLine("\tonLoad = \"\";");
-            sb.AppendLine("\tonUnload = \"\";");
-            sb.AppendLine("\tduration = 32000;");
-            sb.AppendLine("\tfadeIn = 0;");
-            sb.AppendLine("\tfadeOut = 0;");
-            sb.AppendLine("\tenableSimulation = 1;");
             sb.AppendLine("\tclass controls");
             sb.AppendLine("\t{");
-            sb.AppendLine("\t\tclass MyFirstRscText : RscText\r\n\t\t{\r\n\t\t\tw = \"(120 / 1920) * SafeZoneW\";\r\n\t\t\th = \"(30 / 1080) * SafeZoneH\";\r\n\t\t\ttext = \"My UI Starts here <3\";\r\n\t\t\tcolorBackground[] = {0.1, 0.1, 0.1, 0.5};\r\n\t\t};");
+            sb.AppendLine("\t\tclass MyFirstRscText : RscText");
+            sb.AppendLine("\t\t{");
+            sb.AppendLine("\t\t\tw = \"(120 / 1920) * SafeZoneW\";");
+            sb.AppendLine("\t\t\th = \"(30 / 1080) * SafeZoneH\";");
+            sb.AppendLine("\t\t\ttext = \"My UI Starts here <3\";");
+            sb.AppendLine("\t\t\tcolorBackground[] = {0.1, 0.1, 0.1, 0.5};");
+            sb.AppendLine("\t\t};");
             sb.AppendLine("\t};");
             sb.AppendLine("};");
 
@@ -681,8 +680,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 {
                     if (this.BlockWriteout || !this.ReinitConfigFileField())
                     {
-                        mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
-                        mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
+                        mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
                         this.DisplayCanvas.Children.Clear();
                         Frame frame = new Frame();
                         frame.Content = new ParseError();
@@ -744,7 +742,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                             el.Height = tmp;
                             el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath, Owner = this, Window = this };
                             var snaps = MainWindow.TryGet().Docker.FindSnaps<PropertySnap>();
-                            if (snaps.Count > 0 && (snaps[0]).CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
+                            if (snaps.Count > 0 && (snaps[0]).CurrentData != null && (snaps[0]).CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
                             {
                                 var overlay = this.CreateOrGetSelectionOverlay(false);
                                 this.DisplayCanvas.Children.Add(overlay);
@@ -755,8 +753,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                         index++;
                     }
                 }
-                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIBlue"] as SolidColorBrush;
-                mainWindow.StatusTextbox.Text = "";
+                mainWindow.SetStatusbarText("", false);
                 foreach (var it in this.DisplayCanvas.Children)
                 {
                     initialCount--;
@@ -768,8 +765,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             catch (SQF.ClassParser.File.ParseException ex)
             {
                 Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
-                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
-                mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
+                mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
                 this.DisplayCanvas.Children.Clear();
                 Frame frame = new Frame();
                 frame.Content = new ParseError();
@@ -778,8 +774,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             catch (Exception ex)
             {
                 Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
-                mainWindow.StatusBar.Background = App.Current.Resources["SCB_UIRed"] as SolidColorBrush;
-                mainWindow.StatusTextbox.Text = App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String;
+                mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
                 this.DisplayCanvas.Children.Clear();
                 Frame frame = new Frame();
                 frame.Content = new ParseError();
