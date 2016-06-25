@@ -38,6 +38,7 @@ namespace ArmA_UI_Editor.UI
             this.AddToDockerOrFocus<PropertySnap>();
             this.AddToDockerOrFocus<ZIndexSnap>();
             this.AddToDockerOrFocus<ToolboxSnap>();
+            this.AddToDockerOrFocus<EventsSnap>();
         }
         public static MainWindow TryGet()
         {
@@ -214,6 +215,11 @@ namespace ArmA_UI_Editor.UI
         private void MenuItem_View_DialogProperties_Click(object sender, RoutedEventArgs e)
         {
             this.AddToDockerOrFocus<DialogPropertiesSnap>();
+        }
+
+        private void MenuItem_View_Events_Click(object sender, RoutedEventArgs e)
+        {
+            this.AddToDockerOrFocus<EventsSnap>();
         }
     }
 }
