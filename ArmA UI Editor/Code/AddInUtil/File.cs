@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace ArmA_UI_Editor.Code.AddInUtil
 {
@@ -17,6 +18,8 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         public string __XamlPath { get; set; }
         [XmlElement("properties")]
         public string __PropertiesPath { get; set; }
+        [XmlElement("events")]
+        public List<string> __EventsPath { get; set; }
 
         [XmlIgnore()]
         public SQF.ClassParser.File ClassFile { get; set; }
@@ -24,6 +27,8 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         public AddIn Parent { get; set; }
         [XmlIgnore()]
         public Properties Properties { get; private set; }
+        [XmlIgnore()]
+        public List<Event> Events { get; private set; }
 
         public UIElement()
         {
@@ -32,6 +37,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             this.__ClassPath = default(string);
             this.__XamlPath = default(string);
             this.__PropertiesPath = default(string);
+            this.Events = new List<Event>();
         }
         
         public void Initialize()
@@ -46,6 +52,12 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 var x = new XmlSerializer(typeof(Properties));
                 var properties = (Properties)x.Deserialize(reader);
                 this.Properties = properties;
+            }
+            foreach (var it in this.__EventsPath)
+            {
+                var path = System.IO.Path.Combine(Parent.ThisPath, it.TrimStart(new[] { '\\', '/' }));
+                List<Event> events = Event.Load(path);
+                this.Events.AddRange(events);
             }
         }
     }

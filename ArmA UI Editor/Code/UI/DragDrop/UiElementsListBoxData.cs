@@ -7,7 +7,7 @@ using ArmA_UI_Editor.Code.AddInUtil;
 
 namespace ArmA_UI_Editor.Code.UI.DragDrop
 {
-    internal class UiElementsListBoxData
+    public class UiElementsListBoxData
     {
         public UIElement ElementData;
 

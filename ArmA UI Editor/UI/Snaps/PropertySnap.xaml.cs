@@ -93,12 +93,10 @@ namespace ArmA_UI_Editor.UI.Snaps
             });
         }
 
-        public void LoadProperties(Code.AddInUtil.Properties properties, SQF.ClassParser.Data data, EditingSnap window)
+        public void LoadProperties(Code.AddInUtil.Properties properties, SQF.ClassParser.Data data)
         {
             this.CurrentProperties = properties;
             this.CurrentData = data;
-            this.CurrentWindow = window;
-
             this.PropertyStack.Children.Clear();
             this.AddDefaultProperties();
 
@@ -113,9 +111,9 @@ namespace ArmA_UI_Editor.UI.Snaps
                     var el = new Property();
                     el.Header = property.DisplayName;
                     Data d = File.ReceiveFieldFromHirarchy(data, property.FieldPath);
-                    var fEl = property.PropertyType.GenerateUiElement(d, window);
+                    var fEl = property.PropertyType.GenerateUiElement(d, CurrentWindow);
                     el.Children.Add(fEl);
-                    fEl.Tag = new Code.AddInUtil.Properties.Property.PTypeDataTag { File = window.ConfigFile, Path = property.FieldPath, BaseData = data };
+                    fEl.Tag = new Code.AddInUtil.Properties.Property.PTypeDataTag { File = CurrentWindow.ConfigFile, Path = property.FieldPath, BaseData = data };
                     group.ItemsPanel.Children.Add(el);
                 }
             }
@@ -125,11 +123,55 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             Code.AddInUtil.Properties.Property.PType.ValueChanged -= PType_ValueChanged;
             Code.AddInUtil.Properties.Property.PType.OnError -= PType_OnError;
+            (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange -= Docker_OnSnapFocusChange;
+            if(CurrentWindow != null)
+                CurrentWindow.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
+
         }
         public void LoadSnap()
         {
             Code.AddInUtil.Properties.Property.PType.ValueChanged += PType_ValueChanged;
             Code.AddInUtil.Properties.Property.PType.OnError += PType_OnError;
+            (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange += Docker_OnSnapFocusChange;
+            var EditingSnaps = (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.FindSnaps<EditingSnap>(true);
+            if (EditingSnaps.Count > 0)
+            {
+                CurrentWindow = EditingSnaps[0];
+                CurrentWindow.OnSelectedFocusChanged += CurrentWindow_OnSelectedFocusChanged;
+            }
+        }
+
+        private void CurrentWindow_OnSelectedFocusChanged(object sender, EditingSnap.OnSelectedFocusChangedEventArgs e)
+        {
+            if(e.Tags.Length != 1)
+            {
+                this.PropertyStack.Children.Clear();
+            }
+            else
+            {
+                LoadProperties(e.Tags[0].file.Properties, e.Tags[0].data);
+            }
+        }
+
+        private void Docker_OnSnapFocusChange(object sender, SnapDocker.OnSnapFocusChangeEventArgs e)
+        {
+            if (e.SnapWindowNew != null && e.SnapWindowNew.Window is EditingSnap)
+            {
+                this.PropertyStack.Children.Clear();
+                if(CurrentWindow != null)
+                    CurrentWindow.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
+                CurrentWindow = e.SnapWindowNew.Window as EditingSnap;
+                CurrentWindow.OnSelectedFocusChanged += CurrentWindow_OnSelectedFocusChanged;
+            }
+            else if (e.SnapWindowLast != null && e.SnapWindowLast.Window is EditingSnap)
+            {
+                if (e.SnapWindowLast.Window != CurrentWindow)
+                    return;
+                if (CurrentWindow != null)
+                    CurrentWindow.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
+                this.PropertyStack.Children.Clear();
+                CurrentWindow = null;
+            }
         }
     }
 }

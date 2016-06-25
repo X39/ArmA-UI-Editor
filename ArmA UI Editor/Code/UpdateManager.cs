@@ -8,9 +8,9 @@ using System.Net.Http;
 
 namespace ArmA_UI_Editor.Code
 {
-    internal class UpdateManager
+    public class UpdateManager
     {
-        internal struct Update
+        public struct Update
         {
             public string OrigUrl { get; private set; }
             public bool IsAvailable { get; private set; }
@@ -40,7 +40,7 @@ namespace ArmA_UI_Editor.Code
             this.Client = new HttpClient();
         }
 
-        internal async Task<Update> CheckForUpdate(string url)
+        public async Task<Update> CheckForUpdate(string url)
         {
             var response = await this.Client.GetAsync(url);
             asapJson.JsonNode responseNode = new asapJson.JsonNode(await response.Content.ReadAsStringAsync(), true);
@@ -76,7 +76,7 @@ namespace ArmA_UI_Editor.Code
             return new Update(url, false);
         }
 
-        internal async Task<string> DownloadUpdate(Update updt, IProgress<Tuple<double, long>> prog)
+        public async Task<string> DownloadUpdate(Update updt, IProgress<Tuple<double, long>> prog)
         {
             var response = (await this.Client.GetAsync(updt.DownloadUrl, HttpCompletionOption.ResponseHeadersRead)).Content;
             var tmpFile = System.IO.Path.GetTempPath() + "ArmAUIEditor\\" + updt.DownloadName;

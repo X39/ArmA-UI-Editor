@@ -44,6 +44,7 @@
                     <clr:String x:Key="STR_Window_Toolbox">Toolbox</clr:String>
                     <clr:String x:Key="STR_Window_ZIndex">Z-Index</clr:String>
                     <clr:String x:Key="STR_Window_Properties">Properties</clr:String>
+                    <clr:String x:Key="STR_Window_Events">Events</clr:String>
                     <clr:String x:Key="STR_Window_Output">Output</clr:String>
                     <clr:String x:Key="STR_Window_EditingWindow">MyUiConfig.cpp</clr:String>
                     <clr:String x:Key="STR_Window_DialogProperties">Dialog Properties</clr:String>

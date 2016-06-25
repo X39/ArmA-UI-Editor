@@ -92,7 +92,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ArmA_UI_Editor\Code\AddInUtil\Style.cs" />
+    <Compile Include="Code\AddInUtil\Event.cs" />
+    <Compile Include="Code\AddInUtil\Style.cs" />
     <Compile Include="asapJson\JsonNode.cs" />
     <Compile Include="Code\AddInManager.cs" />
     <Compile Include="Code\AddInUtil\File.cs" />
@@ -143,6 +144,9 @@
     </Compile>
     <Compile Include="UI\Snaps\DialogPropertiesSnap.xaml.cs">
       <DependentUpon>DialogPropertiesSnap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Snaps\EventsSnap.xaml.cs">
+      <DependentUpon>EventsSnap.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Snaps\ZIndexSnap.xaml.cs">
       <DependentUpon>ZIndexSnap.xaml</DependentUpon>
@@ -264,6 +268,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Snaps\DialogPropertiesSnap.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Snaps\EventsSnap.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -68,7 +68,7 @@ namespace ArmA_UI_Editor.UI
         private ResizeEventArgs.Direction? ResizeDirection;
         public event EventHandler<MoveEventArgs> OnElementMove;
         public event EventHandler<ResizeEventArgs> OnElementResize;
-        public event EventHandler<FrameworkElement> OnOperationFinalized;
+        public event EventHandler<FrameworkElement[]> OnOperationFinalized;
 
         public event EventHandler<System.Windows.Input.MouseEventArgs> OnStartMove;
         public event EventHandler<EventArgs> OnStopMove;
@@ -148,17 +148,18 @@ namespace ArmA_UI_Editor.UI
         }
         public void DoMove(double deltaX, double deltaY)
         {
-            var rect = this.GetCanvasMetrics();
-
+            Rect rect = this.GetCanvasMetrics();
+            Rect origRect = rect;
+            bool isTopLeftMovement = false;
             if (this.ResizeDirection.HasValue)
             {
-                bool isTopLeftMovement = new SelectionOverlay.ResizeEventArgs.Direction[] {
+                isTopLeftMovement = new SelectionOverlay.ResizeEventArgs.Direction[] {
                         SelectionOverlay.ResizeEventArgs.Direction.TopRight,
                         SelectionOverlay.ResizeEventArgs.Direction.Top,
                         SelectionOverlay.ResizeEventArgs.Direction.TopLeft,
                         SelectionOverlay.ResizeEventArgs.Direction.Left,
                         SelectionOverlay.ResizeEventArgs.Direction.BotLeft
-                    }.Contains(this.ResizeDirection.Value);
+                    }.Contains(this.ResizeDirection.Value); ;
                 switch (this.ResizeDirection.Value)
                 {
                     case ResizeEventArgs.Direction.Top:
@@ -197,8 +198,31 @@ namespace ArmA_UI_Editor.UI
             {
                 if(this.ResizeDirection.HasValue)
                 {
+                    var itSize = it.GetCanvasMetrics();
+                    var localDeltaX = deltaX * (itSize.Width / origRect.Width);
+                    var localDeltaY = deltaY * (itSize.Height / origRect.Height);
                     if (this.OnElementResize != null)
-                        this.OnElementResize(this, new ResizeEventArgs(this.ResizeDirection.Value, deltaX, deltaY, it));
+                        this.OnElementResize(this, new ResizeEventArgs(this.ResizeDirection.Value, localDeltaX, localDeltaY, it));
+                    if (isTopLeftMovement)
+                    {
+                        bool conditionX = (localDeltaX != 0 && itSize.X + itSize.Width != origRect.X + origRect.Width);
+                        bool conditionY = (localDeltaY != 0 && itSize.Y + itSize.Height != origRect.Y + origRect.Height);
+                        if (conditionX || conditionY)
+                        {
+                            if (this.OnElementMove != null)
+                                this.OnElementMove(this, new MoveEventArgs(conditionX ? -(deltaX - localDeltaX) : 0, conditionY ? -(deltaY - localDeltaY) : 0 , it));
+                        }
+                    }
+                    else
+                    {
+                        bool conditionX = (localDeltaX != 0 && itSize.X != origRect.X);
+                        bool conditionY = (localDeltaY != 0 && itSize.Y != origRect.Y);
+                        if (conditionX || conditionY)
+                        {
+                            if (this.OnElementMove != null)
+                                this.OnElementMove(this, new MoveEventArgs(conditionX ? deltaX - localDeltaX : 0, conditionY ? deltaY - localDeltaY : 0, it));
+                        }
+                    }
                 }
                 else
                 {
@@ -207,7 +231,7 @@ namespace ArmA_UI_Editor.UI
                 }
             }
         }
-        internal void UpdateMetrics()
+        public void UpdateMetrics()
         {
 
             double MinLeft = double.PositiveInfinity;
@@ -247,7 +271,7 @@ namespace ArmA_UI_Editor.UI
         /// </summary>
         /// <param name="thisElement">Element to toggle</param>
         /// <returns>true in case this was not the last element and thus selectionOverlay should continue to exist, false if it was the last one</returns>
-        internal bool ToggleElement(FrameworkElement thisElement)
+        public bool ToggleElement(FrameworkElement thisElement)
         {
             if (this.ToggledElements.Contains(thisElement))
             {
@@ -264,7 +288,7 @@ namespace ArmA_UI_Editor.UI
             return true;
         }
 
-        internal void ReleaseMove()
+        public void ReleaseMove()
         {
             if (MoveState != MoveStateEnum.NONE)
             {
@@ -275,8 +299,7 @@ namespace ArmA_UI_Editor.UI
                 }
                 if(this.OnOperationFinalized != null)
                 {
-                    foreach(var e in this.ToggledElements)
-                        this.OnOperationFinalized(this, e);
+                    this.OnOperationFinalized(this, this.ToggledElements.ToArray());
                 }
                 this.ResizeDirection = null;
             }

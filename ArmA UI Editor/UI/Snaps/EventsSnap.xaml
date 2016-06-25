@@ -1,0 +1,15 @@
+﻿<Page x:Class="ArmA_UI_Editor.UI.Snaps.EventsSnap"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ArmA_UI_Editor.UI.Snaps"
+      mc:Ignorable="d"
+      xmlns:ui="clr-namespace:ArmA_UI_Editor.UI"
+      MinWidth="384"
+      MinHeight="384"
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="{StaticResource STR_Window_Events}">
+
+    <StackPanel x:Name="EventStackPanel" Background="Transparent" Orientation="Vertical"/>
+</Page>
