@@ -96,7 +96,7 @@
     <Compile Include="Code\AddInUtil\Style.cs" />
     <Compile Include="asapJson\JsonNode.cs" />
     <Compile Include="Code\AddInManager.cs" />
-    <Compile Include="Code\AddInUtil\File.cs" />
+    <Compile Include="Code\AddInUtil\UIElement.cs" />
     <Compile Include="Code\AddIn.cs" />
     <Compile Include="Code\AddInUtil\Info.cs" />
     <Compile Include="Code\AddInUtil\Properties.cs" />
