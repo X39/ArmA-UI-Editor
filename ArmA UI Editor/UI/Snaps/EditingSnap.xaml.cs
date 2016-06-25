@@ -205,7 +205,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             DisplayCanvas.Children.Remove(el);
         }
 
-        public void SelectElements(bool mouseDownOnCreateOverlay, params FrameworkElement[] elements)
+        public void SelectElements(bool mouseDownOnCreateOverlay, bool focusPropertyPane, params FrameworkElement[] elements)
         {
             if(elements.Length == 0)
             {
@@ -236,6 +236,13 @@ namespace ArmA_UI_Editor.UI.Snaps
                     }
                 }
                 this.OnSelectedFocusChanged(this, new OnSelectedFocusChangedEventArgs(tagList.ToArray()));
+            }
+            if (focusPropertyPane)
+            {
+                if (MainWindow.TryGet().HasSnapInstance<PropertySnap>())
+                {
+                    MainWindow.TryGet().AddToDockerOrFocus<PropertySnap>();
+                }
             }
         }
 
@@ -316,7 +323,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void SelectionOverlay_OnOperationFinalized(object sender, FrameworkElement[] e)
         {
-            SelectElements(false, e);
+            SelectElements(false, false, e);
         }
         #endregion
         #region XAML Event Handler
@@ -410,7 +417,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
             if (overlay == null)
             {
-                SelectElements(true, thisElement);
+                SelectElements(true, true, thisElement);
             }
             else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
@@ -423,7 +430,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 {
                     fElements.Add(thisElement);
                 }
-                SelectElements(true, fElements.ToArray());
+                SelectElements(true, true, fElements.ToArray());
             }
             else
             {
@@ -431,7 +438,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var mousePosRelToOverlay = e.GetPosition(overlay);
                 if (mousePosRelToOverlay.X > overlayMetrics.Width || mousePosRelToOverlay.X < 0 || mousePosRelToOverlay.Y > overlayMetrics.Height || mousePosRelToOverlay.Y < 0)
                 {
-                    SelectElements(true, thisElement);
+                    SelectElements(true, true, thisElement);
                 }
             }
             e.Handled = true;
@@ -766,13 +773,13 @@ namespace ArmA_UI_Editor.UI.Snaps
                             var snaps = MainWindow.TryGet().Docker.FindSnaps<PropertySnap>();
                             if (snaps.Count > 0 && (snaps[0]).CurrentData != null && (snaps[0]).CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
                             {
-                                SelectElements(false, el);
+                                SelectElements(false, false, el);
                                 restoredSelection = true;
                             }
                         }
                         if(!restoredSelection)
                         {
-                            SelectElements(false);
+                            SelectElements(false, false);
                         }
                         index++;
                     }
@@ -959,7 +966,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var el = cm.Tag as FrameworkElement;
                 if (el.Tag is TAG_CanvasChildElement)
                 {
-                    SelectElements(true, el);
+                    SelectElements(false, true, el);
                 }
             }
         }
