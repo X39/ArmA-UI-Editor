@@ -407,7 +407,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                     var mousePosRelToOverlay = e.GetPosition(overlay);
                     if (mousePosRelToOverlay.X > overlayMetrics.Width || mousePosRelToOverlay.X < 0 || mousePosRelToOverlay.Y > overlayMetrics.Height || mousePosRelToOverlay.Y < 0)
                     {
-                        this.DisplayCanvas.Children.Remove(overlay);
+                        SelectElements(false, false);
                     }
                 }
                 return;
