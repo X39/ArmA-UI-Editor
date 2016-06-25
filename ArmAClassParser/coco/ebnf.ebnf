@@ -138,7 +138,7 @@ COMPILER CONFIGFILE
         .
         STRING<out Data data> (. string content = default(string); .) = 
             (
-                T_STRING (. content = t.val.Substring(1, t.val.Length - 2); .)
+                T_STRING (. content = Data.FromSqfString(t.val); .)
                 |
                 T_STRINGTABLESTRING (. content = t.val.Substring(1); .)
             )

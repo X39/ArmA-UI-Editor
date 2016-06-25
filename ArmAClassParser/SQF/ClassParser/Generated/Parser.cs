@@ -293,7 +293,7 @@ namespace SQF.ClassParser
 		string content = default(string); 
 		if (la.kind == 3) {
 			Get();
-			content = t.val.Substring(1, t.val.Length - 2); 
+			content = Data.FromSqfString(t.val); 
 		} else if (la.kind == 4) {
 			Get();
 			content = t.val.Substring(1); 

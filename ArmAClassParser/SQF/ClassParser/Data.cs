@@ -103,9 +103,9 @@ namespace SQF.ClassParser
                 {
                     writer.Write(new string('\t', tabCount));
                     writer.Write(this.Name);
-                    writer.Write(" = \"");
-                    writer.Write(this.String);
-                    writer.Write("\";");
+                    writer.Write(" = ");
+                    writer.Write(ToSqfString(this.String));
+                    writer.Write(';');
                 }
                 else
                 {
@@ -129,6 +129,46 @@ namespace SQF.ClassParser
                 writer.Write("};");
             }
             writer.Flush();
+        }
+
+        public static string FromSqfString(string s)
+        {
+
+            s = s.Substring(1, s.Length - 2);
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < s.Length; i++)
+            {
+                char c = s[i];
+                if (c == '"')
+                {
+                    if (s[i + 1] == '"')
+                        i++;
+                    builder.Append(c);
+                }
+                else
+                {
+                    builder.Append(c);
+                }
+            }
+            return builder.ToString();
+        }
+        public static string ToSqfString(string s)
+        {
+            StringBuilder builder = new StringBuilder(s.Length + 2);
+            builder.Append('"');
+            foreach (var c in s)
+            {
+                if(c == '"')
+                {
+                    builder.Append("\"\"");
+                }
+                else
+                {
+                    builder.Append(c);
+                }
+            }
+            builder.Append('"');
+            return builder.ToString();
         }
     }
 }
