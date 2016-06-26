@@ -181,9 +181,5 @@ namespace ArmA_UI_Editor.UI
         {
             openFile((((sender as MenuItem).Parent as ContextMenu).Tag as Code.AddInUtil.UIElement).__XamlPath);
         }
-        private void ContextMenu_OpenPropertiesFile_Click(object sender, RoutedEventArgs e)
-        {
-            openFile((((sender as MenuItem).Parent as ContextMenu).Tag as Code.AddInUtil.UIElement).__PropertiesPath);
-        }
     }
 }

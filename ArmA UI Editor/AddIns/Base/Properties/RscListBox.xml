@@ -1,96 +1,46 @@
 ﻿<root>
-  <groups>
-    <group name="Positioning">
-      <properties>
-        <property>
-          <number conversion="ScreenX"/>
-          <field>/x</field>
-          <name>Pos X</name>
-        </property>
-        <property>
-          <number conversion="ScreenY"/>
-          <field>/y</field>
-          <name>Pos Y</name>
-        </property>
-        <property>
-          <number conversion="ScreenW"/>
-          <field>/w</field>
-          <name>Width</name>
-        </property>
-        <property>
-          <number conversion="ScreenH"/>
-          <field>/h</field>
-          <name>Height</name>
-        </property>
-      </properties>
-    </group>
-    <group name="Coloring">
-      <properties>
-        <property>
-          <array>
-            <type>NUMBER</type>
-            <count>4</count>
-          </array>
-          <field>/colorBackground</field>
-          <name>Background Color</name>
-        </property>
-        <property>
-          <array>
-            <type>NUMBER</type>
-            <count>4</count>
-          </array>
-          <field>/colorText</field>
-          <name>Foreground Color, Enabled</name>
-        </property>
-        <property>
-          <array>
-            <type>NUMBER</type>
-            <count>4</count>
-          </array>
-          <field>/colorDisabled</field>
-          <name>Foreground Color, Disabled</name>
-        </property>
-        <property>
-          <array>
-            <type>NUMBER</type>
-            <count>4</count>
-          </array>
-          <field>/ListScrollBar/color</field>
-          <name>Scrollbar Color</name>
-        </property>
-        <property>
-          <array>
-            <type>NUMBER</type>
-            <count>4</count>
-          </array>
-          <field>/colorSelect</field>
-          <name>Selected Highlighting color</name>
-        </property>
-      </properties>
-    </group>
-    <group name="General">
-      <properties>
-        <property>
-          <string/>
-          <field>/text</field>
-          <name>Text</name>
-        </property>
-        <property>
-          <listbox>
-            <items>
-              <item display="TahomaB" value="TahomaB"/>
-              <item display="RobotoCondensed" value="RobotoCondensed"/>
-            </items>
-          </listbox>
-          <field>/font</field>
-          <name>Font</name>
-        </property>
-        <property>
-          <number/>
-          <field>/sizeEx</field>
-          <name>Font Size</name>
-        </property>
-      </properties>
-    </group>
-  </groups>
+  <group name="Coloring">
+    <properties>
+      <property>
+        <array>
+          <type>NUMBER</type>
+          <count>4</count>
+        </array>
+        <field>/colorBackground</field>
+        <name>Background Color</name>
+      </property>
+      <property>
+        <array>
+          <type>NUMBER</type>
+          <count>4</count>
+        </array>
+        <field>/colorText</field>
+        <name>Foreground Color, Enabled</name>
+      </property>
+      <property>
+        <array>
+          <type>NUMBER</type>
+          <count>4</count>
+        </array>
+        <field>/colorDisabled</field>
+        <name>Foreground Color, Disabled</name>
+      </property>
+      <property>
+        <array>
+          <type>NUMBER</type>
+          <count>4</count>
+        </array>
+        <field>/ListScrollBar/color</field>
+        <name>Scrollbar Color</name>
+      </property>
+      <property>
+        <array>
+          <type>NUMBER</type>
+          <count>4</count>
+        </array>
+        <field>/colorSelect</field>
+        <name>Selected Highlighting color</name>
+      </property>
+    </properties>
+  </group>
 </root>

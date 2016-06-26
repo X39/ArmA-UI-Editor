@@ -99,7 +99,7 @@
     <Compile Include="Code\AddInUtil\UIElement.cs" />
     <Compile Include="Code\AddIn.cs" />
     <Compile Include="Code\AddInUtil\Info.cs" />
-    <Compile Include="Code\AddInUtil\Properties.cs" />
+    <Compile Include="Code\AddInUtil\Group.cs" />
     <Compile Include="Code\Markup\BindColor.cs" />
     <Compile Include="Code\Markup\BindBrush.cs" />
     <Compile Include="Code\Markup\BindMultipliedValue.cs" />
@@ -404,7 +404,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AddIns\Base\Properties\IGUIBack.xml">
+    <None Include="AddIns\Base\Properties\Generic.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -511,6 +511,17 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AddIns\Base\Properties\TextProperties.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AddIns\Base\Properties\IGUIBack.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

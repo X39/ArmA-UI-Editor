@@ -22,9 +22,6 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// </summary>
     public partial class ZIndexSnap : Page, Code.Interface.ISnapWindow
     {
-        public Data CurrentData { get; private set; }
-        public Code.AddInUtil.Properties CurrentProperties { get; private set; }
-
         private struct TAG_lbContent
         {
             public List<Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>> Tuple;

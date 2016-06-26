@@ -10,7 +10,6 @@
         <ContextMenu x:Key="ContextMenu_UIElements">
             <MenuItem Header="{StaticResource STR_AddInBrowser_ContextMenu_OpenClassFile}" Click="ContextMenu_OpenClassFile_Click"/>
             <MenuItem Header="{StaticResource STR_AddInBrowser_ContextMenu_OpenXamlFile}" Click="ContextMenu_OpenXamlFile_Click"/>
-            <MenuItem Header="{StaticResource STR_AddInBrowser_ContextMenu_OpenPropertiesFile}" Click="ContextMenu_OpenPropertiesFile_Click"/>
         </ContextMenu>
     </Window.Resources>
     <Grid>

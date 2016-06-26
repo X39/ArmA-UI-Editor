@@ -24,7 +24,7 @@ namespace ArmA_UI_Editor.UI.Snaps
     public partial class PropertySnap : Page, Code.Interface.ISnapWindow
     {
         public Data CurrentData { get; private set; }
-        public Code.AddInUtil.Properties CurrentProperties { get; private set; }
+        public List<Code.AddInUtil.Group> CurrentGroups { get; private set; }
         public EditingSnap CurrentWindow { get; private set; }
 
         public int AllowedCount { get { return 1; } }
@@ -93,14 +93,14 @@ namespace ArmA_UI_Editor.UI.Snaps
             });
         }
 
-        public void LoadProperties(Code.AddInUtil.Properties properties, SQF.ClassParser.Data data)
+        public void LoadProperties(List<Code.AddInUtil.Group> groups, SQF.ClassParser.Data data)
         {
-            this.CurrentProperties = properties;
+            this.CurrentGroups = groups;
             this.CurrentData = data;
             this.PropertyStack.Children.Clear();
             this.AddDefaultProperties();
 
-            foreach (var groupIt in properties.Items)
+            foreach (var groupIt in groups)
             {
                 var group = new Group();
                 group.IsExpaned = true;
@@ -113,7 +113,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                     Data d = File.ReceiveFieldFromHirarchy(data, property.FieldPath);
                     var fEl = property.PropertyType.GenerateUiElement(d, CurrentWindow);
                     el.Children.Add(fEl);
-                    fEl.Tag = new Code.AddInUtil.Properties.Property.PTypeDataTag { File = CurrentWindow.ConfigFile, Path = property.FieldPath, BaseData = data };
+                    fEl.Tag = new Code.AddInUtil.Group.Property.PTypeDataTag { File = CurrentWindow.ConfigFile, Path = property.FieldPath, BaseData = data };
                     group.ItemsPanel.Children.Add(el);
                 }
             }
@@ -121,8 +121,8 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void UnloadSnap()
         {
-            Code.AddInUtil.Properties.Property.PType.ValueChanged -= PType_ValueChanged;
-            Code.AddInUtil.Properties.Property.PType.OnError -= PType_OnError;
+            Code.AddInUtil.Group.Property.PType.ValueChanged -= PType_ValueChanged;
+            Code.AddInUtil.Group.Property.PType.OnError -= PType_OnError;
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange -= Docker_OnSnapFocusChange;
             if(CurrentWindow != null)
                 CurrentWindow.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
@@ -130,8 +130,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public void LoadSnap()
         {
-            Code.AddInUtil.Properties.Property.PType.ValueChanged += PType_ValueChanged;
-            Code.AddInUtil.Properties.Property.PType.OnError += PType_OnError;
+            Code.AddInUtil.Group.Property.PType.ValueChanged += PType_ValueChanged;
+            Code.AddInUtil.Group.Property.PType.OnError += PType_OnError;
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange += Docker_OnSnapFocusChange;
             var EditingSnaps = (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.FindSnaps<EditingSnap>(true);
             if (EditingSnaps.Count > 0)

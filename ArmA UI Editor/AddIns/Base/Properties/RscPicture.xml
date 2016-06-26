@@ -1,29 +1,5 @@
 ﻿<root>
   <groups>
-    <group name="Positioning">
-      <properties>
-        <property>
-          <number conversion="ScreenX"/>
-          <field>/x</field>
-          <name>Pos X</name>
-        </property>
-        <property>
-          <number conversion="ScreenY"/>
-          <field>/y</field>
-          <name>Pos Y</name>
-        </property>
-        <property>
-          <number conversion="ScreenW"/>
-          <field>/w</field>
-          <name>Width</name>
-        </property>
-        <property>
-          <number conversion="ScreenH"/>
-          <field>/h</field>
-          <name>Height</name>
-        </property>
-      </properties>
-    </group>
     <group name="General">
       <properties>
         <property>

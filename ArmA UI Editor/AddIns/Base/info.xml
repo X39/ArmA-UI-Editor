@@ -17,7 +17,9 @@
       <image>/Images/RscText.png</image>
       <class>/Classes/RscText.class</class>
       <xaml>/Xaml/RscText.xaml</xaml>
+      <properties>/Properties/Generic.xml</properties>
       <properties>/Properties/RscText.xml</properties>
+      <properties>/Properties/TextProperties.xml</properties>
       <events>/Events/RscText.xml</events>
       <events>/Events/onLBDrop.xml</events>
       <events>/Events/Generic.xml</events>
@@ -28,7 +30,9 @@
       <image>/Images/RscButton.png</image>
       <class>/Classes/RscButton.class</class>
       <xaml>/Xaml/RscButton.xaml</xaml>
+      <properties>/Properties/Generic.xml</properties>
       <properties>/Properties/RscButton.xml</properties>
+      <properties>/Properties/TextProperties.xml</properties>
       <events>/Events/RscButton.xml</events>
       <events>/Events/onLBDrop.xml</events>
       <events>/Events/Generic.xml</events>
@@ -39,6 +43,7 @@
       <image>/Images/IGUIBack.png</image>
       <class>/Classes/IGUIBack.class</class>
       <xaml>/Xaml/IGUIBack.xaml</xaml>
+      <properties>/Properties/Generic.xml</properties>
       <properties>/Properties/IGUIBack.xml</properties>
       <events>/Events/Generic.xml</events>
     </element>
@@ -47,7 +52,9 @@
       <image>/Images/RscCombo/RscCombo.png</image>
       <class>/Classes/RscCombo.class</class>
       <xaml>/Xaml/RscCombo.xaml</xaml>
+      <properties>/Properties/Generic.xml</properties>
       <properties>/Properties/RscCombo.xml</properties>
+      <properties>/Properties/TextProperties.xml</properties>
       <events>/Events/onLBSelChanged.xml</events>
       <events>/Events/onLBDrop.xml</events>
       <events>/Events/Generic.xml</events>
@@ -58,7 +65,9 @@
       <image>/Images/RscEdit.png</image>
       <class>/Classes/RscEdit.class</class>
       <xaml>/Xaml/RscEdit.xaml</xaml>
+      <properties>/Properties/Generic.xml</properties>
       <properties>/Properties/RscEdit.xml</properties>
+      <properties>/Properties/TextProperties.xml</properties>
       <events>/Events/RscEdit.xml</events>
       <events>/Events/onLBDrop.xml</events>
       <events>/Events/Generic.xml</events>
@@ -69,6 +78,7 @@
       <image>/Images/RscPicture.png</image>
       <class>/Classes/RscPicture.class</class>
       <xaml>/Xaml/RscPicture.xaml</xaml>
+      <properties>/Properties/Generic.xml</properties>
       <properties>/Properties/RscPicture.xml</properties>
       <events>/Events/Generic.xml</events>
     </element>
@@ -77,7 +87,9 @@
       <image>/Images/RscListBox/RscListBox.png</image>
       <class>/Classes/RscListBox.class</class>
       <xaml>/Xaml/RscListBox.xaml</xaml>
+      <properties>/Properties/Generic.xml</properties>
       <properties>/Properties/RscListBox.xml</properties>
+      <properties>/Properties/TextProperties.xml</properties>
       <events>/Events/RscListBox.xml</events>
       <events>/Events/onLBSelChanged.xml</events>
       <events>/Events/onLBDrop.xml</events>

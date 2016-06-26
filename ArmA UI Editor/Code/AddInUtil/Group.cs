@@ -12,9 +12,21 @@ using ArmA_UI_Editor.UI.Snaps;
 namespace ArmA_UI_Editor.Code.AddInUtil
 {
     [Serializable]
-    [XmlRoot("root")]
-    public class Properties
+    [XmlRoot("group")]
+    public class Group
     {
+        [XmlRoot("root")]
+        public class GroupList
+        {
+            [XmlElement("group")]
+            public List<Group> List;
+
+            private GroupList()
+            {
+                this.List = new List<Group>();
+            }
+        }
+
         public class Property
         {
             public class PTypeDataTag
@@ -79,7 +91,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 {
                     var tb = new TextBox();
                     this.Window = window;
-                    if(curVal != null)
+                    if (curVal != null)
                     {
                         if (string.IsNullOrWhiteSpace(Conversion))
                             Conversion = string.Empty;
@@ -121,7 +133,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
 
                 private void Tb_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
                 {
-                    if(e.Text.Contains('\r'))
+                    if (e.Text.Contains('\r'))
                     {
                         var tb = sender as TextBox;
                         PTypeDataTag tag = tb.Tag as PTypeDataTag;
@@ -164,7 +176,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                     var cb = new ComboBox();
                     cb.Items.Add("true");
                     cb.Items.Add("false");
-                    if(curVal != null)
+                    if (curVal != null)
                         cb.SelectedIndex = curVal.Boolean ? 0 : 1;
                     cb.SelectionChanged += Cb_SelectionChanged;
                     cb.ToolTip = App.Current.Resources["STR_CODE_Property_Boolean"] as String;
@@ -259,7 +271,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                                 var file = SQF.ClassParser.File.Load(memStream);
                                 if (file["/myClass/arr"].Array.Count != this.Count)
                                     throw new Exception();
-                                
+
                                 PTypeDataTag tag = (sender as TextBox).Tag as PTypeDataTag;
                                 var data = tag.File[tag.Path];
                                 if (data == null)
@@ -376,18 +388,22 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             [XmlElement(ElementName = "listbox", Type = typeof(ListboxType))]
             public PType PropertyType { get; set; }
         }
-        public class Group
-        {
-            [XmlAttribute("name")]
-            public string Name { get; set; }
 
-            [XmlArray("properties")]
-            [XmlArrayItem(ElementName = "property", Type = typeof(Property))]
-            public List<Property> Items { get; set; }
+        internal static List<Group> Load(string path)
+        {
+            var x = new XmlSerializer(typeof(GroupList));
+            using (var reader = new System.IO.StreamReader(path))
+            {
+                var result = (GroupList)x.Deserialize(reader);
+                return result.List;
+            }
         }
 
-        [XmlArray("groups")]
-        [XmlArrayItem(ElementName = "group", Type = typeof(Group))]
-        public List<Properties.Group> Items { get; set; }
+        [XmlAttribute("name")]
+        public string Name { get; set; }
+
+        [XmlArray("properties")]
+        [XmlArrayItem(ElementName = "property", Type = typeof(Property))]
+        public List<Property> Items { get; set; }
     }
 }
