@@ -13,7 +13,7 @@
 
     <Page.Resources>
         <Page x:Key="WindowProperties">
-            <StackPanel Orientation="Vertical" Background="{StaticResource SCB_UIBackground}">
+            <StackPanel Orientation="Vertical" Background="{StaticResource SCB_UIBackgroundDark}">
                 <ui:Property Header="Class Name">
                     <TextBox PreviewTextInput="tb_ClassName_PreviewTextInput" Initialized="tb_ClassName_Initialized"/>
                 </ui:Property>
