@@ -21,6 +21,9 @@ namespace ArmA_UI_Editor.UI
     /// </summary>
     public partial class SelectionOverlay : UserControl
     {
+        public static readonly DependencyProperty PullThicknessProperty = DependencyProperty.Register("PullThickness", typeof(int), typeof(SelectionOverlay));
+        public int PullThickness { get { return (int)GetValue(PullThicknessProperty); } set { SetValue(PullThicknessProperty, value); } }
+
         public class MoveEventArgs : EventArgs
         {
             public double DeltaX { get; private set; }
@@ -75,16 +78,16 @@ namespace ArmA_UI_Editor.UI
 
 
         public List<FrameworkElement> ToggledElements;
-
-
+        internal static readonly int DefaultThickness = 5;
 
         public SelectionOverlay(bool mouseDownOnCreate = true)
         {
+            InitializeComponent();
             ToggledElements = new List<FrameworkElement>();
             if(mouseDownOnCreate)
                 MoveState = MoveStateEnum.PREPARE;
             ResizeDirection = null;
-            InitializeComponent();
+            PullThickness = 5;
         }
         
         private void Rectangle_TopLeft_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -8,14 +8,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid MouseLeftButtonUp="Grid_MouseLeftButtonUp" MouseMove="Grid_MouseMove">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="{Binding PullThickness, RelativeSource={RelativeSource AncestorType={x:Type local:SelectionOverlay}}}"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="{Binding PullThickness, RelativeSource={RelativeSource AncestorType={x:Type local:SelectionOverlay}}}"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="5"/>
+            <RowDefinition Height="{Binding PullThickness, RelativeSource={RelativeSource AncestorType={x:Type local:SelectionOverlay}}}"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="5"/>
+            <RowDefinition Height="{Binding PullThickness, RelativeSource={RelativeSource AncestorType={x:Type local:SelectionOverlay}}}"/>
         </Grid.RowDefinitions>
         
         

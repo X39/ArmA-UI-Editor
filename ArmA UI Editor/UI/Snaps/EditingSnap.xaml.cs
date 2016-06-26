@@ -51,7 +51,22 @@ namespace ArmA_UI_Editor.UI.Snaps
         public int SnapGrid { get { return (int)((Rect)GetValue(SnapGridProperty)).Width; } set { SetValue(SnapGridProperty, new Rect(0, 0, value, value)); } }
 
         public static readonly DependencyProperty ViewScaleProperty = DependencyProperty.Register("ViewScale", typeof(double), typeof(EditingSnap));
-        public double ViewScale { get { return (double)GetValue(ViewScaleProperty); } set { SetValue(ViewScaleProperty, value); } }
+        public double ViewScale
+        {
+            get
+            {
+                return (double)GetValue(ViewScaleProperty);
+            }
+            set
+            {
+                SetValue(ViewScaleProperty, value);
+                var overlay = FindSelectionOverlay();
+                if (overlay != null)
+                {
+                    overlay.PullThickness = (int)(SelectionOverlay.DefaultThickness / value);
+                }
+            }
+        }
 
         public string FilePath { get; set; }
 
@@ -329,6 +344,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         #region XAML Event Handler
         private void SizesBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            WriteConfigToScreen();
             ComboBox cb = sender as ComboBox;
             switch ((cb.SelectedValue as ComboBoxItem).Content as string)
             {
@@ -863,6 +879,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 el.OnOperationFinalized += SelectionOverlay_OnOperationFinalized;
                 Canvas.SetZIndex(el, 10000);
                 this.DisplayCanvas.Children.Add(el);
+                el.PullThickness = (int)(SelectionOverlay.DefaultThickness / this.ViewScale);
             }
             return el;
         }
