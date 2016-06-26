@@ -29,11 +29,11 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             [XmlText]
             public string Description;
         }
-        [XmlAttribute("name")]
+        [XmlElement("name")]
         public string Name;
-        [XmlAttribute("field")]
+        [XmlElement("field")]
         public string Field;
-        [XmlAttribute("description")]
+        [XmlElement("description")]
         public string Description;
         [XmlArray("arguments")]
         [XmlArrayItem("arg")]
