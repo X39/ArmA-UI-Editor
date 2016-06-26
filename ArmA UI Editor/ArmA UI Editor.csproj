@@ -518,10 +518,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AddIns\Base\Properties\IGUIBack.xml">
+    <None Include="AddIns\Base\Properties\IGUIBack.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
