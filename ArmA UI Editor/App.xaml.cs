@@ -41,6 +41,13 @@ namespace ArmA_UI_Editor
 #else
             if(Settings.Instance.AutoReportCrash)
             {
+                ArmA_UI_Editor.UI.CrashReportWindow repWin = new UI.CrashReportWindow();
+                var res = repWin.ShowDialog();
+                if (res.HasValue && res.Value)
+                {
+                    builder.Insert(0, "\r\n\r\n");
+                    builder.Insert(0, repWin.ReportText);
+                }
                 using (HttpClient client = new HttpClient())
                 {
                     var content = new FormUrlEncodedContent(new[]

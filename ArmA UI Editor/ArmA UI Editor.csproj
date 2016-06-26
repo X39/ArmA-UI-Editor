@@ -115,6 +115,9 @@
     <Compile Include="UI\AddInBrowser.xaml.cs">
       <DependentUpon>AddInBrowser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\CrashReportWindow.xaml.cs">
+      <DependentUpon>CrashReportWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Property.xaml.cs">
       <DependentUpon>Property.xaml</DependentUpon>
     </Compile>
@@ -216,6 +219,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Page Include="UI\AddInBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\CrashReportWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
