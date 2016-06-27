@@ -1,26 +1,24 @@
 ﻿<root>
   <group name="Text">
-    <properties>
-      <property>
-        <string/>
-        <field>/text</field>
-        <name>Text</name>
-      </property>
-      <property>
-        <listbox>
-          <items>
-            <item display="TahomaB" value="TahomaB"/>
-            <item display="RobotoCondensed" value="RobotoCondensed"/>
-          </items>
-        </listbox>
-        <field>/font</field>
-        <name>Font</name>
-      </property>
-      <property>
-        <number/>
-        <field>/sizeEx</field>
-        <name>Font Size</name>
-      </property>
-    </properties>
+    <property>
+      <string/>
+      <field>/text</field>
+      <name>Text</name>
+    </property>
+    <property>
+      <listbox>
+        <items>
+          <item display="TahomaB" value="TahomaB"/>
+          <item display="RobotoCondensed" value="RobotoCondensed"/>
+        </items>
+      </listbox>
+      <field>/font</field>
+      <name>Font</name>
+    </property>
+    <property>
+      <number/>
+      <field>/sizeEx</field>
+      <name>Font Size</name>
+    </property>
   </group>
 </root>

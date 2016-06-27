@@ -17,7 +17,7 @@ COMPILER CONFIGFILE
 	TOKENS
 		T_SCALAR = [ '-' ] DIGIT { DIGIT } [ '.' DIGIT { DIGIT } ].
         T_HEX = ("0x" | "0X") HEXDIGIT { HEXDIGIT }.
-		T_STRING = '"' { STRINGCHARS | "\\\""} '"'.
+		T_STRING = '"' { STRINGCHARS | "\"\""} '"'.
         T_STRINGTABLESTRING = '$' { CHARACTER | '_' | DIGIT }.
 		T_IDENT = ( CHARACTER | '_' ) { CHARACTER | '_' | DIGIT }.
 		

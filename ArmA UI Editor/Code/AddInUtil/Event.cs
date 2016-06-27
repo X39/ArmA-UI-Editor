@@ -38,6 +38,8 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         [XmlArray("arguments")]
         [XmlArrayItem("arg")]
         public List<Argument> Arguments;
+        [XmlElement("startingAt")]
+        public string StartingAt;
 
         public static List<Event> Load(string path)
         {

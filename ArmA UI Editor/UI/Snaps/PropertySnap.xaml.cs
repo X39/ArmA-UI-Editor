@@ -93,10 +93,12 @@ namespace ArmA_UI_Editor.UI.Snaps
             });
         }
 
+
         public void LoadProperties(List<Code.AddInUtil.Group> groups, SQF.ClassParser.Data data)
         {
             this.CurrentGroups = groups;
             this.CurrentData = data;
+            List<Group> groupList = new List<Group>();
             this.PropertyStack.Children.Clear();
             this.AddDefaultProperties();
 
@@ -105,24 +107,57 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var group = new Group();
                 group.IsExpaned = true;
                 group.Header = groupIt.Name;
-                this.PropertyStack.Children.Add(group);
+                groupList.Add(group);
                 foreach (var property in groupIt.Items)
                 {
                     var el = new Property();
                     el.Header = property.DisplayName;
                     Data d = File.ReceiveFieldFromHirarchy(data, property.FieldPath);
-                    var fEl = property.PropertyType.GenerateUiElement(d, CurrentWindow);
+                    var fEl = property.PropertyType.GenerateUiElement(d, CurrentWindow, new Code.AddInUtil.Property.PTypeDataTag { File = CurrentWindow.ConfigFile, Path = property.FieldPath, BaseData = data, PropertyObject = property });
                     el.Children.Add(fEl);
-                    fEl.Tag = new Code.AddInUtil.Group.Property.PTypeDataTag { File = CurrentWindow.ConfigFile, Path = property.FieldPath, BaseData = data };
                     group.ItemsPanel.Children.Add(el);
                 }
+                foreach (var sqf in groupIt.SqfProperties)
+                {
+                    var el = new Property();
+                    group.ItemsPanel.Children.Add(el);
+                    el.Header = sqf.Name;
+                    Data d = File.ReceiveFieldFromHirarchy(data, "/onLoad");
+                    int argCount = 0;
+                    foreach(var it in sqf.Arguments)
+                    {
+                        if (it.Property != null)
+                            argCount++;
+                    }
+                    if(argCount > 1)
+                    {
+                        MainWindow.TryGet().SetStatusbarText("SQF-Properties currently only support one non-control arg", true);
+                    }
+                    else
+                    {
+                        foreach (var it in sqf.Arguments)
+                        {
+                            if (it.Property != null)
+                            {
+                                var fEl = it.Property.GenerateUiElement(d, CurrentWindow, new Code.AddInUtil.Property.PTypeDataTag { File = CurrentWindow.ConfigFile, Path = "/onLoad", BaseData = data, PropertyObject = sqf, Extra = it.Index });
+                                el.Children.Add(fEl);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            groupList.Sort((a, b) => a.Header.CompareTo(b.Header));
+            foreach(var it in groupList)
+            {
+                this.PropertyStack.Children.Add(it);
             }
         }
 
         public void UnloadSnap()
         {
-            Code.AddInUtil.Group.Property.PType.ValueChanged -= PType_ValueChanged;
-            Code.AddInUtil.Group.Property.PType.OnError -= PType_OnError;
+            Code.AddInUtil.Property.PType.ValueChanged -= PType_ValueChanged;
+            Code.AddInUtil.Property.PType.OnError -= PType_OnError;
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange -= Docker_OnSnapFocusChange;
             if(CurrentWindow != null)
                 CurrentWindow.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
@@ -130,8 +165,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public void LoadSnap()
         {
-            Code.AddInUtil.Group.Property.PType.ValueChanged += PType_ValueChanged;
-            Code.AddInUtil.Group.Property.PType.OnError += PType_OnError;
+            Code.AddInUtil.Property.PType.ValueChanged += PType_ValueChanged;
+            Code.AddInUtil.Property.PType.OnError += PType_OnError;
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange += Docker_OnSnapFocusChange;
             var EditingSnaps = (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.FindSnaps<EditingSnap>(true);
             if (EditingSnaps.Count > 0)

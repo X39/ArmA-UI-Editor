@@ -1,46 +1,42 @@
 ﻿<root>
   <group name="Coloring">
-    <properties>
-      <property>
-        <array>
-          <type>NUMBER</type>
-          <count>4</count>
-        </array>
-        <field>/colorBackground</field>
-        <name>Background Color</name>
-      </property>
-      <property>
-        <array>
-          <type>NUMBER</type>
-          <count>4</count>
-        </array>
-        <field>/colorText</field>
-        <name>Foreground Color</name>
-      </property>
-      <property>
-        <number/>
-        <field>/shadow</field>
-        <name>Shadow Depth</name>
-      </property>
-      <property>
-        <number/>
-        <field>/colorSelection</field>
-        <name>Selection Color</name>
-      </property>
-    </properties>
+    <property>
+      <array>
+        <type>NUMBER</type>
+        <count>4</count>
+      </array>
+      <field>/colorBackground</field>
+      <name>Background Color</name>
+    </property>
+    <property>
+      <array>
+        <type>NUMBER</type>
+        <count>4</count>
+      </array>
+      <field>/colorText</field>
+      <name>Foreground Color</name>
+    </property>
+    <property>
+      <number/>
+      <field>/shadow</field>
+      <name>Shadow Depth</name>
+    </property>
+    <property>
+      <number/>
+      <field>/colorSelection</field>
+      <name>Selection Color</name>
+    </property>
   </group>
   <group name="Text">
-    <properties>
-      <property>
-        <listbox>
-          <items>
-            <item display="ReadOnly" value="0" as="Number"/>
-            <item display="CanModify" value="1" as="Number"/>
-          </items>
-        </listbox>
-        <field>/canModify</field>
-        <name>Modification mode</name>
-      </property>
-    </properties>
+    <property>
+      <listbox>
+        <items>
+          <item display="ReadOnly" value="0" as="Number"/>
+          <item display="CanModify" value="1" as="Number"/>
+        </items>
+      </listbox>
+      <field>/canModify</field>
+      <name>Modification mode</name>
+    </property>
   </group>
 </root>

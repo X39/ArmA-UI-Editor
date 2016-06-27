@@ -1,13 +1,11 @@
 ﻿<root>
   <groups>
     <group name="General">
-      <properties>
-        <property>
-          <string/>
-          <field>/text</field>
-          <name>Image Path</name>
-        </property>
-      </properties>
+      <property>
+        <string/>
+        <field>/text</field>
+        <name>Image Path</name>
+      </property>
     </group>
   </groups>
 </root>

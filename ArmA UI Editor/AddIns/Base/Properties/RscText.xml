@@ -1,27 +1,25 @@
 ﻿<root>
   <group name="Coloring">
-    <properties>
-      <property>
-        <array>
-          <type>NUMBER</type>
-          <count>4</count>
-        </array>
-        <field>/colorBackground</field>
-        <name>Background Color</name>
-      </property>
-      <property>
-        <array>
-          <type>NUMBER</type>
-          <count>4</count>
-        </array>
-        <field>/colorText</field>
-        <name>Foreground Color</name>
-      </property>
-      <property>
-        <number/>
-        <field>/shadow</field>
-        <name>Shadow Depth</name>
-      </property>
-    </properties>
+    <property>
+      <array>
+        <type>NUMBER</type>
+        <count>4</count>
+      </array>
+      <field>/colorBackground</field>
+      <name>Background Color</name>
+    </property>
+    <property>
+      <array>
+        <type>NUMBER</type>
+        <count>4</count>
+      </array>
+      <field>/colorText</field>
+      <name>Foreground Color</name>
+    </property>
+    <property>
+      <number/>
+      <field>/shadow</field>
+      <name>Shadow Depth</name>
+    </property>
   </group>
 </root>

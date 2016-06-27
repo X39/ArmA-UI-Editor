@@ -218,6 +218,7 @@ namespace SQF.ClassParser
 			isArray = true; 
 		}
 		Expect(13);
+		StringBuilder builder = new StringBuilder(); 
 		if (la.kind == 8) {
 			ARRAY(out data);
 			if(!isArray) SemErr("Invalid field syntax: Missing [] at field name"); 
@@ -230,7 +231,20 @@ namespace SQF.ClassParser
 		} else if (la.kind == 14 || la.kind == 15) {
 			BOOLEAN(out data);
 			if(isArray) SemErr("Invalid field syntax: Located [] at field name"); 
+		} else if (StartOf(1)) {
+			Get();
+			data = new Data(t.val); 
 		} else SynErr(18);
+		if (StartOf(2)) {
+			builder.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", data.Value)); 
+			Get();
+			builder.Append(' '); builder.Append(t.val); 
+			while (StartOf(2)) {
+				Get();
+				builder.Append(' '); builder.Append(t.val); 
+			}
+			data = new Data(builder.ToString()); 
+		}
 		Expect(10);
 		if(data != null) data.Name = name; 
 	}
@@ -279,7 +293,7 @@ namespace SQF.ClassParser
 		string content = default(string); 
 		if (la.kind == 3) {
 			Get();
-			content = t.val.Substring(1, t.val.Length - 2); 
+			content = Data.FromSqfString(t.val); 
 		} else if (la.kind == 4) {
 			Get();
 			content = t.val.Substring(1); 
@@ -312,7 +326,9 @@ namespace SQF.ClassParser
         }
         
         static readonly bool[,] set = {
-    		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x}
+    		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
+		{_x,_x,_x,_x, _x,_T,_T,_T, _x,_T,_T,_T, _T,_T,_x,_x, _T,_T,_x},
+		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _T,_T,_T,_T, _T,_T,_x}
 
         };
     } // end Parser

@@ -1,14 +1,12 @@
 ﻿<root>
   <group name="Coloring">
-    <properties>
-      <property>
-        <array>
-          <type>NUMBER</type>
-          <count>4</count>
-        </array>
-        <field>/colorBackground</field>
-        <name>Background Color</name>
-      </property>
-    </properties>
+    <property>
+      <array>
+        <type>NUMBER</type>
+        <count>4</count>
+      </array>
+      <field>/colorBackground</field>
+      <name>Background Color</name>
+    </property>
   </group>
 </root>

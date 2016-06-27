@@ -8,10 +8,11 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="11*"/>
+            <ColumnDefinition Width="20*"/>
         </Grid.ColumnDefinitions>
         <TextBlock Text="{Binding Header, RelativeSource={RelativeSource AncestorType={x:Type local:Property}}}" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch" Foreground="{StaticResource SCB_DefaultTextColor}"/>
-        <StackPanel x:FieldModifier="private" x:Name="Presenter" Grid.Column="1" Width="Auto" HorizontalAlignment="Stretch"/>
+        <Border Grid.Column="1" x:FieldModifier="private" x:Name="PresenterFixedWidthHackBorder" HorizontalAlignment="Stretch"/>
+        <StackPanel x:FieldModifier="private" x:Name="Presenter" Grid.Column="1" Width="{Binding ActualWidth, ElementName=PresenterFixedWidthHackBorder}" HorizontalAlignment="Stretch"/>
     </Grid>
 </UserControl>

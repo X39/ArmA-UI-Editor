@@ -1,26 +1,34 @@
 ﻿<root>
   <group name="Positioning">
-    <properties>
-      <property>
-        <number conversion="ScreenX"/>
-        <field>/x</field>
-        <name>Pos X</name>
-      </property>
-      <property>
-        <number conversion="ScreenY"/>
-        <field>/y</field>
-        <name>Pos Y</name>
-      </property>
-      <property>
-        <number conversion="ScreenW"/>
-        <field>/w</field>
-        <name>Width</name>
-      </property>
-      <property>
-        <number conversion="ScreenH"/>
-        <field>/h</field>
-        <name>Height</name>
-      </property>
-    </properties>
+    <property>
+      <number conversion="ScreenX"/>
+      <field>/x</field>
+      <name>Pos X</name>
+    </property>
+    <property>
+      <number conversion="ScreenY"/>
+      <field>/y</field>
+      <name>Pos Y</name>
+    </property>
+    <property>
+      <number conversion="ScreenW"/>
+      <field>/w</field>
+      <name>Width</name>
+    </property>
+    <property>
+      <number conversion="ScreenH"/>
+      <field>/h</field>
+      <name>Height</name>
+    </property>
+  </group>
+  <group name="SQF">
+    <sqf infinite="false">
+      <name>Enabled</name>
+      <format>{0} ctrlEnable {1};</format>
+      <arg index="0"/>
+      <arg index="1">
+        <boolean/>
+      </arg>
+    </sqf>
   </group>
 </root>

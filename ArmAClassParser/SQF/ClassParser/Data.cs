@@ -24,7 +24,7 @@ namespace SQF.ClassParser
 
         public string Name { get; set; }
         private object _value;
-        public object Value { get { return _value; } private set { if (OnValueChange != null) OnValueChange(this, new ValueChangedEventArgs(_value, value)); _value = value; } }
+        public object Value { get { return _value; } set { if (OnValueChange != null) OnValueChange(this, new ValueChangedEventArgs(_value, value)); _value = value; } }
         public Data(ConfigClass val, string Name = "")    { this.Value = val; this.Name = Name; }
         public Data(double val, string Name = "")         { this.Value = val; this.Name = Name; }
         public Data(string val, string Name = "")         { this.Value = val; this.Name = Name; }
@@ -152,10 +152,11 @@ namespace SQF.ClassParser
             }
             return builder.ToString();
         }
-        public static string ToSqfString(string s)
+        public static string ToSqfString(string s, bool outerStringSpecifier = true)
         {
             StringBuilder builder = new StringBuilder(s.Length + 2);
-            builder.Append('"');
+            if(outerStringSpecifier)
+                builder.Append('"');
             foreach (var c in s)
             {
                 if(c == '"')
@@ -167,7 +168,8 @@ namespace SQF.ClassParser
                     builder.Append(c);
                 }
             }
-            builder.Append('"');
+            if (outerStringSpecifier)
+                builder.Append('"');
             return builder.ToString();
         }
     }

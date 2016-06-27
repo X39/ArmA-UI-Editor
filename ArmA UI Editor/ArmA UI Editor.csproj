@@ -93,6 +93,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Code\AddInUtil\Event.cs" />
+    <Compile Include="Code\AddInUtil\Property.cs" />
+    <Compile Include="Code\AddInUtil\SqfProperty.cs" />
     <Compile Include="Code\AddInUtil\Style.cs" />
     <Compile Include="asapJson\JsonNode.cs" />
     <Compile Include="Code\AddInManager.cs" />
@@ -406,6 +408,7 @@
   <ItemGroup>
     <None Include="AddIns\Base\Properties\Generic.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

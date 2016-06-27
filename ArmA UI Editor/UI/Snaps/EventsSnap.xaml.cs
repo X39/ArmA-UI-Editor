@@ -92,8 +92,21 @@ namespace ArmA_UI_Editor.UI.Snaps
                 el.Children.Add(tb);
 
                 var d = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data, e.Field, false);
-                if(d != null && d.IsString)
-                    tb.Text = d.String;
+                if (d != null && d.IsString)
+                {
+                    if(string.IsNullOrWhiteSpace(e.StartingAt))
+                    {
+                        tb.Text = d.String;
+                    }
+                    else
+                    {
+                        var index = d.String.IndexOf(e.StartingAt);
+                        if (index >= 0)
+                            tb.Text = d.String.Substring(index + e.StartingAt.Length);
+                        else
+                            tb.Text = "";
+                    }
+                }
                 tb.PreviewTextInput += Tb_PreviewTextInput;
                 tb.Tag = e;
             }
@@ -105,7 +118,18 @@ namespace ArmA_UI_Editor.UI.Snaps
             {
                 Event ev = (Event)(sender as FrameworkElement).Tag;
                 var d = SQF.ClassParser.File.ReceiveFieldFromHirarchy(CurrentData, ev.Field, true);
-                d.String = (sender as TextBox).Text;
+                if (string.IsNullOrWhiteSpace(ev.StartingAt))
+                {
+                    d.String = (sender as TextBox).Text;
+                }
+                else
+                {
+                    var index = d.IsString ? d.String.IndexOf(ev.StartingAt) : -1;
+                    if (index >= 0)
+                        d.String = d.String.Substring(0, index) + ev.StartingAt + (sender as TextBox).Text;
+                    else
+                        d.String = ev.StartingAt + (sender as TextBox).Text;
+                }
                 this.CurrentEditingSnap.Redraw();
                 e.Handled = true;
             }

@@ -228,21 +228,21 @@ namespace SQF.ClassParser
         static Scanner() {
             start = new Hashtable(128);
     		for (int i = 49; i <= 57; ++i) start[i] = 2;
-		for (int i = 65; i <= 90; ++i) start[i] = 10;
-		for (int i = 95; i <= 95; ++i) start[i] = 10;
-		for (int i = 97; i <= 122; ++i) start[i] = 10;
+		for (int i = 65; i <= 90; ++i) start[i] = 9;
+		for (int i = 95; i <= 95; ++i) start[i] = 9;
+		for (int i = 97; i <= 122; ++i) start[i] = 9;
 		start[45] = 1; 
-		start[48] = 11; 
+		start[48] = 10; 
 		start[34] = 7; 
-		start[36] = 9; 
-		start[58] = 14; 
-		start[123] = 15; 
-		start[125] = 16; 
-		start[59] = 17; 
-		start[91] = 18; 
-		start[93] = 19; 
-		start[61] = 20; 
-		start[44] = 21; 
+		start[36] = 8; 
+		start[58] = 12; 
+		start[123] = 13; 
+		start[125] = 14; 
+		start[59] = 15; 
+		start[91] = 16; 
+		start[93] = 17; 
+		start[61] = 18; 
+		start[44] = 19; 
 		start[Buffer.EOF] = -1;
 
         }
@@ -450,52 +450,42 @@ namespace SQF.ClassParser
 				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'F' || ch >= 'a' && ch <= 'f') {AddCh(); goto case 6;}
 				else {t.kind = 2; break;}
 			case 7:
-				if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 7;}
-				else if (ch == '"') {AddCh(); goto case 8;}
-				else if (ch == 92) {AddCh(); goto case 12;}
+				if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '!' || ch >= '#' && ch <= 65535) {AddCh(); goto case 7;}
+				else if (ch == '"') {AddCh(); goto case 11;}
 				else {goto case 0;}
 			case 8:
-				{t.kind = 3; break;}
-			case 9:
 				recEnd = pos; recKind = 4;
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 9;}
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 8;}
 				else {t.kind = 4; break;}
-			case 10:
+			case 9:
 				recEnd = pos; recKind = 5;
-				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 10;}
+				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 9;}
 				else {t.kind = 5; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
-			case 11:
+			case 10:
 				recEnd = pos; recKind = 1;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 2;}
 				else if (ch == '.') {AddCh(); goto case 3;}
 				else if (ch == 'X' || ch == 'x') {AddCh(); goto case 5;}
 				else {t.kind = 1; break;}
-			case 12:
-				if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 7;}
-				else if (ch == '"') {AddCh(); goto case 13;}
-				else if (ch == 92) {AddCh(); goto case 12;}
-				else {goto case 0;}
-			case 13:
+			case 11:
 				recEnd = pos; recKind = 3;
-				if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 7;}
-				else if (ch == '"') {AddCh(); goto case 8;}
-				else if (ch == 92) {AddCh(); goto case 12;}
+				if (ch == '"') {AddCh(); goto case 7;}
 				else {t.kind = 3; break;}
-			case 14:
+			case 12:
 				{t.kind = 7; break;}
-			case 15:
+			case 13:
 				{t.kind = 8; break;}
-			case 16:
+			case 14:
 				{t.kind = 9; break;}
-			case 17:
+			case 15:
 				{t.kind = 10; break;}
-			case 18:
+			case 16:
 				{t.kind = 11; break;}
-			case 19:
+			case 17:
 				{t.kind = 12; break;}
-			case 20:
+			case 18:
 				{t.kind = 13; break;}
-			case 21:
+			case 19:
 				{t.kind = 16; break;}
 
             }
