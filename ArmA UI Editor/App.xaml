@@ -97,7 +97,7 @@
                     <clr:String x:Key="STR_CODE_SplashScreen_CheckingForUpdate">Checking for Update ...</clr:String>
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableMessage">Update {0} available\nDo you want to update now?</clr:String>
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableHeader">Update Available &lt;3</clr:String>
-                    <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableText">Update {0} is available for the ArmA-UI-Editor\nDo you want to update now?\n(cancel will ignore this update)</clr:String>
+                    <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableText">Update {0} is available for the ArmA-UI-Editor. Do you want to update now?\n(cancel will ignore this update)</clr:String>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="GlobalStyles">
                     <Style TargetType="{x:Type GridSplitter}" x:Key="GridSplitterStyle">

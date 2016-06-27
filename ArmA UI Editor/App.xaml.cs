@@ -23,6 +23,8 @@ namespace ArmA_UI_Editor
             var path = System.IO.Path.Combine(new[] { Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "ArmAUiEditorCrash.txt" });
             using (var writer = new System.IO.StreamWriter(path, false))
             {
+                writer.WriteLine(string.Format("Tool Version: {0}", Code.UpdateManager.Instance.AppVersion.ToString()));
+                builder.AppendLine(string.Format("Tool Version: {0}", Code.UpdateManager.Instance.AppVersion.ToString()));
                 var ex = e.Exception;
                 int tabCount = 0;
                 while (ex != null)
