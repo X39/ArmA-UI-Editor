@@ -30,5 +30,13 @@
         <boolean/>
       </arg>
     </sqf>
+    <sqf infinite="false">
+      <name>Displayed</name>
+      <format>{0} ctrlShow {1};</format>
+      <arg index="0"/>
+      <arg index="1">
+        <boolean/>
+      </arg>
+    </sqf>
   </group>
 </root>

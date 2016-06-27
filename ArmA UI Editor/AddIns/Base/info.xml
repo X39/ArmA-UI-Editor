@@ -20,10 +20,8 @@
       <properties>/Properties/Generic.xml</properties>
       <properties>/Properties/RscText.xml</properties>
       <properties>/Properties/TextProperties.xml</properties>
-      <events>/Events/RscText.xml</events>
       <events>/Events/onLBDrop.xml</events>
       <events>/Events/Generic.xml</events>
-      <events>/Events/onMouseButtonClick.xml</events>
     </element>
     <element>
       <displayname>RscButton</displayname>
@@ -36,7 +34,6 @@
       <events>/Events/RscButton.xml</events>
       <events>/Events/onLBDrop.xml</events>
       <events>/Events/Generic.xml</events>
-      <events>/Events/onMouseButtonClick.xml</events>
     </element>
     <element>
       <displayname>IGUIBack</displayname>
@@ -58,7 +55,6 @@
       <events>/Events/onLBSelChanged.xml</events>
       <events>/Events/onLBDrop.xml</events>
       <events>/Events/Generic.xml</events>
-      <events>/Events/onMouseButtonClick.xml</events>
     </element>
     <element>
       <displayname>RscEdit</displayname>
@@ -68,10 +64,8 @@
       <properties>/Properties/Generic.xml</properties>
       <properties>/Properties/RscEdit.xml</properties>
       <properties>/Properties/TextProperties.xml</properties>
-      <events>/Events/RscEdit.xml</events>
       <events>/Events/onLBDrop.xml</events>
       <events>/Events/Generic.xml</events>
-      <events>/Events/onMouseButtonClick.xml</events>
     </element>
     <element>
       <displayname>RscPicture</displayname>

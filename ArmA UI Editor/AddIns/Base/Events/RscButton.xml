@@ -1,2 +1,33 @@
 ﻿<root>
+  <event>
+    <name>onButtonClick</name>
+    <field>/onButtonClick</field>
+    <description>The attached button action is performed. When returned value is true, button's display remains opened.</description>
+    <arguments>
+      <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+    </arguments>
+  </event>
+  <event>
+    <name>onButtonDblClick</name>
+    <field>/onButtonDblClick</field>
+    <description>?</description>
+    <arguments>
+    </arguments>
+  </event>
+  <event>
+    <name>onButtonDown</name>
+    <field>/onButtonDown</field>
+    <description>The left mouse button is pressed over the button area or a key on the keyboard is pressed.</description>
+    <arguments>
+      <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+    </arguments>
+  </event>
+  <event>
+    <name>onButtonUp</name>
+    <field>/onButtonUp</field>
+    <description>The left mouse buttons is released outside the button area and the attached button action is not performed.</description>
+    <arguments>
+      <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+    </arguments>
+  </event>
 </root>

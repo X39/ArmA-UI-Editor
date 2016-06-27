@@ -1,2 +1,11 @@
 ﻿<root>
+  <event>
+    <name>onLBSelChanged</name>
+    <field>/onLBSelChanged</field>
+    <description>The selection in a listbox is changed. The left mouse button has been released and the new selection is fully made.</description>
+    <arguments>
+      <arg index="0" type="CONTROL">Corresponding Control Element</arg>
+      <arg index="1" type="SCALAR">Selected Element Index</arg>
+    </arguments>
+  </event>
 </root>

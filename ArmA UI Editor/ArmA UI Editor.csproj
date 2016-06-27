@@ -474,18 +474,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AddIns\Base\Events\RscText.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="AddIns\Base\Events\RscEdit.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="AddIns\Base\Events\RscButton.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -505,12 +493,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AddIns\Base\Events\onLBDrop.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="AddIns\Base\Events\onMouseButtonClick.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
