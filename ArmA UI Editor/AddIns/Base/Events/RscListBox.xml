@@ -20,7 +20,7 @@
   <event>
     <name>onLBDrag</name>
     <field>/onLBDrag</field>
-    <description>Drag & drop operation started.</description>
+    <description>Drag and drop operation started.</description>
     <arguments>
       <arg index="0" type="CONTROL">Corresponding Control Element</arg>
       <arg index="1" type="SCALAR">Selected Element Index</arg>
@@ -29,7 +29,7 @@
   <event>
     <name>onLBDragging</name>
     <field>/onLBDragging</field>
-    <description>Drag & drop operation is in progress.</description>
+    <description>Drag and drop operation is in progress.</description>
     <arguments>
       <arg index="0" type="CONTROL">Corresponding Control Element</arg>
       <arg index="1" type="SCALAR">X Coordinate</arg>

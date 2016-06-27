@@ -87,7 +87,6 @@
       <events>/Events/RscListBox.xml</events>
       <events>/Events/onLBSelChanged.xml</events>
       <events>/Events/onLBDrop.xml</events>
-      <events>/Events/onMouseButtonClick.xml</events>
       <events>/Events/Generic.xml</events>
     </element>
   </uielements>
