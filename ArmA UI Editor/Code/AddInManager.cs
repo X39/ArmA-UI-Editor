@@ -80,9 +80,10 @@ namespace ArmA_UI_Editor.Code
         }
         public AddInUtil.UIElement GetElement(string s)
         {
-            var el = this.ConfigNameFileDictionary[s];
-            
-            return el;
+            if (this.ConfigNameFileDictionary.ContainsKey(s))
+                return this.ConfigNameFileDictionary[s];
+            else
+                return null;
         }
     }
 }

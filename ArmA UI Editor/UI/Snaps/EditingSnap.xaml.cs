@@ -1202,7 +1202,20 @@ namespace ArmA_UI_Editor.UI.Snaps
             var controls = uiElements.Class;
             foreach (var pair in controls)
             {
-                list.Add(new Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>(AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name), pair));
+                if(pair.Value.Class.Parent == null)
+                {
+                    MainWindow.TryGet().SetStatusbarText(string.Format("Cannot create new elements from scratch in this version of 'ArmA UI Editor'\nmissing parent of '{0}' in AddIns", pair.Value.Class.Parent.Name), false);
+                    continue;
+                }
+                var value = AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name);
+                if (value == null)
+                {
+                    MainWindow.TryGet().SetStatusbarText(string.Format("Cannot create new elements from scratch in this version of 'ArmA UI Editor'\nmissing parent of '{0}' in AddIns", pair.Value.Class.Parent.Name), false);
+                }
+                else
+                {
+                    list.Add(new Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>(value, pair));
+                }
             }
             return list;
         }
