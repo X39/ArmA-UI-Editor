@@ -142,8 +142,8 @@ namespace ArmAClassParser.SQF.ClassParser
         }
 
         /// <summary>
-        /// Creates a new empty <see cref="ConfigField"/> with given key into this array.
-        /// Requires this <see cref="ConfigField"/> to be an array!
+        /// Creates a new empty <see cref="ConfigField"/> with given key into this class.
+        /// Requires this <see cref="ConfigField"/> to be a class!
         /// </summary>
         /// <param name="key">Non-Existing key for the new field</param>
         /// <returns>new <see cref="ConfigField"/></returns>
@@ -165,6 +165,24 @@ namespace ArmAClassParser.SQF.ClassParser
             this.RaisePropertyChanged();
             return field;
         }
+        /// <summary>
+        /// Changes the value of underlying <see cref="ConfigField"/> with given key in this class.
+        /// Key will be added automatically if not yet in this <see cref="ConfigField"/>.
+        /// Requires this <see cref="ConfigField"/> to be a class!
+        /// </summary>
+        /// <param name="key">Key for the field</param>
+        /// <param name="value"><para>Value to set this to.</para>
+        /// <para>Can be of following types:
+        ///    <list type="bullet">
+        ///        <item><see cref="string"/></item>
+        ///        <item><see cref="double"/></item>
+        ///        <item><see cref="bool"/></item>
+        ///        <item><see cref="object"/>[] containing any combination of <see cref="string"/>, <see cref="double"/> or <see cref="bool"/></item>
+        ///     </list>
+        /// </para>
+        /// </param>
+        /// <returns>new <see cref="ConfigField"/></returns>
+        /// <exception cref="ArgumentException"/>
         public void SetKey(string key, object value)
         {
             if (!ConfigField.IsValidKey(key))
@@ -196,7 +214,15 @@ namespace ArmAClassParser.SQF.ClassParser
             }
             else if(value.GetType().IsArray)
             {
-                field.Array = (object[])value;
+                var arr = (object[])value;
+                foreach(var it in arr)
+                {
+                    if (it is string || it is bool || it is double)
+                        continue;
+                    else
+                        throw new ArgumentException(EX_INVALIDARG_INVALIDVALUE);
+                }
+                field.Array = arr;
             }
             else
             {
@@ -204,8 +230,8 @@ namespace ArmAClassParser.SQF.ClassParser
             }
         }
         /// <summary>
-        /// Removes <see cref="ConfigField"/> with corresponding key from this array.
-        /// Requires this <see cref="ConfigField"/> to be an array!
+        /// Removes <see cref="ConfigField"/> with corresponding key from this class.
+        /// Requires this <see cref="ConfigField"/> to be a class!
         /// </summary>
         /// <param name="field"></param>
         /// <exception cref="ArgumentException"/>
@@ -230,8 +256,8 @@ namespace ArmAClassParser.SQF.ClassParser
             }
         }
         /// <summary>
-        /// <para>Receives <see cref="ConfigField"/> with given key from this array.
-        /// Requires this <see cref="ConfigField"/> to be an array!</para>
+        /// <para>Receives <see cref="ConfigField"/> with given key from this class.
+        /// Requires this <see cref="ConfigField"/> to be a class!</para>
         /// <para>Will receive key relative to this <see cref="ConfigField"/> if key contains the separator char <value>/</value></para>
         /// <para>Function will search parent classes too</para>
         /// </summary>
@@ -296,7 +322,7 @@ namespace ArmAClassParser.SQF.ClassParser
             }
         }
         /// <summary>
-        /// Changes this <see cref="ConfigField"/> to an array.
+        /// Changes this <see cref="ConfigField"/> to a class.
         /// </summary>
         /// <exception cref="InvalidOperationException"/>
         public void ToClass()
@@ -314,8 +340,8 @@ namespace ArmAClassParser.SQF.ClassParser
             }
         }
         /// <summary>
-        /// Checks if given key exists in this array.
-        /// Requires this <see cref="ConfigField"/> to be an array!
+        /// Checks if given key exists in this class.
+        /// Requires this <see cref="ConfigField"/> to be a class!
         /// </summary>
         /// <param name="key">key to search</param>
         /// <returns>true if key was found, false if not</returns>
