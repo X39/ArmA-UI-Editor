@@ -27,153 +27,94 @@ COMPILER CONFIGFILE
 	IGNORE '\t' + '\r' + '\n'
 		
 	PRODUCTIONS
-		CONFIGFILE (. Data data; .) =
-            (.
-            if(Base == null)
+		CONFIGFILE =
+            CONFIG
             {
-                Base = new SQF.ClassParser.File();
-            }
-            StringList PathList = new StringList();
-            .)
-            
-            
-            CONFIG<out data, Base, PathList> (. Base[data] = data; .)
-            {
-                CONFIG<out data, Base, PathList> (. Base[data] = data; .)
+                CONFIG
             }
 		.
-        CONFIG<out Data data, ConfigClass parent, StringList PathList> (. ConfigClass cc = new ConfigClass(); data = new Data(cc); Data d; .) =
+        CONFIG =
             "class"
             T_IDENT
-            (.
-                if(parent.ContainsKey(t.val))
-                {
-                    SemErr("Class is already defined in current scope");
-                }
-                data.Name = t.val;
-            .)
             [
                 ':'
                 T_IDENT
-                (.
-                    ConfigClass c = parent;
-                    var tmpList = new StringList(PathList);
-                    Data tmpData = null;
-                    do
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        foreach (var it in tmpList)
-                        {
-                            sb.Append('/');
-                            sb.Append(it);
-                        };
-                        sb.Append('/');
-                        sb.Append(t.val);
-                        tmpData = this.Base[sb.ToString()];
-                        if (tmpList.Count == 0)
-                            break;
-                        tmpList.RemoveAt(tmpList.Count - 1);
-                    } while (tmpData == null || !tmpData.IsClass);
-                    
-                    if (c != null)
-                    {
-                        cc.Parent = tmpData;
-                    }
-                    else
-                    {
-                        SemErr("Parent is not yet existing");
-                    };
-                .)
             ]
-            (. PathList.Add(data.Name); .)
             [
                 '{'
                 {
-                    FIELD<out d> (. data.Class[d] = d; .)
+                    FIELD
                     |
-                    CONFIG<out d, data.Class, PathList> (. data.Class[d] = d; .)
+                    CONFIG
                 }
                 '}'
             ]
             ';'
-            (. PathList.RemoveAt(PathList.Count - 1); .)
         .
-        FIELD<out Data data> (. data = null; bool isArray = false; .) =
-            T_IDENT (. string name = t.val; .)
+        FIELD =
+            T_IDENT
             [
                 '['
                 ']'
-                (. isArray = true; .)
             ]
             '='
             (
-                (. StringBuilder builder = new StringBuilder(); .)
                 (
-                    ARRAY<out data> (. if(!isArray) SemErr("Invalid field syntax: Missing [] at field name"); .)
+                    ARRAY
                     |
-                    SCALAR<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
+                    SCALAR
                     |
-                    STRING<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
+                    STRING
                     |
-                    BOOLEAN<out data> (. if(isArray) SemErr("Invalid field syntax: Located [] at field name"); .)
+                    BOOLEAN
                     |
-                    ANY (. data = new Data(t.val); .)
+                    ANY
                 )
                 [
-                    (. builder.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", data.Value)); .)
-                    ANY (. builder.Append(' '); builder.Append(t.val); .)
+                    ANY
                     {
-                        ANY (. builder.Append(' '); builder.Append(t.val); .)
+                        ANY
                     }
-                    (. data = new Data(builder.ToString()); .)
                 ]
             )
             ';'
-            (. if(data != null) data.Name = name; .)
         .
-        SCALAR<out Data data> (. data = null; .)  =
-            T_SCALAR (. data = new Data(Double.Parse(t.val, System.Globalization.CultureInfo.InvariantCulture)); .)
+        SCALAR  =
+            T_SCALAR
             |
-            T_HEX (. data = new Data((double)Convert.ToInt32(t.val.Substring(2), 16)); .)
+            T_HEX
         .
-        STRING<out Data data> (. string content = default(string); .) = 
+        STRING = 
             (
-                T_STRING (. content = Data.FromSqfString(t.val); .)
+                T_STRING
                 |
-                T_STRINGTABLESTRING (. content = t.val.Substring(1); .)
+                T_STRINGTABLESTRING
             )
-            (.
-            //TODO: Add ArmA like string escaping
-            data = new Data(content);
-            .)
         .
-        BOOLEAN<out Data data> (. bool flag = false; .) =
+        BOOLEAN =
             (
-                "true" (. flag = true; .)
+                "true"
                 |
                 "false"
             )
-            (.
-            data = new Data(flag);
-            .)
         .
-        ARRAY<out Data data> (. data = new Data(new List<Data>()); Data tmp; .) = 
+        ARRAY = 
             '{'
             (
-                SCALAR<out tmp> (. data.Array.Add(tmp); .)
+                SCALAR
                 |
-                STRING<out tmp> (. data.Array.Add(tmp); .)
+                STRING
                 |
-                BOOLEAN<out tmp> (. data.Array.Add(tmp); .)
+                BOOLEAN
             )
             {
                 ','
                 (
-                    SCALAR<out tmp> (. data.Array.Add(tmp); .)
+                    SCALAR
                     |
-                    STRING<out tmp> (. data.Array.Add(tmp); .)
+                    STRING
                     |
-                    BOOLEAN<out tmp> (. data.Array.Add(tmp); .)
+                    BOOLEAN
                 )
             }
             '}'
