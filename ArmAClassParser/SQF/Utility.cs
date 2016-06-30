@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace ArmAClassParser.SQF
 {
-    public class Utility
+    public static class Utility
     {
         /// <summary>
         /// Parses provided string in SQF string format to normal string.
         /// </summary>
         /// <param name="s">SQF-Formatted string</param>
         /// <returns>Normal formatted string</returns>
-        public static string FromSqfString(string s)
+        public static string FromSqfString(this string s)
         {
             s = s.Substring(1, s.Length - 2);
             StringBuilder builder = new StringBuilder();
@@ -38,7 +38,7 @@ namespace ArmAClassParser.SQF
         /// </summary>
         /// <param name="s">Normal formatted string<param>
         /// <returns>SQF-Formatted string</returns>
-        public static string ToSqfString(string s, bool outerStringSpecifier = true)
+        public static string ToSqfString(this string s, bool outerStringSpecifier = true)
         {
             StringBuilder builder = new StringBuilder(s.Length + 2);
             if (outerStringSpecifier)
@@ -62,6 +62,23 @@ namespace ArmAClassParser.SQF
             if (outerStringSpecifier)
                 builder.Append('"');
             return builder.ToString();
+        }
+        /// <summary>
+        /// Creates a new array containing all items from startIndex to length in thisArray
+        /// </summary>
+        /// <param name="thisArray">Array to get the range from</param>
+        /// <param name="startIndex">index where to start</param>
+        /// <param name="length">length of the items to receive or -1</param>
+        /// <returns></returns>
+        public static string[] GetRange(this string[] thisArray, int startIndex, int length = -1)
+        {
+            string[] outArray = new string[length == -1 ? thisArray.Length - startIndex : length];
+            int outArrayIndex = 0;
+            for(int i = startIndex; i < (length == -1 ? thisArray.Length - startIndex : length); i++)
+            {
+                outArray[outArrayIndex++] = thisArray[i];
+            }
+            return outArray;
         }
     }
 }
