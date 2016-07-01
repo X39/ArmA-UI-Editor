@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ArmAClassParser.SQF;
+using SQF;
 
-namespace ArmAClassParser.SQF.ClassParser
+namespace SQF.ClassParser
 {
     public class ConfigField : INotifyPropertyChanged, INotifyPropertyChanging
     {
@@ -15,13 +15,10 @@ namespace ArmAClassParser.SQF.ClassParser
             NA = -1,
             front,
             name,
-            name_parent_space,
+            name_parent,
             parent,
-            parent_blockopen_space,
-            blockopen,
-            blockopen_value_space,
+            parent_value,
             value,
-            value_blockclose_space,
             blockclose
         }
         internal struct Mark
@@ -50,7 +47,7 @@ namespace ArmAClassParser.SQF.ClassParser
 
                 while (field != null)
                 {
-                    for (int i = (int)MarkOffsets.blockopen_value_space; i >= 0; i--)
+                    for (int i = (int)MarkOffsets.parent_value; i >= 0; i--)
                     {
                         thisOffset += field.Marks[i].Length;
                     }
@@ -93,6 +90,7 @@ namespace ArmAClassParser.SQF.ClassParser
         private const string EX_INVALIDARG_SELFREFERENCE = "Key provided equals this name";
         private const string EX_INVALIDARG_INVALIDVALUE = "Value provided is not valid for ConfigFields";
         private const string EX_INVALIDOPS_ALREADYCLASS = "ConfigField is already an Class";
+        private const string EX_INVALIDOPS_ALREADYFIELD = "ConfigField is already a Field";
 
         #endregion
 
@@ -100,8 +98,7 @@ namespace ArmAClassParser.SQF.ClassParser
         private string _Name;
         private string _ConfigParentName;
         private TextBuffer _ThisBuffer;
-        private Mark[] Marks = new Mark[(int)MarkOffsets.blockclose];
-
+        internal Mark[] Marks = new Mark[(int)MarkOffsets.blockclose];
 
         public ConfigField Parent { get; private set; }
         public string Name { get { return _Name; } internal set { this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
@@ -131,13 +128,10 @@ namespace ArmAClassParser.SQF.ClassParser
             this._Name = name;
             this.Marks[(int)MarkOffsets.front] = new Mark(0, MarkOffsets.front);
             this.Marks[(int)MarkOffsets.name] = new Mark(0, MarkOffsets.name);
-            this.Marks[(int)MarkOffsets.name_parent_space] = new Mark(0, MarkOffsets.name_parent_space);
+            this.Marks[(int)MarkOffsets.name_parent] = new Mark(0, MarkOffsets.name_parent);
             this.Marks[(int)MarkOffsets.parent] = new Mark(0, MarkOffsets.parent);
-            this.Marks[(int)MarkOffsets.parent_blockopen_space] = new Mark(0, MarkOffsets.parent_blockopen_space);
-            this.Marks[(int)MarkOffsets.blockopen] = new Mark(0, MarkOffsets.blockopen);
-            this.Marks[(int)MarkOffsets.blockopen_value_space] = new Mark(0, MarkOffsets.blockopen_value_space);
+            this.Marks[(int)MarkOffsets.parent_value] = new Mark(0, MarkOffsets.value);
             this.Marks[(int)MarkOffsets.value] = new Mark(0, MarkOffsets.value);
-            this.Marks[(int)MarkOffsets.value_blockclose_space] = new Mark(0, MarkOffsets.value_blockclose_space);
             this.Marks[(int)MarkOffsets.blockclose] = new Mark(0, MarkOffsets.blockclose);
         }
 
@@ -164,6 +158,70 @@ namespace ArmAClassParser.SQF.ClassParser
             this.Children.Add(field);
             this.RaisePropertyChanged();
             return field;
+        }
+        internal ConfigField GetKey(string key, bool create)
+        {
+            if (!this.IsClass)
+                throw new ArgumentException(EX_INVALIDTYPE_CLASS);
+            if (key.Contains('/'))
+            {
+                //Key-path was provided
+                var keys = key.Split('/');
+                ConfigField currentField = this;
+                for (var i = 0; i < keys.Length; i++)
+                {
+                    var it = keys[i];
+                    if (string.IsNullOrWhiteSpace(it))
+                        continue;
+                    try
+                    {
+                        currentField = currentField[it];
+                    }
+                    catch (KeyNotFoundException ex)
+                    {
+                        if (create)
+                        {
+                            currentField = currentField.AddKey(key);
+                            currentField.ToClass();
+                        }
+                        else if(string.IsNullOrWhiteSpace(currentField.ConfigParentName))
+                        {
+                            throw new KeyNotFoundException(ex.Message, ex);
+                        }
+                        else
+                        {
+                            StringBuilder builder = new StringBuilder();
+                            currentField = this.FindConfigKeyInHirarchy(currentField.ConfigParentName)[string.Join("/", keys.GetRange(i))];
+                        }
+                    }
+                }
+                return currentField;
+            }
+            else
+            {
+                //Single key was provided
+                if (!ConfigField.IsValidKey(key))
+                    throw new ArgumentException(EX_INVALIDARG_INVALIDKEY);
+                foreach (var it in this.Children)
+                {
+                    if (it.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase))
+                        return it;
+                }
+                if(create)
+                {
+                    var field = this.AddKey(key);
+                    field.ToClass();
+                    return field;
+                }
+                else if (string.IsNullOrWhiteSpace(this.ConfigParentName))
+                {
+                    throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUND);
+                }
+                else
+                {
+                    return this.FindConfigKeyInHirarchy(this.ConfigParentName)[key];
+                }
+            }
         }
         /// <summary>
         /// Changes the value of underlying <see cref="ConfigField"/> with given key in this class.
@@ -265,62 +323,7 @@ namespace ArmAClassParser.SQF.ClassParser
         /// <returns><see cref="ConfigField"/> with given key</returns>
         /// <exception cref="ArgumentException"/>
         /// <exception cref="KeyNotFoundException"/>
-        public ConfigField this[string key]
-        {
-            get
-            {
-                if (!this.IsClass)
-                    throw new ArgumentException(EX_INVALIDTYPE_CLASS);
-                if (key.Contains('/'))
-                {
-                    //Key-path was provided
-                    var keys = key.Split('/');
-                    ConfigField currentField = this;
-                    for(var i = 0; i < keys.Length; i++)
-                    {
-                        var it = keys[i];
-                        if (string.IsNullOrWhiteSpace(it))
-                            continue;
-                        try
-                        {
-                            currentField = currentField[it];
-                        }
-                        catch(KeyNotFoundException ex)
-                        {
-                            if(string.IsNullOrWhiteSpace(currentField.ConfigParentName))
-                            {
-                                throw new KeyNotFoundException(ex.Message, ex);
-                            }
-                            else
-                            {
-                                StringBuilder builder = new StringBuilder();
-                                currentField = this.FindConfigKeyInHirarchy(currentField.ConfigParentName)[string.Join("/", keys.GetRange(i))];
-                            }
-                        }
-                    }
-                    return currentField;
-                }
-                else
-                {
-                    //Single key was provided
-                    if (!ConfigField.IsValidKey(key))
-                        throw new ArgumentException(EX_INVALIDARG_INVALIDKEY);
-                    foreach (var it in this.Children)
-                    {
-                        if (it.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase))
-                            return it;
-                    }
-                    if (string.IsNullOrWhiteSpace(this.ConfigParentName))
-                    {
-                        throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUND);
-                    }
-                    else
-                    {
-                        return this.FindConfigKeyInHirarchy(this.ConfigParentName)[key];
-                    }
-                }
-            }
-        }
+        public ConfigField this[string key] { get { return this.GetKey(key, false); } }
         /// <summary>
         /// Changes this <see cref="ConfigField"/> to a class.
         /// </summary>
@@ -338,6 +341,12 @@ namespace ArmAClassParser.SQF.ClassParser
             {
                 this.Children = new List<ConfigField>();
             }
+        }
+        public void ToField()
+        {
+            if (!this.IsClass)
+                throw new InvalidOperationException(EX_INVALIDOPS_ALREADYFIELD);
+            this.Children = null;
         }
         /// <summary>
         /// Checks if given key exists in this class.
@@ -379,25 +388,19 @@ namespace ArmAClassParser.SQF.ClassParser
             switch (mo)
             {
                 case MarkOffsets.front:
-                    replaceText = new string('\t', this.ParentCount);
+                    replaceText = string.Concat(new string('\t', this.ParentCount), this.IsClass ? "class " : "");
                     break;
                 case MarkOffsets.name:
                     replaceText = this.Name;
                     break;
-                case MarkOffsets.name_parent_space:
+                case MarkOffsets.name_parent:
                     replaceText = this.IsClass ? " : " : "";
                     break;
                 case MarkOffsets.parent:
                     replaceText = this.ConfigParentName;
                     break;
-                case MarkOffsets.parent_blockopen_space:
-                    replaceText = this.IsClass ? string.Format("\r\n{0}", new string('\t', this.ParentCount)) : " ";
-                    break;
-                case MarkOffsets.blockopen:
-                    replaceText = this.IsClass ? "{" : "=";
-                    break;
-                case MarkOffsets.blockopen_value_space:
-                    replaceText = this.IsClass ? string.Format("\r\n{0}", new string('\t', this.ParentCount)) : " ";
+                case MarkOffsets.parent_value:
+                    replaceText = this.IsClass ? string.Format("\r\n{0}{", new string('\t', this.ParentCount)) : this.IsArray ? "[] = " : " = ";
                     break;
                 case MarkOffsets.value:
                     if (this.IsClass)
@@ -405,21 +408,16 @@ namespace ArmAClassParser.SQF.ClassParser
                     else
                         replaceText = this.ValueToString();
                     break;
-                case MarkOffsets.value_blockclose_space:
-                    replaceText = this.IsClass ? string.Format("\r\n{0}", new string('\t', this.ParentCount)) : "";
-                    break;
                 case MarkOffsets.blockclose:
-                    replaceText = this.IsClass ? "};" : ";";
+                    replaceText = this.IsClass ? string.Format("\r\n{0}};", new string('\t', this.ParentCount)) : ";";
                     break;
                 case MarkOffsets.NA:
+                    UpdateTextBuffer(MarkOffsets.front);
                     UpdateTextBuffer(MarkOffsets.name);
-                    UpdateTextBuffer(MarkOffsets.name_parent_space);
+                    UpdateTextBuffer(MarkOffsets.name_parent);
                     UpdateTextBuffer(MarkOffsets.parent);
-                    UpdateTextBuffer(MarkOffsets.parent_blockopen_space);
-                    UpdateTextBuffer(MarkOffsets.blockopen);
-                    UpdateTextBuffer(MarkOffsets.blockopen_value_space);
+                    UpdateTextBuffer(MarkOffsets.parent_value);
                     UpdateTextBuffer(MarkOffsets.value);
-                    UpdateTextBuffer(MarkOffsets.value_blockclose_space);
                     UpdateTextBuffer(MarkOffsets.blockclose);
                     return;
             }

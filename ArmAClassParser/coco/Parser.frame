@@ -28,7 +28,7 @@ Coco/R itself) does not fall under the GNU General Public License.
 using System;
 
 -->namespace
-namespace SQF.ClassParser
+namespace SQF.ClassParser.Generated
 {
     public class Parser {
     -->constants
@@ -42,14 +42,15 @@ namespace SQF.ClassParser
         public Token t;    // last recognized token
         public Token la;   // lookahead token
         int errDist = minErrDist;
-
     -->declarations
+        SQF.ClassParser.ConfigField MainField;
+        int lastPos;
 
-        public SQF.ClassParser.File Base { get; set;}
-        
         public Parser(Scanner scanner, Action<string> LoggerAction) {
             this.scanner = scanner;
             errors = new Errors(LoggerAction);
+            this.MainField = null;
+            this.lastPos = 0;
         }
         
         bool peekCompare(params int[] values)

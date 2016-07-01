@@ -52,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SQF\ClassParser\ConfigField.cs" />
+    <Compile Include="SQF\ClassParser\Generated\Parser.cs" />
+    <Compile Include="SQF\ClassParser\Generated\Scanner.cs" />
+    <Compile Include="SQF\ClassParser\Generated\StringList.cs" />
     <Compile Include="SQF\TextBuffer.cs" />
     <Compile Include="SQF\TextBufferStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,9 +69,7 @@
   <ItemGroup>
     <None Include="X39_VisualStuidio_Key.pfx" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SQF\ClassParser\Generated\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

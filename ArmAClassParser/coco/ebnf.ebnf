@@ -23,100 +23,134 @@ COMPILER CONFIGFILE
 		
 	COMMENTS FROM "/*" TO "*/" NESTED
 	COMMENTS FROM "//" TO '\n'
-	COMMENTS FROM '#' TO '\n'
 	IGNORE '\t' + '\r' + '\n'
 		
 	PRODUCTIONS
 		CONFIGFILE =
-            CONFIG
+            (.
+                if (MainField == null)
+                {
+                    MainField = new ConfigField(string.Empty);
+                }
+                StringList list = new StringList();
+                this.MainField.ThisBuffer.Lock();
+            .)
+            CONFIG<list>
             {
-                CONFIG
+                CONFIG<list>
             }
+            (. this.MainField.ThisBuffer.Unlock(); .)
 		.
-        CONFIG =
+        CONFIG<StringList list> (. ConfigField thisField; .) =
             "class"
-            T_IDENT
+            T_IDENT (.
+                list.Add(t.val);
+                thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
+                thisField.Name = t.val;
+                thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = t.charPos - this.lastPos;
+                thisField.Marks[(int)ConfigField.MarkOffsets.name].Length = t.val.Length;
+                this.lastPos = t.charPos + t.val.Length;
+            .)
             [
                 ':'
-                T_IDENT
+                T_IDENT (.
+                    thisField.ConfigParentName = t.val;
+                    thisField.Marks[(int)ConfigField.MarkOffsets.name_parent].Length = t.charPos - this.lastPos;
+                    thisField.Marks[(int)ConfigField.MarkOffsets.parent].Length = t.val.Length;
+                    this.lastPos = t.charPos + t.val.Length;
+                .)
             ]
             [
-                '{'
+                '{' (. thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; bool isFirst = true; .)
                 {
-                    FIELD
+                    FIELD<list>
                     |
-                    CONFIG
+                    CONFIG<list>
                 }
+                (. thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = t.charPos - tmpoff; this.lastPos = t.charPos; .)
                 '}'
             ]
-            ';'
+            ';' (. thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = t.charPos - this.lastPos; this.lastPos = t.charPos; .)
+            (. list.Remove(list.Last()); .)
         .
-        FIELD =
-            T_IDENT
+        FIELD<StringList list> (. ConfigField thisField; .) =
+            T_IDENT (.
+                list.Add(t.val);
+                thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
+                thisField.ToField();
+                thisField.Name = t.val;
+                thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = t.charPos - this.lastPos;
+                thisField.Marks[(int)ConfigField.MarkOffsets.name].Length = t.val.Length;
+                this.lastPos = t.charPos + t.val.Length;
+            .)
             [
                 '['
                 ']'
             ]
-            '='
+            '=' (. thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; object tmp; .)
             (
                 (
-                    ARRAY
+                    ARRAY<out tmp> (. thisField.Array = (object[])tmp; .)
                     |
-                    SCALAR
+                    SCALAR<out tmp> (. thisField.Number = (double)tmp; .)
                     |
-                    STRING
+                    STRING<out tmp> (. thisField.String = (string)tmp; .)
                     |
-                    BOOLEAN
+                    BOOLEAN<out tmp> (. thisField.Boolean = (bool)tmp; .)
                     |
-                    ANY
+                    ANY (. tmp = new StringList(); (tmp as StringList).Add(t.val); .)
                 )
                 [
-                    ANY
+                    ANY (. tmp = new StringList(); (tmp as StringList).Add(t.val); .)
                     {
-                        ANY
+                        ANY (. tmp = new StringList(); (tmp as StringList).Add(t.val); .)
                     }
+                    (. thisField.String = string.Join(" ", (tmp as StringList).ToArray()); .)
                 ]
+                (. thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = t.charPos - tmpoff; this.lastPos = t.charPos; .)
             )
-            ';'
+            ';'(. thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = t.charPos - this.lastPos; this.lastPos = t.charPos; .)
+            (. list.Remove(list.Last()); .)
         .
-        SCALAR  =
-            T_SCALAR
+        SCALAR<out object v> (. v = 0; .) =
+            T_SCALAR (. v = Double.Parse(t.val, System.Globalization.CultureInfo.InvariantCulture); .)
             |
-            T_HEX
+            T_HEX (. v = (double)Convert.ToInt32(t.val.Substring(2), 16); .)
         .
-        STRING = 
+        STRING<out object v> (. v = string.Empty; .) = 
             (
-                T_STRING
+                T_STRING (. v = t.val.FromSqfString(); .)
                 |
-                T_STRINGTABLESTRING
+                T_STRINGTABLESTRING (. v = t.val.Substring(1); .)
             )
         .
-        BOOLEAN =
+        BOOLEAN<out object v> (. v = false; .) =
             (
-                "true"
+                "true" (. v = true; .)
                 |
                 "false"
             )
         .
-        ARRAY = 
+        ARRAY<out object v> (. List<object> objectList = new List<object>(); object tmp; .) = 
             '{'
             (
-                SCALAR
+                SCALAR<out tmp> (. objectList.Add(tmp); .)
                 |
-                STRING
+                STRING<out tmp> (. objectList.Add(tmp); .)
                 |
-                BOOLEAN
+                BOOLEAN<out tmp> (. objectList.Add(tmp); .)
             )
             {
                 ','
                 (
-                    SCALAR
+                    SCALAR<out tmp> (. objectList.Add(tmp); .)
                     |
-                    STRING
+                    STRING<out tmp> (. objectList.Add(tmp); .)
                     |
-                    BOOLEAN
+                    BOOLEAN<out tmp> (. objectList.Add(tmp); .)
                 )
             }
             '}'
+            (. v = objectList.ToArray(); .)
         .
 END CONFIGFILE.

@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArmAClassParser.SQF
+namespace SQF
 {
     public class TextBufferStream : Stream
     {
 
-        private TextBuffer Buffer;
+        internal TextBuffer Buffer;
         private int Index = 0;
 
         public override bool CanRead { get { return true; } }
