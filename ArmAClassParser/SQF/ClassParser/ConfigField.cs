@@ -346,9 +346,16 @@ namespace SQF.ClassParser
             {
                 if (field.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    this.RaisePropertyChanging();
+                    this.RaisePropertyChanging("Children");
+                    if(field.IsClass)
+                    {
+                        foreach(var it in field.Children)
+                        {
+                            field.RemoveKey(it.Name);
+                        }
+                    }
                     this.Children.Remove(field);
-                    this.RaisePropertyChanged();
+                    this.RaisePropertyChanged("Children");
                     break;
                 }
             }
