@@ -365,6 +365,31 @@ namespace SQF.ClassParser
         /// <exception cref="KeyNotFoundException"/>
         public ConfigField this[string key] { get { return this.GetKey(key, false); } }
         /// <summary>
+        /// <para>Receives <see cref="ConfigField"/>s with given index & length from this class.
+        /// Requires this <see cref="ConfigField"/> to be a class!</para>
+        /// </summary>
+        /// <param name="index">Index to receive</param>
+        /// <param name="length">Ammount of fields to receive</param>
+        /// <returns><see cref="ConfigField"/> with given index</returns>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="ArgumentOutOfRangeException"/>
+        public ConfigField[] this[int index, int length]
+        {
+            get
+            {
+                if (!this.IsClass)
+                    throw new ArgumentException(EX_INVALIDTYPE_CLASS);
+                if (index < 0 || this.Children.Count <= index + length)
+                    throw new ArgumentOutOfRangeException();
+                List<ConfigField> list = new List<ConfigField>(length);
+                for(int i = index; i < index + length; i++)
+                {
+                    list.Add(this.Children[i]);
+                }
+                return list.ToArray();
+            }
+        }
+        /// <summary>
         /// <para>Receives <see cref="ConfigField"/> with given index from this class.
         /// Requires this <see cref="ConfigField"/> to be a class!</para>
         /// </summary>
