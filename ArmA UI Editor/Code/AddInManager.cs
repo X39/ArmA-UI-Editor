@@ -15,7 +15,7 @@ namespace ArmA_UI_Editor.Code
 
         static AddInManager _instance = new AddInManager();
         public static AddInManager Instance { get { return _instance; } }
-        public SQF.ClassParser.ConfigField MainFile;
+        public SQF.ClassParser.File MainFile;
         private Dictionary<string, AddInUtil.UIElement> ConfigNameFileDictionary;
         private AddInManager()
         {

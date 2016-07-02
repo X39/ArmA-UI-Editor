@@ -119,20 +119,6 @@ namespace SQF.ClassParser
         public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
         public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
         public int Count { get { if (!this.IsClass) throw new ArgumentException(EX_INVALIDTYPE_CLASS); return this.Children.Count; } }
-        public string Key
-        {
-            get
-            {
-                List<string> nameList = new List<string>();
-                ConfigField field = this;
-                while(field != null)
-                {
-                    nameList.Add(field.Name);
-                    field = field.Parent;
-                }
-                return string.Join("/", nameList.ToArray());
-            }
-        }
 
         public int ParentCount { get { int i = 0; var cf = this; while (cf.Parent != null) { i++; cf = cf.Parent; } return i; } }
 
