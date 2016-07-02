@@ -46,9 +46,9 @@ namespace SQF.ClassParser.Generated
         SQF.ClassParser.ConfigField MainField;
         int lastPos;
 
-        public Parser(Scanner scanner, Action<string> LoggerAction) {
+        public Parser(Scanner scanner) {
             this.scanner = scanner;
-            errors = new Errors(LoggerAction);
+            errors = new Errors();
             this.MainField = null;
             this.lastPos = 0;
         }
@@ -145,12 +145,26 @@ namespace SQF.ClassParser.Generated
 
         
     -->productions
+    
+        private void doRoot()
+        {
+    -->parseRoot
+        }
 
-        public void Parse() {
+        public SQF.ClassParser.ConfigField Parse(SQF.TextBuffer buffer) {
+            this.MainField = new SQF.ClassParser.ConfigField(buffer);
             la = new Token();
             la.val = "";		
             Get();
-    -->parseRoot
+            doRoot();
+            return this.MainField;
+        }
+        public void Patch(SQF.ClassParser.ConfigField field) {
+            this.MainField = field;
+            la = new Token();
+            la.val = "";		
+            Get();
+            doRoot();
         }
         
         static readonly bool[,] set = {
@@ -163,10 +177,8 @@ namespace SQF.ClassParser.Generated
         public int count = 0;                                    // number of errors detected
         public System.IO.TextWriter errorStream = Console.Out;   // error messages go to this stream
         public string errMsgFormat = "line {0} col {1}: {2}"; // 0=line, 1=column, 2=text
-        public Action<string> LoggerAction;
-        public Errors(Action<string> LoggerAction)
+        public Errors()
         {
-            this.LoggerAction = LoggerAction;
         }
 
         public virtual void SynErr (int line, int col, int n) {
@@ -175,19 +187,19 @@ namespace SQF.ClassParser.Generated
     -->errors
                 default: s = "error " + n; break;
             }
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s), this.LoggerAction);
+            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
 
         public virtual void SemErr (int line, int col, string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s), this.LoggerAction);
+            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
         
         public virtual void SemErr (string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, s, this.LoggerAction);
+            Logger.Instance.log(Logger.LogLevel.ERROR, s);
             //errorStream.WriteLine(s);
             count++;
         }

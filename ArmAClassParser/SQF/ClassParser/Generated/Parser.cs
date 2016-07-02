@@ -35,9 +35,9 @@ namespace SQF.ClassParser.Generated
         SQF.ClassParser.ConfigField MainField;
         int lastPos;
 
-        public Parser(Scanner scanner, Action<string> LoggerAction) {
+        public Parser(Scanner scanner) {
             this.scanner = scanner;
-            errors = new Errors(LoggerAction);
+            errors = new Errors();
             this.MainField = null;
             this.lastPos = 0;
         }
@@ -134,10 +134,6 @@ namespace SQF.ClassParser.Generated
 
         
     	void CONFIGFILE() {
-		if (MainField == null)
-		{
-		   MainField = new ConfigField(string.Empty);
-		}
 		StringList list = new StringList();
 		this.MainField.ThisBuffer.Lock();
 		
@@ -154,8 +150,15 @@ namespace SQF.ClassParser.Generated
 		Expect(5);
 		list.Add(t.val);
 		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
+		try
+		{
+		   thisField.ToClass();
+		}
+		catch
+		{
+		}
 		thisField.Name = t.val;
-		thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = t.charPos - this.lastPos;
+		thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = 1 + t.charPos - this.lastPos;
 		thisField.Marks[(int)ConfigField.MarkOffsets.name].Length = t.val.Length;
 		this.lastPos = t.charPos + t.val.Length;
 		
@@ -163,14 +166,14 @@ namespace SQF.ClassParser.Generated
 			Get();
 			Expect(5);
 			thisField.ConfigParentName = t.val;
-			thisField.Marks[(int)ConfigField.MarkOffsets.name_parent].Length = t.charPos - this.lastPos;
+			thisField.Marks[(int)ConfigField.MarkOffsets.name_parent].Length = 1 + t.charPos - this.lastPos;
 			thisField.Marks[(int)ConfigField.MarkOffsets.parent].Length = t.val.Length;
 			this.lastPos = t.charPos + t.val.Length;
 			
 		}
 		if (la.kind == 8) {
 			Get();
-			thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; bool isFirst = true; 
+			thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; bool isFirst = true; 
 			while (la.kind == 5 || la.kind == 6) {
 				if (la.kind == 5) {
 					FIELD(list);
@@ -178,11 +181,11 @@ namespace SQF.ClassParser.Generated
 					CONFIG(list);
 				}
 			}
-			thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = t.charPos - tmpoff; this.lastPos = t.charPos; 
+			thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; 
 			Expect(9);
 		}
 		Expect(10);
-		thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = t.charPos - this.lastPos; this.lastPos = t.charPos; 
+		thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; 
 		list.Remove(list.Last()); 
 	}
 
@@ -191,9 +194,15 @@ namespace SQF.ClassParser.Generated
 		Expect(5);
 		list.Add(t.val);
 		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
-		thisField.ToField();
+		try
+		{
+		   thisField.ToField();
+		}
+		catch
+		{
+		}
 		thisField.Name = t.val;
-		thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = t.charPos - this.lastPos;
+		thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = 1 + t.charPos - this.lastPos;
 		thisField.Marks[(int)ConfigField.MarkOffsets.name].Length = t.val.Length;
 		this.lastPos = t.charPos + t.val.Length;
 		
@@ -202,7 +211,7 @@ namespace SQF.ClassParser.Generated
 			Expect(12);
 		}
 		Expect(13);
-		thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; object tmp; 
+		thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; object tmp; 
 		if (la.kind == 8) {
 			ARRAY(out tmp);
 			thisField.Array = (object[])tmp; 
@@ -228,9 +237,9 @@ namespace SQF.ClassParser.Generated
 			}
 			thisField.String = string.Join(" ", (tmp as StringList).ToArray()); 
 		}
-		thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = t.charPos - tmpoff; this.lastPos = t.charPos; 
+		thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; 
 		Expect(10);
-		thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = t.charPos - this.lastPos; this.lastPos = t.charPos; 
+		thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; 
 		list.Remove(list.Last()); 
 	}
 
@@ -297,14 +306,28 @@ namespace SQF.ClassParser.Generated
 	}
 
 
-
-        public void Parse() {
-            la = new Token();
-            la.val = "";		
-            Get();
+    
+        private void doRoot()
+        {
     		CONFIGFILE();
 		Expect(0);
 
+        }
+
+        public SQF.ClassParser.ConfigField Parse(SQF.TextBuffer buffer) {
+            this.MainField = new SQF.ClassParser.ConfigField(buffer);
+            la = new Token();
+            la.val = "";		
+            Get();
+            doRoot();
+            return this.MainField;
+        }
+        public void Patch(SQF.ClassParser.ConfigField field) {
+            this.MainField = field;
+            la = new Token();
+            la.val = "";		
+            Get();
+            doRoot();
         }
         
         static readonly bool[,] set = {
@@ -320,10 +343,8 @@ namespace SQF.ClassParser.Generated
         public int count = 0;                                    // number of errors detected
         public System.IO.TextWriter errorStream = Console.Out;   // error messages go to this stream
         public string errMsgFormat = "line {0} col {1}: {2}"; // 0=line, 1=column, 2=text
-        public Action<string> LoggerAction;
-        public Errors(Action<string> LoggerAction)
+        public Errors()
         {
-            this.LoggerAction = LoggerAction;
         }
 
         public virtual void SynErr (int line, int col, int n) {
@@ -356,19 +377,19 @@ namespace SQF.ClassParser.Generated
 
                 default: s = "error " + n; break;
             }
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s), this.LoggerAction);
+            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
 
         public virtual void SemErr (int line, int col, string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s), this.LoggerAction);
+            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
         
         public virtual void SemErr (string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, s, this.LoggerAction);
+            Logger.Instance.log(Logger.LogLevel.ERROR, s);
             //errorStream.WriteLine(s);
             count++;
         }

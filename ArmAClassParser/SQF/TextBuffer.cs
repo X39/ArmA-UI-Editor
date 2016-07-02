@@ -35,6 +35,8 @@ namespace SQF
         public void Append(short v) { if (PreventChanges) return; this.Builder.Append(v); RaisePropertyChanged(); }
         public void Append(byte v) { if (PreventChanges) return; this.Builder.Append(v); RaisePropertyChanged(); }
 
+        public void AppendLine(string v) { if (PreventChanges) return; this.Builder.AppendLine(v); RaisePropertyChanged(); }
+
         public void Replace(string newContent, int startIndex, int oldLength)
         {
             if (PreventChanges)

@@ -36,10 +36,11 @@ namespace SQF.ClassParser
             /// Receives the textrange represented by this mark.
             /// </summary>
             /// <returns><see cref="Tuple"/> with Item1 being the actual string of given range and Item2 the int being the next offset</returns>
-            public Tuple<string, int> GetRange(ConfigField field)
+            public Tuple<string, int> GetRange(ConfigField inField)
             {
+                var field = inField;
                 int thisOffset = 0;
-                for(int i = (int)this.ArrayOffset; i >= 0; i--)
+                for(int i = (int)this.ArrayOffset - 1; i >= 0; i--)
                 {
                     thisOffset += field.Marks[i].Length;
                 }
@@ -53,7 +54,7 @@ namespace SQF.ClassParser
                     }
                     field = field.Parent;
                 }
-                return new Tuple<string, int>(field.ThisBuffer.Substring(thisOffset, this.Length), thisOffset + this.Length);
+                return new Tuple<string, int>(inField.ThisBuffer.Substring(thisOffset, this.Length), thisOffset + this.Length);
             }
             /// <summary>
             /// Receives the textrange represented by this mark.
@@ -82,6 +83,7 @@ namespace SQF.ClassParser
         #region private Constants
         private const string EX_INVALIDTYPE_ARRAY = "ConfigField is not of type Array";
         private const string EX_INVALIDTYPE_CLASS = "ConfigField is not of type Class";
+        private const string EX_INVALIDTYPE_CLASSARRAY = "ConfigField is neither of type Class nor of type Array";
         private const string EX_INVALIDARG_KEYALREADYEXISTS = "ConfigField already contains provided key";
         private const string EX_INVALIDARG_KEYNOTFOUND = "ConfigField does not contains provided key";
         private const string EX_INVALIDARG_KEYNOTFOUNDHIRARCHY = "provided key is not existing in hirarchy";
@@ -98,24 +100,24 @@ namespace SQF.ClassParser
         private string _Name;
         private string _ConfigParentName;
         private TextBuffer _ThisBuffer;
-        internal Mark[] Marks = new Mark[(int)MarkOffsets.blockclose];
+        internal Mark[] Marks = new Mark[(int)MarkOffsets.blockclose + 1];
 
         public ConfigField Parent { get; private set; }
-        public string Name { get { return _Name; } internal set { this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
-        public string ConfigParentName { get { return _ConfigParentName; } internal set { this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.parent); } }
-        internal TextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent.ThisBuffer; return default(TextBuffer); } }
+        public string Name { get { return _Name; } internal set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
+        public string ConfigParentName { get { return _ConfigParentName; } internal set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.parent); } }
+        internal TextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } }
         public object Value { get { return _Value; } }
 
-        public bool IsArray { get { return this.Value.GetType().IsArray; } }
+        public bool IsArray { get { return this.Value != null && this.Value.GetType().IsArray; } }
         public bool IsClass { get { return this.Value is List<ConfigField>; } }
         public bool IsNumber { get { return this.Value is double; } }
         public bool IsString { get { return this.Value is string; } }
         public bool IsBoolean { get { return this.Value is bool; } }
         private List<ConfigField> Children { get { return this.Value as List<ConfigField>; } set { this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.NA); } }
-        public object[] Array { get { return this.Value as object[]; } internal set { this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public object[] Array { get { return this.Value as object[]; } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
 
         public int ParentCount { get { int i = 0; var cf = this; while (cf.Parent != null) { i++; cf = cf.Parent; } return i; } }
 
@@ -126,6 +128,21 @@ namespace SQF.ClassParser
             this._Value = default(object);
             this._ConfigParentName = default(string);
             this._Name = name;
+            this.Marks[(int)MarkOffsets.front] = new Mark(0, MarkOffsets.front);
+            this.Marks[(int)MarkOffsets.name] = new Mark(0, MarkOffsets.name);
+            this.Marks[(int)MarkOffsets.name_parent] = new Mark(0, MarkOffsets.name_parent);
+            this.Marks[(int)MarkOffsets.parent] = new Mark(0, MarkOffsets.parent);
+            this.Marks[(int)MarkOffsets.parent_value] = new Mark(0, MarkOffsets.value);
+            this.Marks[(int)MarkOffsets.value] = new Mark(0, MarkOffsets.value);
+            this.Marks[(int)MarkOffsets.blockclose] = new Mark(0, MarkOffsets.blockclose);
+        }
+        public ConfigField(TextBuffer buffer)
+        {
+            this.ToClass();
+            this.Parent = default(ConfigField);
+            this._ThisBuffer = buffer;
+            this._ConfigParentName = default(string);
+            this._Name = string.Empty;
             this.Marks[(int)MarkOffsets.front] = new Mark(0, MarkOffsets.front);
             this.Marks[(int)MarkOffsets.name] = new Mark(0, MarkOffsets.name);
             this.Marks[(int)MarkOffsets.name_parent] = new Mark(0, MarkOffsets.name_parent);
@@ -146,17 +163,17 @@ namespace SQF.ClassParser
         {
             if (!ConfigField.IsValidKey(key))
                 throw new ArgumentException(EX_INVALIDARG_INVALIDKEY);
-            if (!this.IsArray)
-                throw new ArgumentException(EX_INVALIDTYPE_ARRAY);
+            if (!this.IsArray && !this.IsClass)
+                throw new ArgumentException(EX_INVALIDTYPE_CLASSARRAY);
             if (this.Contains(key))
                 throw new ArgumentException(EX_INVALIDARG_KEYALREADYEXISTS);
             if (!this.IsClass)
                 this.ToClass();
             ConfigField field = new ConfigField(key);
             field.Parent = this;
-            this.RaisePropertyChanging();
+            this.RaisePropertyChanging("Children");
             this.Children.Add(field);
-            this.RaisePropertyChanged();
+            this.RaisePropertyChanged("Children");
             return field;
         }
         internal ConfigField GetKey(string key, bool create)
@@ -181,7 +198,7 @@ namespace SQF.ClassParser
                     {
                         if (create)
                         {
-                            currentField = currentField.AddKey(key);
+                            currentField = currentField.AddKey(it);
                             currentField.ToClass();
                         }
                         else if(string.IsNullOrWhiteSpace(currentField.ConfigParentName))
@@ -245,8 +262,8 @@ namespace SQF.ClassParser
         {
             if (!ConfigField.IsValidKey(key))
                 throw new ArgumentException(EX_INVALIDARG_INVALIDKEY);
-            if (!this.IsArray)
-                throw new ArgumentException(EX_INVALIDTYPE_ARRAY);
+            if (!this.IsArray && !this.IsClass)
+                throw new ArgumentException(EX_INVALIDTYPE_CLASSARRAY);
             if (!this.IsClass)
                 this.ToClass();
             ConfigField field;
@@ -384,6 +401,8 @@ namespace SQF.ClassParser
         /// <exception cref="NotImplementedException"/>
         private void UpdateTextBuffer(MarkOffsets mo)
         {
+            if (this.ThisBuffer == null)
+                return;
             string replaceText = string.Empty;
             switch (mo)
             {
@@ -394,13 +413,13 @@ namespace SQF.ClassParser
                     replaceText = this.Name;
                     break;
                 case MarkOffsets.name_parent:
-                    replaceText = this.IsClass ? " : " : "";
+                    replaceText = this.IsClass && !string.IsNullOrWhiteSpace(this.ConfigParentName) ? " : " : "";
                     break;
                 case MarkOffsets.parent:
-                    replaceText = this.ConfigParentName;
+                    replaceText = string.IsNullOrWhiteSpace(this.ConfigParentName)  ? "" : this.ConfigParentName;
                     break;
                 case MarkOffsets.parent_value:
-                    replaceText = this.IsClass ? string.Format("\r\n{0}{", new string('\t', this.ParentCount)) : this.IsArray ? "[] = " : " = ";
+                    replaceText = this.IsClass ? string.Format("\r\n{0}{{", new string('\t', this.ParentCount)) : this.IsArray ? "[] = " : " = ";
                     break;
                 case MarkOffsets.value:
                     if (this.IsClass)
@@ -409,7 +428,7 @@ namespace SQF.ClassParser
                         replaceText = this.ValueToString();
                     break;
                 case MarkOffsets.blockclose:
-                    replaceText = this.IsClass ? string.Format("\r\n{0}};", new string('\t', this.ParentCount)) : ";";
+                    replaceText = this.IsClass ? string.Format("\r\n{0}}};", new string('\t', this.ParentCount)) : ";";
                     break;
                 case MarkOffsets.NA:
                     UpdateTextBuffer(MarkOffsets.front);
@@ -434,24 +453,20 @@ namespace SQF.ClassParser
             StringBuilder builder = new StringBuilder();
             if (this.IsArray)
             {
-                if(this.IsClass)
+                builder.Append('{');
+                bool flag = false;
+                foreach (var val in this.Array)
                 {
-                    throw new ArgumentException();
+                    if (flag)
+                        builder.Append(", ");
+                    else
+                        flag = true;
+                    if(val is string)
+                        builder.Append((val as string).ToSqfString());
+                    else
+                        builder.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", val));
                 }
-                else
-                {
-                    builder.Append('{');
-                    bool flag = false;
-                    foreach(var val in this.Children)
-                    {
-                        if (flag)
-                            builder.Append(", ");
-                        else
-                            flag = true;
-                        builder.Append(val.ValueToString());
-                    }
-                    builder.Append('}');
-                }
+                builder.Append('}');
             }
             else if (this.IsBoolean)
             {
@@ -468,12 +483,14 @@ namespace SQF.ClassParser
                 var val = this.String;
                 builder.Append(val.ToSqfString());
             }
-#if DEBUG
+            else if (this.IsClass)
+            {
+                throw new ArgumentException();
+            }
             else
             {
-                throw new Exception();
+                return string.Empty.ToSqfString();
             }
-#endif
             return builder.ToString();
         }
         /// <summary>

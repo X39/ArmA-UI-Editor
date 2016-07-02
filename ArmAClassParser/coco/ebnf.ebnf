@@ -28,10 +28,6 @@ COMPILER CONFIGFILE
 	PRODUCTIONS
 		CONFIGFILE =
             (.
-                if (MainField == null)
-                {
-                    MainField = new ConfigField(string.Empty);
-                }
                 StringList list = new StringList();
                 this.MainField.ThisBuffer.Lock();
             .)
@@ -46,8 +42,15 @@ COMPILER CONFIGFILE
             T_IDENT (.
                 list.Add(t.val);
                 thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
+                try
+                {
+                    thisField.ToClass();
+                }
+                catch
+                {
+                }
                 thisField.Name = t.val;
-                thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = t.charPos - this.lastPos;
+                thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = 1 + t.charPos - this.lastPos;
                 thisField.Marks[(int)ConfigField.MarkOffsets.name].Length = t.val.Length;
                 this.lastPos = t.charPos + t.val.Length;
             .)
@@ -55,31 +58,37 @@ COMPILER CONFIGFILE
                 ':'
                 T_IDENT (.
                     thisField.ConfigParentName = t.val;
-                    thisField.Marks[(int)ConfigField.MarkOffsets.name_parent].Length = t.charPos - this.lastPos;
+                    thisField.Marks[(int)ConfigField.MarkOffsets.name_parent].Length = 1 + t.charPos - this.lastPos;
                     thisField.Marks[(int)ConfigField.MarkOffsets.parent].Length = t.val.Length;
                     this.lastPos = t.charPos + t.val.Length;
                 .)
             ]
             [
-                '{' (. thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; bool isFirst = true; .)
+                '{' (. thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; bool isFirst = true; .)
                 {
                     FIELD<list>
                     |
                     CONFIG<list>
                 }
-                (. thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = t.charPos - tmpoff; this.lastPos = t.charPos; .)
+                (. thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; .)
                 '}'
             ]
-            ';' (. thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = t.charPos - this.lastPos; this.lastPos = t.charPos; .)
+            ';' (. thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; .)
             (. list.Remove(list.Last()); .)
         .
         FIELD<StringList list> (. ConfigField thisField; .) =
             T_IDENT (.
                 list.Add(t.val);
                 thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
-                thisField.ToField();
+                try
+                {
+                    thisField.ToField();
+                }
+                catch
+                {
+                }
                 thisField.Name = t.val;
-                thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = t.charPos - this.lastPos;
+                thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = 1 + t.charPos - this.lastPos;
                 thisField.Marks[(int)ConfigField.MarkOffsets.name].Length = t.val.Length;
                 this.lastPos = t.charPos + t.val.Length;
             .)
@@ -87,7 +96,7 @@ COMPILER CONFIGFILE
                 '['
                 ']'
             ]
-            '=' (. thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; object tmp; .)
+            '=' (. thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; object tmp; .)
             (
                 (
                     ARRAY<out tmp> (. thisField.Array = (object[])tmp; .)
@@ -107,9 +116,9 @@ COMPILER CONFIGFILE
                     }
                     (. thisField.String = string.Join(" ", (tmp as StringList).ToArray()); .)
                 ]
-                (. thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = t.charPos - tmpoff; this.lastPos = t.charPos; .)
+                (. thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; .)
             )
-            ';'(. thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = t.charPos - this.lastPos; this.lastPos = t.charPos; .)
+            ';'(. thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; .)
             (. list.Remove(list.Last()); .)
         .
         SCALAR<out object v> (. v = 0; .) =

@@ -31,11 +31,11 @@ namespace SQF
                 return 0;
             for (int i = offset; i < offset + count; i++)
             {
-                if (this.Buffer.Length == ++this.Index)
+                if (this.Buffer.Length == this.Index + 1)
                 {
                     return i - offset;
                 }
-                buffer[i + offset] = (byte)this.Buffer[this.Index];
+                buffer[i + offset] = (byte)this.Buffer[this.Index++];
             }
             return count;
         }
