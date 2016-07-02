@@ -118,6 +118,7 @@ namespace SQF.ClassParser
         public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
         public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
         public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public int Count { get { if (!this.IsClass) throw new ArgumentException(EX_INVALIDTYPE_CLASS); return this.Children.Count; } }
 
         public int ParentCount { get { int i = 0; var cf = this; while (cf.Parent != null) { i++; cf = cf.Parent; } return i; } }
 
@@ -349,6 +350,25 @@ namespace SQF.ClassParser
         /// <exception cref="ArgumentException"/>
         /// <exception cref="KeyNotFoundException"/>
         public ConfigField this[string key] { get { return this.GetKey(key, false); } }
+        /// <summary>
+        /// <para>Receives <see cref="ConfigField"/> with given index from this class.
+        /// Requires this <see cref="ConfigField"/> to be a class!</para>
+        /// </summary>
+        /// <param name="index">Index to receive</param>
+        /// <returns><see cref="ConfigField"/> with given index</returns>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="ArgumentOutOfRangeException"/>
+        public ConfigField this[int index]
+        {
+            get
+            {
+                if (!this.IsClass)
+                    throw new ArgumentException(EX_INVALIDTYPE_CLASS);
+                if (index < 0 || this.Children.Count <= index)
+                    throw new ArgumentOutOfRangeException();
+                return this.Children[index];
+            }
+        }
         /// <summary>
         /// Changes this <see cref="ConfigField"/> to a class.
         /// </summary>
