@@ -176,6 +176,14 @@ namespace SQF.ClassParser
             this.RaisePropertyChanged("Children");
             return field;
         }
+        /// <summary>
+        /// Helper function to receive a key realtive to this <see cref="ConfigField"/>.
+        /// </summary>
+        /// <param name="key">Key to search</param>
+        /// <param name="create">true if key should be created if not found, false otherwise</param>
+        /// <returns>The <see cref="ConfigField"/> with corresponding key</returns>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="KeyNotFoundException"/>
         internal ConfigField GetKey(string key, bool create)
         {
             if (!this.IsClass)
@@ -203,7 +211,7 @@ namespace SQF.ClassParser
                         }
                         else if(string.IsNullOrWhiteSpace(currentField.ConfigParentName))
                         {
-                            throw new KeyNotFoundException(ex.Message, ex);
+                            throw new KeyNotFoundException(ex.Message, string.Join("/", keys.GetRange(i)), ex);
                         }
                         else
                         {
@@ -232,7 +240,7 @@ namespace SQF.ClassParser
                 }
                 else if (string.IsNullOrWhiteSpace(this.ConfigParentName))
                 {
-                    throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUND);
+                    throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUND, key);
                 }
                 else
                 {
@@ -359,6 +367,10 @@ namespace SQF.ClassParser
                 this.Children = new List<ConfigField>();
             }
         }
+        /// <summary>
+        /// Changes this <see cref="ConfigField"/> to a field.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"/>
         public void ToField()
         {
             if (!this.IsClass)
@@ -516,7 +528,7 @@ namespace SQF.ClassParser
                 }
                 curConf = curConf.Parent;
             }
-            throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUNDHIRARCHY);
+            throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUNDHIRARCHY, key);
         }
     }
 }
