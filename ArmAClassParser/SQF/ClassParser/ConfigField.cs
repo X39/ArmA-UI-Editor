@@ -105,7 +105,7 @@ namespace SQF.ClassParser
         public ConfigField Parent { get; private set; }
         public string Name { get { return _Name; } internal set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
         public string ConfigParentName { get { return _ConfigParentName; } internal set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.parent); } }
-        internal TextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } }
+        public TextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } }
         public object Value { get { return _Value; } }
 
         public bool IsArray { get { return this.Value != null && this.Value.GetType().IsArray; } }
