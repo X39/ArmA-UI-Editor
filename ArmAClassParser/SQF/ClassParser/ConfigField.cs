@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,7 +9,7 @@ using SQF;
 
 namespace SQF.ClassParser
 {
-    public class ConfigField : INotifyPropertyChanged, INotifyPropertyChanging
+    public class ConfigField : INotifyPropertyChanged, INotifyPropertyChanging, IEnumerable<object>
     {
         internal enum MarkOffsets
         {
@@ -600,6 +601,16 @@ namespace SQF.ClassParser
                 curConf = curConf.Parent;
             }
             throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUNDHIRARCHY, key);
+        }
+
+        public IEnumerator<object> GetEnumerator()
+        {
+            return new ConfigFieldEnumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new ConfigFieldEnumerator(this);
         }
     }
 }
