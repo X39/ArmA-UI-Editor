@@ -8,6 +8,7 @@ using SQF.ClassParser;
 
 
 using System;
+using NLog;
 
 
 namespace SQF.ClassParser.Generated
@@ -340,6 +341,7 @@ namespace SQF.ClassParser.Generated
 
 
     public class Errors {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         public int count = 0;                                    // number of errors detected
         public System.IO.TextWriter errorStream = Console.Out;   // error messages go to this stream
         public string errMsgFormat = "line {0} col {1}: {2}"; // 0=line, 1=column, 2=text
@@ -377,30 +379,30 @@ namespace SQF.ClassParser.Generated
 
                 default: s = "error " + n; break;
             }
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s));
+            logger.Error(string.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
 
         public virtual void SemErr (int line, int col, string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s));
+            logger.Error(string.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
         
         public virtual void SemErr (string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, s);
+            logger.Error(s);
             //errorStream.WriteLine(s);
             count++;
         }
         
         public virtual void Warning (int line, int col, string s) {
-            Logger.Instance.log(Logger.LogLevel.WARNING, String.Format(errMsgFormat, line, col, s));
+            logger.Warn(string.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
         }
         
         public virtual void Warning(string s) {
-            Logger.Instance.log(Logger.LogLevel.WARNING, s);
+            logger.Warn(s);
             //errorStream.WriteLine(s);
         }
     } // Errors
