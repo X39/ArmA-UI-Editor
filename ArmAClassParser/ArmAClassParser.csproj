@@ -55,6 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SQF\ClassParser\ConfigFieldReference.cs" />
     <Compile Include="SQF\ClassParser\ConfigFieldEnumerator.cs" />
     <Compile Include="SQF\ClassParser\ConfigField.cs" />
     <Compile Include="SQF\ClassParser\Generated\Parser.cs" />
