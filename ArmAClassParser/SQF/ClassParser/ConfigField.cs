@@ -67,6 +67,31 @@ namespace SQF.ClassParser
                 return new Tuple<string, int>(field.ThisBuffer.Substring(nextOffset, this.Length), nextOffset + this.Length);
             }
         }
+        internal class MarkList
+        {
+            public MarkList()
+            {
+                this.Marks[(int)MarkOffsets.front] = new Mark(0, MarkOffsets.front);
+                this.Marks[(int)MarkOffsets.name] = new Mark(0, MarkOffsets.name);
+                this.Marks[(int)MarkOffsets.name_parent] = new Mark(0, MarkOffsets.name_parent);
+                this.Marks[(int)MarkOffsets.parent] = new Mark(0, MarkOffsets.parent);
+                this.Marks[(int)MarkOffsets.parent_value] = new Mark(0, MarkOffsets.value);
+                this.Marks[(int)MarkOffsets.value] = new Mark(0, MarkOffsets.value);
+                this.Marks[(int)MarkOffsets.blockclose] = new Mark(0, MarkOffsets.blockclose);
+            }
+            private Mark[] Marks = new Mark[(int)MarkOffsets.blockclose + 1];
+            public virtual Mark this[int i]
+            {
+                get
+                {
+                    return this.Marks[i];
+                }
+                set
+                {
+                    this.Marks[i] = value;
+                }
+            }
+        }
         #region Eventing
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
@@ -97,30 +122,40 @@ namespace SQF.ClassParser
 
         #endregion
 
-        private object _Value;
         private string _Name;
         private string _ConfigParentName;
         private TextBuffer _ThisBuffer;
-        internal Mark[] Marks = new Mark[(int)MarkOffsets.blockclose + 1];
+        internal MarkList Marks;
 
-        public ConfigField Parent { get; private set; }
-        public string Name { get { return _Name; } internal set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
-        public string ConfigParentName { get { return _ConfigParentName; } internal set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.parent); } }
-        public TextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } }
-        public object Value { get { return _Value; } }
+        public virtual ConfigField Parent { get; private set; }
+        public virtual string Name { get { return _Name; } internal set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
+        public virtual string ConfigParentName { get { return _ConfigParentName; } internal set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.parent); } }
+        public virtual TextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } }
+
+        /// <summary>
+        /// <para>
+        /// Will get the "raw" <see cref="object"/> value represented by this <see cref="ConfigField"/>
+        /// </para>
+        /// <para>
+        /// <b>DO NOT! AND I REPEAT!!! DO NOT USE THE SETTER!
+        /// Doing so will break the WHOLE system!
+        /// It is only exposed via <see cref="Internal"/> due to <see cref="ConfigFieldReference"/> being in need to provide different direct-value!</b>
+        /// </para>
+        /// </summary>
+        public virtual object Value { get; internal set; }
 
         public bool IsArray { get { return this.Value != null && this.Value.GetType().IsArray; } }
         public bool IsClass { get { return this.Value is List<ConfigField>; } }
         public bool IsNumber { get { return this.Value is double; } }
         public bool IsString { get { return this.Value is string; } }
         public bool IsBoolean { get { return this.Value is bool; } }
-        private List<ConfigField> Children { get { return this.Value as List<ConfigField>; } set { this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.NA); } }
-        public object[] Array { get { return this.Value as object[]; } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this._Value != null && this._Value.Equals(value)) return; this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        private List<ConfigField> Children { get { return this.Value as List<ConfigField>; } set { this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.NA); } }
+        public object[] Array { get { return this.Value as object[]; } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
         public int Count { get { if (!this.IsClass) throw new ArgumentException(EX_INVALIDTYPE_CLASS); return this.Children.Count; } }
-        public string Key
+        public virtual string Key
         {
             get
             {
@@ -135,22 +170,21 @@ namespace SQF.ClassParser
             }
         }
 
-        public int ParentCount { get { int i = 0; var cf = this; while (cf.Parent != null) { i++; cf = cf.Parent; } return i; } }
+        public virtual int ParentCount { get { int i = 0; var cf = this; while (cf.Parent != null) { i++; cf = cf.Parent; } return i; } }
+
+        protected ConfigField()
+        {
+            this.Marks = new MarkList();
+        }
 
         public ConfigField(string name)
         {
             this.Parent = default(ConfigField);
             this._ThisBuffer = default(TextBuffer);
-            this._Value = default(object);
+            this.Value = default(object);
             this._ConfigParentName = default(string);
             this._Name = name;
-            this.Marks[(int)MarkOffsets.front] = new Mark(0, MarkOffsets.front);
-            this.Marks[(int)MarkOffsets.name] = new Mark(0, MarkOffsets.name);
-            this.Marks[(int)MarkOffsets.name_parent] = new Mark(0, MarkOffsets.name_parent);
-            this.Marks[(int)MarkOffsets.parent] = new Mark(0, MarkOffsets.parent);
-            this.Marks[(int)MarkOffsets.parent_value] = new Mark(0, MarkOffsets.value);
-            this.Marks[(int)MarkOffsets.value] = new Mark(0, MarkOffsets.value);
-            this.Marks[(int)MarkOffsets.blockclose] = new Mark(0, MarkOffsets.blockclose);
+            this.Marks = new MarkList();
         }
         public ConfigField(TextBuffer buffer)
         {
@@ -159,13 +193,7 @@ namespace SQF.ClassParser
             this._ThisBuffer = buffer;
             this._ConfigParentName = default(string);
             this._Name = string.Empty;
-            this.Marks[(int)MarkOffsets.front] = new Mark(0, MarkOffsets.front);
-            this.Marks[(int)MarkOffsets.name] = new Mark(0, MarkOffsets.name);
-            this.Marks[(int)MarkOffsets.name_parent] = new Mark(0, MarkOffsets.name_parent);
-            this.Marks[(int)MarkOffsets.parent] = new Mark(0, MarkOffsets.parent);
-            this.Marks[(int)MarkOffsets.parent_value] = new Mark(0, MarkOffsets.value);
-            this.Marks[(int)MarkOffsets.value] = new Mark(0, MarkOffsets.value);
-            this.Marks[(int)MarkOffsets.blockclose] = new Mark(0, MarkOffsets.blockclose);
+            this.Marks = new MarkList();
         }
 
         /// <summary>
@@ -212,6 +240,7 @@ namespace SQF.ClassParser
             if (key.Contains('/'))
             {
                 //Key-path was provided
+                bool createReference = false;
                 var keys = key.Split('/');
                 ConfigField currentField = this;
                 for (var i = 0; i < keys.Length; i++)
@@ -237,11 +266,23 @@ namespace SQF.ClassParser
                         else
                         {
                             StringBuilder builder = new StringBuilder();
+                            createReference = true;
                             currentField = this.FindConfigKeyInHirarchy(currentField.ConfigParentName)[string.Join("/", keys.GetRange(i))];
                         }
                     }
                 }
-                return currentField;
+                if (createReference)
+                {
+                    if (currentField is ConfigFieldReference)
+                    {
+                        currentField = (currentField as ConfigFieldReference).ReferencedConfigField;
+                    }
+                    return new ConfigFieldReference(currentField, key);
+                }
+                else
+                {
+                    return currentField;
+                }
             }
             else
             {
@@ -525,7 +566,9 @@ namespace SQF.ClassParser
                     return;
             }
             this.ThisBuffer.Replace(replaceText, this.Marks[(int)mo].GetRange(this).Item2, this.Marks[(int)mo].Length);
-            this.Marks[(int)mo].Length = replaceText.Length;
+            var mark = this.Marks[(int)mo];
+            mark.Length = replaceText.Length;
+            this.Marks[(int)mo] = mark;
         }
         /// <summary>
         /// Converts value to write-to-file comform string representation
