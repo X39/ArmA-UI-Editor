@@ -66,12 +66,6 @@
     <Compile Include="SQF\Utility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Logger\Logger.csproj">
-      <Project>{ab1bed91-bedf-485c-b697-2d0db1dc7d47}</Project>
-      <Name>Logger</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
