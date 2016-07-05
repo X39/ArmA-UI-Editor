@@ -4,6 +4,12 @@ namespace SQF
 {
     public class TextBuffer : System.ComponentModel.INotifyPropertyChanged
     {
+        public static implicit operator TextBuffer(string v)
+        {
+            var buffer = new TextBuffer();
+            buffer.Append(v);
+            return buffer;
+        }
         private System.Text.StringBuilder Builder;
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
