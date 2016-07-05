@@ -172,9 +172,10 @@ namespace SQF.ClassParser
         /// Requires this <see cref="ConfigField"/> to be a class!
         /// </summary>
         /// <param name="key">Non-Existing key for the new field</param>
+        /// <param name="parent">either default(string) or the parents class name</param>
         /// <returns>new <see cref="ConfigField"/></returns>
         /// <exception cref="ArgumentException"/>
-        public ConfigField AddKey(string key)
+        public ConfigField AddKey(string key, string parent = default(string))
         {
             if (!ConfigField.IsValidKey(key))
                 throw new ArgumentException(EX_INVALIDARG_INVALIDKEY);
@@ -186,6 +187,10 @@ namespace SQF.ClassParser
                 this.ToClass();
             ConfigField field = new ConfigField(key);
             field.Parent = this;
+            if(!string.IsNullOrWhiteSpace(parent))
+            {
+                field.ConfigParentName = parent;
+            }
             this.RaisePropertyChanging("Children");
             this.Children.Add(field);
             this.RaisePropertyChanged("Children");
