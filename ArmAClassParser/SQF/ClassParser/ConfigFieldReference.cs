@@ -38,11 +38,7 @@ namespace SQF.ClassParser
         {
             if (!this.IsReference)
                 return;
-            ConfigField field = this.ReferencedConfigField;
-            while(field.Parent != default(ConfigField))
-            {
-                field = field.Parent;
-            }
+            ConfigField field = this.TreeRoot;
 
             field = field.GetKey(this.Key, true);
             this.ReferencedConfigField = field;

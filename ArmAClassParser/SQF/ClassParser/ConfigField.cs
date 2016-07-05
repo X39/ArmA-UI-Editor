@@ -131,6 +131,18 @@ namespace SQF.ClassParser
         public virtual string Name { get { return _Name; } internal set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
         public virtual string ConfigParentName { get { return _ConfigParentName; } internal set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.parent); } }
         public virtual TextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } }
+        public ConfigField TreeRoot
+        {
+            get
+            {
+                ConfigField field = this;
+                while (field.Parent != default(ConfigField))
+                {
+                    field = field.Parent;
+                }
+                return field;
+            }
+        }
 
         /// <summary>
         /// <para>
@@ -277,7 +289,23 @@ namespace SQF.ClassParser
                     {
                         currentField = (currentField as ConfigFieldReference).ReferencedConfigField;
                     }
-                    return new ConfigFieldReference(currentField, key);
+                    if (this.ParentCount > 0)
+                    {
+                        string[] strArray = new string[this.ParentCount];
+                        int index = strArray.Length - 1;
+                        var curField = this;
+                        while(curField != default(ConfigField))
+                        {
+                            strArray[index] = curField.Name;
+                            index--;
+                            curField = curField.Parent;
+                        }
+                        return new ConfigFieldReference(currentField, string.Concat(string.Join("/", strArray), key.TrimStart('/')));
+                    }
+                    else
+                    {
+                        return new ConfigFieldReference(currentField, key);
+                    }
                 }
                 else
                 {
