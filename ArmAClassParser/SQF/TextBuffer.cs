@@ -25,6 +25,7 @@ namespace SQF
             this.Builder = new System.Text.StringBuilder(1024 * 8);
         }
 
+        public void Append(System.IO.Stream v) { if (PreventChanges) return; this.Builder.Append(new System.IO.StreamReader(v).ReadToEnd()); RaisePropertyChanged(); }
         public void Append(object v) { if (PreventChanges) return; this.Builder.Append(v); RaisePropertyChanged(); }
         public void Append(string v) { if (PreventChanges) return; this.Builder.Append(v); RaisePropertyChanged(); }
         public void Append(char v) { if (PreventChanges) return; this.Builder.Append(v); RaisePropertyChanged(); }
