@@ -146,7 +146,7 @@ namespace SQF.ClassParser.Generated
 	}
 
 	void CONFIG(StringList list) {
-		ConfigField thisField; 
+		ConfigField thisField; ConfigField.Mark mark; 
 		Expect(6);
 		Expect(5);
 		list.Add(t.val);
@@ -159,22 +159,22 @@ namespace SQF.ClassParser.Generated
 		{
 		}
 		thisField.Name = t.val;
-		thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = 1 + t.charPos - this.lastPos;
-		thisField.Marks[(int)ConfigField.MarkOffsets.name].Length = t.val.Length;
+		mark = thisField.Marks[(int)ConfigField.MarkOffsets.front]; mark.Length = 1 + t.charPos - this.lastPos; thisField.Marks[(int)ConfigField.MarkOffsets.front] = mark;
+		mark = thisField.Marks[(int)ConfigField.MarkOffsets.name]; mark.Length = t.val.Length; thisField.Marks[(int)ConfigField.MarkOffsets.name] = mark;
 		this.lastPos = t.charPos + t.val.Length;
 		
 		if (la.kind == 7) {
 			Get();
 			Expect(5);
 			thisField.ConfigParentName = t.val;
-			thisField.Marks[(int)ConfigField.MarkOffsets.name_parent].Length = 1 + t.charPos - this.lastPos;
-			thisField.Marks[(int)ConfigField.MarkOffsets.parent].Length = t.val.Length;
+			mark = thisField.Marks[(int)ConfigField.MarkOffsets.name_parent]; mark.Length = 1 + t.charPos - this.lastPos; thisField.Marks[(int)ConfigField.MarkOffsets.name_parent] = mark;
+			mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent]; mark.Length = t.val.Length; thisField.Marks[(int)ConfigField.MarkOffsets.parent] = mark;
 			this.lastPos = t.charPos + t.val.Length;
 			
 		}
 		if (la.kind == 8) {
 			Get();
-			thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; bool isFirst = true; 
+			mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; bool isFirst = true; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; 
 			while (la.kind == 5 || la.kind == 6) {
 				if (la.kind == 5) {
 					FIELD(list);
@@ -182,16 +182,16 @@ namespace SQF.ClassParser.Generated
 					CONFIG(list);
 				}
 			}
-			thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; 
+			mark = thisField.Marks[(int)ConfigField.MarkOffsets.value]; mark.Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.value] = mark; 
 			Expect(9);
 		}
 		Expect(10);
-		thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; 
+		mark = thisField.Marks[(int)ConfigField.MarkOffsets.blockclose]; mark.Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.blockclose] = mark; 
 		list.Remove(list.Last()); 
 	}
 
 	void FIELD(StringList list) {
-		ConfigField thisField; 
+		ConfigField thisField; ConfigField.Mark mark; 
 		Expect(5);
 		list.Add(t.val);
 		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
@@ -203,8 +203,8 @@ namespace SQF.ClassParser.Generated
 		{
 		}
 		thisField.Name = t.val;
-		thisField.Marks[(int)ConfigField.MarkOffsets.front].Length = 1 + t.charPos - this.lastPos;
-		thisField.Marks[(int)ConfigField.MarkOffsets.name].Length = t.val.Length;
+		mark = thisField.Marks[(int)ConfigField.MarkOffsets.front]; mark.Length = 1 + t.charPos - this.lastPos; thisField.Marks[(int)ConfigField.MarkOffsets.front] = mark;
+		mark = thisField.Marks[(int)ConfigField.MarkOffsets.name]; mark.Length = t.val.Length; thisField.Marks[(int)ConfigField.MarkOffsets.name] = mark;
 		this.lastPos = t.charPos + t.val.Length;
 		
 		if (la.kind == 11) {
@@ -212,7 +212,7 @@ namespace SQF.ClassParser.Generated
 			Expect(12);
 		}
 		Expect(13);
-		thisField.Marks[(int)ConfigField.MarkOffsets.parent_value].Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; object tmp; 
+		mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; object tmp; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; 
 		if (la.kind == 8) {
 			ARRAY(out tmp);
 			thisField.Array = (object[])tmp; 
@@ -238,9 +238,9 @@ namespace SQF.ClassParser.Generated
 			}
 			thisField.String = string.Join(" ", (tmp as StringList).ToArray()); 
 		}
-		thisField.Marks[(int)ConfigField.MarkOffsets.value].Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; 
+		mark = thisField.Marks[(int)ConfigField.MarkOffsets.value]; mark.Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.value] = mark; 
 		Expect(10);
-		thisField.Marks[(int)ConfigField.MarkOffsets.blockclose].Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; 
+		mark = thisField.Marks[(int)ConfigField.MarkOffsets.blockclose]; mark.Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.blockclose] = mark; 
 		list.Remove(list.Last()); 
 	}
 
