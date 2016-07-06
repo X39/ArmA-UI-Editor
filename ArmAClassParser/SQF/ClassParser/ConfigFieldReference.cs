@@ -18,8 +18,8 @@ namespace SQF.ClassParser
         internal bool IsReference;
 
         public override ConfigField Parent { get { return this.ReferencedConfigField.Parent; } }
-        public override string Name { get { return this.ReferencedConfigField.Name; } }
-        public override string ConfigParentName { get { return this.ReferencedConfigField.ConfigParentName; } }
+        public override string Name { get { return this.ReferencedConfigField.Name; } set { this.ReferencedConfigField.Name = value; } }
+        public override string ConfigParentName { get { return this.ReferencedConfigField.ConfigParentName; } set { this.ReferencedConfigField.ConfigParentName = value; } }
         public override TextBuffer ThisBuffer { get { return this.ReferencedConfigField.ThisBuffer; } }
         public override object Value { get { return this.ReferencedConfigField.Value; } internal set { if (this.IsReference) this.CreateField(); this.ReferencedConfigField.Value = value; } }
         private string _Key;

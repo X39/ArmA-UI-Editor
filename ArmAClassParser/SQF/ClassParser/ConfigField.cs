@@ -128,8 +128,8 @@ namespace SQF.ClassParser
         internal MarkList Marks;
 
         public virtual ConfigField Parent { get; private set; }
-        public virtual string Name { get { return _Name; } internal set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
-        public virtual string ConfigParentName { get { return _ConfigParentName; } internal set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.parent); } }
+        public virtual string Name { get { return _Name; } set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
+        public virtual string ConfigParentName { get { return _ConfigParentName; } set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.parent); } }
         public virtual TextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } }
         public ConfigField TreeRoot
         {
