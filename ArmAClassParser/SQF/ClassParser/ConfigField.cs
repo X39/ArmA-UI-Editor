@@ -692,5 +692,17 @@ namespace SQF.ClassParser
         {
             return new ConfigFieldEnumerator(this);
         }
+        public override string ToString()
+        {
+            if(this.IsClass)
+            {
+                return string.Format("{0}", this.Name);
+            }
+            else
+            {
+                var val = this.ValueToString();
+                return string.Format("{0}{1} = {2}", this.Name, this.IsArray ? "[]" : string.Empty, val.Length > 15 ? string.Format("{0}...", val.Substring(0, 12)) : val);
+            }
+        }
     }
 }
