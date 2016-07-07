@@ -150,7 +150,7 @@ namespace SQF.ClassParser.Generated
 		Expect(6);
 		Expect(5);
 		list.Add(t.val);
-		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
+		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
 		try
 		{
 		   thisField.ToClass();
@@ -194,7 +194,7 @@ namespace SQF.ClassParser.Generated
 		ConfigField thisField; ConfigField.Mark mark; 
 		Expect(5);
 		list.Add(t.val);
-		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
+		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
 		try
 		{
 		   thisField.ToField();

@@ -11,6 +11,14 @@ namespace SQF.ClassParser
 {
     public class ConfigField : INotifyPropertyChanged, INotifyPropertyChanging, IEnumerable<object>
     {
+        public enum KeyMode
+        {
+            CreateNew,
+            CheckParentsThrow,
+            CheckParentsNull,
+            ThrowOnNotFound,
+            NullOnNotFound
+        }
         internal enum MarkOffsets
         {
             NA = -1,
@@ -211,6 +219,7 @@ namespace SQF.ClassParser
         /// <summary>
         /// Creates a new empty <see cref="ConfigField"/> with given key into this class.
         /// Requires this <see cref="ConfigField"/> to be a class!
+        /// Sub-Keys separated by "/" are not allowed
         /// </summary>
         /// <param name="key">Non-Existing key for the new field</param>
         /// <param name="parent">either default(string) or the parents class name</param>
@@ -245,7 +254,7 @@ namespace SQF.ClassParser
         /// <returns>The <see cref="ConfigField"/> with corresponding key</returns>
         /// <exception cref="ArgumentException"/>
         /// <exception cref="KeyNotFoundException"/>
-        internal ConfigField GetKey(string key, bool create)
+        public ConfigField GetKey(string key, KeyMode mode)
         {
             if (!this.IsClass)
                 throw new ArgumentException(EX_INVALIDTYPE_CLASS);
@@ -266,20 +275,32 @@ namespace SQF.ClassParser
                     }
                     catch (KeyNotFoundException ex)
                     {
-                        if (create)
+                        switch (mode)
                         {
-                            currentField = currentField.AddKey(it);
-                            currentField.ToClass();
-                        }
-                        else if(string.IsNullOrWhiteSpace(currentField.ConfigParentName))
-                        {
-                            throw new KeyNotFoundException(ex.Message, string.Join("/", keys.GetRange(i)), ex);
-                        }
-                        else
-                        {
-                            StringBuilder builder = new StringBuilder();
-                            createReference = true;
-                            currentField = this.FindConfigKeyInHirarchy(currentField.ConfigParentName)[string.Join("/", keys.GetRange(i))];
+                            case KeyMode.CheckParentsThrow:
+                            case KeyMode.CheckParentsNull:
+                                if (string.IsNullOrWhiteSpace(this.ConfigParentName))
+                                {
+                                    if (mode == KeyMode.CheckParentsNull)
+                                        return null;
+                                    else
+                                        throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUND, key);
+                                }
+                                else
+                                {
+                                    StringBuilder builder = new StringBuilder();
+                                    createReference = true;
+                                    currentField = this.FindConfigKeyInHirarchy(currentField.ConfigParentName)[string.Join("/", keys.GetRange(i))];
+                                }
+                                break;
+                            case KeyMode.CreateNew:
+                                currentField = currentField.AddKey(it);
+                                currentField.ToClass();
+                                break;
+                            case KeyMode.NullOnNotFound:
+                                return null;
+                            default:
+                                throw new KeyNotFoundException(ex.Message, string.Join("/", keys.GetRange(i)), ex);
                         }
                     }
                 }
@@ -322,19 +343,29 @@ namespace SQF.ClassParser
                     if (it.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase))
                         return it;
                 }
-                if(create)
+                switch (mode)
                 {
-                    var field = this.AddKey(key);
-                    field.ToClass();
-                    return field;
-                }
-                else if (string.IsNullOrWhiteSpace(this.ConfigParentName))
-                {
-                    throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUND, key);
-                }
-                else
-                {
-                    return this.FindConfigKeyInHirarchy(this.ConfigParentName)[key];
+                    case KeyMode.CheckParentsThrow:
+                    case KeyMode.CheckParentsNull:
+                        if (string.IsNullOrWhiteSpace(this.ConfigParentName))
+                        {
+                            if (mode == KeyMode.CheckParentsNull)
+                                return null;
+                            else
+                                throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUND, key);
+                        }
+                        else
+                        {
+                            return this.FindConfigKeyInHirarchy(this.ConfigParentName)[key];
+                        }
+                    case KeyMode.CreateNew:
+                        var field = this.AddKey(key);
+                        field.ToClass();
+                        return field;
+                    case KeyMode.NullOnNotFound:
+                        return null;
+                    default:
+                        throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUND, key);
                 }
             }
         }
@@ -364,15 +395,7 @@ namespace SQF.ClassParser
                 throw new ArgumentException(EX_INVALIDTYPE_CLASSARRAY);
             if (!this.IsClass)
                 this.ToClass();
-            ConfigField field;
-            if (this.Contains(key))
-            {
-                field = this[key];
-            }
-            else
-            {
-                field = this.AddKey(key);
-            }
+            ConfigField field = this.GetKey(key, KeyMode.CreateNew);
             if (value is string)
             {
                 field.String = (string)value;
@@ -406,34 +429,20 @@ namespace SQF.ClassParser
         /// Removes <see cref="ConfigField"/> with corresponding key from this class.
         /// Requires this <see cref="ConfigField"/> to be a class!
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="key">key to remove, sub-keys can be separated by "/"</param>
         /// <exception cref="ArgumentException"/>
         public void RemoveKey(string key)
         {
             if (!this.IsArray)
                 throw new ArgumentException(EX_INVALIDTYPE_ARRAY);
-            if (!this.Contains(key))
-                throw new ArgumentException(EX_INVALIDARG_KEYNOTFOUND);
             if (!this.IsClass)
                 throw new ArgumentException(EX_INVALIDTYPE_CLASS);
-
-            foreach (var field in this.Children)
-            {
-                if (field.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    this.RaisePropertyChanging("Children");
-                    if(field.IsClass)
-                    {
-                        foreach(var it in field.Children)
-                        {
-                            field.RemoveKey(it.Name);
-                        }
-                    }
-                    this.Children.Remove(field);
-                    this.RaisePropertyChanged("Children");
-                    break;
-                }
-            }
+            var field = this.GetKey(key, KeyMode.NullOnNotFound);
+            if (field == null)
+                throw new ArgumentException(EX_INVALIDARG_KEYNOTFOUND);
+            field.Parent.RaisePropertyChanging("Children");
+            field.Parent.Children.Remove(field);
+            field.Parent.RaisePropertyChanged("Children");
         }
         /// <summary>
         /// <para>Receives <see cref="ConfigField"/> with given key from this class.
@@ -445,7 +454,7 @@ namespace SQF.ClassParser
         /// <returns><see cref="ConfigField"/> with given key</returns>
         /// <exception cref="ArgumentException"/>
         /// <exception cref="KeyNotFoundException"/>
-        public ConfigField this[string key] { get { return this.GetKey(key, false); } }
+        public ConfigField this[string key] { get { return this.GetKey(key, KeyMode.CheckParentsThrow); } }
         /// <summary>
         /// <para>Receives <see cref="ConfigField"/>s with given index & length from this class.
         /// Requires this <see cref="ConfigField"/> to be a class!</para>

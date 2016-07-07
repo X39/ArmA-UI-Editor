@@ -40,7 +40,7 @@ namespace SQF.ClassParser
                 return;
             ConfigField field = this.TreeRoot;
 
-            field = field.GetKey(this.Key, true);
+            field = field.GetKey(this.Key, KeyMode.CreateNew);
             this.ReferencedConfigField = field;
             this.Marks = this.ReferencedConfigField.Marks;
             this.IsReference = false;

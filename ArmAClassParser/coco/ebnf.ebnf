@@ -41,7 +41,7 @@ COMPILER CONFIGFILE
             "class"
             T_IDENT (.
                 list.Add(t.val);
-                thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
+                thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
                 try
                 {
                     thisField.ToClass();
@@ -79,7 +79,7 @@ COMPILER CONFIGFILE
         FIELD<StringList list> (. ConfigField thisField; ConfigField.Mark mark; .) =
             T_IDENT (.
                 list.Add(t.val);
-                thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), true);
+                thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
                 try
                 {
                     thisField.ToField();
