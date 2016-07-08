@@ -2,7 +2,7 @@
 
 namespace SQF
 {
-    internal class TextBuffer : ITextBuffer, System.ComponentModel.INotifyPropertyChanged
+    public class TextBuffer : ITextBuffer, System.ComponentModel.INotifyPropertyChanged
     {
         public static implicit operator TextBuffer(string v)
         {
