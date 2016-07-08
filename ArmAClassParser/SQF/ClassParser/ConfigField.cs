@@ -55,8 +55,10 @@ namespace SQF.ClassParser
                 }
                 field = field.Parent;
 
-                while (field != null)
+                while (field != null && !field.HasBuffer)
                 {
+                    if (field.HasBuffer && field.Parent != null)
+                        continue;
                     for (int i = (int)MarkOffsets.parent_value; i >= 0; i--)
                     {
                         thisOffset += field.Marks[i].Length;
@@ -139,6 +141,7 @@ namespace SQF.ClassParser
         public virtual string Name { get { return _Name; } set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
         public virtual string ConfigParentName { get { return _ConfigParentName; } set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.parent); } }
         public virtual ITextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } }
+        public bool HasBuffer { get { return this._ThisBuffer != default(TextBuffer); } }
         public ConfigField TreeRoot
         {
             get
