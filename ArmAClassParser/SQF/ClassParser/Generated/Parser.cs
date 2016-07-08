@@ -174,7 +174,7 @@ namespace SQF.ClassParser.Generated
 		}
 		if (la.kind == 8) {
 			Get();
-			mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; bool isFirst = true; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; 
+			mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; 
 			while (la.kind == 5 || la.kind == 6) {
 				if (la.kind == 5) {
 					FIELD(list);
@@ -315,7 +315,7 @@ namespace SQF.ClassParser.Generated
 
         }
 
-        public SQF.ClassParser.ConfigField Parse(SQF.TextBuffer buffer) {
+        public SQF.ClassParser.ConfigField Parse(SQF.ITextBuffer buffer) {
             this.MainField = new SQF.ClassParser.ConfigField(buffer);
             la = new Token();
             la.val = "";		

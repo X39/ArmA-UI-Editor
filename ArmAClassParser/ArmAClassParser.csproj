@@ -62,6 +62,7 @@
     <Compile Include="SQF\ClassParser\Generated\Scanner.cs" />
     <Compile Include="SQF\ClassParser\Generated\StringList.cs" />
     <Compile Include="SQF\ClassParser\KeyNotFoundException.cs" />
+    <Compile Include="SQF\ITextBuffer.cs" />
     <Compile Include="SQF\TextBuffer.cs" />
     <Compile Include="SQF\TextBufferStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

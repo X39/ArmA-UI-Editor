@@ -64,7 +64,7 @@ COMPILER CONFIGFILE
                 .)
             ]
             [
-                '{' (. mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; bool isFirst = true; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; .)
+                '{' (. mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; .)
                 {
                     FIELD<list>
                     |

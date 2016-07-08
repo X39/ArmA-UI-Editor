@@ -152,7 +152,7 @@ namespace SQF.ClassParser.Generated
     -->parseRoot
         }
 
-        public SQF.ClassParser.ConfigField Parse(SQF.TextBuffer buffer) {
+        public SQF.ClassParser.ConfigField Parse(SQF.ITextBuffer buffer) {
             this.MainField = new SQF.ClassParser.ConfigField(buffer);
             la = new Token();
             la.val = "";		

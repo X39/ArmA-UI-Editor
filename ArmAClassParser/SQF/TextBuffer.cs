@@ -2,7 +2,7 @@
 
 namespace SQF
 {
-    public class TextBuffer : System.ComponentModel.INotifyPropertyChanged
+    internal class TextBuffer : ITextBuffer, System.ComponentModel.INotifyPropertyChanged
     {
         public static implicit operator TextBuffer(string v)
         {
@@ -76,12 +76,12 @@ namespace SQF
             }
         }
 
-        internal void Lock()
+        public void Lock()
         {
             this.PreventChanges = true;
         }
 
-        internal void Unlock()
+        public void Unlock()
         {
             this.PreventChanges = false;
         }
