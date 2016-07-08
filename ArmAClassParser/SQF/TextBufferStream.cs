@@ -19,7 +19,7 @@ namespace SQF
         public override long Length { get { return this.Buffer.Length; } }
         public override long Position { get { return this.Index; } set { this.Index = (int)value; } }
 
-        internal TextBufferStream(TextBuffer buffer)
+        internal TextBufferStream(ITextBuffer buffer)
         {
             this.Buffer = buffer;
         }
