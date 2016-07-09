@@ -339,7 +339,7 @@ namespace SQF.ClassParser
                         string[] strArray = new string[this.ParentCount];
                         int index = strArray.Length - 1;
                         var curField = this;
-                        while(curField != default(ConfigField))
+                        while(curField != default(ConfigField) && index >= 0)
                         {
                             strArray[index] = curField.Name;
                             index--;
