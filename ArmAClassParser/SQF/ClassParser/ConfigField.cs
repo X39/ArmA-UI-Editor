@@ -158,7 +158,7 @@ namespace SQF.ClassParser
         public virtual ConfigField Parent { get; private set; }
         public virtual string Name { get { return _Name; } set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
         public virtual string ConfigParentName { get { return _ConfigParentName; } set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name_parent); UpdateTextBuffer(MarkOffsets.parent); } }
-        public virtual ITextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } set { this._ThisBuffer = value; UpdateTextBuffer(MarkOffsets.NA); } }
+        public virtual ITextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } set { if (this._ThisBuffer == value) return; this._ThisBuffer = value; UpdateTextBuffer(MarkOffsets.NA); } }
         public bool HasBuffer { get { return this._ThisBuffer != default(TextBuffer); } }
         public ConfigField TreeRoot
         {
@@ -301,7 +301,7 @@ namespace SQF.ClassParser
                         {
                             case KeyMode.CheckParentsThrow:
                             case KeyMode.CheckParentsNull:
-                                if (string.IsNullOrWhiteSpace(this.ConfigParentName))
+                                if (string.IsNullOrWhiteSpace(currentField.ConfigParentName))
                                 {
                                     if (mode == KeyMode.CheckParentsNull)
                                         return null;
@@ -312,7 +312,9 @@ namespace SQF.ClassParser
                                 {
                                     StringBuilder builder = new StringBuilder();
                                     createReference = true;
-                                    currentField = this.FindConfigKeyInHirarchy(currentField.ConfigParentName)[string.Join("/", keys.GetRange(i))];
+                                    currentField = currentField.FindConfigKeyInHirarchy(currentField.ConfigParentName).GetKey(string.Join("/", keys.GetRange(i)), mode);
+                                    if (currentField == null)
+                                        return null;
                                 }
                                 break;
                             case KeyMode.CreateNew:
@@ -588,7 +590,7 @@ namespace SQF.ClassParser
             if (this.ThisBuffer == null)
                 return;
             int tabCount = 0;
-            var field = this;
+            var field = this.Parent;
             while (field != null && !field.HasBuffer)
             {
                 tabCount++;
@@ -615,10 +617,19 @@ namespace SQF.ClassParser
                 case MarkOffsets.value:
                     if (this.IsClass)
                     {
+                        int offset = 0;
                         foreach(var it in this.Children)
                         {
-                            it.UpdateTextBuffer(MarkOffsets.NA);
+                            for(int i = 0; i <= (int)MarkOffsets.blockclose; i++)
+                            {
+                                offset += it.Marks[i].Length;
+                            }
                         }
+                        var tmpMark = this.Marks[(int)MarkOffsets.value];
+                        tmpMark.Length = offset;
+                        this.Marks[(int)MarkOffsets.value] = tmpMark;
+                        if(this.Parent != null)
+                            this.Parent.UpdateTextBuffer(MarkOffsets.value);
                         return;
                     }
                     else
@@ -635,6 +646,13 @@ namespace SQF.ClassParser
                     UpdateTextBuffer(MarkOffsets.name_parent);
                     UpdateTextBuffer(MarkOffsets.parent);
                     UpdateTextBuffer(MarkOffsets.parent_value);
+                    if (this.IsClass)
+                    {
+                        foreach (var it in this.Children)
+                        {
+                            it.UpdateTextBuffer(MarkOffsets.NA);
+                        }
+                    }
                     UpdateTextBuffer(MarkOffsets.value);
                     UpdateTextBuffer(MarkOffsets.blockclose);
                     return;

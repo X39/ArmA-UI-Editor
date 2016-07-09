@@ -74,7 +74,7 @@ namespace SQF
         {
             string[] outArray = new string[length == -1 ? thisArray.Length - startIndex : length];
             int outArrayIndex = 0;
-            for(int i = startIndex; i < (length == -1 ? thisArray.Length - startIndex : length); i++)
+            for(int i = startIndex; i < (length == -1 ? thisArray.Length : length); i++)
             {
                 outArray[outArrayIndex++] = thisArray[i];
             }
