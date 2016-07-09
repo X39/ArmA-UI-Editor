@@ -345,7 +345,7 @@ namespace SQF.ClassParser
                             index--;
                             curField = curField.Parent;
                         }
-                        return new ConfigFieldReference(currentField, string.Concat(string.Join("/", strArray), key.TrimStart('/')));
+                        return new ConfigFieldReference(currentField, string.Concat(string.Join("/", strArray), '/', key.TrimStart('/')));
                     }
                     else
                     {
@@ -413,8 +413,6 @@ namespace SQF.ClassParser
         /// <exception cref="ArgumentException"/>
         public void SetKey(string key, object value)
         {
-            if (!ConfigField.IsValidKey(key))
-                throw new ArgumentException(EX_INVALIDARG_INVALIDKEY);
             if (!this.IsArray && !this.IsClass)
                 throw new ArgumentException(EX_INVALIDTYPE_CLASSARRAY);
             if (!this.IsClass)
