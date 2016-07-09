@@ -35,7 +35,7 @@ namespace SQF.ClassParser
 
         public bool MoveNext()
         {
-            return ++this.Index >= Field.Count;
+            return ++this.Index < Field.Count;
         }
 
         public void Reset()

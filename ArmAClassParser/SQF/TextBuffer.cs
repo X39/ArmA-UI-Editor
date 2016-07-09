@@ -48,6 +48,10 @@ namespace SQF
         {
             if (PreventChanges)
                 return;
+            while (this.Builder.Length < startIndex + newContent.Length)
+            {
+                this.Builder.Append(' ');
+            }
             if (newContent.Length != oldLength)
             {
                 if(newContent.Length > oldLength)
@@ -64,7 +68,10 @@ namespace SQF
                     {
                         this.Builder[i + startIndex] = newContent[i];
                     }
-                    this.Builder.Remove(startIndex + newContent.Length, oldLength - newContent.Length);
+                    if (this.Builder.Length > startIndex + oldLength)
+                    {
+                        this.Builder.Remove(startIndex + newContent.Length, oldLength - newContent.Length);
+                    }
                 }
             }
             else
@@ -87,7 +94,24 @@ namespace SQF
         }
 
         public override string ToString() { return this.Builder.ToString(); }
-        public string Substring(int thisOffset, int length) { return this.Builder.ToString(thisOffset, length); }
+        public string Substring(int thisOffset, int length)
+        {
+            if (this.Builder.Length <= thisOffset)
+                return string.Empty;
+            if(this.Builder.Length <= thisOffset + length)
+                return this.Builder.ToString(thisOffset, length - (thisOffset + length - this.Builder.Length));
+            return this.Builder.ToString(thisOffset, length);
+        }
 
+        public void Insert(int index, string value)
+        {
+            this.Builder.Insert(index, value);
+            RaisePropertyChanged();
+        }
+
+        public int IndexOf(string v)
+        {
+            return this.Builder.ToString().IndexOf(v);
+        }
     }
 }

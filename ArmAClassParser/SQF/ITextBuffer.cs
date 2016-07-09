@@ -29,6 +29,7 @@ namespace SQF
         void Lock();
         void Unlock();
         string Substring(int thisOffset, int length);
-
+        void Insert(int v1, string v2);
+        int IndexOf(string v);
     }
 }
