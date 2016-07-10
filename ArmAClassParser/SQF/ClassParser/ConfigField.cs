@@ -195,7 +195,7 @@ namespace SQF.ClassParser
         public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
         public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
         public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public int Count { get { if (!this.IsClass) throw new ArgumentException(EX_INVALIDTYPE_CLASS); return this.Children.Count; } }
+        public int Count { get { if (!this.IsClass) return 0; return this.Children.Count; } }
         public virtual string Key
         {
             get
