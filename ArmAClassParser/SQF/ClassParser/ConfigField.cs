@@ -752,6 +752,7 @@ namespace SQF.ClassParser
         }
         public override string ToString()
         {
+            
             if(this.IsClass)
             {
                 return string.Format("{0}", this.Name);
@@ -759,7 +760,8 @@ namespace SQF.ClassParser
             else
             {
                 var val = this.ValueToString();
-                return string.Format("{0}{1} = {2}", this.Name, this.IsArray ? "[]" : string.Empty, val.Length > 15 ? string.Format("{0}...", val.Substring(0, 12)) : val);
+                val = string.Format("{0}{1} = {2}", this.Name, this.IsArray ? "[]" : string.Empty, val);
+                return val.Length > 64 ? string.Format("{0}...", val.Substring(0, 61)) : val;
             }
         }
         public void FromatBuffer()
