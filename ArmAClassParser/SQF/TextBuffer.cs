@@ -81,6 +81,7 @@ namespace SQF
                     this.Builder[i + startIndex] = newContent[i];
                 }
             }
+            RaisePropertyChanged();
         }
 
         public void Lock()

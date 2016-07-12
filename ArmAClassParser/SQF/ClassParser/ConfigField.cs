@@ -158,7 +158,31 @@ namespace SQF.ClassParser
         public virtual ConfigField Parent { get; private set; }
         public virtual string Name { get { return _Name; } set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
         public virtual string ConfigParentName { get { return _ConfigParentName; } set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name_parent); UpdateTextBuffer(MarkOffsets.parent); } }
-        public virtual ITextBuffer ThisBuffer { get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; } set { if (this._ThisBuffer == value) return; this._ThisBuffer = value; UpdateTextBuffer(MarkOffsets.NA); } }
+        public virtual ITextBuffer ThisBuffer
+        {
+            get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; }
+            set
+            {
+                if (this._ThisBuffer == value)
+                    return;
+                if(this._ThisBuffer != null)
+                {
+                    this._ThisBuffer.PropertyChanged -= ThisBuffer_PropertyChanged;
+                }
+                this._ThisBuffer = value;
+                if (value != null)
+                {
+                    this._ThisBuffer.PropertyChanged += ThisBuffer_PropertyChanged;
+                    UpdateTextBuffer(MarkOffsets.NA);
+                }
+            }
+        }
+
+        private void ThisBuffer_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("ThisBuffer");
+        }
+
         public bool HasBuffer { get { return this._ThisBuffer != default(TextBuffer); } }
         public ConfigField TreeRoot
         {
@@ -191,10 +215,10 @@ namespace SQF.ClassParser
         public bool IsString { get { return this.Value is string; } }
         public bool IsBoolean { get { return this.Value is bool; } }
         private List<ConfigField> Children { get { return this.Value as List<ConfigField>; } set { this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.NA); } }
-        public object[] Array { get { return this.Value as object[]; } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public object[] Array { get { return this.Value as object[]; } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField();  this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
         public int Count { get { if (!this.IsClass) return 0; return this.Children.Count; } }
         public virtual string Key
         {
@@ -222,8 +246,8 @@ namespace SQF.ClassParser
         public ConfigField(string name)
         {
             this.Parent = default(ConfigField);
-            this._ThisBuffer = default(TextBuffer);
-            this.Value = default(object);
+            this.ThisBuffer = default(TextBuffer);
+            this.Value = "";
             this._ConfigParentName = default(string);
             this._Name = name;
             this.Marks = new MarkList();
@@ -231,8 +255,9 @@ namespace SQF.ClassParser
         public ConfigField(ITextBuffer buffer)
         {
             this.ToClass();
+            this.Value = "";
             this.Parent = default(ConfigField);
-            this._ThisBuffer = buffer;
+            this.ThisBuffer = buffer;
             this._ConfigParentName = default(string);
             this._Name = string.Empty;
             this.Marks = new MarkList();
@@ -257,13 +282,18 @@ namespace SQF.ClassParser
                 throw new ArgumentException(EX_INVALIDARG_KEYALREADYEXISTS);
             if (!this.IsClass)
                 this.ToClass();
+            this.RaisePropertyChanging("Children");
             ConfigField field = new ConfigField(key);
             field.Parent = this;
             if(!string.IsNullOrWhiteSpace(parent))
             {
                 field.ConfigParentName = parent;
+                field.ToClass();
             }
-            this.RaisePropertyChanging("Children");
+            else
+            {
+                field.FormatBuffer();
+            }
             this.Children.Add(field);
             this.RaisePropertyChanged("Children");
             return field;
@@ -455,8 +485,6 @@ namespace SQF.ClassParser
         /// <exception cref="ArgumentException"/>
         public void RemoveKey(string key)
         {
-            if (!this.IsArray)
-                throw new ArgumentException(EX_INVALIDTYPE_ARRAY);
             if (!this.IsClass)
                 throw new ArgumentException(EX_INVALIDTYPE_CLASS);
             var field = this.GetKey(key, KeyMode.NullOnNotFound);
@@ -538,6 +566,7 @@ namespace SQF.ClassParser
             {
                 this.Children = new List<ConfigField>();
             }
+            this.FormatBuffer();
         }
         /// <summary>
         /// Changes this <see cref="ConfigField"/> to a field.
@@ -547,7 +576,8 @@ namespace SQF.ClassParser
         {
             if (!this.IsClass)
                 throw new InvalidOperationException(EX_INVALIDOPS_ALREADYFIELD);
-            this.Children = null;
+            this.Value = "";
+            this.FormatBuffer();
         }
         /// <summary>
         /// Checks if given key exists in this class.
@@ -624,6 +654,10 @@ namespace SQF.ClassParser
                             }
                         }
                         var tmpMark = this.Marks[(int)MarkOffsets.value];
+                        if(offset == 0)
+                        {
+                            this.ThisBuffer.Replace("", this.Marks[(int)mo].GetRange(this).Item2 - this.Marks[(int)mo].Length, this.Marks[(int)mo].Length);
+                        }
                         tmpMark.Length = offset;
                         this.Marks[(int)MarkOffsets.value] = tmpMark;
                         if(this.Parent != null)
@@ -764,7 +798,7 @@ namespace SQF.ClassParser
                 return val.Length > 64 ? string.Format("{0}...", val.Substring(0, 61)) : val;
             }
         }
-        public void FromatBuffer()
+        public void FormatBuffer()
         {
             this.UpdateTextBuffer(MarkOffsets.NA);
         }
