@@ -16,12 +16,12 @@ namespace ArmA_UI_Editor.Code.Markup
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            if (CurrentConfig == null)
+            if (string.IsNullOrWhiteSpace(CurrentClassPath))
                 return "NA";
-            var data = CurrentConfig.ReceiveFieldFromHirarchy(CurrentClassPath, this.Path);
-            if (data == null)
-                throw new Exception(string.Format("Cannot locate field '{0}'", this.Path));
-            return data.Value;
+            var field = AddInManager.Instance.MainFile.GetKey(string.Concat(CurrentClassPath, this.Path), SQF.ClassParser.ConfigField.KeyMode.CheckParentsNull);
+            if (field == null)
+                throw new Exception(string.Format(App.Current.Resources["STR_BINDING_UnknownField"] as string, string.Concat(CurrentClassPath, this.Path)));
+            return field.Value;
         }
     }
 }

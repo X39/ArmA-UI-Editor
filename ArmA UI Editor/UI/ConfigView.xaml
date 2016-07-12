@@ -1,0 +1,18 @@
+﻿<Window x:Class="ArmA_UI_Editor.UI.ConfigView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ArmA_UI_Editor.UI"
+        xmlns:parser="clr-namespace:SQF.ClassParser;assembly=ArmAClassParser"
+        xmlns:c="clr-namespace:ArmA_UI_Editor.Code.Converter"
+        mc:Ignorable="d"
+        Title="ConfigView" Height="300" Width="300">
+    <TreeView Initialized="TreeView_Initialized">
+        <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type parser:ConfigField}" ItemsSource="{Binding}">
+                <TextBlock Text="{Binding}"/>
+            </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
+    </TreeView>
+</Window>

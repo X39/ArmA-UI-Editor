@@ -24,7 +24,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         public int AllowedCount { get { return 1; } }
         public Dock DefaultDock { get { return Dock.Right; } }
 
-        public Data CurrentData { get; private set; }
+        public string CurrentKey { get; private set; }
 
         private EditingSnap CurrentEditingSnap;
 
@@ -57,7 +57,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             else
             {
-                LoadEvents(e.Tags[0].file, e.Tags[0].data);
+                LoadEvents(e.Tags[0].file, e.Tags[0].Key);
             }
         }
 
@@ -78,10 +78,10 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
         }
 
-        public void LoadEvents(ArmA_UI_Editor.Code.AddInUtil.UIElement element, SQF.ClassParser.Data data)
+        public void LoadEvents(ArmA_UI_Editor.Code.AddInUtil.UIElement element, string key)
         {
             this.EventStackPanel.Children.Clear();
-            this.CurrentData = data;
+            this.CurrentKey = key;
             foreach (var e in element.Events)
             {
                 var el = new Property();
@@ -90,19 +90,19 @@ namespace ArmA_UI_Editor.UI.Snaps
                 el.Header = e.Name;
                 var tb = new TextBox();
                 el.Children.Add(tb);
+                var field = AddInManager.Instance.MainFile.GetKey(string.Join("/", this.CurrentKey, e.Field), ConfigField.KeyMode.NullOnNotFound);
 
-                var d = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data, e.Field, false);
-                if (d != null && d.IsString)
+                if (field != null && field.IsString)
                 {
                     if(string.IsNullOrWhiteSpace(e.StartingAt))
                     {
-                        tb.Text = d.String;
+                        tb.Text = field.String;
                     }
                     else
                     {
-                        var index = d.String.IndexOf(e.StartingAt);
+                        var index = field.String.IndexOf(e.StartingAt);
                         if (index >= 0)
-                            tb.Text = d.String.Substring(index + e.StartingAt.Length);
+                            tb.Text = field.String.Substring(index + e.StartingAt.Length);
                         else
                             tb.Text = "";
                     }
@@ -117,18 +117,18 @@ namespace ArmA_UI_Editor.UI.Snaps
             if(e.Text.Contains('\r'))
             {
                 Event ev = (Event)(sender as FrameworkElement).Tag;
-                var d = SQF.ClassParser.File.ReceiveFieldFromHirarchy(CurrentData, ev.Field, true);
+                var field = AddInManager.Instance.MainFile[string.Join("/", this.CurrentKey, ev.Field)];
                 if (string.IsNullOrWhiteSpace(ev.StartingAt))
                 {
-                    d.String = (sender as TextBox).Text;
+                    field.Parent.SetKey(field.Name, (sender as TextBox).Text);
                 }
                 else
                 {
-                    var index = d.IsString ? d.String.IndexOf(ev.StartingAt) : -1;
+                    var index = field.IsString ? field.String.IndexOf(ev.StartingAt) : -1;
                     if (index >= 0)
-                        d.String = d.String.Substring(0, index) + ev.StartingAt + (sender as TextBox).Text;
+                        field.Parent.SetKey(field.Name, field.String.Substring(0, index) + ev.StartingAt + (sender as TextBox).Text);
                     else
-                        d.String = ev.StartingAt + (sender as TextBox).Text;
+                        field.Parent.SetKey(field.Name, ev.StartingAt + (sender as TextBox).Text);
                 }
                 this.CurrentEditingSnap.Redraw();
                 e.Handled = true;

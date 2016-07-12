@@ -11,5 +11,5 @@
       d:DesignHeight="150" d:DesignWidth="150"
       Title="{StaticResource STR_Window_Output}">
 
-    <TextBox x:Name="LogBox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" IsReadOnly="True" FontFamily="Courier New"/>
+    <TextBox x:Name="LogBox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" IsReadOnly="True" FontFamily="Courier New" TextWrapping="Wrap"/>
 </Page>

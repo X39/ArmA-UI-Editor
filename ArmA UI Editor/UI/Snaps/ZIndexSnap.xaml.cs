@@ -24,8 +24,8 @@ namespace ArmA_UI_Editor.UI.Snaps
     {
         private struct TAG_lbContent
         {
-            public List<Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>> Tuple;
             public EditingSnap EditingSnap;
+            public List<Tuple<Code.AddInUtil.UIElement, string>> Tuple;
         }
         public int AllowedCount { get { return 1; } }
         public Dock DefaultDock { get { return Dock.Left; } }
@@ -112,8 +112,8 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void lbContent_Drop(object sender, DragEventArgs e)
         {
-            var droppedData = e.Data.GetData(typeof(Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>)) as Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>;
-            var target = ((ListBoxItem)(sender)).Content as Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>;
+            var droppedData = e.Data.GetData(typeof(Tuple<Code.AddInUtil.UIElement, string>)) as Tuple<Code.AddInUtil.UIElement, string>;
+            var target = ((ListBoxItem)(sender)).Content as Tuple<Code.AddInUtil.UIElement, string>;
 
             int removedIdx = lbContent.Items.IndexOf(droppedData);
             int targetIdx = lbContent.Items.IndexOf(target);
@@ -122,7 +122,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
             var snap = ((TAG_lbContent)lbContent.Tag).EditingSnap;
             UnSubscribeEditingSnap(snap);
-            snap.SwapUiIndexies(droppedData.Item2.Key, target.Item2.Key);
+            snap.SwapUiIndexies(droppedData.Item2, target.Item2);
             SubscribeEditingSnap(snap);
         }
     }

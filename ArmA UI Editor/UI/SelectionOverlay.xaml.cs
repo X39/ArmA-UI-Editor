@@ -61,13 +61,13 @@ namespace ArmA_UI_Editor.UI
                 this.Element = element;
             }
         }
-        private enum MoveStateEnum
+        public enum MoveStateEnum
         {
             NONE,
             PREPARE,
             MOVING
         }
-        private MoveStateEnum MoveState;
+        public MoveStateEnum MoveState { get; private set; }
         private ResizeEventArgs.Direction? ResizeDirection;
         public event EventHandler<MoveEventArgs> OnElementMove;
         public event EventHandler<ResizeEventArgs> OnElementResize;

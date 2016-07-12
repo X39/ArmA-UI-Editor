@@ -16,6 +16,7 @@ using System.IO;
 using ArmA_UI_Editor.Code;
 using ArmA_UI_Editor.Code.AddInUtil;
 using SQF.ClassParser;
+using NLog;
 
 namespace ArmA_UI_Editor.UI.Snaps
 {
@@ -24,6 +25,14 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// </summary>
     public partial class EditingSnap : Page, Code.Interface.ISnapWindow
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        public class TAG_CanvasChildElement
+        {
+            public string Key { get; set; }
+            public Code.AddInUtil.UIElement file { get; set; }
+            public EditingSnap Owner { get; set; }
+        }
+
         #region Events
         public event EventHandler OnUiElementsChanged;
         public class OnSelectedFocusChangedEventArgs : EventArgs
@@ -37,10 +46,10 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public event EventHandler<OnSelectedFocusChangedEventArgs> OnSelectedFocusChanged;
         #endregion
-        public SQF.ClassParser.File ConfigFile;
-        private bool ConfigTextboxDiffersConfigInstance;
-        private bool BlockWriteout;
-        private SelectionOverlay SelectionOverlay_ToMove;
+        public SQF.ClassParser.ConfigField Config;
+        public static int Counter = 0;
+        public SQF.ClassParser.ConfigField[] FileConfigs { get { return this.Config[0, this.Config.Count]; } }
+        public SQF.ClassParser.ConfigField LastFileConfig { get { return this.Config[this.Config.Count - 1]; } }
 
         public static readonly DependencyProperty SnapDisabledProperty = DependencyProperty.Register("SnapDisabled", typeof(bool), typeof(EditingSnap));
         public bool SnapEnabled { get { return (bool)GetValue(SnapDisabledProperty); } set { SetValue(SnapDisabledProperty, value); } }
@@ -69,51 +78,38 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
 
         public string FilePath { get; set; }
-
-        private bool HasChanges;
         public int AllowedCount { get { return int.MaxValue; } }
+
+        #region ISnapWindow
         public Dock DefaultDock { get { return Dock.Top; } }
-
-
+        public bool HasUnsavedChanges { get; private set; }
         public void UnloadSnap()
         {
-            if (HasChanges)
+            if (this.HasUnsavedChanges)
             {
                 if (MessageBox.Show("Do you want to save?", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                 {
                     SaveFile();
                 }
             }
+            this.Config.Parent.RemoveKey(this.Config.Name);
         }
-
         public void LoadSnap()
         {
-
+            this.Config = AddInManager.Instance.MainFile.AddKey(string.Format("EditingSnap_{0}_WorkingConfig", Counter++));
+            this.Config.ToClass();
+            this.Config.ThisBuffer = new SQF.TextBuffer();
+            this.Config.ThisBuffer.Append(this.Textbox.Text);
+            SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(new SQF.TextBufferStream(this.Config.ThisBuffer as SQF.TextBuffer)));
+            p.Patch(this.Config);
+            Binding b = new Binding("ThisBuffer");
+            b.Source = this.Config;
+            b.Converter = new Code.Converter.EditingSnap_ConfigFieldBufferConverter();
+            b.ConverterParameter = this.Config;
+            this.Config.FormatBuffer();
+            BindingOperations.SetBinding(this.Textbox, TextBox.TextProperty, b);
         }
-
-        public class TAG_CanvasChildElement
-        {
-            public SQF.ClassParser.Data data;
-            public Code.AddInUtil.UIElement file;
-            public EditingSnap Window;
-
-            public EditingSnap Owner { get; set; }
-            public string FullyQualifiedPath { get; set; }
-        }
-
-        public void Redraw()
-        {
-            switch (this.TabControlMainView.SelectedIndex)
-            {
-                case 0:
-                    this.WriteConfigToScreen();
-                    break;
-                case 1:
-                    this.WriteConfigToScreen();
-                    this.RegenerateDisplay();
-                    break;
-            }
-        }
+        #endregion
 
         public EditingSnap()
         {
@@ -134,43 +130,55 @@ namespace ArmA_UI_Editor.UI.Snaps
             sb.AppendLine("};");
 
             this.Textbox.Text = sb.ToString();
-            this.ReinitConfigFileField();
-            SelectionOverlay_ToMove = null;
-            SnapEnabled = true;
-            BackgroundEnabled = false;
-            SnapGrid = 15;
-            ViewScale = 1;
-            FilePath = string.Empty;
-            HasChanges = true;
+            this.SnapEnabled = true;
+            this.BackgroundEnabled = false;
+            this.SnapGrid = 15;
+            this.ViewScale = 1;
+            this.FilePath = string.Empty;
+            this.HasUnsavedChanges = true;
         }
         public EditingSnap(string FilePath)
         {
             InitializeComponent();
+            this.Config = AddInManager.Instance.MainFile.AddKey(string.Format("EditingSnap_{0}_WorkingConfig", Counter));
             using (var reader = new StreamReader(FilePath))
             {
                 this.Textbox.Text = reader.ReadToEnd();
             }
 
-            this.ReinitConfigFileField();
-            SelectionOverlay_ToMove = null;
-            SnapEnabled = true;
-            BackgroundEnabled = false;
-            SnapGrid = 15;
-            ViewScale = 1;
+            this.SnapEnabled = true;
+            this.BackgroundEnabled = false;
+            this.SnapGrid = 15;
+            this.ViewScale = 1;
             this.FilePath = FilePath;
-            HasChanges = false;
+            this.HasUnsavedChanges = false;
         }
-        public string GetFileName()
+        private void ReReadConfigField()
         {
-            return string.IsNullOrWhiteSpace(this.FilePath) ? this.ConfigFile[this.ConfigFile.Count - 1].Name + ".cpp" : this.FilePath.Substring(this.FilePath.LastIndexOfAny(new char[] { '\\', '/' }));
+            throw new NotImplementedException();
         }
 
+        public void Redraw()
+        {
+            throw new NotImplementedException();
+            /*
+            switch (this.TabControlMainView.SelectedIndex)
+            {
+                case 0:
+                    this.WriteConfigToScreen();
+                    break;
+                case 1:
+                    this.WriteConfigToScreen();
+                    this.RegenerateDisplay();
+                    break;
+            }*/
+        }
         public void SaveFile()
         {
             if (string.IsNullOrWhiteSpace(this.FilePath))
             {
                 var dlg = new Microsoft.Win32.SaveFileDialog();
-                dlg.FileName = this.ConfigFile[this.ConfigFile.Count - 1].Name;
+                dlg.FileName = this.LastFileConfig.Name;
                 dlg.DefaultExt = ".cpp";
                 dlg.Filter = "ArmA Class (.cpp)|*.cpp|ArmA Class (.hpp)|*.hpp";
                 dlg.CheckPathExists = true;
@@ -187,7 +195,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 writer.Write(this.Textbox.Text);
                 writer.Flush();
             }
-            HasChanges = false;
+            HasUnsavedChanges = false;
         }
         private bool RemoveSelectedElements()
         {
@@ -212,11 +220,10 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void RemoveElement(FrameworkElement el)
         {
-            var data = this.ConfigFile[this.ConfigFile.Count - 1];
-            var uiElements = data.Class["controls"];
+            var lastFileConfig = this.LastFileConfig;
+            var controlsConfig = lastFileConfig["controls"];
             var tagData = el.Tag as TAG_CanvasChildElement;
-            uiElements.Class.Remove(tagData.data.Name);
-            this.ConfigTextboxDiffersConfigInstance = true;
+            controlsConfig.RemoveKey(tagData.Key);
             DisplayCanvas.Children.Remove(el);
         }
 
@@ -262,14 +269,9 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
 
         #region SelectionOverlay Event Handler
-        private void SelectionOverlay_OnStopMove(object sender, EventArgs e)
-        {
-            SelectionOverlay_ToMove = null;
-        }
         private void SelectionOverlay_OnStartMove(object sender, MouseEventArgs e)
         {
-            SelectionOverlay_ToMove = sender as SelectionOverlay;
-            SelectionOverlay_ToMove.Tag = e.GetPosition(DisplayCanvas);
+            FindSelectionOverlay().Tag = e.GetPosition(DisplayCanvas);
         }
         private void SelectionOverlay_OnElementResize(object sender, SelectionOverlay.ResizeEventArgs e)
         {
@@ -303,17 +305,11 @@ namespace ArmA_UI_Editor.UI.Snaps
 
                 if (posChangeNeeded)
                 {
-                    var field_X = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/x", true);
-                    var field_Y = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/y", true);
-
-                    field_X.String = ToSqfString(FieldTypeEnum.XField, metrics.X);
-                    field_Y.String = ToSqfString(FieldTypeEnum.YField, metrics.Y);
+                    this.LastFileConfig.SetKey(string.Join("/", data.Key, "x"), ToSqfString(FieldTypeEnum.XField, metrics.X));
+                    this.LastFileConfig.SetKey(string.Join("/", data.Key, "y"), ToSqfString(FieldTypeEnum.YField, metrics.Y));
                 }
-                var field_W = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/w", true);
-                var field_H = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/h", true);
-                field_W.String = ToSqfString(FieldTypeEnum.WField, metrics.Width);
-                field_H.String = ToSqfString(FieldTypeEnum.HField, metrics.Height);
-                this.ConfigTextboxDiffersConfigInstance = true;
+                this.LastFileConfig.SetKey(string.Join("/", data.Key, "w"), ToSqfString(FieldTypeEnum.WField, metrics.Width));
+                this.LastFileConfig.SetKey(string.Join("/", data.Key, "h"), ToSqfString(FieldTypeEnum.HField, metrics.Height));
             }
         }
         private void SelectionOverlay_OnElementMove(object sender, SelectionOverlay.MoveEventArgs e)
@@ -328,12 +324,9 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var data = fElement.Tag as TAG_CanvasChildElement;
                 if (data == null)
                     return;
-
-                var field_X = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/x", true);
-                var field_Y = SQF.ClassParser.File.ReceiveFieldFromHirarchy(data.data, "/y", true);
-                field_X.String = ToSqfString(FieldTypeEnum.XField, metrics.X);
-                field_Y.String = ToSqfString(FieldTypeEnum.YField, metrics.Y);
-                this.ConfigTextboxDiffersConfigInstance = true;
+                
+                this.LastFileConfig.SetKey(string.Join("/", data.Key, "x"), ToSqfString(FieldTypeEnum.XField, metrics.X));
+                this.LastFileConfig.SetKey(string.Join("/", data.Key, "y"), ToSqfString(FieldTypeEnum.YField, metrics.Y));
             }
         }
         private void SelectionOverlay_OnOperationFinalized(object sender, FrameworkElement[] e)
@@ -344,7 +337,6 @@ namespace ArmA_UI_Editor.UI.Snaps
         #region XAML Event Handler
         private void SizesBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            WriteConfigToScreen();
             ComboBox cb = sender as ComboBox;
             switch ((cb.SelectedValue as ComboBoxItem).Content as string)
             {
@@ -536,10 +528,15 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (SelectionOverlay_ToMove != null)
+            var overlay = FindSelectionOverlay();
+            if (overlay != null && overlay.MoveState != SelectionOverlay.MoveStateEnum.NONE)
             {
                 var pos = e.GetPosition(DisplayCanvas);
-                var oldPos = (Point)SelectionOverlay_ToMove.Tag;
+                if(overlay.Tag == null)
+                {
+                    overlay.Tag = pos;
+                }
+                var oldPos = (Point)overlay.Tag;
                 var deltaX = pos.X - oldPos.X;
                 var deltaY = pos.Y - oldPos.Y;
                 if (SnapEnabled)
@@ -554,8 +551,8 @@ namespace ArmA_UI_Editor.UI.Snaps
                         pos.X -= (pos.X - oldPos.X) % SnapGrid;
                         pos.Y -= (pos.Y - oldPos.Y) % SnapGrid;
                     }
-                    SelectionOverlay_ToMove.Tag = pos;
-                    SelectionOverlay_ToMove.DoMove(deltaX, deltaY);
+                    overlay.Tag = pos;
+                    overlay.DoMove(deltaX, deltaY);
                 }
             }
         }
@@ -570,30 +567,24 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             if (!e.Data.GetDataPresent("UiElementsListBoxData"))
                 return;
-            var data = (e.Data.GetData("UiElementsListBoxData") as Code.UI.DragDrop.UiElementsListBoxData);
-            var d = new SQF.ClassParser.Data(new SQF.ClassParser.ConfigClass(data.ElementData.ClassFile[0]));
+            var dragDropData = (e.Data.GetData("UiElementsListBoxData") as Code.UI.DragDrop.UiElementsListBoxData);
+            var controlsField = this.LastFileConfig.GetKey("controls", ConfigField.KeyMode.CreateNew);
 
-            var mousePos = e.GetPosition(this.DisplayCanvas);
-
-            d.Class["x"] = new SQF.ClassParser.Data(mousePos.X, "x");
-            d.Class["y"] = new SQF.ClassParser.Data(mousePos.Y, "y");
-
-            string name = d.Name = "My" + data.ElementData.ClassFile.ElementAt(0).Key;
-            int count = 0;
-            var targetClass = this.ConfigFile[this.ConfigFile.Count - 1].Class["controls"].Class;
-            while (targetClass.ContainsKey(name))
+            string name = string.Concat("My" + dragDropData.ElementData.ConfigKey);
+            int count = 1;
+            while (controlsField.Contains(name))
             {
                 count++;
-                name = d.Name + count.ToString();
+                name = string.Concat("My" + dragDropData.ElementData.ConfigKey, count);
             }
-            d.Name = name;
-            targetClass.Add(d.Name, d);
-            this.ConfigTextboxDiffersConfigInstance = true;
-            this.WriteConfigToScreen();
+            var field = controlsField.AddKey(name, dragDropData.ElementData.ConfigKey);
+            var mousePos = e.GetPosition(this.DisplayCanvas);
+
+            field.SetKey("x", mousePos.X);
+            field.SetKey("y", mousePos.Y);
+            
             this.RegenerateDisplay();
             this.ThisScrollViewer.Focus();
-            if (OnUiElementsChanged != null)
-                OnUiElementsChanged(this, new EventArgs());
         }
         private void ScrollViewer_KeyDown(object sender, KeyEventArgs e)
         {
@@ -604,18 +595,14 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                this.WriteConfigToScreen();
-                if (this.ReinitConfigFileField())
-                    this.SaveFile();
+                this.SaveFile();
             }
         }
 
 
         private void Textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            HasChanges = true;
-            this.BlockWriteout = false;
-            this.ConfigTextboxDiffersConfigInstance = true;
+            this.HasUnsavedChanges = true;
             foreach (var change in e.Changes)
             {
                 if (change.AddedLength == 1)
@@ -655,14 +642,9 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                if (this.ReinitConfigFileField())
-                    this.SaveFile();
+                this.SaveFile();
                 e.Handled = true;
             }
-        }
-        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
-        {
-            // this.ThisScrollViewer.Focus();
         }
         private void TabControlMainView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -670,69 +652,22 @@ namespace ArmA_UI_Editor.UI.Snaps
             {
                 this.RegenerateDisplay();
             }
-            else if (this.TabControlMainView.SelectedIndex == 0 && this.ConfigTextboxDiffersConfigInstance)
-            {
-                this.ConfigTextboxDiffersConfigInstance = false;
-                WriteConfigToScreen();
-            }
         }
         private void TabControlMainView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                this.WriteConfigToScreen();
-                if (this.ReinitConfigFileField())
-                    this.SaveFile();
+                this.SaveFile();
                 e.Handled = true;
             }
         }
         #endregion
-
-        public void AddElementToDisplay(FrameworkElement el, SQF.ClassParser.Data data, Rect position)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryRefreshAll(int dir = 0)
-        {
-            if (dir == 0)
-            {
-                if (ConfigTextboxDiffersConfigInstance)
-                    return WriteConfigToScreen(true) && RegenerateDisplay();
-                else
-                    return RegenerateDisplay() && WriteConfigToScreen(true);
-            }
-            else
-            {
-                if(dir == 1)
-                {
-                    return WriteConfigToScreen(true) && RegenerateDisplay();
-                }
-                else
-                {
-                    return RegenerateDisplay() && WriteConfigToScreen(true);
-                }
-            }
-        }
 
         public bool RegenerateDisplay()
         {
             var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
             try
             {
-                if (this.ConfigTextboxDiffersConfigInstance || this.BlockWriteout)
-                {
-                    if (this.BlockWriteout || !this.ReinitConfigFileField())
-                    {
-                        mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
-                        this.DisplayCanvas.Children.Clear();
-                        Frame frame = new Frame();
-                        frame.Content = new ParseError();
-                        this.DisplayCanvas.Children.Add(frame);
-                        BlockWriteout = true;
-                        return false;
-                    }
-                }
                 int initialCount = 0;
                 foreach (var it in this.DisplayCanvas.Children)
                 {
@@ -741,64 +676,66 @@ namespace ArmA_UI_Editor.UI.Snaps
                     initialCount++;
                 }
                 this.DisplayCanvas.Children.Clear();
-                var data = this.ConfigFile[this.ConfigFile.Count - 1];
-                Code.Markup.BindConfig.CurrentConfig = this.ConfigFile;
-                var uiElements = data.Class["controls"];
-                if (uiElements != null && uiElements.IsClass)
+                var controlsField = this.LastFileConfig["controls"];
+                if (!controlsField.IsClass)
+                    throw new ArgumentException("controls has to be a class (array syntax not yet supported)");
+                bool restoredSelection = false;
+                int index = 0;
+                foreach (var value in controlsField)
                 {
-                    bool restoredSelection = false;
-                    var controls = uiElements.Class;
-                    int index = 0;
-                    foreach (var pair in controls)
+                    if (!(value is ConfigField))
                     {
-                        if (pair.Value.Class.Parent == null)
-                        {
-                            throw new Exception(string.Format("Cannot create new elements from scratch in this version of 'ArmA UI Editor'\nmissing parent of '{0}' in AddIns", pair.Value.Name));
-                        }
-                        var file = AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name);
-                        using (FileStream stream = System.IO.File.OpenRead(file.__XamlPath))
-                        {
-
-                            Code.Markup.BindConfig.CurrentClassPath = '/' + data.Name + "/controls/" + pair.Value.Name;
-
-                            ArmA_UI_Editor.Code.Markup.BindConfig.CurrentPath = file.Parent.ThisPath;
-
-                            var el = (FrameworkElement)System.Windows.Markup.XamlReader.Load(stream);
-                            this.DisplayCanvas.Children.Add(el);
-                            SQF.ClassParser.Data[] sizeList = new SQF.ClassParser.Data[] {
-                                this.ConfigFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/x"),
-                                this.ConfigFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/y"),
-                                this.ConfigFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/w"),
-                                this.ConfigFile.ReceiveFieldFromHirarchy(Code.Markup.BindConfig.CurrentClassPath, "/h")
-                            };
-                            var tmp = sizeList[0].IsNumber ? sizeList[0].Number : FromSqfString(FieldTypeEnum.XField, sizeList[0].String);
-                            Canvas.SetLeft(el, tmp);
-                            tmp += sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String);
-                            Canvas.SetRight(el, tmp);
-                            tmp = sizeList[1].IsNumber ? sizeList[1].Number : FromSqfString(FieldTypeEnum.YField, sizeList[1].String);
-                            Canvas.SetTop(el, tmp);
-                            tmp += sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
-                            Canvas.SetBottom(el, tmp);
-                            Canvas.SetZIndex(el, index);
-
-                            tmp = sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String);
-                            el.Width = tmp;
-                            tmp = sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
-                            el.Height = tmp;
-                            el.Tag = new TAG_CanvasChildElement { data = this.ConfigFile[Code.Markup.BindConfig.CurrentClassPath], file = file, FullyQualifiedPath = Code.Markup.BindConfig.CurrentClassPath, Owner = this, Window = this };
-                            var snaps = MainWindow.TryGet().Docker.FindSnaps<PropertySnap>();
-                            if (snaps.Count > 0 && (snaps[0]).CurrentData != null && (snaps[0]).CurrentData.Name == (el.Tag as TAG_CanvasChildElement).data.Name)
-                            {
-                                SelectElements(false, false, el);
-                                restoredSelection = true;
-                            }
-                        }
-                        if(!restoredSelection)
-                        {
-                            SelectElements(false, false);
-                        }
-                        index++;
+                        continue;
                     }
+                    var curField = value as ConfigField;
+                    if(string.IsNullOrWhiteSpace(curField.ConfigParentName))
+                    {
+                        Logger.Warn(string.Format(App.Current.Resources["STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNoBaseClass"] as String), curField.Key);
+                        continue;
+                    }
+                    //ToDo: Check ALL base classes if they implement an AddIn (--> ConfigField function/field)
+                    var addInUiElement = AddInManager.Instance.GetElement(curField.ConfigParentName);
+                    if (addInUiElement == null)
+                    {
+                        Logger.Warn(string.Format(App.Current.Resources["STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNotDefinedInAddins"] as String), curField.Key);
+                        continue;
+                    }
+                    Code.Markup.BindConfig.AddInPath = addInUiElement.Parent.ThisPath;
+                    using (FileStream stream = System.IO.File.OpenRead(addInUiElement.__XamlPath))
+                    {
+                        Code.Markup.BindConfig.CurrentClassPath = curField.Key;
+
+                        var el = (FrameworkElement)System.Windows.Markup.XamlReader.Load(stream);
+                        this.DisplayCanvas.Children.Add(el);
+                        ConfigField[] sizeList = new[] {
+                                curField["x"],
+                                curField["y"],
+                                curField["w"],
+                                curField["h"]
+                            };
+                        var tmp = sizeList[0].IsNumber ? sizeList[0].Number : FromSqfString(FieldTypeEnum.XField, sizeList[0].String);
+                        Canvas.SetLeft(el, tmp);
+                        tmp += sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String);
+                        Canvas.SetRight(el, tmp);
+                        tmp = sizeList[1].IsNumber ? sizeList[1].Number : FromSqfString(FieldTypeEnum.YField, sizeList[1].String);
+                        Canvas.SetTop(el, tmp);
+                        tmp += sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
+                        Canvas.SetBottom(el, tmp);
+                        Canvas.SetZIndex(el, index);
+
+                        tmp = sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String);
+                        el.Width = tmp;
+                        tmp = sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
+                        el.Height = tmp;
+                        el.Tag = new TAG_CanvasChildElement { file = addInUiElement, Key = curField.Key, Owner = this };
+                        var snaps = MainWindow.TryGet().Docker.FindSnaps<PropertySnap>();
+                        //ToDo: Restore selection
+                    }
+                    if (!restoredSelection)
+                    {
+                        SelectElements(false, false);
+                    }
+                    index++;
                 }
                 mainWindow.SetStatusbarText("", false);
                 foreach (var it in this.DisplayCanvas.Children)
@@ -809,18 +746,9 @@ namespace ArmA_UI_Editor.UI.Snaps
                     OnUiElementsChanged(this, new EventArgs());
                 return true;
             }
-            catch (SQF.ClassParser.File.ParseException ex)
-            {
-                Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
-                mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
-                this.DisplayCanvas.Children.Clear();
-                Frame frame = new Frame();
-                frame.Content = new ParseError();
-                this.DisplayCanvas.Children.Add(frame);
-            }
             catch (Exception ex)
             {
-                Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
+                Logger.Error(ex.Message);
                 mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
                 this.DisplayCanvas.Children.Clear();
                 Frame frame = new Frame();
@@ -828,42 +756,6 @@ namespace ArmA_UI_Editor.UI.Snaps
                 this.DisplayCanvas.Children.Add(frame);
             }
             return false;
-        }
-        public bool ReinitConfigFileField()
-        {
-            try
-            {
-                using (Stream stream = this.Textbox.Text.ToStream())
-                {
-                    this.ConfigFile = new SQF.ClassParser.File();
-                    this.ConfigFile.AppendConfig(AddInManager.Instance.MainFile);
-                    this.ConfigFile.AppendConfig(stream);
-                }
-                this.ConfigTextboxDiffersConfigInstance = false;
-                var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
-                mainWindow.SetStatusbarText("", false);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
-                mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
-                Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
-            }
-            return false;
-        }
-        private bool WriteConfigToScreen(bool force = false)
-        {
-            if (BlockWriteout && !force)
-                return false;
-            using (var memStream = new MemoryStream())
-            {
-                this.ConfigFile[this.ConfigFile.Count - 1].WriteOut(new StreamWriter(memStream));
-                memStream.Seek(0, SeekOrigin.Begin);
-                StreamReader reader = new StreamReader(memStream);
-                this.Textbox.Text = reader.ReadToEnd();
-            }
-            return true;
         }
         private SelectionOverlay CreateOrGetSelectionOverlay(bool mouseDownOnCreate = true)
         {
@@ -875,7 +767,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 el.OnElementMove += SelectionOverlay_OnElementMove;
                 el.OnElementResize += SelectionOverlay_OnElementResize;
                 el.OnStartMove += SelectionOverlay_OnStartMove;
-                el.OnStopMove += SelectionOverlay_OnStopMove;
+                //el.OnStopMove += SelectionOverlay_OnStopMove;
                 el.OnOperationFinalized += SelectionOverlay_OnOperationFinalized;
                 Canvas.SetZIndex(el, 10000);
                 this.DisplayCanvas.Children.Add(el);
@@ -1192,49 +1084,41 @@ namespace ArmA_UI_Editor.UI.Snaps
             return (double.Parse(dt.Compute(data, "").ToString())) * max;
         }
 
-        public List<Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>> GetUiElements()
+        public List<Tuple<Code.AddInUtil.UIElement, string>> GetUiElements()
         {
-            var list = new List<Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>>();
-            if (ConfigTextboxDiffersConfigInstance)
-                TryRefreshAll();
-            var data = this.ConfigFile[this.ConfigFile.Count - 1];
-            var uiElements = data.Class["controls"];
-            var controls = uiElements.Class;
-            foreach (var pair in controls)
+            var list = new List<Tuple<Code.AddInUtil.UIElement, string>>();
+            var controls = this.LastFileConfig["controls"];
+            foreach (var value in controls)
             {
-                if(pair.Value.Class.Parent == null)
+                if (!(value is ConfigField))
                 {
-                    MainWindow.TryGet().SetStatusbarText(string.Format("Cannot create new elements from scratch in this version of 'ArmA UI Editor'\nmissing parent of '{0}' in AddIns", pair.Value.Class.Parent.Name), false);
                     continue;
                 }
-                var value = AddInManager.Instance.GetElement(pair.Value.Class.Parent.Name);
-                if (value == null)
-                {
-                    MainWindow.TryGet().SetStatusbarText(string.Format("Cannot create new elements from scratch in this version of 'ArmA UI Editor'\nmissing parent of '{0}' in AddIns", pair.Value.Class.Parent.Name), false);
-                }
-                else
-                {
-                    list.Add(new Tuple<Code.AddInUtil.UIElement, KeyValuePair<string, Data>>(value, pair));
-                }
+                var curField = value as ConfigField;
+                //ToDo: Check ALL base classes if they implement an AddIn (--> ConfigField function/field)
+                var curFieldParent = AddInManager.Instance.GetElement(curField.ConfigParentName);
+                if (curFieldParent == null)
+                    continue;
+                
+                list.Add(new Tuple<Code.AddInUtil.UIElement, string>(curFieldParent, curField.Key));
             }
             return list;
         }
-        public void SwapUiIndexies(string name1, string name2)
+        public void SwapUiIndexies(string keyA, string keyB)
         {
-            TryRefreshAll();
-            var data = this.ConfigFile[this.ConfigFile.Count - 1];
-            var uiElements = data.Class["controls"];
-            var controls = uiElements.Class;
+            throw new NotImplementedException();
+            //ToDo: Reimplement
+            var controls = this.LastFileConfig["controls"];
             int index1 = -1;
             int index2 = -1;
             for (int i = 0; i < controls.Count; i++)
             {
-                var it = controls.ElementAt(i);
-                if (it.Key == name1)
+                var it = controls[i];
+                if (it.Key == keyA)
                 {
                     index1 = i;
                 }
-                else if (it.Key == name2)
+                else if (it.Key == keyB)
                 {
                     index2 = i;
                 }
@@ -1245,6 +1129,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             if (index1 == -1 || index2 == -1)
                 throw new ArgumentException("Cannot find given classname(s)");
+            /* old swap code that has to be replaced
             uiElements.Class = new ConfigClass();
             for (int i = 0; i < controls.Count; i++)
             {
@@ -1259,7 +1144,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 }
                 uiElements.Class.Add(it.Key, it.Value);
             }
-            TryRefreshAll();
+            TryRefreshAll();*/
         }
     }
 }

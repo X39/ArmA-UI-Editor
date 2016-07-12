@@ -84,20 +84,17 @@ namespace ArmA_UI_Editor.UI.Snaps
                 TextBox tb = sender as TextBox;
                 if (tb.Text.Length == 0)
                     return;
-                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onLoad", true);
-                data.String = tb.Text;
+                CurrentEditingSnap.LastFileConfig.SetKey("onLoad", tb.Text);
                 this.CurrentEditingSnap.Redraw();
             }
         }
         private void tb_onLoad_Initialized(object sender, EventArgs e)
         {
-            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onLoad", false);
-            if (data != null && data.IsString)
+            var field = this.CurrentEditingSnap.LastFileConfig.GetKey("onLoad", ConfigField.KeyMode.CheckParentsNull);
+            if (field != null && field.IsString)
             {
                 TextBox tb = sender as TextBox;
-                tb.Text = data.String;
+                tb.Text = field.String;
             }
         }
 
@@ -105,15 +102,14 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             Utility.tb_PreviewTextInput_Ident_DoHandle(sender, e, () =>
             {
-                this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1].Name = (sender as TextBox).Text;
+                this.CurrentEditingSnap.LastFileConfig.Name = (sender as TextBox).Text;
                 this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_ClassName_Initialized(object sender, EventArgs e)
         {
-            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
             TextBox tb = sender as TextBox;
-            tb.Text = uiConfigClass.Name;
+            tb.Text = this.CurrentEditingSnap.LastFileConfig.Name;
         }
 
         private void tb_onUnload_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -123,20 +119,17 @@ namespace ArmA_UI_Editor.UI.Snaps
                 TextBox tb = sender as TextBox;
                 if (tb.Text.Length == 0)
                     return;
-                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onUnload", true);
-                data.String = tb.Text;
+                this.CurrentEditingSnap.LastFileConfig.SetKey("onUnload", tb.Text);
                 this.CurrentEditingSnap.Redraw();
             }
         }
         private void tb_onUnload_Initialized(object sender, EventArgs e)
         {
-            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/onUnload", false);
-            if (data != null && data.IsString)
+            var field = this.CurrentEditingSnap.LastFileConfig.GetKey("onUnload", ConfigField.KeyMode.CheckParentsNull);
+            if (field != null && field.IsString)
             {
                 TextBox tb = sender as TextBox;
-                tb.Text = data.String;
+                tb.Text = field.String;
             }
         }
 
@@ -144,20 +137,17 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
-                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/duration", true);
-                data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                this.CurrentEditingSnap.LastFileConfig.SetKey("duration", (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
                 this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_duration_Initialized(object sender, EventArgs e)
         {
-            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/duration", false);
-            if (data != null && data.IsNumber)
+            var field = this.CurrentEditingSnap.LastFileConfig.GetKey("duration", ConfigField.KeyMode.CheckParentsNull);
+            if (field != null && field.IsNumber)
             {
                 TextBox tb = sender as TextBox;
-                tb.Text = data.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                tb.Text = field.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -165,20 +155,17 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
-                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeIn", true);
-                data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                this.CurrentEditingSnap.LastFileConfig.SetKey("fadeIn", (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
                 this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_fadeIn_Initialized(object sender, EventArgs e)
         {
-            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeIn", false);
-            if (data != null && data.IsNumber)
+            var field = this.CurrentEditingSnap.LastFileConfig.GetKey("fadeIn", ConfigField.KeyMode.CheckParentsNull);
+            if (field != null && field.IsNumber)
             {
                 TextBox tb = sender as TextBox;
-                tb.Text = data.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                tb.Text = field.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -186,20 +173,17 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
-                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeOut", true);
-                data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                this.CurrentEditingSnap.LastFileConfig.SetKey("fadeOut", (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
                 this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_fadeOut_Initialized(object sender, EventArgs e)
         {
-            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/fadeOut", false);
-            if (data != null && data.IsNumber)
+            var field = this.CurrentEditingSnap.LastFileConfig.GetKey("fadeOut", ConfigField.KeyMode.CheckParentsNull);
+            if (field != null && field.IsNumber)
             {
                 TextBox tb = sender as TextBox;
-                tb.Text = data.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                tb.Text = field.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
@@ -207,40 +191,33 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
-                var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/idd", true);
-                data.Number = (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                this.CurrentEditingSnap.LastFileConfig.SetKey("idd", (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
                 this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_Idd_Initialized(object sender, EventArgs e)
         {
-            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/idd", false);
-            if (data != null && data.IsNumber)
+            var field = this.CurrentEditingSnap.LastFileConfig.GetKey("idd", ConfigField.KeyMode.CheckParentsNull);
+            if (field != null && field.IsNumber)
             {
                 TextBox tb = sender as TextBox;
-                tb.Text = data.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                tb.Text = field.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
         private void cb_enableSimulation_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cb = sender as ComboBox;
-            int value = bool.Parse((cb.SelectedValue as ComboBoxItem).Content as string) ? 1 : 0;
-            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/enableSimulation", true);
-            data.Number = value;
+            this.CurrentEditingSnap.LastFileConfig.SetKey("enableSimulation", bool.Parse((cb.SelectedValue as ComboBoxItem).Content as string) ? 1 : 0);
             this.CurrentEditingSnap.Redraw();
         }
         private void cb_enableSimulation_Initialized(object sender, EventArgs e)
         {
-            var uiConfigClass = this.CurrentEditingSnap.ConfigFile[this.CurrentEditingSnap.ConfigFile.Count - 1];
-            var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(uiConfigClass, "/enableSimulation", false);
-            if (data != null && data.IsNumber)
+            var field = this.CurrentEditingSnap.LastFileConfig.GetKey("enableSimulation", ConfigField.KeyMode.CheckParentsNull);
+            if (field != null && field.IsNumber)
             {
                 ComboBox cb = sender as ComboBox;
-                cb.SelectedIndex = data.Number > 0 ? 1 : 0;
+                cb.SelectedIndex = field.Number > 0 ? 1 : 0;
             }
         }
     }

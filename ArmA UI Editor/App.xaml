@@ -68,15 +68,17 @@
                     <clr:String x:Key="STR_SettingsWindow_General_Updates_SkipVersion_ClearTooltip">Clears current ignore version</clr:String>
 
 
-                    <clr:String x:Key="STR_Snaps_EditingWindow_DisplayTab">Display</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ConfigTab">Config</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping">SnapToGrid</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleBackground">Background Image</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_Properties">Properties</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_Delete">Delete</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapElementToGrid">Snap to Grid</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_FitElementToGrid">Resize to Grid</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapFitElementToGrid">Snap &amp; Resize to Grid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_DisplayTab">Display</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ConfigTab">Config</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_Canvas_ToggleSnapping">SnapToGrid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_Canvas_ToggleBackground">Background Image</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_Properties">Properties</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_Delete">Delete</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_SnapElementToGrid">Snap to Grid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_FitElementToGrid">Resize to Grid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_SnapFitElementToGrid">Snap &amp; Resize to Grid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNoBaseClass">Ignoring '{0}' as it has no base class.</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNotDefinedInAddins">Ignoring '{0}' as it has no visual representation in AddIns.</clr:String>
 
                     <clr:String x:Key="STR_ParseError_PathHeader">PARSE ERROR</clr:String>
                     <clr:String x:Key="STR_ParseError_PathContent">INVALID CONFIG</clr:String>
@@ -98,6 +100,11 @@
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableMessage">Update {0} available\nDo you want to update now?</clr:String>
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableHeader">Update Available &lt;3</clr:String>
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableText">Update {0} is available for the ArmA-UI-Editor. Do you want to update now?\n(cancel will ignore this update)</clr:String>
+
+                    <clr:String x:Key="STR_BINDING_UnknownField">Cannot locate field '{0}'</clr:String>
+                    <clr:String x:Key="STR_BINDING_InvalidFieldType">Invalid field type on field '{0}', expected {1}</clr:String>
+                    <clr:String x:Key="STR_BINDING_InvalidArray_Size">Invalid size on array field '{0}', expected {1}</clr:String>
+                    <clr:String x:Key="STR_BINDING_InvalidArray_ChildType">Invalid type in array field '{0}' at index {1}, expected {2}"</clr:String>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="GlobalStyles">
                     <Style TargetType="{x:Type GridSplitter}" x:Key="GridSplitterStyle">

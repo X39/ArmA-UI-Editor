@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Net.Http;
+using NLog;
 
 namespace ArmA_UI_Editor
 {
@@ -14,6 +15,8 @@ namespace ArmA_UI_Editor
     /// </summary>
     public partial class App : Application
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger();
+
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
 #if DEBUG
@@ -72,6 +75,12 @@ namespace ArmA_UI_Editor
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            var target = new UI.Snaps.OutputSnap.EventedTarget();
+            NLog.Config.ConfigurationItemFactory.Default.Targets.RegisterDefinition("EventedTarget", typeof(UI.Snaps.OutputSnap.EventedTarget));
+            LogManager.Configuration.LoggingRules.Add(new NLog.Config.LoggingRule("*", LogLevel.Info, target));
+            LogManager.Configuration.AddTarget(target);
+            LogManager.ReconfigExistingLoggers();
+
             for (var i = 0; i < e.Args.Count(); i++)
             {
                 string arg = e.Args[i];
@@ -84,32 +93,8 @@ namespace ArmA_UI_Editor
                 {
                     switch(arg.ToUpper())
                     {
-                        case "LOGLEVEL":
-                            if (!hasNext)
-                                break;
-                            switch(e.Args[i + 1].ToUpper())
-                            {
-                                case "0":
-                                case "DEBUG":
-                                    Logger.Instance.LoggingLevel = Logger.LogLevel.DEBUG;
-                                    break;
-                                case "1":
-                                case "VERBOSE":
-                                case "V":
-                                    Logger.Instance.LoggingLevel = Logger.LogLevel.VERBOSE;
-                                    break;
-
-                            }
-                            i++;
-                            break;
-                        case "LOGFILE":
-                            if (!hasNext)
-                                break;
-                            Logger.Instance.setLogFile(e.Args[i + 1]);
-                            i++;
-                            break;
                         default:
-                            Logger.Instance.log(Logger.LogLevel.WARNING, "Unknown Startup parameter '" + arg + "'");
+                            Logger.Warn(string.Format("Unknown Startup parameter '{0}'", arg));
                             i++;
                             break;
                     }

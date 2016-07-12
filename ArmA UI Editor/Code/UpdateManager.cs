@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
-
+using NLog;
 
 namespace ArmA_UI_Editor.Code
 {
     public class UpdateManager
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger();
+
         public struct Update
         {
             public string OrigUrl { get; private set; }
@@ -71,7 +73,7 @@ namespace ArmA_UI_Editor.Code
             }
             catch(Exception ex)
             {
-                Logger.Instance.log(Logger.LogLevel.ERROR, ex.Message);
+                Logger.Error(ex.Message);
             }
             return new Update(url, false);
         }

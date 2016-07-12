@@ -23,7 +23,7 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// </summary>
     public partial class PropertySnap : Page, Code.Interface.ISnapWindow
     {
-        public Data CurrentData { get; private set; }
+        public ConfigField CurrentField { get; private set; }
         public List<Code.AddInUtil.Group> CurrentGroups { get; private set; }
         public EditingSnap CurrentWindow { get; private set; }
 
@@ -52,12 +52,11 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.PropertyStack.Children.Add(group);
             Property p;
             TextBox tb;
-            Data d;
 
             p = new Property();
             tb = new TextBox();
             tb.PreviewTextInput += TextBox_ClassName_PreviewTextInput;
-            tb.Text = this.CurrentData.Name;
+            tb.Text = this.CurrentField.Name;
             p.Children.Add(tb);
             p.Header = "Class Name";
             group.Children.Add(p);
@@ -65,10 +64,10 @@ namespace ArmA_UI_Editor.UI.Snaps
             p = new Property();
             tb = new TextBox();
             tb.PreviewTextInput += TextBox_IDC_PreviewTextInput;
-            d = SQF.ClassParser.File.ReceiveFieldFromHirarchy(this.CurrentData, "idc", false);
-            if(d != null && d.IsNumber)
+            var idcField = this.CurrentField.GetKey("idc", ConfigField.KeyMode.NullOnNotFound);
+            if (idcField != null && idcField.IsNumber)
             {
-                tb.Text = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", d.Number);
+                tb.Text = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", idcField.Number);
             }
             p.Children.Add(tb);
             p.Header = "IDC";
@@ -79,7 +78,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
-                SQF.ClassParser.File.ReceiveFieldFromHirarchy(this.CurrentData, "idc", true).Number = double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture);
+                this.CurrentField.SetKey("idc", double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
                 CurrentWindow.Redraw();
                 (ArmA_UI_Editor.UI.MainWindow.TryGet()).SetStatusbarText("", false);
             });
@@ -88,16 +87,16 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             Utility.tb_PreviewTextInput_Ident_DoHandle(sender, e, () =>
             {
-                this.CurrentData.Name = (sender as TextBox).Text;
-                CurrentWindow.TryRefreshAll(1);
+                this.CurrentField.Name = (sender as TextBox).Text;
+                CurrentWindow.Redraw();
             });
         }
 
 
-        public void LoadProperties(List<Code.AddInUtil.Group> groups, SQF.ClassParser.Data data)
+        public void LoadProperties(List<Code.AddInUtil.Group> groups, string Key)
         {
             this.CurrentGroups = groups;
-            this.CurrentData = data;
+            this.CurrentField = AddInManager.Instance.MainFile[Key];
             List<Group> groupList = new List<Group>();
             this.PropertyStack.Children.Clear();
             this.AddDefaultProperties();
@@ -112,8 +111,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 {
                     var el = new Property();
                     el.Header = property.DisplayName;
-                    Data d = File.ReceiveFieldFromHirarchy(data, property.FieldPath);
-                    var fEl = property.PropertyType.GenerateUiElement(d, CurrentWindow, new Code.AddInUtil.Property.PTypeDataTag { File = CurrentWindow.ConfigFile, Path = property.FieldPath, BaseData = data, PropertyObject = property });
+                    var fEl = property.PropertyType.GenerateUiElement(string.Concat(this.CurrentField.Key, property.FieldPath), CurrentWindow, new Code.AddInUtil.Property.PTypeDataTag { PropertyObject = property, Key = this.CurrentField.Key, Path = property.FieldPath });
                     el.Children.Add(fEl);
                     group.ItemsPanel.Children.Add(el);
                 }
@@ -122,7 +120,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                     var el = new Property();
                     group.ItemsPanel.Children.Add(el);
                     el.Header = sqf.Name;
-                    Data d = File.ReceiveFieldFromHirarchy(data, "/onLoad");
+                    var field = this.CurrentField.GetKey("onLoad", ConfigField.KeyMode.NullOnNotFound);
                     int argCount = 0;
                     foreach(var it in sqf.Arguments)
                     {
@@ -139,7 +137,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                         {
                             if (it.Property != null)
                             {
-                                var fEl = it.Property.GenerateUiElement(d, CurrentWindow, new Code.AddInUtil.Property.PTypeDataTag { File = CurrentWindow.ConfigFile, Path = "/onLoad", BaseData = data, PropertyObject = sqf, Extra = it.Index });
+                                var fEl = it.Property.GenerateUiElement(string.Concat(this.CurrentField.Key, "/onLoad"), CurrentWindow, new Code.AddInUtil.Property.PTypeDataTag { PropertyObject = sqf, Key = this.CurrentField.Key, Path = "/onLoad", Extra = it.Index });
                                 el.Children.Add(fEl);
                                 break;
                             }
@@ -184,7 +182,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             else
             {
-                LoadProperties(e.Tags[0].file.Properties, e.Tags[0].data);
+                LoadProperties(e.Tags[0].file.Properties, e.Tags[0].Key);
             }
         }
 

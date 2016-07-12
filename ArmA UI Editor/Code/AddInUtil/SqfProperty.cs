@@ -33,7 +33,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         [XmlElement("arg")]
         public List<Argument> Arguments;
         [XmlIgnore]
-        public string Ident { get { return SQF.ClassParser.Data.ToSqfString(this.Format, false); } }
+        public string Ident { get { return SQF.Utility.ToSqfString(this.Format, false); } }
 
         public static bool HasSqfPropertySection(SqfProperty prop, string fullString)
         {

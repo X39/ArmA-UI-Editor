@@ -15,7 +15,7 @@ namespace ArmA_UI_Editor.Code
 
         static AddInManager _instance = new AddInManager();
         public static AddInManager Instance { get { return _instance; } }
-        public SQF.ClassParser.File MainFile;
+        public SQF.ClassParser.ConfigField MainFile;
         private Dictionary<string, AddInUtil.UIElement> ConfigNameFileDictionary;
         private AddInManager()
         {
@@ -29,7 +29,8 @@ namespace ArmA_UI_Editor.Code
         /// <param name="progress">progress "report" function</param>
         public void ReloadAddIns(IProgress<Tuple<double, string>> progress)
         {
-            this.MainFile = new SQF.ClassParser.File();
+            this.MainFile = new SQF.ClassParser.ConfigField(new AddInUtil.EmptyTextBuffer());
+            this.MainFile.ToClass();
             this.ConfigNameFileDictionary = new Dictionary<string, AddInUtil.UIElement>();
             string basePath = System.AppDomain.CurrentDomain.BaseDirectory;
             if (Directory.Exists(basePath + @"AddIns\"))
@@ -59,20 +60,13 @@ namespace ArmA_UI_Editor.Code
                     var it = this.AddIns.ElementAt(i);
                     it.Initialize(new Progress<double>((d) => {
                         progress.Report(new Tuple<double, string>((i - 1 + d) / AddInInfoPaths.Count(), string.Format("Initializing AddIn '{0}'", it.Info.Name)));
-                    }));
+                    }), this.MainFile);
 
                     for (int j = 0; j < it.UIElements.Count(); j++)
                     {
                         var file = it.UIElements.ElementAt(j);
-                        progress.Report(new Tuple<double, string>((j + 1) / it.UIElements.Count(), string.Format("Appending '{0}' to main config", it.Info.Name)));
-                        this.MainFile.AppendConfig(file.ClassFile);
-                    }
-
-                    for (int j = 0; j < it.UIElements.Count(); j++)
-                    {
-                        var file = it.UIElements.ElementAt(j);
-                        progress.Report(new Tuple<double, string>((j + 1) / it.UIElements.Count(), string.Format("Cross Linking '{0}'s files", it.Info.Name)));
-                        this.ConfigNameFileDictionary.Add(file.ClassFile[0].Name, file);
+                        progress.Report(new Tuple<double, string>((j + 1) / it.UIElements.Count(), string.Format("Linking '{0}'s files", it.Info.Name)));
+                        this.ConfigNameFileDictionary.Add(file.ConfigKey, file);
                     }
                 }
             }

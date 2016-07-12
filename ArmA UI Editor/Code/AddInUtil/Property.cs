@@ -15,15 +15,14 @@ namespace ArmA_UI_Editor.Code.AddInUtil
     {
         public class PTypeDataTag
         {
-            public SQF.ClassParser.File File;
-            public SQF.ClassParser.Data BaseData;
+            public string Key;
             public string Path;
             public object PropertyObject;
             public object Extra;
         }
         public abstract class PType
         {
-            public abstract FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag);
+            public abstract FrameworkElement GenerateUiElement(string Key, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag);
             public static event EventHandler ValueChanged;
             public static event EventHandler<string> OnError;
             protected void TriggerValueChanged(object sender)
@@ -39,18 +38,22 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         }
         public class StringType : PType
         {
-            public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
+            public override FrameworkElement GenerateUiElement(string Key, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
             {
                 var tb = new TextBox();
                 tb.Tag = tag;
-                if (tag.PropertyObject is SqfProperty)
+                var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
+                if (curVal != null)
                 {
-                    if(curVal != null)
-                        tb.Text = SqfProperty.GetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, curVal.String, (int)tag.Extra);
-                }
-                else
-                {
-                    tb.Text = curVal != null ? curVal.String : "";
+                    if (tag.PropertyObject is SqfProperty)
+                    {
+                        if (curVal != null)
+                            tb.Text = SqfProperty.GetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, curVal.String, (int)tag.Extra);
+                    }
+                    else
+                    {
+                        tb.Text = curVal.String;
+                    }
                 }
                 tb.PreviewTextInput += Tb_PreviewTextInput;
                 tb.ToolTip = App.Current.Resources["STR_CODE_Property_String"] as String;
@@ -63,17 +66,17 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 {
                     var tb = sender as TextBox;
                     PTypeDataTag tag = tb.Tag as PTypeDataTag;
-                    var data = tag.File[tag.Path];
-                    if (data == null)
-                        data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
+                    object value;
                     if (tag.PropertyObject is SqfProperty)
                     {
-                        data.String = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, string.IsNullOrWhiteSpace(data.String) ? "" : data.String, tb.Text, (int)tag.Extra);
+                        var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
+                        value = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, field == null && !field.IsString ? "" : field.String, tb.Text, (int)tag.Extra);
                     }
                     else
                     {
-                        data.String = tb.Text;
+                        value = tb.Text;
                     }
+                    AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), value);
                     TriggerValueChanged(tb);
                 }
             }
@@ -89,15 +92,16 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             [XmlAttribute("conversion")]
             public string Conversion { get; set; }
 
-            public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
+            public override FrameworkElement GenerateUiElement(string Key, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
             {
                 var tb = new TextBox();
                 tb.Tag = tag;
                 this.Window = window;
+                var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
+                if (string.IsNullOrWhiteSpace(Conversion))
+                    Conversion = string.Empty;
                 if (curVal != null)
                 {
-                    if (string.IsNullOrWhiteSpace(Conversion))
-                        Conversion = string.Empty;
                     switch (Conversion.ToUpper())
                     {
                         default:
@@ -147,9 +151,6 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                 {
                     var tb = sender as TextBox;
                     PTypeDataTag tag = tb.Tag as PTypeDataTag;
-                    var data = tag.File[tag.Path];
-                    if (data == null)
-                        data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
                     try
                     {
                         switch (Conversion.ToUpper())
@@ -157,24 +158,25 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                             default:
                                 if (tag.PropertyObject is SqfProperty)
                                 {
-                                    data.String = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, data.Value == null ? "" : data.String, tb.Text, (int)tag.Extra);
+                                    var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
+                                    AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, field == null && !field.IsString ? "" : field.String, tb.Text, (int)tag.Extra));
                                 }
                                 else
                                 {
-                                    data.Number = double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture);
+                                    AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
                                 }
                                 break;
                             case "SCREENX":
-                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.XField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.XField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture)));
                                 break;
                             case "SCREENY":
-                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.YField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.YField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture)));
                                 break;
                             case "SCREENW":
-                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.WField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.WField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture)));
                                 break;
                             case "SCREENH":
-                                data.String = Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.HField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
+                                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.HField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture)));
                                 break;
                         }
                         TriggerValueChanged(tb);
@@ -188,13 +190,15 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         }
         public class BooleanType : PType
         {
-            public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
+            public override FrameworkElement GenerateUiElement(string Key, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
             {
                 var cb = new ComboBox();
                 cb.Tag = tag;
                 cb.Items.Add("true");
                 cb.Items.Add("false");
+                var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
                 if (curVal != null)
+                {
                     if (tag.PropertyObject is SqfProperty)
                     {
                         var str = SqfProperty.GetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, curVal.String, (int)tag.Extra);
@@ -205,7 +209,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                     {
                         cb.SelectedIndex = curVal.Boolean ? 0 : 1;
                     }
-
+                }
                 cb.SelectionChanged += Cb_SelectionChanged;
                 cb.ToolTip = App.Current.Resources["STR_CODE_Property_Boolean"] as String;
                 return cb;
@@ -215,17 +219,17 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             {
                 ComboBox cb = sender as ComboBox;
                 PTypeDataTag tag = cb.Tag as PTypeDataTag;
-                var data = tag.File[tag.Path];
-                if (data == null)
-                    data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
+                object value;
                 if (tag.PropertyObject is SqfProperty)
                 {
-                    data.String = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, string.IsNullOrWhiteSpace(data.String) ? "" : data.String, string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", cb.SelectedValue), (int)tag.Extra);
+                    var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
+                    value = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, field == null && !field.IsString ? "" : field.String, string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", cb.SelectedValue), (int)tag.Extra);
                 }
                 else
                 {
-                    data.Boolean = bool.Parse((string)cb.SelectedValue);
+                    value = bool.Parse((string)cb.SelectedValue);
                 }
+                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), value);
                 TriggerValueChanged(cb);
             }
         }
@@ -236,12 +240,13 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             [XmlElement("count")]
             public int Count { get; set; }
 
-            public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
+            public override FrameworkElement GenerateUiElement(string Key, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
             {
                 var tb = new TextBox();
                 tb.Tag = tag;
                 StringBuilder builder = new StringBuilder();
                 bool isFirst = true;
+                var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
                 if (curVal != null)
                 {
                     foreach (var it in curVal.Array)
@@ -249,28 +254,28 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         if (!isFirst)
                             builder.Append(", ");
                         isFirst = false;
-                        builder.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", it.Value));
+                        builder.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", it));
                         switch (Type.ToUpper())
                         {
                             case "NUMBER":
-                                if (!it.IsNumber)
+                                if (!(it is double))
                                     throw new Exception();
                                 break;
                             case "STRING":
-                                if (!it.IsString)
+                                if (!(it is string))
                                     throw new Exception();
                                 break;
                             case "BOOLEAN":
-                                if (!it.IsBoolean)
+                                if (!(it is bool))
                                     throw new Exception();
                                 break;
                             default:
                                 throw new Exception();
                         }
                     }
-                    tb.Text = builder.ToString();
                 }
-                tb.TextChanged += Tb_TextChanged;
+                tb.Text = builder.ToString();
+
                 tb.PreviewTextInput += Tb_PreviewTextInput;
                 switch (Type.ToUpper())
                 {
@@ -304,52 +309,20 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
                         try
                         {
-                            var file = SQF.ClassParser.File.Load(memStream);
-                            if (file["/myClass/arr"].Array.Count != this.Count)
+                            SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(memStream));
+                            var tmpField = p.Parse(new EmptyTextBuffer());
+                            if (tmpField.Array.Length != this.Count)
                                 throw new Exception();
 
                             PTypeDataTag tag = (sender as TextBox).Tag as PTypeDataTag;
-                            var data = tag.File[tag.Path];
-                            if (data == null)
-                                data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
-                            data.Array = file["/myClass/arr"].Array;
+                            var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.CreateNew);
+                            field.Parent.SetKey(string.Concat(tag.Key, tag.Path), tmpField.Value);
                             TriggerValueChanged(sender);
                         }
                         catch
                         {
                             TriggerError(sender, "Invalid Property");
                         }
-                    }
-                }
-            }
-
-            private void Tb_TextChanged(object sender, TextChangedEventArgs e)
-            {
-                using (var memStream = new System.IO.MemoryStream())
-                {
-                    var writer = new System.IO.StreamWriter(memStream);
-                    writer.Write("class myClass{arr[]={");
-                    writer.Write((sender as TextBox).Text);
-                    writer.Write("};};");
-                    writer.Flush();
-                    memStream.Seek(0, System.IO.SeekOrigin.Begin);
-                    var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
-                    try
-                    {
-                        var file = SQF.ClassParser.File.Load(memStream);
-                        if (!(sender as TextBox).Text.Contains('\r') || file["/myClass/arr"].Array.Count != this.Count)
-                            return;
-
-                        PTypeDataTag tag = (sender as TextBox).Tag as PTypeDataTag;
-                        var data = tag.File[tag.Path];
-                        if (data == null)
-                            data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
-                        data.Array = file["/myClass/arr"].Array;
-                        TriggerValueChanged(sender);
-                    }
-                    catch
-                    {
-                        TriggerError(sender, "Invalid Property");
                     }
                 }
             }
@@ -376,16 +349,18 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             [XmlArrayItem("item")]
             public List<Data> Items { get; set; }
 
-            public override FrameworkElement GenerateUiElement(SQF.ClassParser.Data curVal, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
+            public override FrameworkElement GenerateUiElement(string Key, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
             {
                 var cb = new ComboBox();
                 cb.Tag = tag;
                 cb.DisplayMemberPath = "Name";
                 cb.SelectedValuePath = "Value";
+                var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
                 foreach (var it in this.Items)
                 {
                     cb.Items.Add(it);
                     if (curVal != null)
+                    {
                         if (tag.PropertyObject is SqfProperty)
                         {
                             var val = SqfProperty.GetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, curVal.String, (int)tag.Extra);
@@ -397,6 +372,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                             if (it.Value == string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", curVal.Value))
                                 cb.SelectedItem = it;
                         }
+                    }
                     
                         
                 }
@@ -409,7 +385,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             {
                 ComboBox cb = sender as ComboBox;
                 PTypeDataTag tag = cb.Tag as PTypeDataTag;
-                var data = SQF.ClassParser.File.ReceiveFieldFromHirarchy(tag.BaseData, tag.Path, true);
+
                 Data d = cb.Items[cb.SelectedIndex] as Data;
                 object value = null;
                 switch (d.Type.ToUpper())
@@ -421,15 +397,15 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         value = double.Parse(d.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
                 }
+
                 if (tag.PropertyObject is SqfProperty)
                 {
-                    data.String = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, string.IsNullOrWhiteSpace(data.String) ? "" : data.String, string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", value), (int)tag.Extra);
+                    var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
+                    if(field != null && field.IsString)
+                        value = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, string.IsNullOrWhiteSpace(field.String) ? "" : field.String, string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", value), (int)tag.Extra);
                 }
-                else
-                {
-                    data.Value = value;
-                }
-                TriggerValueChanged(data.Value);
+                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), value);
+                TriggerValueChanged(value);
             }
         }
 
