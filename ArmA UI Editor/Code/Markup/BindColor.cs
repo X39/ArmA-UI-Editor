@@ -32,7 +32,7 @@ namespace ArmA_UI_Editor.Code.Markup
                 if (!(array[i] is double))
                     throw new Exception(string.Format(App.Current.Resources["STR_BINDING_InvalidArray_ChildType"] as string, string.Concat(CurrentClassPath, this.Path), i, "SCALAR"));
             }
-            return Color.FromArgb((byte)((double)array[3] * 256), (byte)((double)array[0] * 256), (byte)((double)array[1] * 256), (byte)((double)array[2] * 256));
+            return Color.FromArgb((byte)((double)array[3] * 255), (byte)((double)array[0] * 255), (byte)((double)array[1] * 255), (byte)((double)array[2] * 255));
         }
     }
 }
