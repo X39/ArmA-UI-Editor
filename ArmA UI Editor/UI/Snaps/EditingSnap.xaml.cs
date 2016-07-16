@@ -599,9 +599,11 @@ namespace ArmA_UI_Editor.UI.Snaps
             using (var stream = this.Textbox.Text.AsMemoryStream())
             {
                 SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
-                var index = p.GetValueRange(name);
+                var searchKey = controlsField.Key;
+                searchKey = searchKey.Remove(0, searchKey.IndexOf(this.LastFileConfig.Name) - 1);
+                var index = p.GetValueRange(searchKey);
 
-                this.Textbox.Text = this.Textbox.Text.Insert(index.Item2, string.Concat("\r\n", field.ToPrintString(3)));
+                this.Textbox.Text = this.Textbox.Text.Insert(index.Item2, string.Concat("\r\n", field.ToPrintString(2)));
             }
             this.RegenerateDisplay();
             this.ThisScrollViewer.Focus();
