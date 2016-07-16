@@ -539,11 +539,12 @@ namespace SQF.ClassParser
                 builder.AppendLine("{");
                 foreach(var it in this.Children)
                 {
-                    builder.Append(new string('\t', tabCount + 1));
+                    if(!it.IsClass)
+                        builder.Append(new string('\t', tabCount + 1));
                     builder.AppendLine(it.ToPrintString(tabCount + 1));
                 }
                 builder.Append(new string('\t', tabCount));
-                builder.AppendLine("};");
+                builder.Append("};");
             }
             else
             {

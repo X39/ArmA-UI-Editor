@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ArmA_UI_Editor.Code;
 
 namespace ArmA_UI_Editor.UI
 {
@@ -28,6 +29,23 @@ namespace ArmA_UI_Editor.UI
         {
             TreeView tv = sender as TreeView;
             tv.ItemsSource = Code.AddInManager.Instance.MainFile;
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var tv = ((sender as MenuItem).Parent as ContextMenu).PlacementTarget as TreeView;
+            Clipboard.SetText((tv.SelectedItem as SQF.ClassParser.ConfigField).ToPrintString());
+        }
+
+        private void TreeView_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var tvi = (e.OriginalSource as TextBlock).FindInVisualTreeUpward<TreeViewItem>();
+            if(tvi == null)
+            {
+                e.Handled = true;
+                return;
+            }
+            tvi.Focus();
         }
     }
 }

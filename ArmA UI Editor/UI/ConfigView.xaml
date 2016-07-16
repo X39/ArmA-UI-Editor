@@ -7,8 +7,13 @@
         xmlns:parser="clr-namespace:SQF.ClassParser;assembly=ArmAClassParser"
         xmlns:c="clr-namespace:ArmA_UI_Editor.Code.Converter"
         mc:Ignorable="d"
-        Title="ConfigView" Height="300" Width="300">
-    <TreeView Initialized="TreeView_Initialized">
+        Title="ConfigView" Height="768" Width="512">
+    <TreeView Initialized="TreeView_Initialized" MouseRightButtonDown="TreeView_MouseRightButtonDown">
+        <TreeView.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Export to Clipboard" Click="MenuItem_Click"/>
+            </ContextMenu>
+        </TreeView.ContextMenu>
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate DataType="{x:Type parser:ConfigField}" ItemsSource="{Binding}">
                 <TextBlock Text="{Binding}"/>

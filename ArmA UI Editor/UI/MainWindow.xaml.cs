@@ -225,7 +225,7 @@ namespace ArmA_UI_Editor.UI
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var tmp = new ConfigView();
-            tmp.Show();
+            tmp.ShowDialog();
         }
     }
 }

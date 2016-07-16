@@ -41,25 +41,6 @@ namespace ArmA_UI_Editor.Code
             System.Windows.Controls.Canvas.SetRight(el, rect.Right);
             System.Windows.Controls.Canvas.SetBottom(el, rect.Bottom);
         }
-        public static T FindParentInHirarchy<T>(this System.Windows.FrameworkElement el) where T : System.Windows.FrameworkElement
-        {
-            while(el != null)
-            {
-                if(el.Parent is T)
-                {
-                    return el as T;
-                }
-                else if(el.Parent is System.Windows.FrameworkElement)
-                {
-                    el = el.Parent as System.Windows.FrameworkElement;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            return null;
-        }
         public static bool IsNumeric(this string s)
         {
             bool dot = false;
@@ -192,6 +173,12 @@ namespace ArmA_UI_Editor.Code
                 }
             }
             e.Handled = true;
+        }
+        public static T FindInVisualTreeUpward<T>(this DependencyObject el) where T : FrameworkElement
+        {
+            while (el != null && !(el is T))
+                el = System.Windows.Media.VisualTreeHelper.GetParent(el);
+            return el as T;
         }
     }
 }
