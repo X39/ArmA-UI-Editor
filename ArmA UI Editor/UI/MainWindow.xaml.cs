@@ -222,7 +222,7 @@ namespace ArmA_UI_Editor.UI
             this.AddToDockerOrFocus<EventsSnap>();
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Settings_ShowConfigView_Click(object sender, RoutedEventArgs e)
         {
             var tmp = new ConfigView();
             tmp.ShowDialog();
