@@ -96,7 +96,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Code\AddInUtil\EmptyTextBuffer.cs" />
     <Compile Include="Code\AddInUtil\Event.cs" />
     <Compile Include="Code\AddInUtil\Property.cs" />
     <Compile Include="Code\AddInUtil\SqfProperty.cs" />
@@ -107,7 +106,6 @@
     <Compile Include="Code\AddIn.cs" />
     <Compile Include="Code\AddInUtil\Info.cs" />
     <Compile Include="Code\AddInUtil\Group.cs" />
-    <Compile Include="Code\Converter\EditingSnap_ConfigFieldBufferConverter.cs" />
     <Compile Include="Code\Converter\PropertyValueStringConverter.cs" />
     <Compile Include="Code\Markup\BindColor.cs" />
     <Compile Include="Code\Markup\BindBrush.cs" />

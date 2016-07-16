@@ -20,18 +20,16 @@ namespace SQF.ClassParser
         public override ConfigField Parent { get { return this.ReferencedConfigField.Parent; } }
         public override string Name { get { return this.ReferencedConfigField.Name; } set { this.ReferencedConfigField.Name = value; } }
         public override string ConfigParentName { get { return this.ReferencedConfigField.ConfigParentName; } set { this.ReferencedConfigField.ConfigParentName = value; } }
-        public override ITextBuffer ThisBuffer { get { return this.ReferencedConfigField.ThisBuffer; } }
-        public override object Value { get { return this.ReferencedConfigField.Value; } internal set { if (this.IsReference) this.CreateField(); this.ReferencedConfigField.Value = value; } }
+        public override object Value { get { return this.ReferencedConfigField == null ? null : this.ReferencedConfigField.Value; } internal set { if (this.IsReference) this.CreateField(); this.ReferencedConfigField.Value = value; } }
         private string _Key;
         public override string Key { get { return this._Key; } }
         public override int ParentCount { get { return _Key.Split('/').Count((s) => string.IsNullOrWhiteSpace(s)); } }
 
 
-        public ConfigFieldReference(ConfigField referencedField, string thisKey) : base()
+        public ConfigFieldReference(ConfigField referencedField, string thisKey) : base(true)
         {
             this.IsReference = true;
             this.ReferencedConfigField = referencedField;
-            this.Marks = referencedField.Marks;
             this._Key = thisKey;
         }
         private void CreateField()
@@ -42,7 +40,6 @@ namespace SQF.ClassParser
 
             field = field.GetKey(this.Key, KeyMode.CreateNew);
             this.ReferencedConfigField = field;
-            this.Marks = this.ReferencedConfigField.Marks;
             this.IsReference = false;
         }
     }

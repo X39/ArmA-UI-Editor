@@ -9,7 +9,7 @@ using SQF;
 
 namespace SQF.ClassParser
 {
-    public class ConfigField : INotifyPropertyChanged, INotifyPropertyChanging, IEnumerable<object>
+    public class ConfigField : INotifyPropertyChanged, INotifyPropertyChanging, IEnumerable<ConfigField>
     {
         public enum KeyMode
         {
@@ -18,107 +18,6 @@ namespace SQF.ClassParser
             CheckParentsNull,
             ThrowOnNotFound,
             NullOnNotFound
-        }
-        internal enum MarkOffsets
-        {
-            NA = -1,
-            front,
-            name,
-            name_parent,
-            parent,
-            parent_value,
-            value,
-            blockclose
-        }
-        internal struct Mark
-        {
-            public int Length;
-            public MarkOffsets ArrayOffset;
-
-            public Mark(int length, MarkOffsets arrayOffset)
-            {
-                this.Length = length;
-                this.ArrayOffset = arrayOffset;
-            }
-
-            /// <summary>
-            /// Receives the textrange represented by this mark.
-            /// </summary>
-            /// <returns><see cref="Tuple"/> with Item1 being the actual string of given range and Item2 the int being the next offset</returns>
-            public Tuple<string, int> GetRange(ConfigField inField)
-            {
-                var field = inField;
-                int thisOffset = 0;
-                for(int i = (int)this.ArrayOffset - 1; i >= 0; i--)
-                {
-                    thisOffset += field.Marks[i].Length;
-                }
-                var lastField = field;
-                field = field.Parent;
-
-                while (field != null)
-                {
-                    if (field.HasBuffer)
-                        break;
-                    if (field.IsClass)
-                    {
-                        foreach (var child in field.Children)
-                        {
-                            if (child == lastField)
-                                break;
-                            for (int i = 0; i <= (int)MarkOffsets.blockclose; i++)
-                            {
-                                thisOffset += child.Marks[i].Length;
-                            }
-                        }
-                    }
-                    for (int i = (int)MarkOffsets.parent_value; i >= 0; i--)
-                    {
-                        thisOffset += field.Marks[i].Length;
-                    }
-                    lastField = field;
-                    field = field.Parent;
-                }
-                return new Tuple<string, int>(inField.ThisBuffer.Substring(thisOffset, this.Length), thisOffset + this.Length);
-            }
-            /// <summary>
-            /// Receives the textrange represented by this mark.
-            /// </summary>
-            /// <param name="lastOffset">NextOffset of last Mark operation (allows for faster processing)</param>
-            /// <returns><see cref="Tuple"/> with Item1 being the actual string of given range and Item2 the int being the next offset</returns>
-            public Tuple<string, int> GetRange(ConfigField field, int nextOffset)
-            {
-                return new Tuple<string, int>(field.ThisBuffer.Substring(nextOffset, this.Length), nextOffset + this.Length);
-            }
-            public override string ToString()
-            {
-                return string.Format("{{Length = {0}, ArrayOffset = {1}}}", this.Length, this.ArrayOffset);
-            }
-        }
-        internal class MarkList
-        {
-            public MarkList()
-            {
-                this.Marks[(int)MarkOffsets.front] = new Mark(0, MarkOffsets.front);
-                this.Marks[(int)MarkOffsets.name] = new Mark(0, MarkOffsets.name);
-                this.Marks[(int)MarkOffsets.name_parent] = new Mark(0, MarkOffsets.name_parent);
-                this.Marks[(int)MarkOffsets.parent] = new Mark(0, MarkOffsets.parent);
-                this.Marks[(int)MarkOffsets.parent_value] = new Mark(0, MarkOffsets.parent_value);
-                this.Marks[(int)MarkOffsets.value] = new Mark(0, MarkOffsets.value);
-                this.Marks[(int)MarkOffsets.blockclose] = new Mark(0, MarkOffsets.blockclose);
-            }
-            private Mark[] Marks = new Mark[(int)MarkOffsets.blockclose + 1];
-            public virtual Mark this[int i]
-            {
-                get
-                {
-                    return this.Marks[i];
-                }
-                set
-                {
-                    this.Marks[i] = value;
-                }
-            }
         }
         #region Eventing
         public event PropertyChangedEventHandler PropertyChanged;
@@ -152,38 +51,11 @@ namespace SQF.ClassParser
 
         private string _Name;
         private string _ConfigParentName;
-        private ITextBuffer _ThisBuffer;
-        internal MarkList Marks;
 
         public virtual ConfigField Parent { get; private set; }
-        public virtual string Name { get { return _Name; } set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name); } }
-        public virtual string ConfigParentName { get { return _ConfigParentName; } set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.name_parent); UpdateTextBuffer(MarkOffsets.parent); } }
-        public virtual ITextBuffer ThisBuffer
-        {
-            get { if (this._ThisBuffer == default(TextBuffer)) return this.Parent == default(ConfigField) ? default(TextBuffer) : this.Parent.ThisBuffer; return this._ThisBuffer; }
-            set
-            {
-                if (this._ThisBuffer == value)
-                    return;
-                if(this._ThisBuffer != null)
-                {
-                    this._ThisBuffer.PropertyChanged -= ThisBuffer_PropertyChanged;
-                }
-                this._ThisBuffer = value;
-                if (value != null)
-                {
-                    this._ThisBuffer.PropertyChanged += ThisBuffer_PropertyChanged;
-                    UpdateTextBuffer(MarkOffsets.NA);
-                }
-            }
-        }
+        public virtual string Name { get { return _Name; } set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); } }
+        public virtual string ConfigParentName { get { return _ConfigParentName; } set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); } }
 
-        private void ThisBuffer_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RaisePropertyChanged("ThisBuffer");
-        }
-
-        public bool HasBuffer { get { return this._ThisBuffer != default(TextBuffer); } }
         public ConfigField TreeRoot
         {
             get
@@ -214,11 +86,11 @@ namespace SQF.ClassParser
         public bool IsNumber { get { return this.Value is double; } }
         public bool IsString { get { return this.Value is string; } }
         public bool IsBoolean { get { return this.Value is bool; } }
-        private List<ConfigField> Children { get { return this.Value as List<ConfigField>; } set { this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.NA); } }
-        public object[] Array { get { return this.Value as object[]; } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField();  this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
-        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); UpdateTextBuffer(MarkOffsets.value); } }
+        private List<ConfigField> Children { get { return this.Value as List<ConfigField>; } set { this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); } }
+        public object[] Array { get { return this.Value as object[]; } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField();  this.Value = value; this.RaisePropertyChanged();} }
+        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); } }
+        public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); } }
+        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); } }
         public int Count { get { if (!this.IsClass) return 0; return this.Children.Count; } }
         public virtual string Key
         {
@@ -238,29 +110,21 @@ namespace SQF.ClassParser
 
         public virtual int ParentCount { get { int i = 0; var cf = this; while (cf.Parent != null) { i++; cf = cf.Parent; } return i; } }
 
-        protected ConfigField()
-        {
-            this.Marks = new MarkList();
-        }
-
+        protected ConfigField(bool ConfigReferenceConstructorCrapTrick) { }
         public ConfigField(string name)
         {
             this.Parent = default(ConfigField);
-            this.ThisBuffer = default(TextBuffer);
             this.Value = "";
             this._ConfigParentName = default(string);
             this._Name = name;
-            this.Marks = new MarkList();
         }
-        public ConfigField(ITextBuffer buffer)
+        public ConfigField()
         {
             this.ToClass();
             this.Value = "";
             this.Parent = default(ConfigField);
-            this.ThisBuffer = buffer;
             this._ConfigParentName = default(string);
             this._Name = string.Empty;
-            this.Marks = new MarkList();
         }
 
         /// <summary>
@@ -289,10 +153,6 @@ namespace SQF.ClassParser
             {
                 field.ConfigParentName = parent;
                 field.ToClass();
-            }
-            else
-            {
-                field.FormatBuffer();
             }
             this.Children.Add(field);
             this.RaisePropertyChanged("Children");
@@ -566,7 +426,6 @@ namespace SQF.ClassParser
             {
                 this.Children = new List<ConfigField>();
             }
-            this.FormatBuffer();
         }
         /// <summary>
         /// Changes this <see cref="ConfigField"/> to a field.
@@ -577,7 +436,6 @@ namespace SQF.ClassParser
             if (!this.IsClass)
                 throw new InvalidOperationException(EX_INVALIDOPS_ALREADYFIELD);
             this.Value = "";
-            this.FormatBuffer();
         }
         /// <summary>
         /// Checks if given key exists in this class.
@@ -598,7 +456,6 @@ namespace SQF.ClassParser
             }
             return false;
         }
-
         /// <summary>
         /// Helper function to make sure provided key is valid
         /// </summary>
@@ -607,97 +464,6 @@ namespace SQF.ClassParser
         private static bool IsValidKey(string key)
         {
             return key.All((c) => char.IsLetterOrDigit(c) || c == '_');
-        }
-        /// <summary>
-        /// Updates corresponding offsets in TextBuffer
-        /// </summary>
-        /// <param name="mo">Targeted <see cref="MarkOffsets"/> which to update</param>
-        /// <exception cref="NotImplementedException"/>
-        private void UpdateTextBuffer(MarkOffsets mo)
-        {
-            if (this.ThisBuffer == null)
-                return;
-            int tabCount = 0;
-            var field = this.Parent;
-            while (field != null && !field.HasBuffer)
-            {
-                tabCount++;
-                field = field.Parent;
-            }
-            string replaceText = string.Empty;
-            switch (mo)
-            {
-                case MarkOffsets.front:
-                    replaceText = string.Concat("\r\n", new string('\t', tabCount), this.IsClass ? "class " : "");
-                    break;
-                case MarkOffsets.name:
-                    replaceText = this.Name;
-                    break;
-                case MarkOffsets.name_parent:
-                    replaceText = this.IsClass && !string.IsNullOrWhiteSpace(this.ConfigParentName) ? " : " : "";
-                    break;
-                case MarkOffsets.parent:
-                    replaceText = string.IsNullOrWhiteSpace(this.ConfigParentName)  ? "" : this.ConfigParentName;
-                    break;
-                case MarkOffsets.parent_value:
-                    replaceText = this.IsClass ? string.Format("\r\n{0}{{", new string('\t', tabCount)) : this.IsArray ? "[] = " : " = ";
-                    break;
-                case MarkOffsets.value:
-                    if (this.IsClass)
-                    {
-                        int offset = 0;
-                        foreach(var it in this.Children)
-                        {
-                            for(int i = 0; i <= (int)MarkOffsets.blockclose; i++)
-                            {
-                                offset += it.Marks[i].Length;
-                            }
-                        }
-                        var tmpMark = this.Marks[(int)MarkOffsets.value];
-                        if(offset == 0)
-                        {
-                            this.ThisBuffer.Replace("", this.Marks[(int)mo].GetRange(this).Item2 - this.Marks[(int)mo].Length, this.Marks[(int)mo].Length);
-                        }
-                        tmpMark.Length = offset;
-                        this.Marks[(int)MarkOffsets.value] = tmpMark;
-                        if(this.Parent != null)
-                            this.Parent.UpdateTextBuffer(MarkOffsets.value);
-                        return;
-                    }
-                    else
-                    {
-                        replaceText = this.ValueToString();
-                    }
-                    break;
-                case MarkOffsets.blockclose:
-                    replaceText = this.IsClass ? string.Format("\r\n{0}}};", new string('\t', tabCount)) : ";";
-                    break;
-                case MarkOffsets.NA:
-                    UpdateTextBuffer(MarkOffsets.front);
-                    UpdateTextBuffer(MarkOffsets.name);
-                    UpdateTextBuffer(MarkOffsets.name_parent);
-                    UpdateTextBuffer(MarkOffsets.parent);
-                    UpdateTextBuffer(MarkOffsets.parent_value);
-                    if (this.IsClass)
-                    {
-                        foreach (var it in this.Children)
-                        {
-                            it.UpdateTextBuffer(MarkOffsets.NA);
-                        }
-                    }
-                    UpdateTextBuffer(MarkOffsets.value);
-                    UpdateTextBuffer(MarkOffsets.blockclose);
-                    return;
-            }
-            if (this.HasBuffer)
-                return;
-            var markRes = this.Marks[(int)mo].GetRange(this);
-            if (markRes.Item1.Equals(replaceText))
-                return;
-            this.ThisBuffer.Replace(replaceText, markRes.Item2 - this.Marks[(int)mo].Length, this.Marks[(int)mo].Length);
-            var mark = this.Marks[(int)mo];
-            mark.Length = replaceText.Length;
-            this.Marks[(int)mo] = mark;
         }
         /// <summary>
         /// Converts value to write-to-file comform string representation
@@ -750,6 +516,46 @@ namespace SQF.ClassParser
             return builder.ToString();
         }
         /// <summary>
+        /// Creates a formatted string which represents this <see cref="ConfigField"/> in proper ArmA way.
+        /// </summary>
+        /// <param name="tabCount">Tab Count this print should have</param>
+        /// <returns>Formatted string containing only this <see cref="ConfigField"/></returns>
+        public string ToPrintString(int tabCount = 0)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            if (this.IsClass)
+            {
+                builder.Append(new string('\t', tabCount));
+                builder.Append("class ");
+                builder.Append(this.Name);
+                if (!string.IsNullOrWhiteSpace(this.ConfigParentName))
+                {
+                    builder.Append(" : ");
+                    builder.Append(this.ConfigParentName);
+                }
+                builder.Append("\r\n");
+                builder.Append(new string('\t', tabCount));
+                builder.AppendLine("{");
+                foreach(var it in this.Children)
+                {
+                    builder.Append(new string('\t', tabCount + 1));
+                    builder.AppendLine(it.ToPrintString(tabCount + 1));
+                }
+                builder.Append(new string('\t', tabCount));
+                builder.AppendLine("};");
+            }
+            else
+            {
+                builder.Append(this.Name);
+                builder.Append(" = ");
+                builder.Append(this.ValueToString());
+                builder.Append(';');
+            }
+
+            return builder.ToString();
+        }
+        /// <summary>
         /// Searches for provided key in parents hirarchy.
         /// </summary>
         /// <param name="key">Key to search for</param>
@@ -774,16 +580,58 @@ namespace SQF.ClassParser
             }
             throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUNDHIRARCHY, key);
         }
-
-        public IEnumerator<object> GetEnumerator()
+        /// <summary>
+        /// Returns this <see cref="ConfigField"/>s enumerator
+        /// </summary>
+        /// <returns><see cref="ConfigFieldEnumerator"/> containing the different children of this <see cref="ConfigField"/></returns>
+        public ConfigFieldEnumerator GetEnumerator()
         {
             return new ConfigFieldEnumerator(this);
         }
-
+        /// <summary>
+        /// Returns this <see cref="ConfigField"/>s enumerator
+        /// </summary>
+        /// <returns><see cref="ConfigFieldEnumerator"/> containing the different children of this <see cref="ConfigField"/></returns>
+        IEnumerator<ConfigField> IEnumerable<ConfigField>.GetEnumerator()
+        {
+            return new ConfigFieldEnumerator(this);
+        }
+        /// <summary>
+        /// Returns this <see cref="ConfigField"/>s enumerator
+        /// </summary>
+        /// <returns><see cref="ConfigFieldEnumerator"/> containing the different children of this <see cref="ConfigField"/></returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return new ConfigFieldEnumerator(this);
         }
+        /// <summary>
+        /// Returns a deep key enumerator (<see cref="List{String}"/>)
+        /// </summary>
+        /// <param name="headerFirst">Determines if header key should come before or after the children</param>
+        /// <returns><see cref="List{String}"/> containing the keys</returns>
+        public IEnumerable<string> GetEnumeratorDeep(bool headerFirst = true)
+        {
+
+            var keys = new List<string>();
+            if (!this.IsClass)
+                return keys;
+            foreach (var it in this.Children)
+            {
+                if (headerFirst)
+                {
+                    keys.Add(it.Key);
+                    keys.AddRange(it.GetEnumeratorDeep(headerFirst));
+                }
+                else
+                {
+                    keys.AddRange(it.GetEnumeratorDeep(headerFirst));
+                    keys.Add(it.Key);
+                }
+            }
+            return keys;
+        }
+
+
         public override string ToString()
         {
             
@@ -797,10 +645,6 @@ namespace SQF.ClassParser
                 val = string.Format("{0}{1} = {2}", this.Name, this.IsArray ? "[]" : string.Empty, val);
                 return val.Length > 64 ? string.Format("{0}...", val.Substring(0, 61)) : val;
             }
-        }
-        public void FormatBuffer()
-        {
-            this.UpdateTextBuffer(MarkOffsets.NA);
         }
     }
 }

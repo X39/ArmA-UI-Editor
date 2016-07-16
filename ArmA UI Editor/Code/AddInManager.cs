@@ -29,7 +29,7 @@ namespace ArmA_UI_Editor.Code
         /// <param name="progress">progress "report" function</param>
         public void ReloadAddIns(IProgress<Tuple<double, string>> progress)
         {
-            this.MainFile = new SQF.ClassParser.ConfigField(new AddInUtil.EmptyTextBuffer());
+            this.MainFile = new SQF.ClassParser.ConfigField();
             this.MainFile.ToClass();
             this.ConfigNameFileDictionary = new Dictionary<string, AddInUtil.UIElement>();
             string basePath = System.AppDomain.CurrentDomain.BaseDirectory;

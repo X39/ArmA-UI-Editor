@@ -44,14 +44,10 @@ namespace SQF.ClassParser.Generated
         public Token la;   // lookahead token
         int errDist = minErrDist;
     -->declarations
-        SQF.ClassParser.ConfigField MainField;
-        int lastPos;
 
         public Parser(Scanner scanner) {
             this.scanner = scanner;
             errors = new Errors();
-            this.MainField = null;
-            this.lastPos = 0;
         }
         
         bool peekCompare(params int[] values)
@@ -151,21 +147,43 @@ namespace SQF.ClassParser.Generated
         {
     -->parseRoot
         }
+        
+        public Tuple<int, int> GetValueRange(string key)
+        {
+            this.KeyToFind = key;
+            this.MainField = new SQF.ClassParser.ConfigField();
+            this.MainField.ToClass();
+            la = new Token();
+            la.val = "";
+            Get();
+            try
+            {
+                doRoot();
+            }
+            catch(LazyException ex)
+            {
+                return new Tuple<int, int>(ex.Index, ex.Index2);
+            }
+            return null;
+        }
 
-        public SQF.ClassParser.ConfigField Parse(SQF.ITextBuffer buffer) {
-            this.MainField = new SQF.ClassParser.ConfigField(buffer);
+        public SQF.ClassParser.ConfigField Parse() {
+            this.MainField = new SQF.ClassParser.ConfigField();
+            this.MainField.ToClass();
             la = new Token();
             la.val = "";		
             Get();
             doRoot();
             return this.MainField;
         }
-        public void Patch(SQF.ClassParser.ConfigField field) {
+        public void Patch(SQF.ClassParser.ConfigField field, bool AutoRemove) {
             this.MainField = field;
             la = new Token();
             la.val = "";		
             Get();
             doRoot();
+            if(AutoRemove)
+                ApplyRemovedFields();
         }
         
         static readonly bool[,] set = {

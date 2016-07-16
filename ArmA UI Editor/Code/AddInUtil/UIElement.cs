@@ -49,9 +49,8 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             this.__XamlPath = Parent.ThisPath + __XamlPath.Replace('/', '\\');
             using (var stream = System.IO.File.OpenRead(this.__ClassPath))
             {
-                MainConfigField.ThisBuffer.Append(stream);
                 var parser = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
-                parser.Patch(MainConfigField);
+                parser.Patch(MainConfigField, false);
                 this.ConfigKey = MainConfigField[MainConfigField.Count - 1].Name;
             }
 

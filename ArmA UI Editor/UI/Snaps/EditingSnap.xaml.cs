@@ -26,6 +26,10 @@ namespace ArmA_UI_Editor.UI.Snaps
     public partial class EditingSnap : Page, Code.Interface.ISnapWindow
     {
         private static Logger Logger = LogManager.GetCurrentClassLogger();
+        private string GetTraceInfo([System.Runtime.CompilerServices.CallerMemberName] string caller = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
+        {
+            return string.Format("fnc: {0} at: {1}", caller, line);
+        }
         public class TAG_CanvasChildElement
         {
             public string Key { get; set; }
@@ -83,6 +87,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         #region ISnapWindow
         public Dock DefaultDock { get { return Dock.Top; } }
         public bool HasUnsavedChanges { get; private set; }
+        public bool AllowConfigPatching { get; private set; }
+
         public void UnloadSnap()
         {
             if (this.HasUnsavedChanges)
@@ -98,16 +104,11 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             this.Config = AddInManager.Instance.MainFile.AddKey(string.Format("EditingSnap_{0}_WorkingConfig", Counter++));
             this.Config.ToClass();
-            this.Config.ThisBuffer = new SQF.TextBuffer();
-            this.Config.ThisBuffer.Append(this.Textbox.Text);
-            SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(new SQF.TextBufferStream(this.Config.ThisBuffer as SQF.TextBuffer)));
-            p.Patch(this.Config);
-            Binding b = new Binding("ThisBuffer");
-            b.Source = this.Config;
-            b.Converter = new Code.Converter.EditingSnap_ConfigFieldBufferConverter();
-            b.ConverterParameter = this.Config;
-            this.Config.FormatBuffer();
-            BindingOperations.SetBinding(this.Textbox, TextBox.TextProperty, b);
+            using (var stream = this.Textbox.Text.AsMemoryStream())
+            {
+                SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
+                p.Patch(this.Config, true);
+            }
         }
         #endregion
 
@@ -565,6 +566,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_Drop(object sender, DragEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             if (!e.Data.GetDataPresent("UiElementsListBoxData"))
                 return;
             var dragDropData = (e.Data.GetData("UiElementsListBoxData") as Code.UI.DragDrop.UiElementsListBoxData);
@@ -579,10 +581,28 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             var field = controlsField.AddKey(name, dragDropData.ElementData.ConfigKey);
             var mousePos = e.GetPosition(this.DisplayCanvas);
+            field.SetKey("x", this.ToSqfString(FieldTypeEnum.XField, mousePos.X));
+            field.SetKey("y", this.ToSqfString(FieldTypeEnum.YField, mousePos.Y));
 
-            field.SetKey("x", mousePos.X);
-            field.SetKey("y", mousePos.Y);
-            
+            var widthField = field.GetKey("w", ConfigField.KeyMode.CheckParentsNull);
+            if (widthField != null)
+            {
+                double d = widthField.IsNumber ? widthField.Number : this.FromSqfString(FieldTypeEnum.HField, widthField.String);
+                field.SetKey("w", this.ToSqfString(FieldTypeEnum.WField, d));
+            }
+            var heightField = field.GetKey("h", ConfigField.KeyMode.CheckParentsNull);
+            if (heightField != null)
+            {
+                double d = heightField.IsNumber ? heightField.Number : this.FromSqfString(FieldTypeEnum.HField, heightField.String);
+                field.SetKey("h", this.ToSqfString(FieldTypeEnum.HField, d));
+            }
+            using (var stream = this.Textbox.Text.AsMemoryStream())
+            {
+                SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
+                var index = p.GetValueRange(name);
+
+                this.Textbox.Text = this.Textbox.Text.Insert(index.Item2, string.Concat("\r\n", field.ToPrintString(3)));
+            }
             this.RegenerateDisplay();
             this.ThisScrollViewer.Focus();
         }
@@ -603,6 +623,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         private void Textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             this.HasUnsavedChanges = true;
+            this.AllowConfigPatching = true;
             foreach (var change in e.Changes)
             {
                 if (change.AddedLength == 1)
@@ -638,6 +659,18 @@ namespace ArmA_UI_Editor.UI.Snaps
                 }
             }
         }
+        private void Textbox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!this.AllowConfigPatching)
+                return;
+            this.AllowConfigPatching = false;
+            using (var stream = this.Textbox.Text.AsMemoryStream())
+            {
+                SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
+                p.Patch(this.Config, true);
+            }
+            RegenerateDisplay();
+        }
         private void Textbox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
@@ -648,6 +681,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void TabControlMainView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (this.Config == null)
+                return;
             if (this.TabControlMainView.SelectedIndex == 1)
             {
                 this.RegenerateDisplay();
@@ -665,6 +700,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public bool RegenerateDisplay()
         {
+            Logger.Trace(string.Format("{0} args: -", this.GetTraceInfo()));
             var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
             try
             {
@@ -748,7 +784,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.Message);
+                Logger.Error(ex, ex.Message);
                 mainWindow.SetStatusbarText(App.Current.Resources["STR_CODE_EditingWindow_ConfigParsingError"] as String, true);
                 this.DisplayCanvas.Children.Clear();
                 Frame frame = new Frame();
@@ -759,7 +795,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private SelectionOverlay CreateOrGetSelectionOverlay(bool mouseDownOnCreate = true)
         {
-
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", mouseDownOnCreate)));
             SelectionOverlay el = FindSelectionOverlay();
             if (el == null)
             {
@@ -777,7 +813,6 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private SelectionOverlay FindSelectionOverlay()
         {
-
             SelectionOverlay el = null;
             foreach (var it in this.DisplayCanvas.Children)
             {
@@ -1011,6 +1046,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public string ToSqfString(FieldTypeEnum fieldType, double data)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", fieldType, data)));
             double max;
             StringBuilder builder = new StringBuilder();
             switch (fieldType)
@@ -1060,6 +1096,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public double FromSqfString(FieldTypeEnum fieldType, string data)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", fieldType, data)));
             data = data.ToUpper();
             double max;
             switch (fieldType)
@@ -1086,6 +1123,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public List<Tuple<Code.AddInUtil.UIElement, string>> GetUiElements()
         {
+            Logger.Trace(string.Format("{0} args: -", this.GetTraceInfo()));
             var list = new List<Tuple<Code.AddInUtil.UIElement, string>>();
             var controls = this.LastFileConfig["controls"];
             foreach (var value in controls)
@@ -1106,6 +1144,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public void SwapUiIndexies(string keyA, string keyB)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", keyA, keyB)));
             throw new NotImplementedException();
             //ToDo: Reimplement
             var controls = this.LastFileConfig["controls"];

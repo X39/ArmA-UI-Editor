@@ -6,7 +6,25 @@ using System.Threading.Tasks;
 using SQF.ClassParser;
 
 COMPILER CONFIGFILE
-	CHARACTERS
+    SQF.ClassParser.ConfigField MainField = null;
+    
+    StringList KeysAdded = new StringList();
+    
+    public void ApplyRemovedFields()
+    {
+        var curKeys = this.MainField.GetEnumeratorDeep();
+        var patchKeys = this.KeysAdded;
+        var missingKeys = curKeys.Except(patchKeys);
+        foreach (var key in missingKeys)
+        {
+            var field = this.MainField.TreeRoot[key];
+            field.Parent.RemoveKey(field.Name);
+        }
+    }
+    
+    public string KeyToFind = string.Empty;
+
+    CHARACTERS
 		DIGIT = "0123456789".
         HEXDIGIT = "0123456789ABCDEFabcdef".
 		CHARACTER = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".
@@ -29,75 +47,61 @@ COMPILER CONFIGFILE
 		CONFIGFILE =
             (.
                 StringList list = new StringList();
-                this.MainField.ThisBuffer.Lock();
             .)
             CONFIG<list>
             {
                 CONFIG<list>
             }
-            (. this.MainField.ThisBuffer.Unlock(); .)
 		.
-        CONFIG<StringList list> (. ConfigField thisField; ConfigField.Mark mark; .) =
+        CONFIG<StringList list> (. ConfigField thisField; .) =
             "class"
             T_IDENT (.
                 list.Add(t.val);
                 thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
-                try
+                if (!thisField.IsClass)
                 {
                     thisField.ToClass();
                 }
-                catch
-                {
-                }
                 thisField.Name = t.val;
-                mark = thisField.Marks[(int)ConfigField.MarkOffsets.front]; mark.Length = 1 + t.charPos - this.lastPos; thisField.Marks[(int)ConfigField.MarkOffsets.front] = mark;
-                mark = thisField.Marks[(int)ConfigField.MarkOffsets.name]; mark.Length = t.val.Length; thisField.Marks[(int)ConfigField.MarkOffsets.name] = mark;
-                this.lastPos = t.charPos + t.val.Length;
             .)
             [
                 ':'
-                T_IDENT (.
-                    thisField.ConfigParentName = t.val;
-                    mark = thisField.Marks[(int)ConfigField.MarkOffsets.name_parent]; mark.Length = 1 + t.charPos - this.lastPos; thisField.Marks[(int)ConfigField.MarkOffsets.name_parent] = mark;
-                    mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent]; mark.Length = t.val.Length; thisField.Marks[(int)ConfigField.MarkOffsets.parent] = mark;
-                    this.lastPos = t.charPos + t.val.Length;
-                .)
+                T_IDENT (. thisField.ConfigParentName = t.val; .)
             ]
             [
-                '{' (. mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; .)
+                '{' (. var beginIndex = la.charPos; .)
                 {
                     FIELD<list>
                     |
                     CONFIG<list>
                 }
-                (. mark = thisField.Marks[(int)ConfigField.MarkOffsets.value]; mark.Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.value] = mark; .)
+                (. if(!string.IsNullOrWhiteSpace(KeyToFind) && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase)) throw new LazyException(beginIndex, t.charPos + t.val.Length); .)
                 '}'
             ]
-            ';' (. mark = thisField.Marks[(int)ConfigField.MarkOffsets.blockclose]; mark.Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.blockclose] = mark; .)
-            (. list.Remove(list.Last()); .)
+            ';'
+            (.
+                KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
+                list.Remove(list.Last());
+            .)
         .
-        FIELD<StringList list> (. ConfigField thisField; ConfigField.Mark mark; .) =
+        FIELD<StringList list> (. ConfigField thisField; .) =
             T_IDENT (.
                 list.Add(t.val);
                 thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
-                try
+                if (thisField.IsClass)
                 {
                     thisField.ToField();
                 }
-                catch
-                {
-                }
                 thisField.Name = t.val;
-                mark = thisField.Marks[(int)ConfigField.MarkOffsets.front]; mark.Length = 1 + t.charPos - this.lastPos; thisField.Marks[(int)ConfigField.MarkOffsets.front] = mark;
-                mark = thisField.Marks[(int)ConfigField.MarkOffsets.name]; mark.Length = t.val.Length; thisField.Marks[(int)ConfigField.MarkOffsets.name] = mark;
-                this.lastPos = t.charPos + t.val.Length;
+                KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
             .)
             [
                 '['
                 ']'
             ]
-            '=' (. mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; object tmp; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; .)
+            '='
             (
+                (. object tmp; var beginIndex = la.charPos; .)
                 (
                     ARRAY<out tmp> (. thisField.Array = (object[])tmp; .)
                     |
@@ -116,9 +120,9 @@ COMPILER CONFIGFILE
                     }
                     (. thisField.String = string.Join(" ", (tmp as StringList).ToArray()); .)
                 ]
-                (. mark = thisField.Marks[(int)ConfigField.MarkOffsets.value]; mark.Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.value] = mark; .)
+                (. if(!string.IsNullOrWhiteSpace(KeyToFind) && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase)) throw new LazyException(beginIndex, t.charPos + t.val.Length); .)
             )
-            ';'(. mark = thisField.Marks[(int)ConfigField.MarkOffsets.blockclose]; mark.Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.blockclose] = mark; .)
+            ';'
             (. list.Remove(list.Last()); .)
         .
         SCALAR<out object v> (. v = 0; .) =

@@ -32,15 +32,29 @@ namespace SQF.ClassParser.Generated
         public Token t;    // last recognized token
         public Token la;   // lookahead token
         int errDist = minErrDist;
+    SQF.ClassParser.ConfigField MainField = null;
     
-        SQF.ClassParser.ConfigField MainField;
-        int lastPos;
+    StringList KeysAdded = new StringList();
+    
+    public void ApplyRemovedFields()
+    {
+        var curKeys = this.MainField.GetEnumeratorDeep();
+        var patchKeys = this.KeysAdded;
+        var missingKeys = curKeys.Except(patchKeys);
+        foreach (var key in missingKeys)
+        {
+            var field = this.MainField.TreeRoot[key];
+            field.Parent.RemoveKey(field.Name);
+        }
+    }
+    
+    public string KeyToFind = string.Empty;
+
+    
 
         public Parser(Scanner scanner) {
             this.scanner = scanner;
             errors = new Errors();
-            this.MainField = null;
-            this.lastPos = 0;
         }
         
         bool peekCompare(params int[] values)
@@ -136,45 +150,33 @@ namespace SQF.ClassParser.Generated
         
     	void CONFIGFILE() {
 		StringList list = new StringList();
-		this.MainField.ThisBuffer.Lock();
 		
 		CONFIG(list);
 		while (la.kind == 6) {
 			CONFIG(list);
 		}
-		this.MainField.ThisBuffer.Unlock(); 
 	}
 
 	void CONFIG(StringList list) {
-		ConfigField thisField; ConfigField.Mark mark; 
+		ConfigField thisField; 
 		Expect(6);
 		Expect(5);
 		list.Add(t.val);
 		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
-		try
+		if (!thisField.IsClass)
 		{
 		   thisField.ToClass();
 		}
-		catch
-		{
-		}
 		thisField.Name = t.val;
-		mark = thisField.Marks[(int)ConfigField.MarkOffsets.front]; mark.Length = 1 + t.charPos - this.lastPos; thisField.Marks[(int)ConfigField.MarkOffsets.front] = mark;
-		mark = thisField.Marks[(int)ConfigField.MarkOffsets.name]; mark.Length = t.val.Length; thisField.Marks[(int)ConfigField.MarkOffsets.name] = mark;
-		this.lastPos = t.charPos + t.val.Length;
 		
 		if (la.kind == 7) {
 			Get();
 			Expect(5);
-			thisField.ConfigParentName = t.val;
-			mark = thisField.Marks[(int)ConfigField.MarkOffsets.name_parent]; mark.Length = 1 + t.charPos - this.lastPos; thisField.Marks[(int)ConfigField.MarkOffsets.name_parent] = mark;
-			mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent]; mark.Length = t.val.Length; thisField.Marks[(int)ConfigField.MarkOffsets.parent] = mark;
-			this.lastPos = t.charPos + t.val.Length;
-			
+			thisField.ConfigParentName = t.val; 
 		}
 		if (la.kind == 8) {
 			Get();
-			mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; 
+			var beginIndex = la.charPos; 
 			while (la.kind == 5 || la.kind == 6) {
 				if (la.kind == 5) {
 					FIELD(list);
@@ -182,37 +184,33 @@ namespace SQF.ClassParser.Generated
 					CONFIG(list);
 				}
 			}
-			mark = thisField.Marks[(int)ConfigField.MarkOffsets.value]; mark.Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.value] = mark; 
+			if(!string.IsNullOrWhiteSpace(KeyToFind) && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase)) throw new LazyException(beginIndex, t.charPos + t.val.Length); 
 			Expect(9);
 		}
 		Expect(10);
-		mark = thisField.Marks[(int)ConfigField.MarkOffsets.blockclose]; mark.Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.blockclose] = mark; 
-		list.Remove(list.Last()); 
+		KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
+		list.Remove(list.Last());
+		
 	}
 
 	void FIELD(StringList list) {
-		ConfigField thisField; ConfigField.Mark mark; 
+		ConfigField thisField; 
 		Expect(5);
 		list.Add(t.val);
 		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
-		try
+		if (thisField.IsClass)
 		{
 		   thisField.ToField();
 		}
-		catch
-		{
-		}
 		thisField.Name = t.val;
-		mark = thisField.Marks[(int)ConfigField.MarkOffsets.front]; mark.Length = 1 + t.charPos - this.lastPos; thisField.Marks[(int)ConfigField.MarkOffsets.front] = mark;
-		mark = thisField.Marks[(int)ConfigField.MarkOffsets.name]; mark.Length = t.val.Length; thisField.Marks[(int)ConfigField.MarkOffsets.name] = mark;
-		this.lastPos = t.charPos + t.val.Length;
+		KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
 		
 		if (la.kind == 11) {
 			Get();
 			Expect(12);
 		}
 		Expect(13);
-		mark = thisField.Marks[(int)ConfigField.MarkOffsets.parent_value]; mark.Length = 1 + t.charPos - this.lastPos; int tmpoff = this.lastPos = t.charPos; object tmp; thisField.Marks[(int)ConfigField.MarkOffsets.parent_value] = mark; 
+		object tmp; var beginIndex = la.charPos; 
 		if (la.kind == 8) {
 			ARRAY(out tmp);
 			thisField.Array = (object[])tmp; 
@@ -238,9 +236,8 @@ namespace SQF.ClassParser.Generated
 			}
 			thisField.String = string.Join(" ", (tmp as StringList).ToArray()); 
 		}
-		mark = thisField.Marks[(int)ConfigField.MarkOffsets.value]; mark.Length = 1 + t.charPos - tmpoff; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.value] = mark; 
+		if(!string.IsNullOrWhiteSpace(KeyToFind) && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase)) throw new LazyException(beginIndex, t.charPos + t.val.Length); 
 		Expect(10);
-		mark = thisField.Marks[(int)ConfigField.MarkOffsets.blockclose]; mark.Length = 1 + t.charPos - this.lastPos; this.lastPos = t.charPos; thisField.Marks[(int)ConfigField.MarkOffsets.blockclose] = mark; 
 		list.Remove(list.Last()); 
 	}
 
@@ -314,21 +311,43 @@ namespace SQF.ClassParser.Generated
 		Expect(0);
 
         }
+        
+        public Tuple<int, int> GetValueRange(string key)
+        {
+            this.KeyToFind = key;
+            this.MainField = new SQF.ClassParser.ConfigField();
+            this.MainField.ToClass();
+            la = new Token();
+            la.val = "";
+            Get();
+            try
+            {
+                doRoot();
+            }
+            catch(LazyException ex)
+            {
+                return new Tuple<int, int>(ex.Index, ex.Index2);
+            }
+            return null;
+        }
 
-        public SQF.ClassParser.ConfigField Parse(SQF.ITextBuffer buffer) {
-            this.MainField = new SQF.ClassParser.ConfigField(buffer);
+        public SQF.ClassParser.ConfigField Parse() {
+            this.MainField = new SQF.ClassParser.ConfigField();
+            this.MainField.ToClass();
             la = new Token();
             la.val = "";		
             Get();
             doRoot();
             return this.MainField;
         }
-        public void Patch(SQF.ClassParser.ConfigField field) {
+        public void Patch(SQF.ClassParser.ConfigField field, bool AutoRemove) {
             this.MainField = field;
             la = new Token();
             la.val = "";		
             Get();
             doRoot();
+            if(AutoRemove)
+                ApplyRemovedFields();
         }
         
         static readonly bool[,] set = {

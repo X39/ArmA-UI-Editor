@@ -58,13 +58,11 @@
     <Compile Include="SQF\ClassParser\ConfigFieldReference.cs" />
     <Compile Include="SQF\ClassParser\ConfigFieldEnumerator.cs" />
     <Compile Include="SQF\ClassParser\ConfigField.cs" />
+    <Compile Include="SQF\ClassParser\Generated\LazyException.cs" />
     <Compile Include="SQF\ClassParser\Generated\Parser.cs" />
     <Compile Include="SQF\ClassParser\Generated\Scanner.cs" />
     <Compile Include="SQF\ClassParser\Generated\StringList.cs" />
     <Compile Include="SQF\ClassParser\KeyNotFoundException.cs" />
-    <Compile Include="SQF\ITextBuffer.cs" />
-    <Compile Include="SQF\TextBuffer.cs" />
-    <Compile Include="SQF\TextBufferStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQF\Utility.cs" />
   </ItemGroup>

@@ -9,7 +9,7 @@ using SQF;
 
 namespace SQF.ClassParser
 {
-    public class ConfigFieldEnumerator : IEnumerator<object>
+    public class ConfigFieldEnumerator : IEnumerator<ConfigField>
     {
         private ConfigField Field;
         private int Index;
@@ -19,12 +19,23 @@ namespace SQF.ClassParser
             this.Field = field;
             this.Index = -1;
         }
+
         public object Current
         {
             get
             {
                 if (this.Index < 0)
-                    return default(object);
+                    return default(ConfigField);
+                return this.Field[this.Index];
+            }
+        }
+
+        ConfigField IEnumerator<ConfigField>.Current
+        {
+            get
+            {
+                if (this.Index < 0)
+                    return default(ConfigField);
                 return this.Field[this.Index];
             }
         }

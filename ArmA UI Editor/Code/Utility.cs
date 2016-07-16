@@ -11,6 +11,11 @@ namespace ArmA_UI_Editor.Code
 {
     public static class Utility
     {
+        public static System.IO.MemoryStream AsMemoryStream(this string s)
+        {
+            var memStream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(s));
+            return memStream;
+        }
         public static System.IO.Stream ToStream(this string str)
         {
             System.IO.MemoryStream stream = new System.IO.MemoryStream();

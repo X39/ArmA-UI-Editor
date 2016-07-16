@@ -310,7 +310,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         try
                         {
                             SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(memStream));
-                            var tmpField = p.Parse(new EmptyTextBuffer());
+                            var tmpField = p.Parse();
                             if (tmpField.Array.Length != this.Count)
                                 throw new Exception();
 
