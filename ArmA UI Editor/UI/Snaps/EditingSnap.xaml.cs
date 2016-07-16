@@ -118,6 +118,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("class NewArmAUI");
             sb.AppendLine("{");
+            sb.AppendLine("\tidd = -1;");
             sb.AppendLine("\tclass controls");
             sb.AppendLine("\t{");
             sb.AppendLine("\t\tclass MyFirstRscText : RscText");

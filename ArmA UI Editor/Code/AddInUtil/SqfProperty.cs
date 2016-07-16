@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Text.RegularExpressions;
+using ArmA_UI_Editor.Code.AddInUtil.PropertyUtil;
 
 namespace ArmA_UI_Editor.Code.AddInUtil
 {
@@ -17,12 +18,12 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         {
             [XmlAttribute("index")]
             public int Index;
-            [XmlElement(ElementName = "number", Type = typeof(Property.NumberType))]
-            [XmlElement(ElementName = "string", Type = typeof(Property.StringType))]
-            [XmlElement(ElementName = "boolean", Type = typeof(Property.BooleanType))]
-            [XmlElement(ElementName = "array", Type = typeof(Property.ArrayType))]
-            [XmlElement(ElementName = "listbox", Type = typeof(Property.ListboxType))]
-            public Property.PType Property;
+            [XmlElement(ElementName = "number", Type = typeof(NumberType))]
+            [XmlElement(ElementName = "string", Type = typeof(StringType))]
+            [XmlElement(ElementName = "boolean", Type = typeof(BooleanType))]
+            [XmlElement(ElementName = "array", Type = typeof(ArrayType))]
+            [XmlElement(ElementName = "listbox", Type = typeof(ListboxType))]
+            public PType Property;
         }
         [XmlAttribute("infinite")]
         public bool AllowInfinite;

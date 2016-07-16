@@ -111,7 +111,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 {
                     var el = new Property();
                     el.Header = property.DisplayName;
-                    var fEl = property.PropertyType.GenerateUiElement(string.Concat(this.CurrentField.Key, property.FieldPath), CurrentWindow, new Code.AddInUtil.Property.PTypeDataTag { PropertyObject = property, Key = this.CurrentField.Key, Path = property.FieldPath });
+                    var fEl = property.PropertyType.GenerateUiElement(string.Concat(this.CurrentField.Key, property.FieldPath), CurrentWindow, new Code.AddInUtil.PropertyUtil.PTypeDataTag { PropertyObject = property, Key = this.CurrentField.Key, Path = property.FieldPath });
                     el.Children.Add(fEl);
                     group.ItemsPanel.Children.Add(el);
                 }
@@ -137,7 +137,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                         {
                             if (it.Property != null)
                             {
-                                var fEl = it.Property.GenerateUiElement(string.Concat(this.CurrentField.Key, "/onLoad"), CurrentWindow, new Code.AddInUtil.Property.PTypeDataTag { PropertyObject = sqf, Key = this.CurrentField.Key, Path = "/onLoad", Extra = it.Index });
+                                var fEl = it.Property.GenerateUiElement(string.Concat(this.CurrentField.Key, "/onLoad"), CurrentWindow, new Code.AddInUtil.PropertyUtil.PTypeDataTag { PropertyObject = sqf, Key = this.CurrentField.Key, Path = "/onLoad", Extra = it.Index });
                                 el.Children.Add(fEl);
                                 break;
                             }
@@ -154,8 +154,8 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void UnloadSnap()
         {
-            Code.AddInUtil.Property.PType.ValueChanged -= PType_ValueChanged;
-            Code.AddInUtil.Property.PType.OnError -= PType_OnError;
+            Code.AddInUtil.PropertyUtil.PType.ValueChanged -= PType_ValueChanged;
+            Code.AddInUtil.PropertyUtil.PType.OnError -= PType_OnError;
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange -= Docker_OnSnapFocusChange;
             if(CurrentWindow != null)
                 CurrentWindow.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
@@ -163,8 +163,8 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public void LoadSnap()
         {
-            Code.AddInUtil.Property.PType.ValueChanged += PType_ValueChanged;
-            Code.AddInUtil.Property.PType.OnError += PType_OnError;
+            Code.AddInUtil.PropertyUtil.PType.ValueChanged += PType_ValueChanged;
+            Code.AddInUtil.PropertyUtil.PType.OnError += PType_OnError;
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange += Docker_OnSnapFocusChange;
             var EditingSnaps = (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.FindSnaps<EditingSnap>(true);
             if (EditingSnaps.Count > 0)
