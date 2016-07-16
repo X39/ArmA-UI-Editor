@@ -47,11 +47,12 @@
                     <clr:String x:Key="STR_Window_Events">Events</clr:String>
                     <clr:String x:Key="STR_Window_Output">Output</clr:String>
                     <clr:String x:Key="STR_Window_EditingWindow">MyUiConfig.cpp</clr:String>
+                    <clr:String x:Key="STR_Window_ConfigView">Config Viewer</clr:String>
+                    <clr:String x:Key="STR_Window_SettingsViewer">Configuration</clr:String>
+                    <clr:String x:Key="STR_Window_AddInBrowser">AddIn Browser</clr:String>
                     <clr:String x:Key="STR_Window_DialogProperties">Dialog Properties</clr:String>
 
                     <clr:String x:Key="STR_MainWindow_Settings">Settings</clr:String>
-                    <clr:String x:Key="STR_MainWindow_Settings_ShowAddInBrowser">Display AddIn Browser</clr:String>
-                    <clr:String x:Key="STR_MainWindow_Settings_ShowSettingsWindow">Options</clr:String>
 
                     <clr:String x:Key="STR_MainWindow_Help">Help</clr:String>
                     <clr:String x:Key="STR_MainWindow_Help_ReportBug">Report a Bug</clr:String>
@@ -66,6 +67,9 @@
                     <clr:String x:Key="STR_SettingsWindow_General_Updates_SearchOnStart">Search for update on startup</clr:String>
                     <clr:String x:Key="STR_SettingsWindow_General_Updates_SkipVersion">Skip Version</clr:String>
                     <clr:String x:Key="STR_SettingsWindow_General_Updates_SkipVersion_ClearTooltip">Clears current ignore version</clr:String>
+
+
+                    <clr:String x:Key="STR_ConfigView_ExportToClipboard">Export to Clipboard</clr:String>
 
 
                     <clr:String x:Key="STR_Snaps_EditingSnap_DisplayTab">Display</clr:String>

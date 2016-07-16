@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArmA_UI_Editor.UI"
         mc:Ignorable="d"
-        Title="AddInBrowser" MinHeight="512" MinWidth="768" Height="512" Width="768" Background="{StaticResource SCB_UIBackground}" Icon="/ArmA UI Editor;component/Logo_V2.ico" >
+        Title="{StaticResource STR_Window_AddInBrowser}" MinHeight="512" MinWidth="768" Height="512" Width="768" Background="{StaticResource SCB_UIBackground}" Icon="/ArmA UI Editor;component/Logo_V2.ico" >
     <Window.Resources>
         <ContextMenu x:Key="ContextMenu_UIElements">
             <MenuItem Header="{StaticResource STR_AddInBrowser_ContextMenu_OpenClassFile}" Click="ContextMenu_OpenClassFile_Click"/>
