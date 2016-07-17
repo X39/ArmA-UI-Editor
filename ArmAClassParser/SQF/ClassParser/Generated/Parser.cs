@@ -43,6 +43,10 @@ namespace SQF.ClassParser.Generated
         var missingKeys = curKeys.Except(patchKeys);
         foreach (var key in missingKeys)
         {
+#if DEBUG
+                if (!this.MainField.TreeRoot.Contains(key))
+                    System.Diagnostics.Debugger.Break();
+#endif
             var field = this.MainField.TreeRoot[key];
             field.Parent.RemoveKey(field.Name);
         }

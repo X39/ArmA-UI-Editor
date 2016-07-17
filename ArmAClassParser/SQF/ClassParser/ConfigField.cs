@@ -17,17 +17,19 @@ namespace SQF.ClassParser
             CheckParentsThrow,
             CheckParentsNull,
             ThrowOnNotFound,
-            NullOnNotFound
+            NullOnNotFound,
+            EmptyReferenceOnNotFound,
+            HighestMatchAvailable
         }
         #region Eventing
         public event PropertyChangedEventHandler PropertyChanged;
-        private void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
+        protected void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
         {
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
         public event PropertyChangingEventHandler PropertyChanging;
-        private void RaisePropertyChanging([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
+        protected void RaisePropertyChanging([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
         {
             if (this.PropertyChanging != null)
                 this.PropertyChanging(this, new System.ComponentModel.PropertyChangingEventArgs(propertyName));
@@ -47,12 +49,14 @@ namespace SQF.ClassParser
         private const string EX_INVALIDOPS_ALREADYCLASS = "ConfigField is already an Class";
         private const string EX_INVALIDOPS_ALREADYFIELD = "ConfigField is already a Field";
 
+        private const string EX_INVALIDARG_INVALIDKEYMODE_SINGLEKEY = "Provided KeyMode is not valid for single-key requests";
         #endregion
 
         private string _Name;
         private string _ConfigParentName;
+        private WeakReference<ConfigField> _Parent;
 
-        public virtual ConfigField Parent { get; private set; }
+        public virtual ConfigField Parent { get { ConfigField field; this._Parent.TryGetTarget(out field); return field; } private set { this._Parent.SetTarget(value); } }
         public virtual string Name { get { return _Name; } set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); } }
         public virtual string ConfigParentName { get { return _ConfigParentName; } set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); } }
 
@@ -69,17 +73,8 @@ namespace SQF.ClassParser
             }
         }
 
-        /// <summary>
-        /// <para>
-        /// Will get the "raw" <see cref="object"/> value represented by this <see cref="ConfigField"/>
-        /// </para>
-        /// <para>
-        /// <b>DO NOT! AND I REPEAT!!! DO NOT USE THE SETTER!
-        /// Doing so will break the WHOLE system!
-        /// It is only exposed via <see cref="Internal"/> due to <see cref="ConfigFieldReference"/> being in need to provide different direct-value!</b>
-        /// </para>
-        /// </summary>
-        public virtual object Value { get; internal set; }
+        private object _Value;
+        public virtual object Value { get { return _Value; } set { this.RaisePropertyChanging(); this._Value = value; this.RaisePropertyChanged(); } }
 
         public bool IsArray { get { return this.Value != null && this.Value.GetType().IsArray; } }
         public bool IsClass { get { return this.Value is List<ConfigField>; } }
@@ -87,10 +82,10 @@ namespace SQF.ClassParser
         public bool IsString { get { return this.Value is string; } }
         public bool IsBoolean { get { return this.Value is bool; } }
         private List<ConfigField> Children { get { return this.Value as List<ConfigField>; } set { this.RaisePropertyChanging(); this.Value = value; this.RaisePropertyChanged(); } }
-        public object[] Array { get { return this.Value as object[]; } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField();  this.Value = value; this.RaisePropertyChanged();} }
-        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); } }
-        public string String { get { return this.Value is string ? (string)this.Value : default(string); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); } }
-        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } internal set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); } }
+        public object[] Array { get { return this.Value as object[]; } set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField();  this.Value = value; this.RaisePropertyChanged();} }
+        public double Number { get { return this.Value is double ? (double)this.Value : default(double); } set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); } }
+        public string String { get { return this.Value is string ? (string)this.Value : default(string); } set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); } }
+        public bool Boolean { get { return this.Value is bool ? (bool)this.Value : default(bool); } set { if (this.Value != null && this.Value.Equals(value)) return; this.RaisePropertyChanging(); if (this.IsClass) this.ToField(); this.Value = value; this.RaisePropertyChanged(); } }
         public int Count { get { if (!this.IsClass) return 0; return this.Children.Count; } }
         public virtual string Key
         {
@@ -213,6 +208,10 @@ namespace SQF.ClassParser
                                 break;
                             case KeyMode.NullOnNotFound:
                                 return null;
+                            case KeyMode.EmptyReferenceOnNotFound:
+                                return new ConfigFieldReference(key, currentField);
+                            case KeyMode.HighestMatchAvailable:
+                                return currentField;
                             default:
                                 throw new KeyNotFoundException(ex.Message, string.Join("/", keys.GetRange(i)), ex);
                         }
@@ -250,6 +249,10 @@ namespace SQF.ClassParser
             else
             {
                 //Single key was provided
+                if (mode == KeyMode.EmptyReferenceOnNotFound)
+                    throw new ArgumentException(EX_INVALIDARG_INVALIDKEYMODE_SINGLEKEY);
+                if (mode == KeyMode.HighestMatchAvailable)
+                    throw new ArgumentException(EX_INVALIDARG_INVALIDKEYMODE_SINGLEKEY);
                 if (!ConfigField.IsValidKey(key))
                     throw new ArgumentException(EX_INVALIDARG_INVALIDKEY);
                 foreach (var it in this.Children)
@@ -446,15 +449,7 @@ namespace SQF.ClassParser
         /// <exception cref="ArgumentException"/>
         public bool Contains(string key)
         {
-            if (!this.IsClass)
-                throw new ArgumentException(EX_INVALIDTYPE_CLASS);
-
-            foreach (var it in this.Children)
-            {
-                if (it.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase))
-                    return true;
-            }
-            return false;
+            return this.GetKey(key, KeyMode.NullOnNotFound) != null;
         }
         /// <summary>
         /// Helper function to make sure provided key is valid
@@ -470,7 +465,7 @@ namespace SQF.ClassParser
         /// </summary>
         /// <returns>Write-Out ready string representation of this value</returns>
         /// <exception cref="ArgumentException"/>
-        private string ValueToString()
+        public string ToValueString()
         {
             StringBuilder builder = new StringBuilder();
             if (this.IsArray)
@@ -550,7 +545,7 @@ namespace SQF.ClassParser
             {
                 builder.Append(this.Name);
                 builder.Append(" = ");
-                builder.Append(this.ValueToString());
+                builder.Append(this.ToValueString());
                 builder.Append(';');
             }
 
@@ -642,7 +637,7 @@ namespace SQF.ClassParser
             }
             else
             {
-                var val = this.ValueToString();
+                var val = this.ToValueString();
                 val = string.Format("{0}{1} = {2}", this.Name, this.IsArray ? "[]" : string.Empty, val);
                 return val.Length > 64 ? string.Format("{0}...", val.Substring(0, 61)) : val;
             }
