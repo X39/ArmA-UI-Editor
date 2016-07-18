@@ -8,17 +8,111 @@ using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 using ArmA_UI_Editor.UI.Snaps;
+using System.Windows.Data;
+using System.Globalization;
+using ArmA_UI_Editor.Code.Converter;
+using SQF.ClassParser;
+
 
 namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 {
     public class NumberType : PType
     {
+        
+        private struct ConverterPropertyData
+        {
+            public EditingSnap Window;
+            public string Conversion;
+        }
+        private class SqfPropertyConverter : SqfConfigFieldKeyConverter
+        {
+            public SqfPropertyConverter(string key, PTypeDataTag tag) : base(key, tag) { }
+            public override object DoConvertFromString(string value, Type targetType, object parameter, CultureInfo culture)
+            {
+                ConverterPropertyData data = (ConverterPropertyData)parameter;
+                switch (data.Conversion)
+                {
+                    default:
+                        return double.Parse(value);
+                    case "SCREENX":
+                        return data.Window.FromSqfString(EditingSnap.FieldTypeEnum.XField, value);
+                    case "SCREENY":
+                        return data.Window.FromSqfString(EditingSnap.FieldTypeEnum.YField, value);
+                    case "SCREENW":
+                        return data.Window.FromSqfString(EditingSnap.FieldTypeEnum.WField, value);
+                    case "SCREENH":
+                        return data.Window.FromSqfString(EditingSnap.FieldTypeEnum.HField, value);
+                }
+            }
+            public override string DoConvertBackToString(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                ConverterPropertyData data = (ConverterPropertyData)parameter;
+                if(value is string)
+                {
+                    value = double.Parse(value as string);
+                }
+                switch (data.Conversion)
+                {
+                    default:
+                        return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", value);
+                    case "SCREENX":
+                        return data.Window.ToSqfString(EditingSnap.FieldTypeEnum.XField, (double)value);
+                    case "SCREENY":
+                        return data.Window.ToSqfString(EditingSnap.FieldTypeEnum.YField, (double)value);
+                    case "SCREENW":
+                        return data.Window.ToSqfString(EditingSnap.FieldTypeEnum.WField, (double)value);
+                    case "SCREENH":
+                        return data.Window.ToSqfString(EditingSnap.FieldTypeEnum.HField, (double)value);
+                }
+            }
+        }
+        private class NormalPropertyConverter : ConfigFieldKeyConverterBase
+        {
+            public NormalPropertyConverter(string key) : base(key) { }
+            public override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)
+            {
+                ConverterPropertyData data = (ConverterPropertyData)parameter;
+                switch (data.Conversion)
+                {
+                    default:
+                        return value.IsNumber ? value.Number : -1;
+                    case "SCREENX":
+                        return value.IsNumber ? value.Number : value.IsString && !string.IsNullOrWhiteSpace(value.String) ? data.Window.FromSqfString(EditingSnap.FieldTypeEnum.XField, value.String) : -1;
+                    case "SCREENY":
+                        return value.IsNumber ? value.Number : value.IsString && !string.IsNullOrWhiteSpace(value.String) ? data.Window.FromSqfString(EditingSnap.FieldTypeEnum.YField, value.String) : -1;
+                    case "SCREENW":
+                        return value.IsNumber ? value.Number : value.IsString && !string.IsNullOrWhiteSpace(value.String) ? data.Window.FromSqfString(EditingSnap.FieldTypeEnum.WField, value.String) : -1;
+                    case "SCREENH":
+                        return value.IsNumber ? value.Number : value.IsString && !string.IsNullOrWhiteSpace(value.String) ? data.Window.FromSqfString(EditingSnap.FieldTypeEnum.HField, value.String) : -1;
+                }
+            }
+
+            public override object DoConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                ConverterPropertyData data = (ConverterPropertyData)parameter;
+                if (value is string)
+                {
+                    value = double.Parse(value as string, NumberStyles.Float, CultureInfo.InvariantCulture);
+                }
+                switch (data.Conversion)
+                {
+                    default:
+                        return (double)value;
+                    case "SCREENX":
+                        return data.Window.ToSqfString(EditingSnap.FieldTypeEnum.XField, (double)value);
+                    case "SCREENY":
+                        return data.Window.ToSqfString(EditingSnap.FieldTypeEnum.YField, (double)value);
+                    case "SCREENW":
+                        return data.Window.ToSqfString(EditingSnap.FieldTypeEnum.WField, (double)value);
+                    case "SCREENH":
+                        return data.Window.ToSqfString(EditingSnap.FieldTypeEnum.HField, (double)value);
+                }
+            }
+        }
         public NumberType()
         {
             this.Conversion = string.Empty;
         }
-        private EditingSnap Window;
-
         [XmlAttribute("conversion")]
         public string Conversion { get; set; }
 
@@ -26,95 +120,36 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
         {
             var tb = new TextBox();
             tb.Tag = tag;
-            this.Window = window;
-            var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-            if (string.IsNullOrWhiteSpace(Conversion))
-                Conversion = string.Empty;
-            if (curVal != null)
+            var binding = new Binding("Value");
+            binding.Source = AddInManager.Instance.MainFile;
+            binding.NotifyOnSourceUpdated = true;
+            if (tag.PropertyObject is SqfProperty)
             {
-                switch (Conversion.ToUpper())
-                {
-                    default:
-                        if (tag.PropertyObject is SqfProperty)
-                        {
-                            tb.Text = SqfProperty.GetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, curVal.String, (int)tag.Extra);
-                        }
-                        else
-                        {
-                            tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        }
-                        break;
-                    case "SCREENX":
-                        if (curVal.IsNumber)
-                            tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        else
-                            tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.XField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "SCREENY":
-                        if (curVal.IsNumber)
-                            tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        else
-                            tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.YField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "SCREENW":
-                        if (curVal.IsNumber)
-                            tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        else
-                            tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.WField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                    case "SCREENH":
-                        if (curVal.IsNumber)
-                            tb.Text = curVal.Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        else
-                            tb.Text = window.FromSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.HField, curVal.String).ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        break;
-                }
+                binding.Converter = new SqfPropertyConverter(Key, tag);
             }
+            else
+            {
+                binding.Converter = new NormalPropertyConverter(Key);
+            }
+            binding.ConverterParameter = new ConverterPropertyData { Conversion = this.Conversion.ToUpper(), Window = window };
+            tb.SetBinding(TextBox.TextProperty, binding);
+            tb.SourceUpdated += Tb_SourceUpdated;
             tb.PreviewTextInput += Tb_PreviewTextInput;
             tb.ToolTip = App.Current.Resources["STR_CODE_Property_Number"] as String;
             return tb;
         }
+
         private void Tb_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
-            Code.Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
+            Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
-                var tb = sender as TextBox;
-                PTypeDataTag tag = (PTypeDataTag)tb.Tag;
-                try
-                {
-                    switch (Conversion.ToUpper())
-                    {
-                        default:
-                            if (tag.PropertyObject is SqfProperty)
-                            {
-                                var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-                                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, field == null || !field.IsString ? "" : field.String, tb.Text, (int)tag.Extra));
-                            }
-                            else
-                            {
-                                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture));
-                            }
-                            break;
-                        case "SCREENX":
-                            AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.XField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture)));
-                            break;
-                        case "SCREENY":
-                            AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.YField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture)));
-                            break;
-                        case "SCREENW":
-                            AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.WField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture)));
-                            break;
-                        case "SCREENH":
-                            AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.HField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture)));
-                            break;
-                    }
-                    //RaiseValueChanged(tb);
-                }
-                catch (Exception ex)
-                {
-                    RaiseOnError(tb, ex.Message);
-                }
+                this.RaiseValueChanged(sender, (PTypeDataTag)(sender as FrameworkElement).Tag);
             });
+        }
+
+        private void Tb_SourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            this.RaiseValueChanged(sender, (PTypeDataTag)(sender as FrameworkElement).Tag);
         }
     }
 }

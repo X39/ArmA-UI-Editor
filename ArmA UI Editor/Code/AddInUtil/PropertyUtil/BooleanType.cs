@@ -20,15 +20,15 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
     {
         private class SqfPropertyConverter : SqfConfigFieldKeyConverter
         {
-            public SqfPropertyConverter(string key) : base(key) { }
-            public override object DoConvertFromString(string value, Type targetType, CultureInfo culture)
+            public SqfPropertyConverter(string key, PTypeDataTag tag) : base(key, tag) { }
+            public override object DoConvertFromString(string value, Type targetType, object parameter, CultureInfo culture)
             {
                 if (string.IsNullOrWhiteSpace(value))
                     return -1;
                 return bool.Parse(value) ? 1 : 0;
             }
 
-            public override string DoConvertBackFromString(object value, Type targetType, CultureInfo culture)
+            public override string DoConvertBackToString(object value, Type targetType, object parameter, CultureInfo culture)
             {
                 return (int)value > 0 ? "true" : "false";
             }
@@ -58,8 +58,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
             
             if (tag.PropertyObject is SqfProperty)
             {
-                binding.Converter = new SqfPropertyConverter(Key);
-                binding.ConverterParameter = tag;
+                binding.Converter = new SqfPropertyConverter(Key, tag);
             }
             else
             {

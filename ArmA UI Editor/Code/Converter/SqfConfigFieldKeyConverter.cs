@@ -8,23 +8,25 @@ namespace ArmA_UI_Editor.Code.Converter
 {
     public abstract class SqfConfigFieldKeyConverter : ConfigFieldKeyConverterBase
     {
-        public SqfConfigFieldKeyConverter(string key) : base(key) { }
+        protected PTypeDataTag Tag;
+        public SqfConfigFieldKeyConverter(string key, PTypeDataTag tag) : base(key)
+        {
+            this.Tag = tag;
+        }
         public sealed override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)
         {
-            var tag = (PTypeDataTag)parameter;
             if (!value.IsString)
                 return "";
-            var res = SqfProperty.GetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, value.String, (int)tag.Extra);
-            return this.DoConvertBackFromString(res, targetType, culture);
+            var res = SqfProperty.GetSqfPropertySectionArg(this.Tag.PropertyObject as SqfProperty, value.String, (int)this.Tag.Extra);
+            return this.DoConvertFromString(res, targetType, parameter, culture);
         }
 
         public sealed override object DoConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var tag = (PTypeDataTag)parameter;
-            var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-            return SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, field == null || !field.IsString ? "" : field.String, this.DoConvertBackFromString(value, targetType, culture), (int)tag.Extra);
+            var field = AddInManager.Instance.MainFile.GetKey(string.Concat(this.Tag.Key, this.Tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
+            return SqfProperty.SetSqfPropertySectionArg(this.Tag.PropertyObject as SqfProperty, field == null || !field.IsString ? "" : field.String, this.DoConvertBackToString(value, targetType, parameter, culture), (int)this.Tag.Extra);
         }
-        public abstract object DoConvertFromString(string value, Type targetType, CultureInfo culture);
-        public abstract string DoConvertBackFromString(object value, Type targetType, CultureInfo culture);
+        public abstract object DoConvertFromString(string value, Type targetType, object parameter, CultureInfo culture);
+        public abstract string DoConvertBackToString(object value, Type targetType, object parameter, CultureInfo culture);
     }
 }

@@ -10,7 +10,6 @@ using System.Windows.Controls;
 using ArmA_UI_Editor.UI.Snaps;
 using System.Windows.Data;
 using System.Globalization;
-using System.Globalization;
 using ArmA_UI_Editor.Code.Converter;
 using SQF.ClassParser;
 
@@ -21,12 +20,12 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
     {
         private class SqfPropertyConverter : SqfConfigFieldKeyConverter
         {
-            public SqfPropertyConverter(string key) : base(key) { }
-            public override object DoConvertFromString(string value, Type targetType, CultureInfo culture)
+            public SqfPropertyConverter(string key, PTypeDataTag tag) : base(key, tag) { }
+            public override object DoConvertFromString(string value, Type targetType, object parameter, CultureInfo culture)
             {
                 return value;
             }
-            public override string DoConvertBackFromString(object value, Type targetType, CultureInfo culture)
+            public override string DoConvertBackToString(object value, Type targetType, object parameter, CultureInfo culture)
             {
                 return value as string;
             }
@@ -55,8 +54,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 
             if (tag.PropertyObject is SqfProperty)
             {
-                binding.Converter = new SqfPropertyConverter(Key);
-                binding.ConverterParameter = tag;
+                binding.Converter = new SqfPropertyConverter(Key, tag);
             }
             else
             {
