@@ -38,27 +38,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void PType_ValueChanged(object sender, PTypeDataTag e)
         {
-            using (var stream = this.CurrentWindow.Textbox.Text.AsMemoryStream())
-            {
-                SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
-                var searchKey = string.Concat(e.Key, e.Path);
-                searchKey = searchKey.Remove(0, searchKey.IndexOf(this.CurrentWindow.LastFileConfig.Name) - 1);
-                var index = p.GetValueRange(searchKey);
-                if(index == null)
-                {
-                    stream.Seek(0, System.IO.SeekOrigin.Begin);
-                    p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
-                    index = p.GetValueRange(searchKey.Remove(searchKey.LastIndexOf('/')));
-                    var field = this.CurrentWindow.Config.GetKey(searchKey, ConfigField.KeyMode.ThrowOnNotFound);
-                    this.CurrentWindow.Textbox.Text = this.CurrentWindow.Textbox.Text.Insert(index.Item1, string.Concat(field.ToPrintString(), "\r\n", new string('\t', searchKey.Count((c) => c == '/') - 1)));
-                }
-                else
-                {
-                    var field = this.CurrentWindow.Config.GetKey(searchKey, ConfigField.KeyMode.ThrowOnNotFound);
-                    this.CurrentWindow.Textbox.Text = this.CurrentWindow.Textbox.Text.Remove(index.Item1, index.Item2 - index.Item1).Insert(index.Item1, field.ToValueString());
-                }
-            }
-
+            this.CurrentWindow.UpdateConfigKey(string.Concat(e.Key, e.Path));
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).SetStatusbarText("", false);
         }
         private void PType_OnError(object sender, string e)

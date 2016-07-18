@@ -1107,6 +1107,28 @@ namespace ArmA_UI_Editor.UI.Snaps
             var dt = new System.Data.DataTable();
             return (double.Parse(dt.Compute(data, "").ToString())) * max;
         }
+        public void UpdateConfigKey(string key)
+        {
+            using (var stream = this.Textbox.Text.AsMemoryStream())
+            {
+                SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
+                key = key.Remove(0, key.IndexOf(this.LastFileConfig.Name) - 1);
+                var index = p.GetValueRange(key);
+                if (index == null)
+                {
+                    stream.Seek(0, System.IO.SeekOrigin.Begin);
+                    p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
+                    index = p.GetValueRange(key.Remove(key.LastIndexOf('/')));
+                    var field = this.Config.GetKey(key, ConfigField.KeyMode.ThrowOnNotFound);
+                    this.Textbox.Text = this.Textbox.Text.Insert(index.Item1, string.Concat(field.ToPrintString(), "\r\n", new string('\t', key.Count((c) => c == '/') - 1)));
+                }
+                else
+                {
+                    var field = this.Config.GetKey(key, ConfigField.KeyMode.ThrowOnNotFound);
+                    this.Textbox.Text = this.Textbox.Text.Remove(index.Item1, index.Item2 - index.Item1).Insert(index.Item1, field.ToValueString());
+                }
+            }
+        }
 
         public List<Tuple<Code.AddInUtil.UIElement, string>> GetUiElements()
         {
