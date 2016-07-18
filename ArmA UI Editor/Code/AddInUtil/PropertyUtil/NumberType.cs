@@ -143,7 +143,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
         {
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
-                this.RaiseValueChanged(sender, (PTypeDataTag)(sender as FrameworkElement).Tag);
+                (sender as DependencyObject).ForceBindingSourceUpdate(TextBox.TextProperty);
             });
         }
 
