@@ -27,12 +27,24 @@ namespace SQF.ClassParser
         {
             if (this.PropertyChanged != null)
                 this.PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+
+            var treeRoot = this.TreeRoot;
+            if (treeRoot != this)
+            {
+                treeRoot.RaisePropertyChanged("Value");
+            }
         }
         public event PropertyChangingEventHandler PropertyChanging;
         protected void RaisePropertyChanging([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
         {
             if (this.PropertyChanging != null)
                 this.PropertyChanging(this, new System.ComponentModel.PropertyChangingEventArgs(propertyName));
+
+            var treeRoot = this.TreeRoot;
+            if (treeRoot != this)
+            {
+                treeRoot.RaisePropertyChanging("Value");
+            }
         }
         #endregion
         #region private Constants
@@ -55,8 +67,7 @@ namespace SQF.ClassParser
         private string _Name;
         private string _ConfigParentName;
         private WeakReference<ConfigField> _Parent;
-
-        public virtual ConfigField Parent { get { ConfigField field; this._Parent.TryGetTarget(out field); return field; } private set { this._Parent.SetTarget(value); } }
+        public virtual ConfigField Parent { get { if (this._Parent == null) return null; ConfigField field; this._Parent.TryGetTarget(out field); return field; } private set { if (this._Parent == null) this._Parent = new WeakReference<ConfigField>(value); else this._Parent.SetTarget(value); } }
         public virtual string Name { get { return _Name; } set { if (_Name != null && _Name.Equals(value)) return;  this.RaisePropertyChanging(); _Name = value; this.RaisePropertyChanged(); } }
         public virtual string ConfigParentName { get { return _ConfigParentName; } set { if (_ConfigParentName != null && _ConfigParentName.Equals(value)) return; this.RaisePropertyChanging(); _ConfigParentName = value; this.RaisePropertyChanged(); } }
 

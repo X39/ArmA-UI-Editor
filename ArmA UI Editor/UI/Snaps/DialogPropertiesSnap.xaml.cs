@@ -85,7 +85,6 @@ namespace ArmA_UI_Editor.UI.Snaps
                 if (tb.Text.Length == 0)
                     return;
                 CurrentEditingSnap.LastFileConfig.SetKey("onLoad", tb.Text);
-                this.CurrentEditingSnap.Redraw();
             }
         }
         private void tb_onLoad_Initialized(object sender, EventArgs e)
@@ -103,7 +102,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             Utility.tb_PreviewTextInput_Ident_DoHandle(sender, e, () =>
             {
                 this.CurrentEditingSnap.LastFileConfig.Name = (sender as TextBox).Text;
-                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_ClassName_Initialized(object sender, EventArgs e)
@@ -120,7 +118,6 @@ namespace ArmA_UI_Editor.UI.Snaps
                 if (tb.Text.Length == 0)
                     return;
                 this.CurrentEditingSnap.LastFileConfig.SetKey("onUnload", tb.Text);
-                this.CurrentEditingSnap.Redraw();
             }
         }
         private void tb_onUnload_Initialized(object sender, EventArgs e)
@@ -138,7 +135,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
                 this.CurrentEditingSnap.LastFileConfig.SetKey("duration", (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
-                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_duration_Initialized(object sender, EventArgs e)
@@ -156,7 +152,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
                 this.CurrentEditingSnap.LastFileConfig.SetKey("fadeIn", (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
-                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_fadeIn_Initialized(object sender, EventArgs e)
@@ -174,7 +169,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
                 this.CurrentEditingSnap.LastFileConfig.SetKey("fadeOut", (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
-                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_fadeOut_Initialized(object sender, EventArgs e)
@@ -192,7 +186,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
             {
                 this.CurrentEditingSnap.LastFileConfig.SetKey("idd", (int)double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
-                this.CurrentEditingSnap.Redraw();
             });
         }
         private void tb_Idd_Initialized(object sender, EventArgs e)
@@ -209,7 +202,6 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             ComboBox cb = sender as ComboBox;
             this.CurrentEditingSnap.LastFileConfig.SetKey("enableSimulation", bool.Parse((cb.SelectedValue as ComboBoxItem).Content as string) ? 1 : 0);
-            this.CurrentEditingSnap.Redraw();
         }
         private void cb_enableSimulation_Initialized(object sender, EventArgs e)
         {

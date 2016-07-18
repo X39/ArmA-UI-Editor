@@ -89,7 +89,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                     value = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, string.IsNullOrWhiteSpace(field.String) ? "" : field.String, string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", value), (int)tag.Extra);
             }
             AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), value);
-            TriggerValueChanged(value);
+            //RaiseValueChanged(value);
         }
     }
 }

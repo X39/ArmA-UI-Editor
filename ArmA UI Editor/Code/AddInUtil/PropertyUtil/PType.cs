@@ -21,14 +21,14 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
     public abstract class PType
     {
         public abstract FrameworkElement GenerateUiElement(string Key, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag);
-        public static event EventHandler ValueChanged;
+        public static event EventHandler<PTypeDataTag> ValueChanged;
         public static event EventHandler<string> OnError;
-        protected void TriggerValueChanged(object sender)
+        protected void RaiseValueChanged(object sender, PTypeDataTag data)
         {
             if (ValueChanged != null)
-                ValueChanged(sender, new EventArgs());
+                ValueChanged(sender, data);
         }
-        protected void TriggerError(object sender, string msg)
+        protected void RaiseOnError(object sender, string msg)
         {
             if (OnError != null)
                 OnError(sender, msg);

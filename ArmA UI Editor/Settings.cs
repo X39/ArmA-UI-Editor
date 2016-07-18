@@ -52,7 +52,7 @@ namespace ArmA_UI_Editor
             {
                 return new Settings();
             }
-            catch (System.InvalidOperationException ex)
+            catch (System.InvalidOperationException)
             {
                 return new Settings();
             }

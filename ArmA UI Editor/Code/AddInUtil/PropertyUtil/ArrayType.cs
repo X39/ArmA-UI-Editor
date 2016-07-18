@@ -95,11 +95,11 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                         PTypeDataTag tag = (PTypeDataTag)(sender as TextBox).Tag;
                         var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.CreateNew);
                         field.Parent.SetKey(string.Concat(tag.Key, tag.Path), tmpField.Value);
-                        TriggerValueChanged(sender);
+                        //RaiseValueChanged(sender);
                     }
                     catch
                     {
-                        TriggerError(sender, "Invalid Property");
+                        RaiseOnError(sender, "Invalid Property");
                     }
                 }
             }

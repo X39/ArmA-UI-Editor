@@ -9,52 +9,71 @@ using System.Windows;
 using System.Windows.Controls;
 using ArmA_UI_Editor.UI.Snaps;
 using ArmA_UI_Editor.Code.AddInUtil.PropertyUtil;
+using System.Windows.Data;
+using System.Globalization;
+using ArmA_UI_Editor.Code.Converter;
+using SQF.ClassParser;
 
 namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 {
     public class BooleanType : PType
     {
+        private class SqfPropertyConverter : SqfConfigFieldKeyConverter
+        {
+            public SqfPropertyConverter(string key) : base(key) { }
+            public override object DoConvertFromString(string value, Type targetType, CultureInfo culture)
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    return -1;
+                return bool.Parse(value) ? 1 : 0;
+            }
+
+            public override string DoConvertBackFromString(object value, Type targetType, CultureInfo culture)
+            {
+                return (int)value > 0 ? "true" : "false";
+            }
+        }
+        private class NormalPropertyConverter : ConfigFieldKeyConverterBase
+        {
+            public NormalPropertyConverter(string key) : base(key) { }
+            public override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return value.IsBoolean ? value.Boolean ? 1 : 0 : -1;
+            }
+
+            public override object DoConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return (int)value > 0;
+            }
+        }
         public override FrameworkElement GenerateUiElement(string Key, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
         {
             var cb = new ComboBox();
             cb.Tag = tag;
-            cb.Items.Add("true");
             cb.Items.Add("false");
-            var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-            if (curVal != null)
+            cb.Items.Add("true");
+            var binding = new Binding("Value");
+            binding.Source = AddInManager.Instance.MainFile;
+            binding.NotifyOnSourceUpdated = true;
+            
+            if (tag.PropertyObject is SqfProperty)
             {
-                if (tag.PropertyObject is SqfProperty)
-                {
-                    var str = SqfProperty.GetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, curVal.String, (int)tag.Extra);
-                    if (!string.IsNullOrWhiteSpace(str))
-                        cb.SelectedIndex = bool.Parse(str) ? 0 : 1;
-                }
-                else
-                {
-                    cb.SelectedIndex = curVal.Boolean ? 0 : 1;
-                }
+                binding.Converter = new SqfPropertyConverter(Key);
+                binding.ConverterParameter = tag;
             }
-            cb.SelectionChanged += Cb_SelectionChanged;
+            else
+            {
+                binding.Converter = new NormalPropertyConverter(Key);
+            }
+            cb.SetBinding(ComboBox.SelectedIndexProperty, binding);
+            cb.SourceUpdated += Cb_SourceUpdated;
             cb.ToolTip = App.Current.Resources["STR_CODE_Property_Boolean"] as String;
             return cb;
         }
 
-        private void Cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Cb_SourceUpdated(object sender, DataTransferEventArgs e)
         {
-            ComboBox cb = sender as ComboBox;
-            PTypeDataTag tag = (PTypeDataTag)cb.Tag;
-            object value;
-            if (tag.PropertyObject is SqfProperty)
-            {
-                var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-                value = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, field == null && !field.IsString ? "" : field.String, string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", cb.SelectedValue), (int)tag.Extra);
-            }
-            else
-            {
-                value = bool.Parse((string)cb.SelectedValue);
-            }
-            AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), value);
-            TriggerValueChanged(cb);
+            this.RaiseValueChanged(sender, (PTypeDataTag)(sender as FrameworkElement).Tag);
         }
     }
 }

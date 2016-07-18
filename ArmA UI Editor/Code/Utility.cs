@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows;
+using System.Windows.Data;
 
 namespace ArmA_UI_Editor.Code
 {
@@ -179,6 +180,14 @@ namespace ArmA_UI_Editor.Code
             while (el != null && !(el is T))
                 el = System.Windows.Media.VisualTreeHelper.GetParent(el);
             return el as T;
+        }
+        public static void ForceBindingSourceUpdate(this DependencyObject el, DependencyProperty prop)
+        {
+            var binding = BindingOperations.GetBindingExpression(el, prop);
+            if(binding != null)
+            {
+                binding.UpdateSource();
+            }
         }
     }
 }

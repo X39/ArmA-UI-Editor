@@ -130,7 +130,6 @@ namespace ArmA_UI_Editor.UI.Snaps
                     else
                         field.Parent.SetKey(field.Name, ev.StartingAt + (sender as TextBox).Text);
                 }
-                this.CurrentEditingSnap.Redraw();
                 e.Handled = true;
             }
         }

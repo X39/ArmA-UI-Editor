@@ -8,51 +8,78 @@ using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 using ArmA_UI_Editor.UI.Snaps;
+using System.Windows.Data;
+using System.Globalization;
+using System.Globalization;
+using ArmA_UI_Editor.Code.Converter;
+using SQF.ClassParser;
+
 
 namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 {
     public class StringType : PType
     {
+        private class SqfPropertyConverter : SqfConfigFieldKeyConverter
+        {
+            public SqfPropertyConverter(string key) : base(key) { }
+            public override object DoConvertFromString(string value, Type targetType, CultureInfo culture)
+            {
+                return value;
+            }
+            public override string DoConvertBackFromString(object value, Type targetType, CultureInfo culture)
+            {
+                return value as string;
+            }
+        }
+        private class NormalPropertyConverter : ConfigFieldKeyConverterBase
+        {
+            public NormalPropertyConverter(string key) : base(key) { }
+            public override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return value.IsString ? value.String : string.Empty;
+            }
+
+            public override object DoConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return value;
+            }
+        }
         public override FrameworkElement GenerateUiElement(string Key, ArmA_UI_Editor.UI.Snaps.EditingSnap window, PTypeDataTag tag)
         {
             var tb = new TextBox();
             tb.Tag = tag;
-            var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-            if (curVal != null)
+            var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.EmptyReferenceOnNotFound);
+            var binding = new Binding("Value");
+            binding.Source = AddInManager.Instance.MainFile;
+            binding.NotifyOnSourceUpdated = true;
+
+            if (tag.PropertyObject is SqfProperty)
             {
-                if (tag.PropertyObject is SqfProperty)
-                {
-                    if (curVal != null)
-                        tb.Text = SqfProperty.GetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, curVal.String, (int)tag.Extra);
-                }
-                else
-                {
-                    tb.Text = curVal.String;
-                }
+                binding.Converter = new SqfPropertyConverter(Key);
+                binding.ConverterParameter = tag;
             }
-            tb.PreviewTextInput += Tb_PreviewTextInput;
+            else
+            {
+                binding.Converter = new NormalPropertyConverter(Key);
+            }
+            tb.SetBinding(TextBox.TextProperty, binding);
+            tb.SourceUpdated += Tb_SourceUpdated;
+            tb.PreviewKeyDown += Tb_PreviewKeyDown;
             tb.ToolTip = App.Current.Resources["STR_CODE_Property_String"] as String;
             return tb;
         }
-        private void Tb_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+
+        private void Tb_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Text.Contains('\r'))
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
-                var tb = sender as TextBox;
-                PTypeDataTag tag = (PTypeDataTag)tb.Tag;
-                object value;
-                if (tag.PropertyObject is SqfProperty)
-                {
-                    var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-                    value = SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, field == null && !field.IsString ? "" : field.String, tb.Text, (int)tag.Extra);
-                }
-                else
-                {
-                    value = tb.Text;
-                }
-                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), value);
-                TriggerValueChanged(tb);
+                (sender as DependencyObject).ForceBindingSourceUpdate(TextBox.TextProperty);
             }
+        }
+
+        private void Tb_SourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            this.RaiseValueChanged(sender, (PTypeDataTag)(sender as FrameworkElement).Tag);
         }
     }
 }

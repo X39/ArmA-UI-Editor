@@ -160,21 +160,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             throw new NotImplementedException();
         }
 
-        public void Redraw()
-        {
-            throw new NotImplementedException();
-            /*
-            switch (this.TabControlMainView.SelectedIndex)
-            {
-                case 0:
-                    this.WriteConfigToScreen();
-                    break;
-                case 1:
-                    this.WriteConfigToScreen();
-                    this.RegenerateDisplay();
-                    break;
-            }*/
-        }
         public void SaveFile()
         {
             if (string.IsNullOrWhiteSpace(this.FilePath))
@@ -307,11 +292,11 @@ namespace ArmA_UI_Editor.UI.Snaps
 
                 if (posChangeNeeded)
                 {
-                    this.LastFileConfig.SetKey(string.Join("/", data.Key, "x"), ToSqfString(FieldTypeEnum.XField, metrics.X));
-                    this.LastFileConfig.SetKey(string.Join("/", data.Key, "y"), ToSqfString(FieldTypeEnum.YField, metrics.Y));
+                    AddInManager.Instance.MainFile.SetKey(string.Join("/", data.Key, "x"), ToSqfString(FieldTypeEnum.XField, metrics.X));
+                    AddInManager.Instance.MainFile.SetKey(string.Join("/", data.Key, "y"), ToSqfString(FieldTypeEnum.YField, metrics.Y));
                 }
-                this.LastFileConfig.SetKey(string.Join("/", data.Key, "w"), ToSqfString(FieldTypeEnum.WField, metrics.Width));
-                this.LastFileConfig.SetKey(string.Join("/", data.Key, "h"), ToSqfString(FieldTypeEnum.HField, metrics.Height));
+                AddInManager.Instance.MainFile.SetKey(string.Join("/", data.Key, "w"), ToSqfString(FieldTypeEnum.WField, metrics.Width));
+                AddInManager.Instance.MainFile.SetKey(string.Join("/", data.Key, "h"), ToSqfString(FieldTypeEnum.HField, metrics.Height));
             }
         }
         private void SelectionOverlay_OnElementMove(object sender, SelectionOverlay.MoveEventArgs e)
@@ -327,8 +312,8 @@ namespace ArmA_UI_Editor.UI.Snaps
                 if (data == null)
                     return;
                 
-                this.LastFileConfig.SetKey(string.Join("/", data.Key, "x"), ToSqfString(FieldTypeEnum.XField, metrics.X));
-                this.LastFileConfig.SetKey(string.Join("/", data.Key, "y"), ToSqfString(FieldTypeEnum.YField, metrics.Y));
+                AddInManager.Instance.MainFile.SetKey(string.Join("/", data.Key, "x"), ToSqfString(FieldTypeEnum.XField, metrics.X));
+                AddInManager.Instance.MainFile.SetKey(string.Join("/", data.Key, "y"), ToSqfString(FieldTypeEnum.YField, metrics.Y));
             }
         }
         private void SelectionOverlay_OnOperationFinalized(object sender, FrameworkElement[] e)
@@ -672,7 +657,6 @@ namespace ArmA_UI_Editor.UI.Snaps
                 SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
                 p.Patch(this.Config, true);
             }
-            RegenerateDisplay();
         }
         private void Textbox_KeyDown(object sender, KeyEventArgs e)
         {

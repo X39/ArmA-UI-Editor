@@ -74,7 +74,6 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
             tb.ToolTip = App.Current.Resources["STR_CODE_Property_Number"] as String;
             return tb;
         }
-
         private void Tb_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             Code.Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
@@ -89,7 +88,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                             if (tag.PropertyObject is SqfProperty)
                             {
                                 var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-                                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, field == null && !field.IsString ? "" : field.String, tb.Text, (int)tag.Extra));
+                                AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), SqfProperty.SetSqfPropertySectionArg(tag.PropertyObject as SqfProperty, field == null || !field.IsString ? "" : field.String, tb.Text, (int)tag.Extra));
                             }
                             else
                             {
@@ -109,11 +108,11 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                             AddInManager.Instance.MainFile.SetKey(string.Concat(tag.Key, tag.Path), Window.ToSqfString(ArmA_UI_Editor.UI.Snaps.EditingSnap.FieldTypeEnum.HField, double.Parse(tb.Text, System.Globalization.CultureInfo.InvariantCulture)));
                             break;
                     }
-                    TriggerValueChanged(tb);
+                    //RaiseValueChanged(tb);
                 }
                 catch (Exception ex)
                 {
-                    TriggerError(tb, ex.Message);
+                    RaiseOnError(tb, ex.Message);
                 }
             });
         }

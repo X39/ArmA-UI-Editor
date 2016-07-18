@@ -8,6 +8,7 @@ using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 using ArmA_UI_Editor.UI.Snaps;
+using ArmA_UI_Editor.Code.AddInUtil.PropertyUtil;
 
 namespace ArmA_UI_Editor.Code.AddInUtil
 {
@@ -40,7 +41,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
                         sqfProp.Arguments.Sort((arg1, arg2) => arg1.Index.CompareTo(arg2.Index));
                         foreach(var it in sqfProp.Arguments)
                         {
-                            if(it.Property is Property.ArrayType)
+                            if(it.Property is ArrayType)
                                 throw new Exception(string.Format("sqf property '{0}' in '{1}' has an invalid type", sqfProp.Name, path));
                         }
                     }
