@@ -10,6 +10,14 @@
         <items>
           <item display="TahomaB" value="TahomaB"/>
           <item display="RobotoCondensed" value="RobotoCondensed"/>
+          <item display="PuristaLight" value="PuristaLight"/>
+          <item display="PuristaMedium" value="PuristaMedium"/>
+          <item display="PuristaSemiBold" value="PuristaSemiBold"/>
+          <item display="PuristaBold" value="PuristaBold"/>
+          <item display="LucidaConsoleB" value="LucidaConsoleB"/>
+          <item display="EtelkaMonospacePro" value="EtelkaMonospacePro"/>
+          <item display="EtelkaMonospaceProBold" value="EtelkaMonospaceProBold"/>
+          <item display="EtelkaNarrowMediumPro" value="EtelkaNarrowMediumPro"/>
         </items>
       </listbox>
       <field>/font</field>
