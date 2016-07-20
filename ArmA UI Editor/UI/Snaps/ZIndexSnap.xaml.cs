@@ -70,7 +70,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             if (snap != tag.EditingSnap)
                 return;
             tag.EditingSnap.OnUiElementsChanged -= EditingSnap_OnUiElementsChanged;
-            lbContent.Items.Clear();
+            lbContent.ItemsSource = null;
             lbContent.Tag = null;
         }
 
