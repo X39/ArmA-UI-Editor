@@ -46,7 +46,7 @@
                     <clr:String x:Key="STR_Window_Properties">Properties</clr:String>
                     <clr:String x:Key="STR_Window_Events">Events</clr:String>
                     <clr:String x:Key="STR_Window_Output">Output</clr:String>
-                    <clr:String x:Key="STR_Window_EditingWindow">MyUiConfig.cpp</clr:String>
+                    <clr:String x:Key="STR_Window_EditingWindow">New</clr:String>
                     <clr:String x:Key="STR_Window_ConfigView">Config Viewer</clr:String>
                     <clr:String x:Key="STR_Window_SettingsViewer">Configuration</clr:String>
                     <clr:String x:Key="STR_Window_AddInBrowser">AddIn Browser</clr:String>
@@ -58,7 +58,7 @@
                     <clr:String x:Key="STR_MainWindow_Help_ReportBug">Report a Bug</clr:String>
                     <clr:String x:Key="STR_MainWindow_Help_OpenDocumentation">Open Documentation</clr:String>
 
-                    <clr:String x:Key="STR_MainWindow_Donate">Donate &lt;3</clr:String>
+                    <clr:String x:Key="STR_MainWindow_Donate">Donate ❤</clr:String>
 
                     <clr:String x:Key="STR_SettingsWindow_General">General</clr:String>
                     <clr:String x:Key="STR_SettingsWindow_General_Privacy">Privacy</clr:String>

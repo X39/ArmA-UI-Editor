@@ -218,7 +218,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                     return;
                 }
                 this.FilePath = dlg.FileName;
-
+                this.Title = this.FilePath.Substring(this.FilePath.LastIndexOf('\\') + 1);
             }
             using (var writer = new StreamWriter(this.FilePath))
             {
