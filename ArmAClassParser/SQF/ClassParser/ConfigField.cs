@@ -25,26 +25,30 @@ namespace SQF.ClassParser
         public event PropertyChangedEventHandler PropertyChanged;
         protected void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
         {
-            if (this.PropertyChanged != null)
-                this.PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-
             var treeRoot = this.TreeRoot;
             if (treeRoot != this)
             {
                 treeRoot.RaisePropertyChanged("Value");
             }
+            else
+            if (this.PropertyChanged != null)
+                this.PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+
         }
         public event PropertyChangingEventHandler PropertyChanging;
         protected void RaisePropertyChanging([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
         {
-            if (this.PropertyChanging != null)
-                this.PropertyChanging(this, new System.ComponentModel.PropertyChangingEventArgs(propertyName));
 
             var treeRoot = this.TreeRoot;
             if (treeRoot != this)
             {
                 treeRoot.RaisePropertyChanging("Value");
             }
+            else
+            if (this.PropertyChanging != null)
+                this.PropertyChanging(this, new System.ComponentModel.PropertyChangingEventArgs(propertyName));
+
+
         }
         #endregion
         #region private Constants
@@ -133,6 +137,44 @@ namespace SQF.ClassParser
             this._Name = string.Empty;
         }
 
+
+        /// <summary>
+        /// Swaps the position of given keys
+        /// </summary>
+        /// <param name="keyA">Key to swap in this direct child</param>
+        /// <param name="keyB">Key to swap in this direct child</param>
+        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="ArgumentException"/>
+        public void SwapKeyIndexies(string keyA, string keyB)
+        {
+            if (!this.IsClass)
+                throw new InvalidOperationException(EX_INVALIDTYPE_CLASS);
+            if (!IsValidKey(keyA) || IsValidKey(keyB))
+                throw new ArgumentException(EX_INVALIDARG_INVALIDKEY);
+            if (!this.Contains(keyA) || !this.Contains(keyB))
+                throw new ArgumentException(EX_INVALIDARG_KEYNOTFOUND);
+            int index = -1;
+            for (int i = 0; i < this.Count; i++)
+            {
+                if (this.Children[i].Name.Equals(keyA, StringComparison.InvariantCultureIgnoreCase) || this.Children[i].Name.Equals(keyB, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    if (index == -1)
+                    {
+                        index = i;
+                    }
+                    else
+                    {
+                        this.RaisePropertyChanging("Children");
+                        var tmp = this.Children[i];
+                        this.Children[i] = this.Children[index];
+                        this.Children[index] = tmp;
+                        this.RaisePropertyChanged("Children");
+                        break;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Creates a new empty <see cref="ConfigField"/> with given key into this class.
         /// Requires this <see cref="ConfigField"/> to be a class!
@@ -187,11 +229,12 @@ namespace SQF.ClassParser
                     var it = keys[i];
                     if (string.IsNullOrWhiteSpace(it))
                         continue;
-                    try
+                    var tmp = currentField.GetKey(it, KeyMode.NullOnNotFound);
+                    if (tmp != null)
                     {
-                        currentField = currentField.GetKey(it, KeyMode.ThrowOnNotFound);
+                        currentField = tmp;
                     }
-                    catch (KeyNotFoundException ex)
+                    else
                     {
                         switch (mode)
                         {
@@ -224,7 +267,7 @@ namespace SQF.ClassParser
                             case KeyMode.HighestMatchAvailable:
                                 return currentField;
                             default:
-                                throw new KeyNotFoundException(ex.Message, string.Join("/", keys.GetRange(i)), ex);
+                                throw new KeyNotFoundException(EX_INVALIDARG_KEYNOTFOUND, string.Join("/", keys.GetRange(i)));
                         }
                     }
                 }
