@@ -38,7 +38,7 @@ namespace SQF.ClassParser.Generated
     
     public void ApplyRemovedFields()
     {
-        var curKeys = this.MainField.GetEnumeratorDeep();
+        var curKeys = this.MainField.GetEnumeratorDeep(false);
         var patchKeys = this.KeysAdded;
         var missingKeys = curKeys.Except(patchKeys);
         foreach (var key in missingKeys)

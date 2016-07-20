@@ -115,6 +115,7 @@
     <Compile Include="Code\Converter\ConfigFieldKeyConverter.cs" />
     <Compile Include="Code\Converter\PropertyValueStringConverter.cs" />
     <Compile Include="Code\Converter\SqfConfigFieldKeyConverter.cs" />
+    <Compile Include="Code\Converter\LastIndexOfStringConverter.cs" />
     <Compile Include="Code\Markup\BindColor.cs" />
     <Compile Include="Code\Markup\BindBrush.cs" />
     <Compile Include="Code\Markup\BindMultipliedValue.cs" />

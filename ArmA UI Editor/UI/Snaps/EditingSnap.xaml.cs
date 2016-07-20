@@ -326,8 +326,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             if (e.Element is FrameworkElement)
             {
                 var fElement = e.Element as FrameworkElement;
-                fElement.Width = metrics.Width;
-                fElement.Height = metrics.Height;
                 var data = fElement.Tag as TAG_CanvasChildElement;
                 if (data == null)
                     return;
@@ -778,31 +776,25 @@ namespace ArmA_UI_Editor.UI.Snaps
                         binding.Source = AddInManager.Instance.MainFile;
                         binding.Converter = new UiConverter(this, string.Concat(curField.Key, "/x"));
                         binding.ConverterParameter = FieldTypeEnum.XField;
-                        binding.NotifyOnSourceUpdated = true;
                         el.SetBinding(Canvas.LeftProperty, binding);
 
                         binding = new Binding("Value");
                         binding.Source = AddInManager.Instance.MainFile;
                         binding.Converter = new UiConverter(this, string.Concat(curField.Key, "/w"));
                         binding.ConverterParameter = FieldTypeEnum.WField;
-                        binding.NotifyOnSourceUpdated = true;
                         el.SetBinding(Canvas.WidthProperty, binding);
 
                         binding = new Binding("Value");
                         binding.Source = AddInManager.Instance.MainFile;
                         binding.Converter = new UiConverter(this, string.Concat(curField.Key, "/y"));
                         binding.ConverterParameter = FieldTypeEnum.YField;
-                        binding.NotifyOnSourceUpdated = true;
                         el.SetBinding(Canvas.TopProperty, binding);
 
                         binding = new Binding("Value");
                         binding.Source = AddInManager.Instance.MainFile;
                         binding.Converter = new UiConverter(this, string.Concat(curField.Key, "/h"));
                         binding.ConverterParameter = FieldTypeEnum.HField;
-                        binding.NotifyOnSourceUpdated = true;
                         el.SetBinding(Canvas.HeightProperty, binding);
-
-                        el.SourceUpdated += ConfigUiElement_SourceUpdated;
 
                         Canvas.SetZIndex(el, index);
 
@@ -835,11 +827,6 @@ namespace ArmA_UI_Editor.UI.Snaps
                 this.DisplayCanvas.Children.Add(frame);
             }
             return false;
-        }
-
-        private void ConfigUiElement_SourceUpdated(object sender, DataTransferEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         private SelectionOverlay CreateOrGetSelectionOverlay(bool mouseDownOnCreate = true)
@@ -922,33 +909,35 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void ContextMenu_ChildElement_SnapFitToGrid_Click(object sender, RoutedEventArgs e)
         {
-            var mi = sender as MenuItem;
-            var cm = mi.Parent as ContextMenu;
-            if (cm.Tag is FrameworkElement)
-            {
-                var el = cm.Tag as FrameworkElement;
-                if (el.Tag is TAG_CanvasChildElement)
-                {
-                    var tag = el.Tag as TAG_CanvasChildElement;
-                    var snapGrid = tag.Owner.SnapGrid;
-                    var metricts = Code.Utility.GetCanvasMetrics(el);
-                    double tmp;
-                    tmp = metricts.Right % snapGrid;
-                    var deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
-                    tmp = metricts.Bottom % snapGrid;
-                    var deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
-                    if (deltaX != 0 || deltaY != 0)
-                        SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.BotRight, deltaX, deltaY, el));
-
-                    metricts = Code.Utility.GetCanvasMetrics(el);
-                    tmp = metricts.X % snapGrid;
-                    deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
-                    tmp = metricts.Y % snapGrid;
-                    deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
-                    if (deltaX != 0 || deltaY != 0)
-                        SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.TopLeft, -deltaX, -deltaY, el));
-                }
-            }
+            this.ContextMenu_ChildElement_SnapToGrid_Click(sender, e);
+            this.ContextMenu_ChildElement_FitToGrid_Click(sender, e);
+            //var mi = sender as MenuItem;
+            //var cm = mi.Parent as ContextMenu;
+            //if (cm.Tag is FrameworkElement)
+            //{
+            //    var el = cm.Tag as FrameworkElement;
+            //    if (el.Tag is TAG_CanvasChildElement)
+            //    {
+            //        var tag = el.Tag as TAG_CanvasChildElement;
+            //        var snapGrid = tag.Owner.SnapGrid;
+            //        var metricts = Code.Utility.GetCanvasMetrics(el);
+            //        double tmp;
+            //        tmp = metricts.Right % snapGrid;
+            //        var deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+            //        tmp = metricts.Bottom % snapGrid;
+            //        var deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+            //        if (deltaX != 0 || deltaY != 0)
+            //            SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.BotRight, deltaX, deltaY, el));
+            //
+            //        metricts = Code.Utility.GetCanvasMetrics(el);
+            //        tmp = metricts.X % snapGrid;
+            //        deltaX = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+            //        tmp = metricts.Y % snapGrid;
+            //        deltaY = tmp > snapGrid / 2 ? snapGrid - tmp : -tmp;
+            //        if (deltaX != 0 || deltaY != 0)
+            //            SelectionOverlay_OnElementResize(cm, new SelectionOverlay.ResizeEventArgs(SelectionOverlay.ResizeEventArgs.Direction.TopLeft, -deltaX, -deltaY, el));
+            //    }
+            //}
         }
         private void ContextMenu_ChildElement_Properties_Click(object sender, RoutedEventArgs e)
         {
@@ -1215,46 +1204,12 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public void SwapUiIndexies(string keyA, string keyB)
         {
-            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", keyA, keyB)));
-            throw new NotImplementedException();
-            //ToDo: Reimplement
-            var controls = this.LastFileConfig["controls"];
-            int index1 = -1;
-            int index2 = -1;
-            for (int i = 0; i < controls.Count; i++)
-            {
-                var it = controls[i];
-                if (it.Key == keyA)
-                {
-                    index1 = i;
-                }
-                else if (it.Key == keyB)
-                {
-                    index2 = i;
-                }
-                if (index1 != -1 && index2 != -1)
-                {
-                    break;
-                }
-            }
-            if (index1 == -1 || index2 == -1)
-                throw new ArgumentException("Cannot find given classname(s)");
-            /* old swap code that has to be replaced
-            uiElements.Class = new ConfigClass();
-            for (int i = 0; i < controls.Count; i++)
-            {
-                var it = controls.ElementAt(i);
-                if (i == index1)
-                {
-                    it = controls.ElementAt(index2);
-                }
-                else if(i == index2)
-                {
-                    it = controls.ElementAt(index1);
-                }
-                uiElements.Class.Add(it.Key, it.Value);
-            }
-            TryRefreshAll();*/
+            var keyAField = this.Config.TreeRoot.GetKey(keyA, ConfigField.KeyMode.ThrowOnNotFound);
+            var keyBField = this.Config.TreeRoot.GetKey(keyB, ConfigField.KeyMode.ThrowOnNotFound);
+            if (keyAField.Parent != keyBField.Parent)
+                throw new ArgumentException("Parents do not matcH");
+            keyAField.Parent.SwapKeyIndexies(keyAField.Name, keyBField.Name);
+            this.RegenerateDisplay();
         }
     }
 }

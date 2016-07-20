@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,10 +60,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             var list = snap.GetUiElements();
             snap.OnUiElementsChanged += EditingSnap_OnUiElementsChanged;
             lbContent.Tag = new TAG_lbContent { EditingSnap = snap, Tuple = list };
-            foreach (var it in list)
-            {
-                lbContent.Items.Add(it);
-            }
+            lbContent.ItemsSource = list;
         }
         private void UnSubscribeEditingSnap(EditingSnap snap)
         {
@@ -93,11 +91,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             EditingSnap snap = sender as EditingSnap;
             var list = snap.GetUiElements();
             lbContent.Tag = new TAG_lbContent { EditingSnap = snap, Tuple = list };
-            lbContent.Items.Clear();
-            foreach (var it in list)
-            {
-                lbContent.Items.Add(it);
-            }
+            lbContent.ItemsSource = list;
         }
 
         private void lbContent_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
