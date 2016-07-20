@@ -26,13 +26,28 @@ namespace ArmA_UI_Editor.Code
             stream.Seek(0, System.IO.SeekOrigin.Begin);
             return stream;
         }
-        public static System.Windows.Rect GetCanvasMetrics(this System.Windows.UIElement el)
+        public static Binding GetBinding(this DependencyObject el, DependencyProperty prop)
+        {
+            return BindingOperations.GetBinding(el, prop);
+        }
+        public static System.Windows.Rect GetCanvasMetrics(this System.Windows.FrameworkElement el)
         {
             var rect = new System.Windows.Rect();
             rect.X = System.Windows.Controls.Canvas.GetLeft(el);
             rect.Y = System.Windows.Controls.Canvas.GetTop(el);
+            if (double.IsNaN(rect.X) || double.IsNaN(rect.Y))
+            {
+                var p = el.TranslatePoint(new Point(0, 0), el.Parent as UIElement);
+                rect.X = p.X;
+                rect.Y = p.Y;
+            }
             rect.Width = System.Windows.Controls.Canvas.GetRight(el) - rect.X;
             rect.Height = System.Windows.Controls.Canvas.GetBottom(el) - rect.Y;
+            if(double.IsNaN(rect.Width) || double.IsNaN(rect.Height))
+            {
+                rect.Width = el.ActualWidth;
+                rect.Height = el.ActualHeight;
+            }
             return rect;
         }
         public static void SetCanvasMetrics(this System.Windows.UIElement el, System.Windows.Rect rect)

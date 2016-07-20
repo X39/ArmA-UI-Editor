@@ -17,6 +17,7 @@ using ArmA_UI_Editor.Code;
 using ArmA_UI_Editor.Code.AddInUtil;
 using SQF.ClassParser;
 using NLog;
+using System.Globalization;
 
 namespace ArmA_UI_Editor.UI.Snaps
 {
@@ -25,6 +26,45 @@ namespace ArmA_UI_Editor.UI.Snaps
     /// </summary>
     public partial class EditingSnap : Page, Code.Interface.ISnapWindow
     {
+
+        private class UiConverter : Code.Converter.ConfigFieldKeyConverterBase
+        {
+            private WeakReference<EditingSnap> EditingSnapWeak;
+            public UiConverter(EditingSnap creator, string key) : base(key)
+            {
+                this.EditingSnapWeak = new WeakReference<EditingSnap>(creator);
+            }
+            public override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (value.IsClass || value.IsString && string.IsNullOrWhiteSpace(value.String))
+                    return null;
+                var output = value.Value;
+                EditingSnap snap;
+                if (this.EditingSnapWeak.TryGetTarget(out snap))
+                {
+                    if (parameter is FieldTypeEnum)
+                    {
+                        output = value.IsNumber ? value.Number : snap.FromSqfString((FieldTypeEnum)parameter, value.String);
+                    }
+                }
+                return output;
+            }
+
+            public override object DoConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var output = value;
+                EditingSnap snap;
+                if (this.EditingSnapWeak.TryGetTarget(out snap))
+                {
+                    if (parameter is FieldTypeEnum)
+                    {
+                        output = value is double ? snap.ToSqfString((FieldTypeEnum)parameter, (double)value) : value;
+                    }
+                }
+                return output;
+            }
+        }
+
         private static Logger Logger = LogManager.GetCurrentClassLogger();
         private string GetTraceInfo([System.Runtime.CompilerServices.CallerMemberName] string caller = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
         {
@@ -109,6 +149,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
                 p.Patch(this.Config, true);
             }
+            this.RegenerateDisplay();
         }
         #endregion
 
@@ -138,6 +179,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.ViewScale = 1;
             this.FilePath = string.Empty;
             this.HasUnsavedChanges = true;
+            this.AllowConfigPatching = false;
         }
         public EditingSnap(string FilePath)
         {
@@ -154,6 +196,7 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.ViewScale = 1;
             this.FilePath = FilePath;
             this.HasUnsavedChanges = false;
+            this.AllowConfigPatching = false;
         }
         private void ReReadConfigField()
         {
@@ -280,7 +323,6 @@ namespace ArmA_UI_Editor.UI.Snaps
 
             if (metrics.Height + e.DeltaY >= 0)
                 metrics.Height += e.DeltaY;
-            e.Element.SetCanvasMetrics(metrics);
             if (e.Element is FrameworkElement)
             {
                 var fElement = e.Element as FrameworkElement;
@@ -304,7 +346,6 @@ namespace ArmA_UI_Editor.UI.Snaps
             var metrics = e.Element.GetCanvasMetrics();
             metrics.X += e.DeltaX;
             metrics.Y += e.DeltaY;
-            e.Element.SetCanvasMetrics(metrics);
             if (e.Element is FrameworkElement)
             {
                 var fElement = e.Element as FrameworkElement;
@@ -452,11 +493,11 @@ namespace ArmA_UI_Editor.UI.Snaps
         private void DisplayCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             var arr = this.DisplayCanvas.Children;
-            System.Windows.UIElement thisElement = null;
+            FrameworkElement thisElement = null;
             SelectionOverlay overlay = null;
             for (int i = arr.Count - 1; i >= 0; i--)
             {
-                var it = arr[i];
+                var it = arr[i] as FrameworkElement;
                 if (it is SelectionOverlay)
                 {
                     overlay = it as SelectionOverlay;
@@ -657,6 +698,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
                 p.Patch(this.Config, true);
             }
+            this.RegenerateDisplay();
         }
         private void Textbox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -670,10 +712,10 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             if (this.Config == null)
                 return;
-            if (this.TabControlMainView.SelectedIndex == 1)
-            {
-                this.RegenerateDisplay();
-            }
+            //if (this.TabControlMainView.SelectedIndex == 1)
+            //{
+            //    this.RegenerateDisplay();
+            //}
         }
         private void TabControlMainView_KeyDown(object sender, KeyEventArgs e)
         {
@@ -730,26 +772,40 @@ namespace ArmA_UI_Editor.UI.Snaps
 
                         var el = (FrameworkElement)System.Windows.Markup.XamlReader.Load(stream);
                         this.DisplayCanvas.Children.Add(el);
-                        ConfigField[] sizeList = new[] {
-                                curField["x"],
-                                curField["y"],
-                                curField["w"],
-                                curField["h"]
-                            };
-                        var tmp = sizeList[0].IsNumber ? sizeList[0].Number : FromSqfString(FieldTypeEnum.XField, sizeList[0].String);
-                        Canvas.SetLeft(el, tmp);
-                        tmp += sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String);
-                        Canvas.SetRight(el, tmp);
-                        tmp = sizeList[1].IsNumber ? sizeList[1].Number : FromSqfString(FieldTypeEnum.YField, sizeList[1].String);
-                        Canvas.SetTop(el, tmp);
-                        tmp += sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
-                        Canvas.SetBottom(el, tmp);
+                        Binding binding;
+
+                        binding = new Binding("Value");
+                        binding.Source = AddInManager.Instance.MainFile;
+                        binding.Converter = new UiConverter(this, string.Concat(curField.Key, "/x"));
+                        binding.ConverterParameter = FieldTypeEnum.XField;
+                        binding.NotifyOnSourceUpdated = true;
+                        el.SetBinding(Canvas.LeftProperty, binding);
+
+                        binding = new Binding("Value");
+                        binding.Source = AddInManager.Instance.MainFile;
+                        binding.Converter = new UiConverter(this, string.Concat(curField.Key, "/w"));
+                        binding.ConverterParameter = FieldTypeEnum.WField;
+                        binding.NotifyOnSourceUpdated = true;
+                        el.SetBinding(Canvas.WidthProperty, binding);
+
+                        binding = new Binding("Value");
+                        binding.Source = AddInManager.Instance.MainFile;
+                        binding.Converter = new UiConverter(this, string.Concat(curField.Key, "/y"));
+                        binding.ConverterParameter = FieldTypeEnum.YField;
+                        binding.NotifyOnSourceUpdated = true;
+                        el.SetBinding(Canvas.TopProperty, binding);
+
+                        binding = new Binding("Value");
+                        binding.Source = AddInManager.Instance.MainFile;
+                        binding.Converter = new UiConverter(this, string.Concat(curField.Key, "/h"));
+                        binding.ConverterParameter = FieldTypeEnum.HField;
+                        binding.NotifyOnSourceUpdated = true;
+                        el.SetBinding(Canvas.HeightProperty, binding);
+
+                        el.SourceUpdated += ConfigUiElement_SourceUpdated;
+
                         Canvas.SetZIndex(el, index);
 
-                        tmp = sizeList[2].IsNumber ? sizeList[2].Number : FromSqfString(FieldTypeEnum.WField, sizeList[2].String);
-                        el.Width = tmp;
-                        tmp = sizeList[3].IsNumber ? sizeList[3].Number : FromSqfString(FieldTypeEnum.HField, sizeList[3].String);
-                        el.Height = tmp;
                         el.Tag = new TAG_CanvasChildElement { file = addInUiElement, Key = curField.Key, Owner = this };
                         var snaps = MainWindow.TryGet().Docker.FindSnaps<PropertySnap>();
                         //ToDo: Restore selection
@@ -780,6 +836,12 @@ namespace ArmA_UI_Editor.UI.Snaps
             }
             return false;
         }
+
+        private void ConfigUiElement_SourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private SelectionOverlay CreateOrGetSelectionOverlay(bool mouseDownOnCreate = true)
         {
             Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", mouseDownOnCreate)));

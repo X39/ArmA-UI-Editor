@@ -28,8 +28,8 @@ namespace ArmA_UI_Editor.UI
         {
             public double DeltaX { get; private set; }
             public double DeltaY { get; private set; }
-            public UIElement Element { get; private set; }
-            public MoveEventArgs(double deltaX, double deltaY, UIElement element)
+            public FrameworkElement Element { get; private set; }
+            public MoveEventArgs(double deltaX, double deltaY, FrameworkElement element)
             {
                 this.DeltaX = deltaX;
                 this.DeltaY = deltaY;
@@ -52,8 +52,8 @@ namespace ArmA_UI_Editor.UI
             public Direction Dir { get; private set; }
             public double DeltaX { get; private set; }
             public double DeltaY { get; private set; }
-            public UIElement Element { get; private set; }
-            public ResizeEventArgs(Direction dir, double deltaX, double deltaY, UIElement element)
+            public FrameworkElement Element { get; private set; }
+            public ResizeEventArgs(Direction dir, double deltaX, double deltaY, FrameworkElement element)
             {
                 this.Dir = dir;
                 this.DeltaX = deltaX;
