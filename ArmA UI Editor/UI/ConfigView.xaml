@@ -7,8 +7,8 @@
         xmlns:parser="clr-namespace:SQF.ClassParser;assembly=ArmAClassParser"
         xmlns:c="clr-namespace:ArmA_UI_Editor.Code.Converter"
         mc:Ignorable="d"
-        Title="{StaticResource STR_Window_ConfigView}" Height="768" Width="512">
-    <TreeView Initialized="TreeView_Initialized" MouseRightButtonDown="TreeView_MouseRightButtonDown">
+        Title="{StaticResource STR_Window_ConfigView}" Height="768" Width="512" Icon="/ArmA UI Editor;component/Logo_V3.ico">
+    <TreeView Initialized="TreeView_Initialized" MouseRightButtonDown="TreeView_MouseRightButtonDown" Background="{StaticResource SCB_UIBackground}">
         <TreeView.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="{StaticResource STR_ConfigView_ExportToClipboard}" Click="MenuItem_Click"/>
@@ -16,7 +16,7 @@
         </TreeView.ContextMenu>
         <TreeView.ItemTemplate>
             <HierarchicalDataTemplate DataType="{x:Type parser:ConfigField}" ItemsSource="{Binding}">
-                <TextBlock Text="{Binding}"/>
+                <TextBlock Text="{Binding}" Foreground="{StaticResource SCB_DefaultTextColor}"/>
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
     </TreeView>

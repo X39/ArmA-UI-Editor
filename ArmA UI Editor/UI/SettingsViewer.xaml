@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ArmA_UI_Editor.UI"
         xmlns:g="clr-namespace:ArmA_UI_Editor"
         mc:Ignorable="d"
-        Title="{StaticResource STR_Window_SettingsViewer}" Height="300" Width="512" Background="{StaticResource SCB_UIBackground}">
+        Title="{StaticResource STR_Window_SettingsViewer}" Height="300" Width="512" Background="{StaticResource SCB_UIBackground}" Icon="/ArmA UI Editor;component/Logo_V3.ico">
     <Window.Resources>
         <ResourceDictionary>
             <Page x:Key="General_Privacy">

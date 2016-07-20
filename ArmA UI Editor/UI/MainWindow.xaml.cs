@@ -191,7 +191,30 @@ namespace ArmA_UI_Editor.UI
 
         private void MenuItem_File_Save_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var snapWindow = this.Docker.GetFocusedSnapWindow(Dock.Top);
+            if (snapWindow == null)
+                return;
+            var snap = snapWindow.Window as EditingSnap;
+            if(snap != null)
+                snap.SaveFile();
+        }
+        private void MenuItem_File_SaveAs_Click(object sender, RoutedEventArgs e)
+        {
+            var snapWindow = this.Docker.GetFocusedSnapWindow(Dock.Top);
+            if (snapWindow == null)
+                return;
+            var snap = snapWindow.Window as EditingSnap;
+            if (snap != null)
+            {
+                snap.SaveFile();
+                var tmp = snap.FilePath;
+                snap.FilePath = string.Empty;
+                snap.SaveFile();
+                if(string.IsNullOrWhiteSpace(snap.FilePath))
+                {
+                    snap.FilePath = tmp;
+                }
+            }
         }
 
         private void MenuItem_View_Toolbox_Click(object sender, RoutedEventArgs e)

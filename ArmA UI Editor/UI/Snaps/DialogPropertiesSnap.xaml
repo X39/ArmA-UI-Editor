@@ -44,5 +44,5 @@
             </StackPanel>
         </Page>
     </Page.Resources>
-    <Frame NavigationUIVisibility="Hidden" x:Name="ThisFrame" x:FieldModifier="private"/>
+    <Frame NavigationUIVisibility="Hidden" x:Name="ThisFrame" x:FieldModifier="private" Background="{StaticResource SCB_UIBackgroundDark}" VerticalAlignment="Top"/>
 </Page>
