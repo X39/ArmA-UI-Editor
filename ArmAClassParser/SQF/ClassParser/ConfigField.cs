@@ -149,7 +149,7 @@ namespace SQF.ClassParser
         {
             if (!this.IsClass)
                 throw new InvalidOperationException(EX_INVALIDTYPE_CLASS);
-            if (!IsValidKey(keyA) || IsValidKey(keyB))
+            if (!IsValidKey(keyA) || !IsValidKey(keyB))
                 throw new ArgumentException(EX_INVALIDARG_INVALIDKEY);
             if (!this.Contains(keyA) || !this.Contains(keyB))
                 throw new ArgumentException(EX_INVALIDARG_KEYNOTFOUND);
@@ -254,6 +254,7 @@ namespace SQF.ClassParser
                                     currentField = currentField.FindConfigKeyInHirarchy(currentField.ConfigParentName).GetKey(string.Join("/", keys.GetRange(i)), mode);
                                     if (currentField == null)
                                         return null;
+                                    i = keys.Length;
                                 }
                                 break;
                             case KeyMode.CreateNew:
