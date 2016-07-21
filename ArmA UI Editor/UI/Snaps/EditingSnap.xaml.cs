@@ -203,6 +203,34 @@ namespace ArmA_UI_Editor.UI.Snaps
             throw new NotImplementedException();
         }
 
+        public void SaveCanvasToFile(string filePath)
+        {
+            const double DPI = 96;
+
+
+            this.RegenerateDisplay();
+            this.DisplayCanvas.InvalidateVisual();
+            this.DisplayCanvas.UpdateLayout();
+            var bounds = VisualTreeHelper.GetDescendantBounds(this.DisplayCanvas);
+
+            var rtb = new RenderTargetBitmap((int)bounds.Width, (int)bounds.Height, DPI, DPI, PixelFormats.Pbgra32);
+            var visual = new DrawingVisual();
+            using (var context = visual.RenderOpen())
+            {
+                var vb = new VisualBrush(this.DisplayCanvas);
+                context.DrawRectangle(vb, null, new Rect(new Point(), bounds.Size));
+            }
+
+            rtb.Render(visual);
+
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+            using (var file = File.OpenWrite(filePath))
+            {
+                encoder.Save(file);
+            }
+        }
+
         public void SaveFile()
         {
             if (string.IsNullOrWhiteSpace(this.FilePath))
@@ -210,7 +238,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 var dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = this.LastFileConfig.Name;
                 dlg.DefaultExt = ".cpp";
-                dlg.Filter = "ArmA Class (.cpp)|*.cpp|ArmA Class (.hpp)|*.hpp";
+                dlg.Filter = "ArmA Class|*.cpp|ArmA Class|*.hpp";
                 dlg.CheckPathExists = true;
                 var res = dlg.ShowDialog();
                 if (!res.HasValue || !res.Value)
@@ -1210,6 +1238,21 @@ namespace ArmA_UI_Editor.UI.Snaps
                 throw new ArgumentException("Parents do not matcH");
             keyAField.Parent.SwapKeyIndexies(keyAField.Name, keyBField.Name);
             this.RegenerateDisplay();
+        }
+
+        private void MenuItem_EditingSnap_ContextMenu_Canvas_ExportToPng_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = this.LastFileConfig.Name;
+            dlg.DefaultExt = ".png";
+            dlg.Filter = "Portable Network Graphics|*.png";
+            dlg.CheckPathExists = true;
+            var res = dlg.ShowDialog();
+            if (!res.HasValue || !res.Value)
+            {
+                return;
+            }
+            this.SaveCanvasToFile(dlg.FileName);
         }
     }
 }

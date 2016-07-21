@@ -12,6 +12,7 @@
         <ContextMenu x:Key="ContextMenu_Canvas">
             <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_Canvas_ToggleSnapping}" IsCheckable="True" IsChecked="{Binding SnapEnabled, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"/>
             <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_Canvas_ToggleBackground}" IsCheckable="True" IsChecked="{Binding BackgroundEnabled, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_Canvas_ExportToPng}" Click="MenuItem_EditingSnap_ContextMenu_Canvas_ExportToPng_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="ContextMenu_ChildElement">
             <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_SnapElementToGrid}" Click="ContextMenu_ChildElement_SnapToGrid_Click"/>
