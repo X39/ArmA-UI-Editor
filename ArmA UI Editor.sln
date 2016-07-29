@@ -9,11 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmA UI Editor", "ArmA UI E
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmAClassParser", "ArmAClassParser\ArmAClassParser.csproj", "{2E1B48AD-1DE2-457E-AE85-8230969296BF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AB1BED91-BEDF-485C-B697-2D0DB1DC7D47} = {AB1BED91-BEDF-485C-B697-2D0DB1DC7D47}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{AB1BED91-BEDF-485C-B697-2D0DB1DC7D47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +24,6 @@ Global
 		{2E1B48AD-1DE2-457E-AE85-8230969296BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E1B48AD-1DE2-457E-AE85-8230969296BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E1B48AD-1DE2-457E-AE85-8230969296BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB1BED91-BEDF-485C-B697-2D0DB1DC7D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB1BED91-BEDF-485C-B697-2D0DB1DC7D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB1BED91-BEDF-485C-B697-2D0DB1DC7D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB1BED91-BEDF-485C-B697-2D0DB1DC7D47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
