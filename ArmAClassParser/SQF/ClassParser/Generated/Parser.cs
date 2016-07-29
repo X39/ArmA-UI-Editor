@@ -162,7 +162,7 @@ namespace SQF.ClassParser.Generated
 	}
 
 	void CONFIG(StringList list) {
-		ConfigField thisField; 
+		ConfigField thisField; var tmpStartIndex = la.charPos; 
 		Expect(6);
 		Expect(5);
 		list.Add(t.val);
@@ -174,6 +174,7 @@ namespace SQF.ClassParser.Generated
 		thisField.Name = t.val;
 		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
 		{
+		this.Range.WholeStart = tmpStartIndex;
 		this.Range.NameStart = t.charPos;
 		this.Range.NameEnd = t.charPos + t.val.Length;
 		};
@@ -202,13 +203,17 @@ namespace SQF.ClassParser.Generated
 			Expect(9);
 		}
 		Expect(10);
+		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+		{
+		this.Range.WholeEnd = t.charPos + t.val.Length;
+		}
 		KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
-		list.Remove(list.Last());
-		
+		           list.Remove(list.Last());
+		       
 	}
 
 	void FIELD(StringList list) {
-		ConfigField thisField; 
+		ConfigField thisField; var tmpStartIndex = la.charPos; 
 		Expect(5);
 		list.Add(t.val);
 		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
@@ -220,6 +225,7 @@ namespace SQF.ClassParser.Generated
 		KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
 		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
 		{
+		this.Range.WholeStart = tmpStartIndex;
 		this.Range.NameStart = t.charPos;
 		this.Range.NameEnd = t.charPos + t.val.Length;
 		};
@@ -260,6 +266,7 @@ namespace SQF.ClassParser.Generated
 		{
 		this.Range.ValueStart = beginIndex;
 		this.Range.ValueEnd = t.charPos + t.val.Length;
+		this.Range.WholeEnd = la.charPos + la.val.Length;
 		}
 		
 		Expect(10);
@@ -347,7 +354,7 @@ namespace SQF.ClassParser.Generated
             la.val = "";
             Get();
 			doRoot();
-            return this.Range;
+            return this.Range.IsFilled ? this.Range : null;
         }
 
         public SQF.ClassParser.ConfigField Parse() {

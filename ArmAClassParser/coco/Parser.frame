@@ -158,7 +158,7 @@ namespace SQF.ClassParser.Generated
             la.val = "";
             Get();
 			doRoot();
-            return this.Range;
+            return this.Range.IsFilled ? this.Range : null;
         }
 
         public SQF.ClassParser.ConfigField Parse() {

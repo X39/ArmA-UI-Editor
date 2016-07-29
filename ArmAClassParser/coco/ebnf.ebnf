@@ -57,7 +57,7 @@ COMPILER CONFIGFILE
                 CONFIG<list>
             }
 		.
-        CONFIG<StringList list> (. ConfigField thisField; .) =
+        CONFIG<StringList list> (. ConfigField thisField; var tmpStartIndex = la.charPos; .) =
             "class"
             T_IDENT (.
                 list.Add(t.val);
@@ -69,6 +69,7 @@ COMPILER CONFIGFILE
                 thisField.Name = t.val;
 				if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
 				{
+					this.Range.WholeStart = tmpStartIndex;
 					this.Range.NameStart = t.charPos;
 					this.Range.NameEnd = t.charPos + t.val.Length;
 				};
@@ -95,11 +96,15 @@ COMPILER CONFIGFILE
             ]
             ';'
             (.
-                KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
+				if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+				{
+					this.Range.WholeEnd = t.charPos + t.val.Length;
+				}
+				KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
                 list.Remove(list.Last());
             .)
         .
-        FIELD<StringList list> (. ConfigField thisField; .) =
+        FIELD<StringList list> (. ConfigField thisField; var tmpStartIndex = la.charPos; .) =
             T_IDENT (.
                 list.Add(t.val);
                 thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
@@ -111,6 +116,7 @@ COMPILER CONFIGFILE
                 KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
 				if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
 				{
+					this.Range.WholeStart = tmpStartIndex;
 					this.Range.NameStart = t.charPos;
 					this.Range.NameEnd = t.charPos + t.val.Length;
 				};
@@ -146,6 +152,7 @@ COMPILER CONFIGFILE
 					{
 						this.Range.ValueStart = beginIndex;
 						this.Range.ValueEnd = t.charPos + t.val.Length;
+						this.Range.WholeEnd = la.charPos + la.val.Length;
 					}
 				.)
             )

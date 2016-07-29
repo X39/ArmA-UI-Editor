@@ -284,7 +284,8 @@ namespace ArmA_UI_Editor.UI.Snaps
             var lastFileConfig = this.LastFileConfig;
             var controlsConfig = lastFileConfig["controls"];
             var tagData = el.Tag as TAG_CanvasChildElement;
-            controlsConfig.RemoveKey(tagData.Key);
+            this.RemoveConfigKey(tagData.Key);
+
             DisplayCanvas.Children.Remove(el);
         }
 
@@ -1266,6 +1267,30 @@ namespace ArmA_UI_Editor.UI.Snaps
                 }
             }
             this.AllowConfigPatching = false;
+        }
+        public void RemoveConfigKey(string key)
+        {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", key)));
+            using (var stream = this.Textbox.Text.AsMemoryStream())
+            {
+                SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
+                key = key.Remove(0, key.IndexOf(this.LastFileConfig.Name) - 1);
+                var index = p.GetRange(key);
+                if (index == null)
+                {
+                    throw new ArgumentException();
+                }
+                else
+                {
+                    this.Textbox.Text = this.Textbox.Text.Remove(index.WholeStart, index.WholeEnd - index.WholeStart);
+                }
+                this.SelectElements(false, false, new FrameworkElement[0]);
+                var field = this.Config.GetKey(key, ConfigField.KeyMode.ThrowOnNotFound);
+                field.Parent.RemoveKey(field.Name);
+            }
+            this.AllowConfigPatching = false;
+            if (this.OnUiElementsChanged != null)
+                this.OnUiElementsChanged(this, new EventArgs());
         }
 
         public List<Tuple<Code.AddInUtil.UIElement, string>> GetUiElements()
