@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ArmA_UI_Editor.Code.AddInUtil;
 using SQF.ClassParser;
 using ArmA_UI_Editor.Code;
 using ArmA_UI_Editor.Code.AddInUtil.PropertyUtil;
@@ -26,7 +14,7 @@ namespace ArmA_UI_Editor.UI.Snaps
     {
         public ConfigField CurrentField { get; private set; }
         public List<Code.AddInUtil.Group> CurrentGroups { get; private set; }
-        public EditingSnap CurrentWindow { get; private set; }
+        public EditingSnap CurrentEditingSnap { get; private set; }
 
         public int AllowedCount { get { return 1; } }
         public Dock DefaultDock { get { return Dock.Right; } }
@@ -38,7 +26,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void PType_ValueChanged(object sender, PTypeDataTag e)
         {
-            this.CurrentWindow.UpdateConfigKey(string.Concat(e.Key, e.Path));
+            this.CurrentEditingSnap.UpdateConfigKey(string.Concat(e.Key, e.Path));
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).SetStatusbarText("", false);
         }
         private void PType_OnError(object sender, string e)
@@ -57,37 +45,26 @@ namespace ArmA_UI_Editor.UI.Snaps
             p = new Property();
             tb = new TextBox();
             tb.PreviewTextInput += TextBox_ClassName_PreviewTextInput;
+            tb.LostFocus += TextBox_ClassName_LostFocus;
             tb.Text = this.CurrentField.Name;
             p.Children.Add(tb);
             p.Header = "Class Name";
             group.Children.Add(p);
-
-            p = new Property();
-            tb = new TextBox();
-            tb.PreviewTextInput += TextBox_IDC_PreviewTextInput;
-            var idcField = this.CurrentField.GetKey("idc", ConfigField.KeyMode.NullOnNotFound);
-            if (idcField != null && idcField.IsNumber)
-            {
-                tb.Text = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", idcField.Number);
-            }
-            p.Children.Add(tb);
-            p.Header = "IDC";
-            group.Children.Add(p);
         }
 
-        private void TextBox_IDC_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void TextBox_ClassName_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            Utility.tb_PreviewTextInput_Numeric_DoHandle(sender, e, () =>
-            {
-                this.CurrentField.SetKey("idc", double.Parse((sender as TextBox).Text, System.Globalization.CultureInfo.InvariantCulture));
-                (ArmA_UI_Editor.UI.MainWindow.TryGet()).SetStatusbarText("", false);
-            });
+            this.CurrentEditingSnap.RenameConfigKey(this.CurrentField.Key, (sender as TextBox).Text);
+            this.CurrentField.Name = (sender as TextBox).Text;
+            this.CurrentEditingSnap.RegenerateDisplay();
         }
         private void TextBox_ClassName_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Utility.tb_PreviewTextInput_Ident_DoHandle(sender, e, () =>
             {
+                this.CurrentEditingSnap.RenameConfigKey(this.CurrentField.Key, (sender as TextBox).Text);
                 this.CurrentField.Name = (sender as TextBox).Text;
+                this.CurrentEditingSnap.RegenerateDisplay();
             });
         }
 
@@ -110,7 +87,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 {
                     var el = new Property();
                     el.Header = property.DisplayName;
-                    var fEl = property.PropertyType.GenerateUiElement(string.Concat(this.CurrentField.Key, property.FieldPath), CurrentWindow, new Code.AddInUtil.PropertyUtil.PTypeDataTag { PropertyObject = property, Key = this.CurrentField.Key, Path = property.FieldPath });
+                    var fEl = property.PropertyType.GenerateUiElement(string.Concat(this.CurrentField.Key, property.FieldPath), CurrentEditingSnap, new Code.AddInUtil.PropertyUtil.PTypeDataTag { PropertyObject = property, Key = this.CurrentField.Key, Path = property.FieldPath });
                     el.Children.Add(fEl);
                     group.ItemsPanel.Children.Add(el);
                 }
@@ -136,7 +113,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                         {
                             if (it.Property != null)
                             {
-                                var fEl = it.Property.GenerateUiElement(string.Concat(this.CurrentField.Key, "/onLoad"), CurrentWindow, new Code.AddInUtil.PropertyUtil.PTypeDataTag { PropertyObject = sqf, Key = this.CurrentField.Key, Path = "/onLoad", Extra = it.Index });
+                                var fEl = it.Property.GenerateUiElement(string.Concat(this.CurrentField.Key, "/onLoad"), CurrentEditingSnap, new Code.AddInUtil.PropertyUtil.PTypeDataTag { PropertyObject = sqf, Key = this.CurrentField.Key, Path = "/onLoad", Extra = it.Index });
                                 el.Children.Add(fEl);
                                 break;
                             }
@@ -156,8 +133,8 @@ namespace ArmA_UI_Editor.UI.Snaps
             Code.AddInUtil.PropertyUtil.PType.ValueChanged -= PType_ValueChanged;
             Code.AddInUtil.PropertyUtil.PType.OnError -= PType_OnError;
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.OnSnapFocusChange -= Docker_OnSnapFocusChange;
-            if(CurrentWindow != null)
-                CurrentWindow.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
+            if(CurrentEditingSnap != null)
+                CurrentEditingSnap.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
 
         }
         public void LoadSnap()
@@ -168,8 +145,8 @@ namespace ArmA_UI_Editor.UI.Snaps
             var EditingSnaps = (ArmA_UI_Editor.UI.MainWindow.TryGet()).Docker.FindSnaps<EditingSnap>(true);
             if (EditingSnaps.Count > 0)
             {
-                CurrentWindow = EditingSnaps[0];
-                CurrentWindow.OnSelectedFocusChanged += CurrentWindow_OnSelectedFocusChanged;
+                CurrentEditingSnap = EditingSnaps[0];
+                CurrentEditingSnap.OnSelectedFocusChanged += CurrentWindow_OnSelectedFocusChanged;
             }
         }
 
@@ -190,19 +167,19 @@ namespace ArmA_UI_Editor.UI.Snaps
             if (e.SnapWindowNew != null && e.SnapWindowNew.Window is EditingSnap)
             {
                 this.PropertyStack.Children.Clear();
-                if(CurrentWindow != null)
-                    CurrentWindow.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
-                CurrentWindow = e.SnapWindowNew.Window as EditingSnap;
-                CurrentWindow.OnSelectedFocusChanged += CurrentWindow_OnSelectedFocusChanged;
+                if(CurrentEditingSnap != null)
+                    CurrentEditingSnap.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
+                CurrentEditingSnap = e.SnapWindowNew.Window as EditingSnap;
+                CurrentEditingSnap.OnSelectedFocusChanged += CurrentWindow_OnSelectedFocusChanged;
             }
             else if (e.SnapWindowLast != null && e.SnapWindowLast.Window is EditingSnap)
             {
-                if (e.SnapWindowLast.Window != CurrentWindow)
+                if (e.SnapWindowLast.Window != CurrentEditingSnap)
                     return;
-                if (CurrentWindow != null)
-                    CurrentWindow.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
+                if (CurrentEditingSnap != null)
+                    CurrentEditingSnap.OnSelectedFocusChanged -= CurrentWindow_OnSelectedFocusChanged;
                 this.PropertyStack.Children.Clear();
-                CurrentWindow = null;
+                CurrentEditingSnap = null;
             }
         }
     }

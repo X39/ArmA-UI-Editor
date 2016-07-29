@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>X39_VisualStuidio_Key.pfx</AssemblyOriginatorKeyFile>
@@ -58,8 +58,8 @@
     <Compile Include="SQF\ClassParser\ConfigFieldReference.cs" />
     <Compile Include="SQF\ClassParser\ConfigFieldEnumerator.cs" />
     <Compile Include="SQF\ClassParser\ConfigField.cs" />
-    <Compile Include="SQF\ClassParser\Generated\LazyException.cs" />
     <Compile Include="SQF\ClassParser\Generated\Parser.cs" />
+    <Compile Include="SQF\ClassParser\Generated\RangeDescription.cs" />
     <Compile Include="SQF\ClassParser\Generated\Scanner.cs" />
     <Compile Include="SQF\ClassParser\Generated\StringList.cs" />
     <Compile Include="SQF\ClassParser\KeyNotFoundException.cs" />

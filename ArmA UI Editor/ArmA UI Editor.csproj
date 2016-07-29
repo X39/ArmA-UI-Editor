@@ -56,10 +56,10 @@
     <ApplicationIcon>Logo_V3.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>X39_VisualStuidio_Key.pfx</AssemblyOriginatorKeyFile>
@@ -116,6 +116,7 @@
     <Compile Include="Code\Converter\PropertyValueStringConverter.cs" />
     <Compile Include="Code\Converter\SqfConfigFieldKeyConverter.cs" />
     <Compile Include="Code\Converter\LastIndexOfStringConverter.cs" />
+    <Compile Include="Code\LimitedQueue.cs" />
     <Compile Include="Code\Markup\BindColor.cs" />
     <Compile Include="Code\Markup\BindBrush.cs" />
     <Compile Include="Code\Markup\BindMultipliedValue.cs" />

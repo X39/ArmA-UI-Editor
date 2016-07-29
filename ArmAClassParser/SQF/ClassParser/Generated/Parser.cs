@@ -33,7 +33,7 @@ namespace SQF.ClassParser.Generated
         public Token la;   // lookahead token
         int errDist = minErrDist;
     SQF.ClassParser.ConfigField MainField = null;
-    
+    RangeDescription Range = null;
     StringList KeysAdded = new StringList();
     
     public void ApplyRemovedFields()
@@ -172,6 +172,11 @@ namespace SQF.ClassParser.Generated
 		   thisField.ToClass();
 		}
 		thisField.Name = t.val;
+		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+		{
+		this.Range.NameStart = t.charPos;
+		this.Range.NameEnd = t.charPos + t.val.Length;
+		};
 		
 		if (la.kind == 7) {
 			Get();
@@ -188,7 +193,12 @@ namespace SQF.ClassParser.Generated
 					CONFIG(list);
 				}
 			}
-			if(!string.IsNullOrWhiteSpace(KeyToFind) && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase)) throw new LazyException(beginIndex, t.charPos + t.val.Length); 
+			if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+			{
+			this.Range.ValueStart = beginIndex;
+			this.Range.ValueEnd = t.charPos + t.val.Length;
+			}
+			
 			Expect(9);
 		}
 		Expect(10);
@@ -208,6 +218,12 @@ namespace SQF.ClassParser.Generated
 		}
 		thisField.Name = t.val;
 		KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
+		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+		{
+		this.Range.NameStart = t.charPos;
+		this.Range.NameEnd = t.charPos + t.val.Length;
+		};
+		
 		
 		if (la.kind == 11) {
 			Get();
@@ -240,7 +256,12 @@ namespace SQF.ClassParser.Generated
 			}
 			thisField.String = string.Join(" ", (tmp as StringList).ToArray()); 
 		}
-		if(!string.IsNullOrWhiteSpace(KeyToFind) && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase)) throw new LazyException(beginIndex, t.charPos + t.val.Length); 
+		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+		{
+		this.Range.ValueStart = beginIndex;
+		this.Range.ValueEnd = t.charPos + t.val.Length;
+		}
+		
 		Expect(10);
 		list.Remove(list.Last()); 
 	}
@@ -316,23 +337,17 @@ namespace SQF.ClassParser.Generated
 
         }
         
-        public Tuple<int, int> GetValueRange(string key)
+        public RangeDescription GetRange(string key)
         {
             this.KeyToFind = key;
+			this.Range = new RangeDescription();
             this.MainField = new SQF.ClassParser.ConfigField();
             this.MainField.ToClass();
             la = new Token();
             la.val = "";
             Get();
-            try
-            {
-                doRoot();
-            }
-            catch(LazyException ex)
-            {
-                return new Tuple<int, int>(ex.Index, ex.Index2);
-            }
-            return null;
+			doRoot();
+            return this.Range;
         }
 
         public SQF.ClassParser.ConfigField Parse() {

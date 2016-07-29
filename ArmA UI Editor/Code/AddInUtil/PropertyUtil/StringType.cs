@@ -18,7 +18,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 {
     public class StringType : PType
     {
-        private class SqfPropertyConverter : SqfConfigFieldKeyConverter
+        public class SqfPropertyConverter : SqfConfigFieldKeyConverter
         {
             public SqfPropertyConverter(string key, PTypeDataTag tag) : base(key, tag) { }
             public override object DoConvertFromString(string value, Type targetType, object parameter, CultureInfo culture)
@@ -30,7 +30,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                 return value as string;
             }
         }
-        private class NormalPropertyConverter : ConfigFieldKeyConverterBase
+        public class NormalPropertyConverter : ConfigFieldKeyConverterBase
         {
             public NormalPropertyConverter(string key) : base(key) { }
             public override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)

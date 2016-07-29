@@ -7,7 +7,7 @@ using SQF.ClassParser;
 
 COMPILER CONFIGFILE
     SQF.ClassParser.ConfigField MainField = null;
-    
+    RangeDescription Range = null;
     StringList KeysAdded = new StringList();
     
     public void ApplyRemovedFields()
@@ -67,6 +67,11 @@ COMPILER CONFIGFILE
                     thisField.ToClass();
                 }
                 thisField.Name = t.val;
+				if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+				{
+					this.Range.NameStart = t.charPos;
+					this.Range.NameEnd = t.charPos + t.val.Length;
+				};
             .)
             [
                 ':'
@@ -79,7 +84,13 @@ COMPILER CONFIGFILE
                     |
                     CONFIG<list>
                 }
-                (. if(!string.IsNullOrWhiteSpace(KeyToFind) && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase)) throw new LazyException(beginIndex, t.charPos + t.val.Length); .)
+                (.
+					if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+					{
+						this.Range.ValueStart = beginIndex;
+						this.Range.ValueEnd = t.charPos + t.val.Length;
+					}
+				.)
                 '}'
             ]
             ';'
@@ -98,6 +109,12 @@ COMPILER CONFIGFILE
                 }
                 thisField.Name = t.val;
                 KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
+				if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+				{
+					this.Range.NameStart = t.charPos;
+					this.Range.NameEnd = t.charPos + t.val.Length;
+				};
+
             .)
             [
                 '['
@@ -124,7 +141,13 @@ COMPILER CONFIGFILE
                     }
                     (. thisField.String = string.Join(" ", (tmp as StringList).ToArray()); .)
                 ]
-                (. if(!string.IsNullOrWhiteSpace(KeyToFind) && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase)) throw new LazyException(beginIndex, t.charPos + t.val.Length); .)
+                (.
+					if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
+					{
+						this.Range.ValueStart = beginIndex;
+						this.Range.ValueEnd = t.charPos + t.val.Length;
+					}
+				.)
             )
             ';'
             (. list.Remove(list.Last()); .)

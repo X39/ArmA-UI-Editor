@@ -1,5 +1,10 @@
 ﻿<root>
-  <group name="Positioning">
+  <group name="Generic">
+    <property>
+      <number/>
+      <field>/idc</field>
+      <name>IDC</name>
+    </property>
     <property>
       <number conversion="ScreenX"/>
       <field>/x</field>

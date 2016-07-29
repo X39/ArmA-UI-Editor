@@ -229,7 +229,15 @@ namespace SQF.ClassParser
                     var it = keys[i];
                     if (string.IsNullOrWhiteSpace(it))
                         continue;
-                    var tmp = currentField.GetKey(it, KeyMode.NullOnNotFound);
+                    ConfigField tmp;
+                    try
+                    {
+                        tmp = currentField.GetKey(it, KeyMode.NullOnNotFound);
+                    }
+                    catch
+                    {
+                        tmp = null;
+                    }
                     if (tmp != null)
                     {
                         currentField = tmp;
@@ -543,7 +551,7 @@ namespace SQF.ClassParser
             else if (this.IsBoolean)
             {
                 var val = this.Boolean;
-                builder.Append(val.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                builder.Append(val ? "true" : "false");
             }
             else if (this.IsNumber)
             {

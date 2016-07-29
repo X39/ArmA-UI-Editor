@@ -18,6 +18,7 @@ using ArmA_UI_Editor.Code.AddInUtil;
 using SQF.ClassParser;
 using NLog;
 using System.Globalization;
+using System.Windows.Threading;
 
 namespace ArmA_UI_Editor.UI.Snaps
 {
@@ -131,6 +132,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void UnloadSnap()
         {
+            Logger.Trace(string.Format("{0} args: -/-", this.GetTraceInfo()));
             if (this.HasUnsavedChanges)
             {
                 if (MessageBox.Show("Do you want to save?", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
@@ -142,6 +144,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public void LoadSnap()
         {
+            Logger.Trace(string.Format("{0} args: -/-", this.GetTraceInfo()));
             this.Config = AddInManager.Instance.MainFile.AddKey(string.Format("EditingSnap_{0}_WorkingConfig", Counter++));
             this.Config.ToClass();
             using (var stream = this.Textbox.Text.AsMemoryStream())
@@ -198,13 +201,10 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.HasUnsavedChanges = false;
             this.AllowConfigPatching = false;
         }
-        private void ReReadConfigField()
-        {
-            throw new NotImplementedException();
-        }
 
         public void SaveCanvasToFile(string filePath)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", filePath)));
             const double DPI = 96;
 
 
@@ -233,6 +233,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void SaveFile()
         {
+            Logger.Trace(string.Format("{0} args: -/-", this.GetTraceInfo()));
             if (string.IsNullOrWhiteSpace(this.FilePath))
             {
                 var dlg = new Microsoft.Win32.SaveFileDialog();
@@ -257,6 +258,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private bool RemoveSelectedElements()
         {
+            Logger.Trace(string.Format("{0} args: -/-", this.GetTraceInfo()));
             foreach (var it in this.DisplayCanvas.Children)
             {
                 if (it is SelectionOverlay)
@@ -278,6 +280,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void RemoveElement(FrameworkElement el)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", el)));
             var lastFileConfig = this.LastFileConfig;
             var controlsConfig = lastFileConfig["controls"];
             var tagData = el.Tag as TAG_CanvasChildElement;
@@ -287,7 +290,8 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void SelectElements(bool mouseDownOnCreateOverlay, bool focusPropertyPane, params FrameworkElement[] elements)
         {
-            if(elements.Length == 0)
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", mouseDownOnCreateOverlay, focusPropertyPane, elements)));
+            if (elements.Length == 0)
             {
                 var overlay = this.FindSelectionOverlay();
                 if(overlay != null)
@@ -391,6 +395,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         #region XAML Event Handler
         private void SizesBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             ComboBox cb = sender as ComboBox;
             switch ((cb.SelectedValue as ComboBoxItem).Content as string)
             {
@@ -435,6 +440,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void GridScaleBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             if ((sender as TextBox).Text.Length > 0)
             {
                 this.SnapGrid = int.Parse((sender as TextBox).Text);
@@ -442,6 +448,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var arr = this.DisplayCanvas.Children;
             System.Windows.FrameworkElement thisElement = null;
             SelectionOverlay overlay = null;
@@ -507,6 +514,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             foreach (var it in this.DisplayCanvas.Children)
             {
                 if (it is SelectionOverlay)
@@ -518,6 +526,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var arr = this.DisplayCanvas.Children;
             FrameworkElement thisElement = null;
             SelectionOverlay overlay = null;
@@ -612,6 +621,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_DragEnter(object sender, DragEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             if (e.Data.GetDataPresent("UiElementsListBoxData"))
             {
                 e.Effects = DragDropEffects.None;
@@ -619,6 +629,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void DisplayCanvas_Drop(object sender, DragEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             if (!e.Data.GetDataPresent("UiElementsListBoxData"))
                 return;
@@ -654,9 +665,9 @@ namespace ArmA_UI_Editor.UI.Snaps
                 SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
                 var searchKey = controlsField.Key;
                 searchKey = searchKey.Remove(0, searchKey.IndexOf(this.LastFileConfig.Name) - 1);
-                var index = p.GetValueRange(searchKey);
+                var index = p.GetRange(searchKey);
 
-                this.Textbox.Text = this.Textbox.Text.Insert(index.Item2, string.Concat("\r\n", field.ToPrintString(2)));
+                this.Textbox.Text = this.Textbox.Text.Insert(index.ValueEnd, string.Concat("\r\n", field.ToPrintString(2)));
             }
             this.RegenerateDisplay();
             this.ThisScrollViewer.Focus();
@@ -675,8 +686,14 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
 
 
+        private void Textbox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if(!this.AllowConfigPatching)
+                this.OnSelectedFocusChanged(this, new OnSelectedFocusChangedEventArgs(new TAG_CanvasChildElement[] { }));
+        }
         private void Textbox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             this.HasUnsavedChanges = true;
             this.AllowConfigPatching = true;
             foreach (var change in e.Changes)
@@ -716,6 +733,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void Textbox_LostFocus(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             if (!this.AllowConfigPatching)
                 return;
             this.AllowConfigPatching = false;
@@ -736,6 +754,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void TabControlMainView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             if (this.Config == null)
                 return;
             //if (this.TabControlMainView.SelectedIndex == 1)
@@ -893,6 +912,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         #region ChildElement ContextMenu
         private void ContextMenu_ChildElement_FitToGrid_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var mi = sender as MenuItem;
             var cm = mi.Parent as ContextMenu;
             if (cm.Tag is FrameworkElement)
@@ -915,6 +935,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void ContextMenu_ChildElement_SnapToGrid_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var mi = sender as MenuItem;
             var cm = mi.Parent as ContextMenu;
             if (cm.Tag is FrameworkElement)
@@ -937,6 +958,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void ContextMenu_ChildElement_SnapFitToGrid_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             this.ContextMenu_ChildElement_SnapToGrid_Click(sender, e);
             this.ContextMenu_ChildElement_FitToGrid_Click(sender, e);
             //var mi = sender as MenuItem;
@@ -969,6 +991,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void ContextMenu_ChildElement_Properties_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var mi = sender as MenuItem;
             var cm = mi.Parent as ContextMenu;
             if (cm.Tag is FrameworkElement)
@@ -982,6 +1005,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void ContextMenu_ChildElement_Delete_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var mi = sender as MenuItem;
             var cm = mi.Parent as ContextMenu;
             if (cm.Tag is FrameworkElement)
@@ -992,12 +1016,14 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void ContextMenu_ChildElements_Delete_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             RemoveSelectedElements();
         }
         #endregion
         #region ChildElements ContextMenu
         private void ContextMenu_ChildElements_FitToGrid_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var mi = sender as MenuItem;
             var cm = mi.Parent as ContextMenu;
             if (cm.Tag is List<FrameworkElement>)
@@ -1030,6 +1056,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void ContextMenu_ChildElements_SnapToGrid_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var mi = sender as MenuItem;
             var cm = mi.Parent as ContextMenu;
             if (cm.Tag is List<FrameworkElement>)
@@ -1062,6 +1089,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void ContextMenu_ChildElements_SnapFitToGrid_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var mi = sender as MenuItem;
             var cm = mi.Parent as ContextMenu;
             if (cm.Tag is List<FrameworkElement>)
@@ -1188,25 +1216,56 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public void UpdateConfigKey(string key)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", key)));
             using (var stream = this.Textbox.Text.AsMemoryStream())
             {
                 SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
                 key = key.Remove(0, key.IndexOf(this.LastFileConfig.Name) - 1);
-                var index = p.GetValueRange(key);
+                var index = p.GetRange(key);
                 if (index == null)
                 {
                     stream.Seek(0, System.IO.SeekOrigin.Begin);
                     p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
-                    index = p.GetValueRange(key.Remove(key.LastIndexOf('/')));
-                    var field = this.Config.GetKey(key, ConfigField.KeyMode.ThrowOnNotFound);
-                    this.Textbox.Text = this.Textbox.Text.Insert(index.Item1, string.Concat(field.ToPrintString(), "\r\n", new string('\t', key.Count((c) => c == '/') - 1)));
+                    index = p.GetRange(key.Remove(key.LastIndexOf('/')));
+                    var field = this.Config.GetKey(key, ConfigField.KeyMode.NullOnNotFound);
+                    if (field == null)
+                        return;
+                    this.Textbox.Text = this.Textbox.Text.Insert(index.ValueStart, string.Concat(field.ToPrintString(), "\r\n", new string('\t', key.Count((c) => c == '/') - 1)));
                 }
                 else
                 {
-                    var field = this.Config.GetKey(key, ConfigField.KeyMode.ThrowOnNotFound);
-                    this.Textbox.Text = this.Textbox.Text.Remove(index.Item1, index.Item2 - index.Item1).Insert(index.Item1, field.ToValueString());
+                    var field = this.Config.GetKey(key, ConfigField.KeyMode.NullOnNotFound);
+                    if (field == null)
+                    {
+                        throw new NotImplementedException();
+                        this.Textbox.Text = this.Textbox.Text.Remove(index.ValueStart, index.ValueEnd - index.ValueStart);
+                    }
+                    else
+                    {
+                        this.Textbox.Text = this.Textbox.Text.Remove(index.ValueStart, index.ValueEnd - index.ValueStart).Insert(index.ValueStart, field.ToValueString());
+                    }
                 }
             }
+            this.AllowConfigPatching = false;
+        }
+        public void RenameConfigKey(string keyOld, string newName)
+        {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", keyOld, newName)));
+            using (var stream = this.Textbox.Text.AsMemoryStream())
+            {
+                SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
+                keyOld = keyOld.Remove(0, keyOld.IndexOf(this.LastFileConfig.Name) - 1);
+                var index = p.GetRange(keyOld);
+                if (index == null)
+                {
+                    throw new ArgumentException();
+                }
+                else
+                {
+                    this.Textbox.Text = this.Textbox.Text.Remove(index.NameStart, index.NameEnd - index.NameStart).Insert(index.NameStart, newName);
+                }
+            }
+            this.AllowConfigPatching = false;
         }
 
         public List<Tuple<Code.AddInUtil.UIElement, string>> GetUiElements()
@@ -1232,6 +1291,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public void SwapUiIndexies(string keyA, string keyB)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", keyA, keyB)));
             var keyAField = this.Config.TreeRoot.GetKey(keyA, ConfigField.KeyMode.ThrowOnNotFound);
             var keyBField = this.Config.TreeRoot.GetKey(keyB, ConfigField.KeyMode.ThrowOnNotFound);
             if (keyAField.Parent != keyBField.Parent)
@@ -1242,6 +1302,7 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         private void MenuItem_EditingSnap_ContextMenu_Canvas_ExportToPng_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender, e)));
             var dlg = new Microsoft.Win32.SaveFileDialog();
             dlg.FileName = this.LastFileConfig.Name;
             dlg.DefaultExt = ".png";

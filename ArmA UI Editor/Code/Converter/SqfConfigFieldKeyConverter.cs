@@ -24,7 +24,10 @@ namespace ArmA_UI_Editor.Code.Converter
         public sealed override object DoConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var field = AddInManager.Instance.MainFile.GetKey(string.Concat(this.Tag.Key, this.Tag.Path), SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-            return SqfProperty.SetSqfPropertySectionArg(this.Tag.PropertyObject as SqfProperty, field == null || !field.IsString ? "" : field.String, this.DoConvertBackToString(value, targetType, parameter, culture), (int)this.Tag.Extra);
+            value = this.DoConvertBackToString(value, targetType, parameter, culture);
+            if (string.IsNullOrWhiteSpace(value as string))
+                return null;
+            return SqfProperty.SetSqfPropertySectionArg(this.Tag.PropertyObject as SqfProperty, field == null || !field.IsString ? "" : field.String, value as string, (int)this.Tag.Extra);
         }
         public abstract object DoConvertFromString(string value, Type targetType, object parameter, CultureInfo culture);
         public abstract string DoConvertBackToString(object value, Type targetType, object parameter, CultureInfo culture);

@@ -12,26 +12,26 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary x:Name="Colors">
-                    <SolidColorBrush x:Key="SCB_UIBackground" Color="#FF2D2D30"/>
-                    <SolidColorBrush x:Key="SCB_UIBackgroundLight" Color="#FF3F3F46"/>
-                    <SolidColorBrush x:Key="SCB_UIBackgroundDark" Color="#FF252526"/>
-                    <SolidColorBrush x:Key="SCB_UIBackgroundDarker" Color="#FF1B1B1C"/>
-                    <SolidColorBrush x:Key="SCB_UIBlue" Color="#FF0E97DD"/>
-                    <SolidColorBrush x:Key="SCB_UIBlueDark" Color="#FF007ACC"/>
-                    <SolidColorBrush x:Key="SCB_UIBlueLight" Color="#FF59A8DE"/>
-                    <SolidColorBrush x:Key="SCB_UIRed" Color="#FFDD0E0E"/>
-                    <SolidColorBrush x:Key="SCB_UIRedDark" Color="#FFA60000"/>
-                    <SolidColorBrush x:Key="SCB_UIRedLight" Color="#FFFF4B4B"/>
-                    <SolidColorBrush x:Key="SCB_DefaultTextColor" Color="#FFD0D0D0"/>
-                    <SolidColorBrush x:Key="SCB_DefaultTextColorDisabled" Color="#FF747474"/>
+                    <SolidColorBrush x:Key="SCB_UIBackgroundLight" Color="#424242"/>
+                    <SolidColorBrush x:Key="SCB_UIBackground" Color="#303030"/>
+                    <SolidColorBrush x:Key="SCB_UIBackgroundDark" Color="#212121"/>
+                    <SolidColorBrush x:Key="SCB_UIBackgroundDarker" Color="#000000"/>
+                    <SolidColorBrush x:Key="SCB_UIBlueLight" Color="#90CAF9"/>
+                    <SolidColorBrush x:Key="SCB_UIBlue" Color="#2196F3"/>
+                    <SolidColorBrush x:Key="SCB_UIBlueDark" Color="#1565C0"/>
+                    <SolidColorBrush x:Key="SCB_UIRedLight" Color="#EF9A9A"/>
+                    <SolidColorBrush x:Key="SCB_UIRed" Color="#F44336"/>
+                    <SolidColorBrush x:Key="SCB_UIRedDark" Color="#B71C1C"/>
+                    <SolidColorBrush x:Key="SCB_DefaultTextColor" Color="#B2FFFFFF"/>
+                    <SolidColorBrush x:Key="SCB_DefaultTextColorDisabled" Color="#7FFFFFFF"/>
 
                     <SolidColorBrush x:Key="SCB_ParseError_BorderColor" Color="Yellow"/>
                     <SolidColorBrush x:Key="SCB_ParseError_PathHeader" Color="Red"/>
                     <SolidColorBrush x:Key="SCB_ParseError_PathContent" Color="Yellow"/>
 
-                    <SolidColorBrush x:Key="SCB_SnapWindow_OutterBackground" Color="#FF007ACC"/>
-                    <SolidColorBrush x:Key="SCB_SnapWindow_InnerBackground" Color="#FF1B1B1C"/>
-                    <SolidColorBrush x:Key="SCB_SnapWindow_HeaderDotsColor" Color="#FF59A8DE"/>
+                    <SolidColorBrush x:Key="SCB_SnapWindow_OutterBackground" Color="#1565C0"/>
+                    <SolidColorBrush x:Key="SCB_SnapWindow_InnerBackground" Color="#212121"/>
+                    <SolidColorBrush x:Key="SCB_SnapWindow_HeaderDotsColor" Color="#90CAF9"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="Strings">
                     <clr:String x:Key="STR_MainWindow_File">File</clr:String>

@@ -148,23 +148,17 @@ namespace SQF.ClassParser.Generated
     -->parseRoot
         }
         
-        public Tuple<int, int> GetValueRange(string key)
+        public RangeDescription GetRange(string key)
         {
             this.KeyToFind = key;
+			this.Range = new RangeDescription();
             this.MainField = new SQF.ClassParser.ConfigField();
             this.MainField.ToClass();
             la = new Token();
             la.val = "";
             Get();
-            try
-            {
-                doRoot();
-            }
-            catch(LazyException ex)
-            {
-                return new Tuple<int, int>(ex.Index, ex.Index2);
-            }
-            return null;
+			doRoot();
+            return this.Range;
         }
 
         public SQF.ClassParser.ConfigField Parse() {

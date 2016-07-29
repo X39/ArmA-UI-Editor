@@ -29,8 +29,12 @@ namespace ArmA_UI_Editor.Code.Converter
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var field = AddInManager.Instance.MainFile.GetKey(this.Key, ConfigField.KeyMode.CreateNew);
-            field.Parent.SetKey(field.Name, this.DoConvertBack(value, targetType, parameter, culture));
+            value = this.DoConvertBack(value, targetType, parameter, culture);
+            if (value != null)
+            {
+                var field = AddInManager.Instance.MainFile.GetKey(this.Key, ConfigField.KeyMode.CreateNew);
+                field.Parent.SetKey(field.Name, value);
+            }
             return AddInManager.Instance.MainFile.Value;
         }
         public abstract object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture);

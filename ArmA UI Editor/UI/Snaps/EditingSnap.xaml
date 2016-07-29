@@ -33,7 +33,7 @@
 
     <TabControl x:Name="TabControlMainView" Style="{StaticResource TabControlStyle}" SelectionChanged="TabControlMainView_SelectionChanged" KeyDown="TabControlMainView_KeyDown" SelectedIndex="1">
         <TabItem Header="{StaticResource STR_Snaps_EditingSnap_ConfigTab}">
-            <TextBox x:Name="Textbox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="Textbox_TextChanged" AcceptsReturn="True" AcceptsTab="True" KeyDown="Textbox_KeyDown" LostFocus="Textbox_LostFocus"/>
+            <TextBox x:Name="Textbox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="Textbox_TextChanged" AcceptsReturn="True" AcceptsTab="True" KeyDown="Textbox_KeyDown" LostFocus="Textbox_LostFocus" PreviewKeyDown="Textbox_PreviewKeyDown"/>
         </TabItem>
         <TabItem Header="{StaticResource STR_Snaps_EditingSnap_DisplayTab}">
             <ScrollViewer Grid.Row="0" x:Name="ThisScrollViewer" Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" KeyDown="ScrollViewer_KeyDown">

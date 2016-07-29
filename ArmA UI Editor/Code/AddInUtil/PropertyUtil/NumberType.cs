@@ -18,13 +18,13 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 {
     public class NumberType : PType
     {
-        
-        private struct ConverterPropertyData
+
+        public struct ConverterPropertyData
         {
             public EditingSnap Window;
             public string Conversion;
         }
-        private class SqfPropertyConverter : SqfConfigFieldKeyConverter
+        public class SqfPropertyConverter : SqfConfigFieldKeyConverter
         {
             public SqfPropertyConverter(string key, PTypeDataTag tag) : base(key, tag) { }
             public override object DoConvertFromString(string value, Type targetType, object parameter, CultureInfo culture)
@@ -51,6 +51,8 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                 {
                     value = double.Parse(value as string);
                 }
+                if (value == null)
+                    return "";
                 switch (data.Conversion)
                 {
                     default:
@@ -66,7 +68,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                 }
             }
         }
-        private class NormalPropertyConverter : ConfigFieldKeyConverterBase
+        public class NormalPropertyConverter : ConfigFieldKeyConverterBase
         {
             public NormalPropertyConverter(string key) : base(key) { }
             public override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)
@@ -94,6 +96,8 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                 {
                     value = double.Parse(value as string, NumberStyles.Float, CultureInfo.InvariantCulture);
                 }
+                if (value == null)
+                    return value;
                 switch (data.Conversion)
                 {
                     default:
