@@ -41,14 +41,14 @@ namespace ArmA_UI_Editor.Code
             }
         }
 
-        public void Initialize(IProgress<double> progress)
+        public void Initialize(IProgress<double> progress, SQF.ClassParser.ConfigField MainConfigField)
         {
             for (int i = 0; i < UIElements.Count; i++)
             {
                 var file = UIElements[i];
                 file.Parent = this;
                 progress.Report(i / (UIElements.Count + this.Styles.Count));
-                file.Initialize();
+                file.Initialize(MainConfigField);
             }
             for (int i = 0; i < Styles.Count; i++)
             {

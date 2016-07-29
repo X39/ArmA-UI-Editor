@@ -1,0 +1,23 @@
+﻿<Window x:Class="ArmA_UI_Editor.UI.ConfigView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ArmA_UI_Editor.UI"
+        xmlns:parser="clr-namespace:SQF.ClassParser;assembly=ArmAClassParser"
+        xmlns:c="clr-namespace:ArmA_UI_Editor.Code.Converter"
+        mc:Ignorable="d"
+        Title="{StaticResource STR_Window_ConfigView}" Height="768" Width="512" Icon="/ArmA UI Editor;component/Logo_V3.ico">
+    <TreeView Initialized="TreeView_Initialized" MouseRightButtonDown="TreeView_MouseRightButtonDown" Background="{StaticResource SCB_UIBackground}">
+        <TreeView.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="{StaticResource STR_ConfigView_ExportToClipboard}" Click="MenuItem_Click"/>
+            </ContextMenu>
+        </TreeView.ContextMenu>
+        <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type parser:ConfigField}" ItemsSource="{Binding}">
+                <TextBlock Text="{Binding}" Foreground="{StaticResource SCB_DefaultTextColor}"/>
+            </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
+    </TreeView>
+</Window>

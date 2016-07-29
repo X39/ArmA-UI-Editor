@@ -12,14 +12,33 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using NLog;
+using NLog.Targets;
+using NLog.Config;
 
 namespace ArmA_UI_Editor.UI.Snaps
 {
-    /// <summary>
-    /// Interaction logic for OutputWindow.xaml
-    /// </summary>
+    //ToDo: Implement NLog hook
     public partial class OutputSnap : Page, Code.Interface.ISnapWindow
     {
+        [Target("EventedTarget")]
+        public sealed class EventedTarget : TargetWithLayout
+        {
+            public EventedTarget()
+            {
+                this.Name = "OutputSnapTarget";
+                this.Layout = "${logger}|${pad:padding=5:inner=${level:uppercase=true}} ${message}";
+            }
+            public event EventHandler<string> OnLog;
+            protected override void Write(LogEventInfo logEvent)
+            {
+                if (this.OnLog == null)
+                    return;
+                if (logEvent.Level < LogLevel.Info)
+                    return;
+                this.OnLog(this, this.Layout.Render(logEvent));
+            }
+        }
         public OutputSnap()
         {
             InitializeComponent();
@@ -29,17 +48,18 @@ namespace ArmA_UI_Editor.UI.Snaps
 
         public void LoadSnap()
         {
-            Logger.Instance.OnLog += Logger_OnLog;
+            //Logger.Instance.OnLog += Logger_OnLog;
+            var target = LogManager.Configuration.FindTargetByName("OutputSnapTarget") as EventedTarget;
+            target.OnLog += Target_OnLog;
         }
-
         public void UnloadSnap()
         {
-            Logger.Instance.OnLog -= Logger_OnLog;
+            var target = LogManager.Configuration.FindTargetByName("OutputSnapTarget") as EventedTarget;
+            target.OnLog -= Target_OnLog;
         }
-
-        private void Logger_OnLog(object sender, string e)
+        private void Target_OnLog(object sender, string e)
         {
-            this.LogBox.Text += e + '\n';
+            this.LogBox.AppendText(string.Concat(e, '\n'));
         }
     }
 }

@@ -11,5 +11,5 @@
       d:DesignHeight="300" d:DesignWidth="300"
       Title="{StaticResource STR_Window_Events}">
 
-    <StackPanel x:Name="EventStackPanel" Orientation="Vertical" Background="{StaticResource SCB_UIBackgroundDark}"/>
+    <StackPanel x:Name="EventStackPanel" Orientation="Vertical" Background="{StaticResource SCB_UIBackgroundDark}" VerticalAlignment="Top"/>
 </Page>

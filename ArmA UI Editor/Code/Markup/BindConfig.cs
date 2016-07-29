@@ -10,10 +10,8 @@ namespace ArmA_UI_Editor.Code.Markup
     public abstract class BindConfig : MarkupExtension
     {
         public string Path { get; set; }
-        public static string CurrentPath { get; set; }
-
-        public static SQF.ClassParser.File CurrentConfig;
-        public static string CurrentClassPath;
+        public static string CurrentClassPath { get; set; }
+        public static string AddInPath { get; set; }
 
         public BindConfig() { }
     }

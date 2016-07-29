@@ -10,31 +10,32 @@
       Title="{StaticResource STR_Window_EditingWindow}">
     <Page.Resources>
         <ContextMenu x:Key="ContextMenu_Canvas">
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping}" IsCheckable="True" IsChecked="{Binding SnapEnabled, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"/>
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleBackground}" IsCheckable="True" IsChecked="{Binding BackgroundEnabled, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_Canvas_ToggleSnapping}" IsCheckable="True" IsChecked="{Binding SnapEnabled, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_Canvas_ToggleBackground}" IsCheckable="True" IsChecked="{Binding BackgroundEnabled, RelativeSource={RelativeSource AncestorType=Page}, Mode=TwoWay}"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_Canvas_ExportToPng}" Click="MenuItem_EditingSnap_ContextMenu_Canvas_ExportToPng_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="ContextMenu_ChildElement">
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapElementToGrid}" Click="ContextMenu_ChildElement_SnapToGrid_Click"/>
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_FitElementToGrid}" Click="ContextMenu_ChildElement_FitToGrid_Click"/>
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapFitElementToGrid}" Click="ContextMenu_ChildElement_SnapFitToGrid_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_SnapElementToGrid}" Click="ContextMenu_ChildElement_SnapToGrid_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_FitElementToGrid}" Click="ContextMenu_ChildElement_FitToGrid_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_SnapFitElementToGrid}" Click="ContextMenu_ChildElement_SnapFitToGrid_Click"/>
             <Separator/>
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_Properties}" Click="ContextMenu_ChildElement_Properties_Click"/>
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_Delete}" Click="ContextMenu_ChildElement_Delete_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_Properties}" Click="ContextMenu_ChildElement_Properties_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_Delete}" Click="ContextMenu_ChildElement_Delete_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="ContextMenu_ChildElements">
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapElementToGrid}" Click="ContextMenu_ChildElements_SnapToGrid_Click"/>
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_FitElementToGrid}" Click="ContextMenu_ChildElements_FitToGrid_Click"/>
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapFitElementToGrid}" Click="ContextMenu_ChildElements_SnapFitToGrid_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_SnapElementToGrid}" Click="ContextMenu_ChildElements_SnapToGrid_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_FitElementToGrid}" Click="ContextMenu_ChildElements_FitToGrid_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_SnapFitElementToGrid}" Click="ContextMenu_ChildElements_SnapFitToGrid_Click"/>
             <Separator/>
-            <MenuItem Header="{StaticResource STR_Snaps_EditingWindow_ContextMenu_ChildElement_Delete}" Click="ContextMenu_ChildElements_Delete_Click"/>
+            <MenuItem Header="{StaticResource STR_Snaps_EditingSnap_ContextMenu_ChildElement_Delete}" Click="ContextMenu_ChildElements_Delete_Click"/>
         </ContextMenu>
     </Page.Resources>
 
     <TabControl x:Name="TabControlMainView" Style="{StaticResource TabControlStyle}" SelectionChanged="TabControlMainView_SelectionChanged" KeyDown="TabControlMainView_KeyDown" SelectedIndex="1">
-        <TabItem Header="{StaticResource STR_Snaps_EditingWindow_ConfigTab}">
-            <TextBox x:Name="Textbox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="Textbox_TextChanged" AcceptsReturn="True" AcceptsTab="True" KeyDown="Textbox_KeyDown"/>
+        <TabItem Header="{StaticResource STR_Snaps_EditingSnap_ConfigTab}">
+            <TextBox x:Name="Textbox" Background="{StaticResource SCB_UIBackgroundDark}" Foreground="{StaticResource SCB_DefaultTextColor}" BorderBrush="Transparent" BorderThickness="0" TextChanged="Textbox_TextChanged" AcceptsReturn="True" AcceptsTab="True" KeyDown="Textbox_KeyDown" LostFocus="Textbox_LostFocus" PreviewKeyDown="Textbox_PreviewKeyDown"/>
         </TabItem>
-        <TabItem Header="{StaticResource STR_Snaps_EditingWindow_DisplayTab}" GotFocus="TabItem_GotFocus">
+        <TabItem Header="{StaticResource STR_Snaps_EditingSnap_DisplayTab}">
             <ScrollViewer Grid.Row="0" x:Name="ThisScrollViewer" Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" KeyDown="ScrollViewer_KeyDown">
                 <ScrollViewer.Template>
                     <ControlTemplate TargetType="{x:Type ScrollViewer}">
@@ -57,7 +58,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <ComboBox x:Name="SizesBox" Height="17" BorderThickness="0" Grid.Column="0" SelectionChanged="SizesBox_SelectionChanged" SelectedIndex="4" Width="50" FontSize="9">
+                                <ComboBox x:Name="SizesBox" Height="17" BorderThickness="0" Grid.Column="0" SelectionChanged="SizesBox_SelectionChanged" SelectedIndex="2" Width="50" FontSize="9">
                                     <ComboBoxItem>20%</ComboBoxItem>
                                     <ComboBoxItem>40%</ComboBoxItem>
                                     <ComboBoxItem>60%</ComboBoxItem>

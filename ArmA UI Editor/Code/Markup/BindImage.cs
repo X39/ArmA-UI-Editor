@@ -16,7 +16,7 @@ namespace ArmA_UI_Editor.Code.Markup
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            var bmp = new System.Windows.Media.Imaging.BitmapImage(new Uri(BindConfig.CurrentPath + this.Path));
+            var bmp = new System.Windows.Media.Imaging.BitmapImage(new Uri(BindConfig.AddInPath + this.Path));
             
             return bmp;
         }

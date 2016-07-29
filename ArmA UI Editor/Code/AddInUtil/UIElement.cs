@@ -22,7 +22,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil
         public List<string> __EventsPath { get; set; }
 
         [XmlIgnore()]
-        public SQF.ClassParser.File ClassFile { get; set; }
+        public string ConfigKey { get; set; }
         [XmlIgnore()]
         public AddIn Parent { get; set; }
         [XmlIgnore()]
@@ -42,12 +42,17 @@ namespace ArmA_UI_Editor.Code.AddInUtil
             this.Events = new List<Event>();
         }
         
-        public void Initialize()
+        public void Initialize(SQF.ClassParser.ConfigField MainConfigField)
         {
             this.Image = Parent.ThisPath + Image.Replace('/', '\\');
             this.__ClassPath = Parent.ThisPath + __ClassPath.Replace('/', '\\');
             this.__XamlPath = Parent.ThisPath + __XamlPath.Replace('/', '\\');
-            this.ClassFile = SQF.ClassParser.File.Load(this.__ClassPath);
+            using (var stream = System.IO.File.OpenRead(this.__ClassPath))
+            {
+                var parser = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
+                parser.Patch(MainConfigField, false);
+                this.ConfigKey = MainConfigField[MainConfigField.Count - 1].Name;
+            }
 
             foreach (var it in this.__PropertiesPath)
             {

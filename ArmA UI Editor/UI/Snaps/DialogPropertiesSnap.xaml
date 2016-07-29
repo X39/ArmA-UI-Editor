@@ -18,31 +18,37 @@
                     <TextBox PreviewTextInput="tb_ClassName_PreviewTextInput" Initialized="tb_ClassName_Initialized"/>
                 </ui:Property>
                 <ui:Property Header="idd">
-                    <TextBox PreviewTextInput="tb_Idd_PreviewTextInput" Initialized="tb_Idd_Initialized"/>
+                    <TextBox PreviewKeyDown="tb_enterConfirm_PreviewKeyDown" Initialized="tb_NumberValueBinding_Initialized" SourceUpdated="tb_SourceUpdated" PreviewTextInput="tb_NumberValueBinding_PreviewTextInput" Tag="idd"/>
                 </ui:Property>
                 <ui:Property Header="onLoad">
-                    <TextBox PreviewTextInput="tb_onLoad_PreviewTextInput" Initialized="tb_onLoad_Initialized"/>
+                    <TextBox PreviewKeyDown="tb_enterConfirm_PreviewKeyDown" Initialized="tb_StringValueBinding_Initialized" SourceUpdated="tb_SourceUpdated" Tag="onLoad"/>
                 </ui:Property>
                 <ui:Property Header="onUnload">
-                    <TextBox PreviewTextInput="tb_onUnload_PreviewTextInput" Initialized="tb_onUnload_Initialized"/>
+                    <TextBox PreviewKeyDown="tb_enterConfirm_PreviewKeyDown" Initialized="tb_StringValueBinding_Initialized" SourceUpdated="tb_SourceUpdated" Tag="onUnload"/>
                 </ui:Property>
                 <ui:Property Header="duration">
-                    <TextBox PreviewTextInput="tb_duration_PreviewTextInput" Initialized="tb_duration_Initialized"/>
+                    <TextBox PreviewKeyDown="tb_enterConfirm_PreviewKeyDown" Initialized="tb_NumberValueBinding_Initialized" SourceUpdated="tb_SourceUpdated" PreviewTextInput="tb_NumberValueBinding_PreviewTextInput" Tag="duration"/>
                 </ui:Property>
                 <ui:Property Header="fadeIn">
-                    <TextBox PreviewTextInput="tb_fadeIn_PreviewTextInput" Initialized="tb_fadeIn_Initialized"/>
+                    <TextBox PreviewKeyDown="tb_enterConfirm_PreviewKeyDown" Initialized="tb_NumberValueBinding_Initialized" SourceUpdated="tb_SourceUpdated" PreviewTextInput="tb_NumberValueBinding_PreviewTextInput" Tag="fadeIn"/>
                 </ui:Property>
                 <ui:Property Header="fadeOut">
-                    <TextBox PreviewTextInput="tb_fadeOut_PreviewTextInput" Initialized="tb_fadeOut_Initialized"/>
+                    <TextBox PreviewKeyDown="tb_enterConfirm_PreviewKeyDown" Initialized="tb_NumberValueBinding_Initialized" SourceUpdated="tb_SourceUpdated" PreviewTextInput="tb_NumberValueBinding_PreviewTextInput" Tag="fadeOut"/>
                 </ui:Property>
                 <ui:Property Header="enableSimulation">
-                    <ComboBox SelectionChanged="cb_enableSimulation_SelectionChanged" Initialized="cb_enableSimulation_Initialized">
-                        <ComboBoxItem Content="True"/>
-                        <ComboBoxItem Content="False"/>
+                    <ComboBox Initialized="cb_BoolValueBinding_Initialized" SourceUpdated="cb_SourceUpdated" Tag="enableSimulation">
+                        <ComboBoxItem Content="false"/>
+                        <ComboBoxItem Content="true"/>
+                    </ComboBox>
+                </ui:Property>
+                <ui:Property Header="movingEnable">
+                    <ComboBox Initialized="cb_BoolValueBinding_Initialized" SourceUpdated="cb_SourceUpdated" Tag="movingEnable">
+                        <ComboBoxItem Content="false"/>
+                        <ComboBoxItem Content="true"/>
                     </ComboBox>
                 </ui:Property>
             </StackPanel>
         </Page>
     </Page.Resources>
-    <Frame NavigationUIVisibility="Hidden" x:Name="ThisFrame" x:FieldModifier="private"/>
+    <Frame NavigationUIVisibility="Hidden" x:Name="ThisFrame" x:FieldModifier="private" Background="{StaticResource SCB_UIBackgroundDark}" VerticalAlignment="Top"/>
 </Page>

@@ -26,9 +26,10 @@ Coco/R itself) does not fall under the GNU General Public License.
 ----------------------------------------------------------------------*/
 -->begin
 using System;
+using NLog;
 
 -->namespace
-namespace SQF.ClassParser
+namespace SQF.ClassParser.Generated
 {
     public class Parser {
     -->constants
@@ -42,14 +43,11 @@ namespace SQF.ClassParser
         public Token t;    // last recognized token
         public Token la;   // lookahead token
         int errDist = minErrDist;
-
     -->declarations
 
-        public SQF.ClassParser.File Base { get; set;}
-        
-        public Parser(Scanner scanner, Action<string> LoggerAction) {
+        public Parser(Scanner scanner) {
             this.scanner = scanner;
-            errors = new Errors(LoggerAction);
+            errors = new Errors();
         }
         
         bool peekCompare(params int[] values)
@@ -144,12 +142,42 @@ namespace SQF.ClassParser
 
         
     -->productions
+    
+        private void doRoot()
+        {
+    -->parseRoot
+        }
+        
+        public RangeDescription GetRange(string key)
+        {
+            this.KeyToFind = key;
+			this.Range = new RangeDescription();
+            this.MainField = new SQF.ClassParser.ConfigField();
+            this.MainField.ToClass();
+            la = new Token();
+            la.val = "";
+            Get();
+			doRoot();
+            return this.Range.IsFilled ? this.Range : null;
+        }
 
-        public void Parse() {
+        public SQF.ClassParser.ConfigField Parse() {
+            this.MainField = new SQF.ClassParser.ConfigField();
+            this.MainField.ToClass();
             la = new Token();
             la.val = "";		
             Get();
-    -->parseRoot
+            doRoot();
+            return this.MainField;
+        }
+        public void Patch(SQF.ClassParser.ConfigField field, bool AutoRemove) {
+            this.MainField = field;
+            la = new Token();
+            la.val = "";		
+            Get();
+            doRoot();
+            if(AutoRemove)
+                ApplyRemovedFields();
         }
         
         static readonly bool[,] set = {
@@ -159,13 +187,12 @@ namespace SQF.ClassParser
 
 
     public class Errors {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         public int count = 0;                                    // number of errors detected
         public System.IO.TextWriter errorStream = Console.Out;   // error messages go to this stream
         public string errMsgFormat = "line {0} col {1}: {2}"; // 0=line, 1=column, 2=text
-        public Action<string> LoggerAction;
-        public Errors(Action<string> LoggerAction)
+        public Errors()
         {
-            this.LoggerAction = LoggerAction;
         }
 
         public virtual void SynErr (int line, int col, int n) {
@@ -174,30 +201,30 @@ namespace SQF.ClassParser
     -->errors
                 default: s = "error " + n; break;
             }
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s), this.LoggerAction);
+            logger.Error(string.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
 
         public virtual void SemErr (int line, int col, string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, String.Format(errMsgFormat, line, col, s), this.LoggerAction);
+            logger.Error(string.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
             count++;
         }
         
         public virtual void SemErr (string s) {
-            Logger.Instance.log(Logger.LogLevel.ERROR, s, this.LoggerAction);
+            logger.Error(s);
             //errorStream.WriteLine(s);
             count++;
         }
         
         public virtual void Warning (int line, int col, string s) {
-            Logger.Instance.log(Logger.LogLevel.WARNING, String.Format(errMsgFormat, line, col, s));
+            logger.Warn(string.Format(errMsgFormat, line, col, s));
             //errorStream.WriteLine(errMsgFormat, line, col, s);
         }
         
         public virtual void Warning(string s) {
-            Logger.Instance.log(Logger.LogLevel.WARNING, s);
+            logger.Warn(s);
             //errorStream.WriteLine(s);
         }
     } // Errors

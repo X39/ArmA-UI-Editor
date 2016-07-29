@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections;
 
 
-namespace SQF.ClassParser
+namespace SQF.ClassParser.Generated
 {
     public class Token {
         public int kind;    // token kind
@@ -338,19 +338,6 @@ namespace SQF.ClassParser
 	bool Comment0() {
 		int level = 1, pos0 = pos, line0 = line, col0 = col, charPos0 = charPos;
 		NextCh();
-			for(;;) {
-				if (ch == 10) {
-					level--;
-					if (level == 0) { oldEols = line - line0; NextCh(); return true; }
-					NextCh();
-				} else if (ch == Buffer.EOF) return false;
-				else NextCh();
-			}
-	}
-
-	bool Comment1() {
-		int level = 1, pos0 = pos, line0 = line, col0 = col, charPos0 = charPos;
-		NextCh();
 		if (ch == '/') {
 			NextCh();
 			for(;;) {
@@ -367,7 +354,7 @@ namespace SQF.ClassParser
 		return false;
 	}
 
-	bool Comment2() {
+	bool Comment1() {
 		int level = 1, pos0 = pos, line0 = line, col0 = col, charPos0 = charPos;
 		NextCh();
 		if (ch == '*') {
@@ -408,7 +395,7 @@ namespace SQF.ClassParser
             while (ch == ' ' ||
     			ch >= 9 && ch <= 10 || ch == 13
             ) NextCh();
-    		if (ch == '#' && Comment0() ||ch == '/' && Comment1() ||ch == '/' && Comment2()) return NextToken();
+    		if (ch == '/' && Comment0() ||ch == '/' && Comment1()) return NextToken();
             int recKind = noSym;
             int recEnd = pos;
             t = new Token();

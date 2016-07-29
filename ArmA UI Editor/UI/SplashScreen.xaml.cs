@@ -121,8 +121,8 @@ namespace ArmA_UI_Editor.UI
                 }
 
             }
-#endif
             Thread.Sleep(1000);
+#endif
         }
 
         private void Window_Closed(object sender, EventArgs e)

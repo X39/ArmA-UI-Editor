@@ -4,11 +4,15 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ArmA_UI_Editor.UI.Snaps"
+      xmlns:conv="clr-namespace:ArmA_UI_Editor.Code.Converter"
       mc:Ignorable="d"
       MinWidth="192"
       MinHeight="192"
       d:DesignHeight="300" d:DesignWidth="300"
       Title="{StaticResource STR_Window_ZIndex}">
+    <Page.Resources>
+        <conv:LastIndexOfStringConverter x:Key="LastIndexOfStringConverter"/>
+    </Page.Resources>
     <ListBox x:Name="lbContent" Style="{StaticResource ListBoxStyle}" AllowDrop="True">
         <ListBox.ItemContainerStyle>
             <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource ListBoxItemStyle}">
@@ -23,7 +27,7 @@
                     <TextBlock>
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0} ({1})">
-                                <Binding Path="Item2.Key"/>
+                                <Binding Path="Item2" Converter="{StaticResource LastIndexOfStringConverter}" ConverterParameter="/"/>
                                 <Binding Path="Item1.DisplayName"/>
                             </MultiBinding>
                         </TextBlock.Text>

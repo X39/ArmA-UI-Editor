@@ -12,26 +12,26 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary x:Name="Colors">
-                    <SolidColorBrush x:Key="SCB_UIBackground" Color="#FF2D2D30"/>
-                    <SolidColorBrush x:Key="SCB_UIBackgroundLight" Color="#FF3F3F46"/>
-                    <SolidColorBrush x:Key="SCB_UIBackgroundDark" Color="#FF252526"/>
-                    <SolidColorBrush x:Key="SCB_UIBackgroundDarker" Color="#FF1B1B1C"/>
-                    <SolidColorBrush x:Key="SCB_UIBlue" Color="#FF0E97DD"/>
-                    <SolidColorBrush x:Key="SCB_UIBlueDark" Color="#FF007ACC"/>
-                    <SolidColorBrush x:Key="SCB_UIBlueLight" Color="#FF59A8DE"/>
-                    <SolidColorBrush x:Key="SCB_UIRed" Color="#FFDD0E0E"/>
-                    <SolidColorBrush x:Key="SCB_UIRedDark" Color="#FFA60000"/>
-                    <SolidColorBrush x:Key="SCB_UIRedLight" Color="#FFFF4B4B"/>
-                    <SolidColorBrush x:Key="SCB_DefaultTextColor" Color="#FFD0D0D0"/>
-                    <SolidColorBrush x:Key="SCB_DefaultTextColorDisabled" Color="#FF747474"/>
+                    <SolidColorBrush x:Key="SCB_UIBackgroundLight" Color="#424242"/>
+                    <SolidColorBrush x:Key="SCB_UIBackground" Color="#303030"/>
+                    <SolidColorBrush x:Key="SCB_UIBackgroundDark" Color="#212121"/>
+                    <SolidColorBrush x:Key="SCB_UIBackgroundDarker" Color="#000000"/>
+                    <SolidColorBrush x:Key="SCB_UIBlueLight" Color="#90CAF9"/>
+                    <SolidColorBrush x:Key="SCB_UIBlue" Color="#2196F3"/>
+                    <SolidColorBrush x:Key="SCB_UIBlueDark" Color="#1565C0"/>
+                    <SolidColorBrush x:Key="SCB_UIRedLight" Color="#EF9A9A"/>
+                    <SolidColorBrush x:Key="SCB_UIRed" Color="#F44336"/>
+                    <SolidColorBrush x:Key="SCB_UIRedDark" Color="#B71C1C"/>
+                    <SolidColorBrush x:Key="SCB_DefaultTextColor" Color="#B2FFFFFF"/>
+                    <SolidColorBrush x:Key="SCB_DefaultTextColorDisabled" Color="#7FFFFFFF"/>
 
                     <SolidColorBrush x:Key="SCB_ParseError_BorderColor" Color="Yellow"/>
                     <SolidColorBrush x:Key="SCB_ParseError_PathHeader" Color="Red"/>
                     <SolidColorBrush x:Key="SCB_ParseError_PathContent" Color="Yellow"/>
 
-                    <SolidColorBrush x:Key="SCB_SnapWindow_OutterBackground" Color="#FF007ACC"/>
-                    <SolidColorBrush x:Key="SCB_SnapWindow_InnerBackground" Color="#FF1B1B1C"/>
-                    <SolidColorBrush x:Key="SCB_SnapWindow_HeaderDotsColor" Color="#FF59A8DE"/>
+                    <SolidColorBrush x:Key="SCB_SnapWindow_OutterBackground" Color="#1565C0"/>
+                    <SolidColorBrush x:Key="SCB_SnapWindow_InnerBackground" Color="#212121"/>
+                    <SolidColorBrush x:Key="SCB_SnapWindow_HeaderDotsColor" Color="#90CAF9"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="Strings">
                     <clr:String x:Key="STR_MainWindow_File">File</clr:String>
@@ -46,18 +46,19 @@
                     <clr:String x:Key="STR_Window_Properties">Properties</clr:String>
                     <clr:String x:Key="STR_Window_Events">Events</clr:String>
                     <clr:String x:Key="STR_Window_Output">Output</clr:String>
-                    <clr:String x:Key="STR_Window_EditingWindow">MyUiConfig.cpp</clr:String>
+                    <clr:String x:Key="STR_Window_EditingWindow">New</clr:String>
+                    <clr:String x:Key="STR_Window_ConfigView">Config Viewer</clr:String>
+                    <clr:String x:Key="STR_Window_SettingsViewer">Configuration</clr:String>
+                    <clr:String x:Key="STR_Window_AddInBrowser">AddIn Browser</clr:String>
                     <clr:String x:Key="STR_Window_DialogProperties">Dialog Properties</clr:String>
 
                     <clr:String x:Key="STR_MainWindow_Settings">Settings</clr:String>
-                    <clr:String x:Key="STR_MainWindow_Settings_ShowAddInBrowser">Display AddIn Browser</clr:String>
-                    <clr:String x:Key="STR_MainWindow_Settings_ShowSettingsWindow">Options</clr:String>
 
                     <clr:String x:Key="STR_MainWindow_Help">Help</clr:String>
                     <clr:String x:Key="STR_MainWindow_Help_ReportBug">Report a Bug</clr:String>
                     <clr:String x:Key="STR_MainWindow_Help_OpenDocumentation">Open Documentation</clr:String>
 
-                    <clr:String x:Key="STR_MainWindow_Donate">Donate &lt;3</clr:String>
+                    <clr:String x:Key="STR_MainWindow_Donate">Donate ❤</clr:String>
 
                     <clr:String x:Key="STR_SettingsWindow_General">General</clr:String>
                     <clr:String x:Key="STR_SettingsWindow_General_Privacy">Privacy</clr:String>
@@ -68,15 +69,21 @@
                     <clr:String x:Key="STR_SettingsWindow_General_Updates_SkipVersion_ClearTooltip">Clears current ignore version</clr:String>
 
 
-                    <clr:String x:Key="STR_Snaps_EditingWindow_DisplayTab">Display</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ConfigTab">Config</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleSnapping">SnapToGrid</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_Canvas_ToggleBackground">Background Image</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_Properties">Properties</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_Delete">Delete</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapElementToGrid">Snap to Grid</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_FitElementToGrid">Resize to Grid</clr:String>
-                    <clr:String x:Key="STR_Snaps_EditingWindow_ContextMenu_ChildElement_SnapFitElementToGrid">Snap &amp; Resize to Grid</clr:String>
+                    <clr:String x:Key="STR_ConfigView_ExportToClipboard">Export to Clipboard</clr:String>
+
+
+                    <clr:String x:Key="STR_Snaps_EditingSnap_DisplayTab">Display</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ConfigTab">Config</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_Canvas_ToggleSnapping">SnapToGrid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_Canvas_ToggleBackground">Background Image</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_Canvas_ExportToPng">Export canvas to PNG</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_Properties">Properties</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_Delete">Delete</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_SnapElementToGrid">Snap to Grid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_FitElementToGrid">Resize to Grid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_ContextMenu_ChildElement_SnapFitElementToGrid">Snap &amp; Resize to Grid</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNoBaseClass">Ignoring '{0}' as it has no base class.</clr:String>
+                    <clr:String x:Key="STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNotDefinedInAddins">Ignoring '{0}' as it has no visual representation in AddIns.</clr:String>
 
                     <clr:String x:Key="STR_ParseError_PathHeader">PARSE ERROR</clr:String>
                     <clr:String x:Key="STR_ParseError_PathContent">INVALID CONFIG</clr:String>
@@ -98,6 +105,11 @@
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableMessage">Update {0} available\nDo you want to update now?</clr:String>
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableHeader">Update Available &lt;3</clr:String>
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableText">Update {0} is available for the ArmA-UI-Editor. Do you want to update now?\n(cancel will ignore this update)</clr:String>
+
+                    <clr:String x:Key="STR_BINDING_UnknownField">Cannot locate field '{0}'</clr:String>
+                    <clr:String x:Key="STR_BINDING_InvalidFieldType">Invalid field type on field '{0}', expected {1}</clr:String>
+                    <clr:String x:Key="STR_BINDING_InvalidArray_Size">Invalid size on array field '{0}', expected {1}</clr:String>
+                    <clr:String x:Key="STR_BINDING_InvalidArray_ChildType">Invalid type in array field '{0}' at index {1}, expected {2}"</clr:String>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="GlobalStyles">
                     <Style TargetType="{x:Type GridSplitter}" x:Key="GridSplitterStyle">

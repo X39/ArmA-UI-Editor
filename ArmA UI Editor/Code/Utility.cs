@@ -6,11 +6,17 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows;
+using System.Windows.Data;
 
 namespace ArmA_UI_Editor.Code
 {
     public static class Utility
     {
+        public static System.IO.MemoryStream AsMemoryStream(this string s)
+        {
+            var memStream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(s));
+            return memStream;
+        }
         public static System.IO.Stream ToStream(this string str)
         {
             System.IO.MemoryStream stream = new System.IO.MemoryStream();
@@ -20,13 +26,28 @@ namespace ArmA_UI_Editor.Code
             stream.Seek(0, System.IO.SeekOrigin.Begin);
             return stream;
         }
-        public static System.Windows.Rect GetCanvasMetrics(this System.Windows.UIElement el)
+        public static Binding GetBinding(this DependencyObject el, DependencyProperty prop)
+        {
+            return BindingOperations.GetBinding(el, prop);
+        }
+        public static System.Windows.Rect GetCanvasMetrics(this System.Windows.FrameworkElement el)
         {
             var rect = new System.Windows.Rect();
             rect.X = System.Windows.Controls.Canvas.GetLeft(el);
             rect.Y = System.Windows.Controls.Canvas.GetTop(el);
+            if (double.IsNaN(rect.X) || double.IsNaN(rect.Y))
+            {
+                var p = el.TranslatePoint(new Point(0, 0), el.Parent as UIElement);
+                rect.X = p.X;
+                rect.Y = p.Y;
+            }
             rect.Width = System.Windows.Controls.Canvas.GetRight(el) - rect.X;
             rect.Height = System.Windows.Controls.Canvas.GetBottom(el) - rect.Y;
+            if(double.IsNaN(rect.Width) || double.IsNaN(rect.Height))
+            {
+                rect.Width = el.ActualWidth;
+                rect.Height = el.ActualHeight;
+            }
             return rect;
         }
         public static void SetCanvasMetrics(this System.Windows.UIElement el, System.Windows.Rect rect)
@@ -35,25 +56,6 @@ namespace ArmA_UI_Editor.Code
             System.Windows.Controls.Canvas.SetTop(el, rect.Top);
             System.Windows.Controls.Canvas.SetRight(el, rect.Right);
             System.Windows.Controls.Canvas.SetBottom(el, rect.Bottom);
-        }
-        public static T FindParentInHirarchy<T>(this System.Windows.FrameworkElement el) where T : System.Windows.FrameworkElement
-        {
-            while(el != null)
-            {
-                if(el.Parent is T)
-                {
-                    return el as T;
-                }
-                else if(el.Parent is System.Windows.FrameworkElement)
-                {
-                    el = el.Parent as System.Windows.FrameworkElement;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            return null;
         }
         public static bool IsNumeric(this string s)
         {
@@ -187,6 +189,20 @@ namespace ArmA_UI_Editor.Code
                 }
             }
             e.Handled = true;
+        }
+        public static T FindInVisualTreeUpward<T>(this DependencyObject el) where T : FrameworkElement
+        {
+            while (el != null && !(el is T))
+                el = System.Windows.Media.VisualTreeHelper.GetParent(el);
+            return el as T;
+        }
+        public static void ForceBindingSourceUpdate(this DependencyObject el, DependencyProperty prop)
+        {
+            var binding = BindingOperations.GetBindingExpression(el, prop);
+            if(binding != null)
+            {
+                binding.UpdateSource();
+            }
         }
     }
 }

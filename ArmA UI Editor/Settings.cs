@@ -16,9 +16,6 @@ namespace ArmA_UI_Editor
         public string Path { get; set; }
         public static string CurrentPath { get; set; }
 
-        public static SQF.ClassParser.File CurrentConfig;
-        public static string CurrentClassPath;
-
         public HasIgnoreUpdate() { }
 
         public override object ProvideValue(IServiceProvider serviceProvider)
@@ -55,7 +52,7 @@ namespace ArmA_UI_Editor
             {
                 return new Settings();
             }
-            catch (System.InvalidOperationException ex)
+            catch (System.InvalidOperationException)
             {
                 return new Settings();
             }

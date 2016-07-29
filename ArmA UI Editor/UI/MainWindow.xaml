@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArmA_UI_Editor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" MinWidth="512" MinHeight="512" Width="1920" Background="{StaticResource SCB_UIBackground}" Closed="Window_Closed" Icon="/ArmA UI Editor;component/Logo_V2.ico" WindowState="Maximized">
+        Title="MainWindow" Height="1080" MinWidth="512" MinHeight="512" Width="1920" Background="{StaticResource SCB_UIBackground}" Closed="Window_Closed" Icon="/ArmA UI Editor;component/Logo_V3.ico" WindowState="Maximized">
     <DockPanel>
         <Menu DockPanel.Dock="Top" Style="{StaticResource MenuStyle}">
             <MenuItem Header="{StaticResource STR_MainWindow_File}">
                 <MenuItem Header="{StaticResource STR_MainWindow_File_New}" Click="MenuItem_File_New_Click"/>
                 <MenuItem Header="{StaticResource STR_MainWindow_File_Open}" Click="MenuItem_File_Open_Click"/>
-                <MenuItem Header="{StaticResource STR_MainWindow_File_Save}" Click="MenuItem_File_Save_Click" IsEnabled="False" ToolTip="Please press CTRL+S instead"/>
-                <MenuItem Header="{StaticResource STR_MainWindow_File_SaveAs}" Click="MenuItem_File_Save_Click" IsEnabled="False" ToolTip="Please press CTRL+S instead"/>
+                <MenuItem Header="{StaticResource STR_MainWindow_File_Save}" Click="MenuItem_File_Save_Click"/>
+                <MenuItem Header="{StaticResource STR_MainWindow_File_SaveAs}" Click="MenuItem_File_SaveAs_Click"/>
             </MenuItem>
             <MenuItem Header="{StaticResource STR_MainWindow_View}">
                 <MenuItem Header="{StaticResource STR_Window_Toolbox}" Click="MenuItem_View_Toolbox_Click"/>
@@ -23,8 +23,9 @@
                 <MenuItem Header="{StaticResource STR_Window_Events}" Click="MenuItem_View_Events_Click"/>
             </MenuItem>
             <MenuItem Header="{StaticResource STR_MainWindow_Settings}">
-                <MenuItem Header="{StaticResource STR_MainWindow_Settings_ShowAddInBrowser}" Click="MenuItem_Settings_ShowAddInBrowser_Click"/>
-                <MenuItem Header="{StaticResource STR_MainWindow_Settings_ShowSettingsWindow}" Click="MenuItem_Settings_ShowSettingsWindow_Click"/>
+                <MenuItem Header="{StaticResource STR_Window_AddInBrowser}" Click="MenuItem_Settings_ShowAddInBrowser_Click"/>
+                <MenuItem Header="{StaticResource STR_Window_ConfigView}" Click="MenuItem_Settings_ShowConfigView_Click"/>
+                <MenuItem Header="{StaticResource STR_Window_SettingsViewer}" Click="MenuItem_Settings_ShowSettingsWindow_Click"/>
             </MenuItem>
             <MenuItem Header="{StaticResource STR_MainWindow_Help}">
                 <MenuItem Header="{StaticResource STR_MainWindow_Help_ReportBug}" Click="MenuItem_Help_ReportBug_Click"/>
