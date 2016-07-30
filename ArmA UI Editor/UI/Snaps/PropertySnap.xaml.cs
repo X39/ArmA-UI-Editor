@@ -28,6 +28,9 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             this.CurrentEditingSnap.UpdateConfigKey(string.Concat(e.Key, e.Path));
             (ArmA_UI_Editor.UI.MainWindow.TryGet()).SetStatusbarText("", false);
+            //Tmp "fix" for outdated bindings
+            //ToDo: Update AddIn Bindings
+            this.CurrentEditingSnap.RegenerateDisplay();
         }
         private void PType_OnError(object sender, string e)
         {
