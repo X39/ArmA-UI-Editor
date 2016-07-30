@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" x:Name="Header" Text="{Binding Window.Name, RelativeSource={RelativeSource AncestorType={x:Type local:SnapWindow}}}" Foreground="{StaticResource SCB_DefaultTextColor}" Margin="4,0,4,0"/>
+            <TextBlock Grid.Column="0" x:Name="Header" Text="{Binding Window.Title, RelativeSource={RelativeSource AncestorType={x:Type local:SnapWindow}}}" Foreground="{StaticResource SCB_DefaultTextColor}" Margin="4,0,4,0"/>
             <Rectangle Grid.Column="1" Height="6" Width="Auto" HorizontalAlignment="Stretch">
                 <Rectangle.Fill>
                     <VisualBrush TileMode="Tile" Viewport="0,0,2,2" ViewportUnits="Absolute" Viewbox="0,0,2,2" ViewboxUnits="Absolute">
