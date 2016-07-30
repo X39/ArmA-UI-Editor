@@ -13,7 +13,7 @@
                 <ColumnDefinition Width="4"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SnapLabel}}, Path=Text}"/>
+            <TextBlock Grid.Column="0" Text="{Binding Text, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SnapLabel}}}"/>
             <Button x:Name="btnCloseLabel" Grid.Column="2" Style="{StaticResource ButtonStyle}" Background="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Label}}, Path=Background}" Padding="4">
                 <Path Data="M 0,5 L 45,50 50,45 5,0 M 100,5 L 5,100 0,95 95,0 M 95,100 L 50,55 55,50 100,95" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Label}}, Path=Foreground}" StrokeThickness="1" Stretch="Uniform" Width="8" Height="8"/>
             </Button>

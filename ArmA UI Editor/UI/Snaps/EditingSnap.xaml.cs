@@ -187,7 +187,6 @@ namespace ArmA_UI_Editor.UI.Snaps
         public EditingSnap(string FilePath)
         {
             InitializeComponent();
-            this.Config = AddInManager.Instance.MainFile.AddKey(string.Format("EditingSnap_{0}_WorkingConfig", Counter));
             using (var reader = new StreamReader(FilePath))
             {
                 this.Textbox.Text = reader.ReadToEnd();

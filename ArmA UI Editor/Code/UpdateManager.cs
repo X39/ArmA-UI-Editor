@@ -55,7 +55,7 @@ namespace ArmA_UI_Editor.Code
                     var version = new Version(responseNode.getValue_Object()["content"].getValue_Object()["version"].getValue_String());
                     var curVersion = this.AppVersion;
 
-                    if(!(version.Major > curVersion.Major || version.Minor > curVersion.Minor || version.Build > curVersion.Build || version.Minor > curVersion.Minor))
+                    if(!(version.Major > curVersion.Major || version.Minor > curVersion.Minor || version.Build > curVersion.Build || version.Revision > curVersion.Revision))
                     {
                         return new Update(url, false);
                     }

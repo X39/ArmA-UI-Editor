@@ -70,7 +70,9 @@ namespace ArmA_UI_Editor.UI
 
             SnapLabel label = new SnapLabel();
             label.Tag = new TAG_Label { window = window };
-            label.Text = window.Header.Text;
+            Binding b = new Binding("Title");
+            b.Source = window.Window;
+            label.SetBinding(SnapLabel.TextProperty, b);
             label.MouseLeftButtonDown += SnapLabel_MouseLeftButtonDown;
             label.DockedAt = dock;
             label.btnCloseLabel.Click += BtnCloseLabel_Click;

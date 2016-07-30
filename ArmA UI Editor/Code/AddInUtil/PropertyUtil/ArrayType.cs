@@ -8,11 +8,49 @@ using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 using ArmA_UI_Editor.UI.Snaps;
+using System.Windows.Data;
+using System.Globalization;
+using ArmA_UI_Editor.Code.Converter;
+using SQF.ClassParser;
 
 namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 {
     public class ArrayType : PType
     {
+        public class NormalPropertyConverter : ConfigFieldKeyConverterBase
+        {
+            public NormalPropertyConverter(string key) : base(key) { }
+            public override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (!value.IsArray)
+                    return null;
+                StringBuilder builder = new StringBuilder();
+                foreach(var val in value.Array)
+                {
+                    builder.Append(string.Format(CultureInfo.InvariantCulture, "{0}, ", val));
+                }
+                return builder.ToString().TrimEnd(',', ' ');
+            }
+
+            public override object DoConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                using (var memStream = new System.IO.MemoryStream())
+                {
+                    var writer = new System.IO.StreamWriter(memStream);
+                    writer.Write("class myClass{arr[]={");
+                    writer.Write(value as string);
+                    writer.Write("};};");
+                    writer.Flush();
+                    memStream.Seek(0, System.IO.SeekOrigin.Begin);
+                    SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(memStream));
+                    var tmpField = p.Parse().GetKey("myClass/arr", ConfigField.KeyMode.ThrowOnNotFound);
+                    if (tmpField.Array.Length != (int)parameter)
+                        return null;
+                    return tmpField.Value;
+                }
+            }
+        }
+
         [XmlElement("type")]
         public string Type { get; set; }
         [XmlElement("count")]
@@ -23,38 +61,23 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
             var tb = new TextBox();
             tb.Tag = tag;
             StringBuilder builder = new StringBuilder();
-            bool isFirst = true;
-            var curVal = AddInManager.Instance.MainFile.GetKey(Key, SQF.ClassParser.ConfigField.KeyMode.NullOnNotFound);
-            if (curVal != null)
-            {
-                foreach (var it in curVal.Array)
-                {
-                    if (!isFirst)
-                        builder.Append(", ");
-                    isFirst = false;
-                    builder.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", it));
-                    switch (Type.ToUpper())
-                    {
-                        case "NUMBER":
-                            if (!(it is double))
-                                throw new Exception();
-                            break;
-                        case "STRING":
-                            if (!(it is string))
-                                throw new Exception();
-                            break;
-                        case "BOOLEAN":
-                            if (!(it is bool))
-                                throw new Exception();
-                            break;
-                        default:
-                            throw new Exception();
-                    }
-                }
-            }
-            tb.Text = builder.ToString();
+            var binding = new Binding("Value");
+            binding.Source = AddInManager.Instance.MainFile;
+            binding.NotifyOnSourceUpdated = true;
 
-            tb.PreviewTextInput += Tb_PreviewTextInput;
+            if (tag.PropertyObject is SqfProperty)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                binding.Converter = new NormalPropertyConverter(Key);
+            }
+            binding.ConverterParameter = this.Count;
+            tb.SetBinding(TextBox.TextProperty, binding);
+            tb.PreviewKeyDown += Tb_PreviewKeyDown;
+            tb.SourceUpdated += Tb_SourceUpdated;
+
             switch (Type.ToUpper())
             {
                 case "NUMBER":
@@ -72,36 +95,16 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
             return tb;
         }
 
-        private void Tb_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void Tb_SourceUpdated(object sender, DataTransferEventArgs e)
         {
-            if (e.Text.Contains('\r'))
-            {
-                using (var memStream = new System.IO.MemoryStream())
-                {
-                    var writer = new System.IO.StreamWriter(memStream);
-                    writer.Write("class myClass{arr[]={");
-                    writer.Write((sender as TextBox).Text);
-                    writer.Write("};};");
-                    writer.Flush();
-                    memStream.Seek(0, System.IO.SeekOrigin.Begin);
-                    var mainWindow = ArmA_UI_Editor.UI.MainWindow.TryGet();
-                    try
-                    {
-                        SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(memStream));
-                        var tmpField = p.Parse();
-                        if (tmpField.Array.Length != this.Count)
-                            throw new Exception();
+            this.RaiseValueChanged(sender, (PTypeDataTag)(sender as FrameworkElement).Tag);
+        }
 
-                        PTypeDataTag tag = (PTypeDataTag)(sender as TextBox).Tag;
-                        var field = AddInManager.Instance.MainFile.GetKey(string.Concat(tag.Key, tag.Path), SQF.ClassParser.ConfigField.KeyMode.CreateNew);
-                        field.Parent.SetKey(string.Concat(tag.Key, tag.Path), tmpField.Value);
-                        //RaiseValueChanged(sender);
-                    }
-                    catch
-                    {
-                        RaiseOnError(sender, "Invalid Property");
-                    }
-                }
+        private void Tb_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                (sender as DependencyObject).ForceBindingSourceUpdate(TextBox.TextProperty);
             }
         }
     }
