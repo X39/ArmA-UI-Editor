@@ -28,6 +28,7 @@ namespace ArmA_UI_Editor.UI.Snaps
     public partial class EditingSnap : Page, Code.Interface.ISnapWindow
     {
 
+
         private class UiConverter : Code.Converter.ConfigFieldKeyConverterBase
         {
             private WeakReference<EditingSnap> EditingSnapWeak;
@@ -187,10 +188,14 @@ namespace ArmA_UI_Editor.UI.Snaps
         public EditingSnap(string FilePath)
         {
             InitializeComponent();
-            using (var reader = new StreamReader(FilePath))
+            List<PreProcessFile> files = new List<PreProcessFile>();
+            PreProcessFile.PerformPreProcessFile(FilePath, files);
+            using (var reader = new StreamReader(files[0].FileStream))
             {
                 this.Textbox.Text = reader.ReadToEnd();
             }
+            for (int i = 1; i < files.Count; i++)
+                files[i].FileStream.Close();
 
             this.SnapEnabled = true;
             this.BackgroundEnabled = false;

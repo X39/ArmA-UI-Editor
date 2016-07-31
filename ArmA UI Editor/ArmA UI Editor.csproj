@@ -124,6 +124,7 @@
     <Compile Include="Code\Markup\BindImage.cs" />
     <Compile Include="Code\Markup\BindValue.cs" />
     <Compile Include="Code\Markup\BindConfig.cs" />
+    <Compile Include="Code\PreProcessor.cs" />
     <Compile Include="Code\UI\DragDrop\UiElementsListBoxData.cs" />
     <Compile Include="Code\Interface\ISnapWindow.cs" />
     <Compile Include="Code\UpdateManager.cs" />
