@@ -6,8 +6,7 @@
              StartupUri="UI/SplashScreen.xaml"
              ShutdownMode="OnExplicitShutdown"
              DispatcherUnhandledException="Application_DispatcherUnhandledException"
-             Startup="Application_Startup"
-             >
+             Startup="Application_Startup">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -102,9 +101,12 @@
                     <clr:String x:Key="STR_CODE_Property_ValueList">Value List</clr:String>
 
                     <clr:String x:Key="STR_CODE_SplashScreen_CheckingForUpdate">Checking for Update ...</clr:String>
-                    <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableMessage">Update {0} available\nDo you want to update now?</clr:String>
+                    <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableMessage">Update {0} available.
+                        Do you want to update now?</clr:String>
                     <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableHeader">Update Available &lt;3</clr:String>
-                    <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableText">Update {0} is available for the ArmA-UI-Editor. Do you want to update now?\n(cancel will ignore this update)</clr:String>
+                    <clr:String x:Key="STR_CODE_SplashScreen_UpdateAvailableText">Update {0} is available for the ArmA-UI-Editor.
+                        Do you want to update now?
+                        (cancel will ignore this update)</clr:String>
 
                     <clr:String x:Key="STR_BINDING_UnknownField">Cannot locate field '{0}'</clr:String>
                     <clr:String x:Key="STR_BINDING_InvalidFieldType">Invalid field type on field '{0}', expected {1}</clr:String>

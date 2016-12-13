@@ -56,13 +56,13 @@
     <ApplicationIcon>Logo_V3.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>X39_VisualStuidio_Key.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>X39_VisualStudio_Key.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>17838967006EAA889EB82E25B9CB9C972DCB2355</ManifestCertificateThumbprint>
@@ -223,6 +223,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="X39_VisualStudio_Key.pfx" />
     <None Include="X39_VisualStuidio_Key.pfx" />
     <None Include="AddIns\Base\Xaml\IGUIBack.xaml">
       <SubType>Designer</SubType>

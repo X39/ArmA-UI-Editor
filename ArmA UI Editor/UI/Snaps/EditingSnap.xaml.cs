@@ -60,7 +60,7 @@ namespace ArmA_UI_Editor.UI.Snaps
                 {
                     if (parameter is FieldTypeEnum)
                     {
-                        output = value is double ? snap.ToSqfString((FieldTypeEnum)parameter, (double)value) : value;
+                        output = value is double ? snap.ToSqfString((FieldTypeEnum)parameter, double.IsNaN((double)value) ? 0 : (double)value) : value;
                     }
                 }
                 return output;
@@ -394,6 +394,14 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void SelectionOverlay_OnOperationFinalized(object sender, FrameworkElement[] e)
         {
+            foreach(var it in e)
+            {
+                TAG_CanvasChildElement tag = (TAG_CanvasChildElement)it.Tag;
+                this.UpdateConfigKey(string.Concat(tag.Key, "/x"));
+                this.UpdateConfigKey(string.Concat(tag.Key, "/w"));
+                this.UpdateConfigKey(string.Concat(tag.Key, "/y"));
+                this.UpdateConfigKey(string.Concat(tag.Key, "/h"));
+            }
             SelectElements(false, false, e);
         }
         #endregion
@@ -1145,7 +1153,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public string ToSqfString(FieldTypeEnum fieldType, double data)
         {
-            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", fieldType, data)));
+            //Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", fieldType, data)));
             double max;
             StringBuilder builder = new StringBuilder();
             switch (fieldType)
@@ -1195,7 +1203,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         public double FromSqfString(FieldTypeEnum fieldType, string data)
         {
-            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", fieldType, data)));
+            //Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", fieldType, data)));
             data = data.ToUpper();
             double max;
             switch (fieldType)
@@ -1216,12 +1224,19 @@ namespace ArmA_UI_Editor.UI.Snaps
                     throw new Exception();
             }
 
-            var dt = new System.Data.DataTable();
-            return (double.Parse(dt.Compute(data, "").ToString())) * max;
+            try
+            {
+                var res = (double.Parse(new System.Data.DataTable().Compute(data, "").ToString())) * max;
+                return res;
+            }
+            catch
+            {
+                return 0;
+            }
         }
         public void UpdateConfigKey(string key)
         {
-            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", key)));
+            //Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", key)));
             using (var stream = this.Textbox.Text.AsMemoryStream())
             {
                 SQF.ClassParser.Generated.Parser p = new SQF.ClassParser.Generated.Parser(new SQF.ClassParser.Generated.Scanner(stream));
@@ -1301,7 +1316,9 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             Logger.Trace(string.Format("{0} args: -", this.GetTraceInfo()));
             var list = new List<Tuple<Code.AddInUtil.UIElement, string>>();
-            var controls = this.LastFileConfig["controls"];
+            var controls = this.LastFileConfig.GetKey("config", ConfigField.KeyMode.NullOnNotFound);
+            if (controls == null)
+                return list;
             foreach (var value in controls)
             {
                 if (!(value is ConfigField))

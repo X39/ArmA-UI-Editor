@@ -49,6 +49,8 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                 ConverterPropertyData data = (ConverterPropertyData)parameter;
                 if(value is string)
                 {
+                    if (string.IsNullOrWhiteSpace(value as string))
+                        return "";
                     value = double.Parse(value as string);
                 }
                 if (value == null)
@@ -94,10 +96,12 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
                 ConverterPropertyData data = (ConverterPropertyData)parameter;
                 if (value is string)
                 {
+                    if (string.IsNullOrWhiteSpace(value as string))
+                        return null;
                     value = double.Parse(value as string, NumberStyles.Float, CultureInfo.InvariantCulture);
                 }
                 if (value == null)
-                    return value;
+                    return null;
                 switch (data.Conversion)
                 {
                     default:
