@@ -607,6 +607,10 @@ namespace SQF.ClassParser
             else
             {
                 builder.Append(this.Name);
+                if (this.IsArray)
+                {
+                    builder.Append("[]");
+                }
                 builder.Append(" = ");
                 builder.Append(this.ToValueString());
                 builder.Append(';');
