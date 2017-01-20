@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ArmA-UI-Editor"
-#define MyAppVersion "0.4.6191.35435"
+#define MyAppVersion "0.4.6229.32099"
 #define MyAppPublisher "X39"
 #define MyAppURL "http://x39.io/projects?project=ArmA-UI-Editor"
 #define MyAppExeName "ArmA UI Editor.exe"
