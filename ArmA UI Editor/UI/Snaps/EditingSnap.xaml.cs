@@ -185,25 +185,27 @@ namespace ArmA_UI_Editor.UI.Snaps
             this.HasUnsavedChanges = true;
             this.AllowConfigPatching = false;
         }
-        public EditingSnap(string FilePath)
+        public EditingSnap(string FilePath) : this()
         {
             InitializeComponent();
             List<PreProcessFile> files = new List<PreProcessFile>();
-            PreProcessFile.PerformPreProcessFile(FilePath, files);
-            using (var reader = new StreamReader(files[0].FileStream))
+            try
             {
-                this.Textbox.Text = reader.ReadToEnd();
+                PreProcessFile.PerformPreProcessFile(FilePath, files);
+                using (var reader = new StreamReader(files[0].FileStream))
+                {
+                    this.Textbox.Text = reader.ReadToEnd();
+                }
             }
-            for (int i = 1; i < files.Count; i++)
-                files[i].FileStream.Close();
-
-            this.SnapEnabled = true;
-            this.BackgroundEnabled = false;
-            this.SnapGrid = 15;
-            this.ViewScale = 1;
-            this.FilePath = FilePath;
-            this.HasUnsavedChanges = false;
-            this.AllowConfigPatching = false;
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Concat("Could not preprocess file:\n", ex.Message), "PreProcessor error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                for (int i = 1; i < files.Count; i++)
+                    files[i].FileStream.Close();
+            }
         }
 
         public void SaveCanvasToFile(string filePath)
