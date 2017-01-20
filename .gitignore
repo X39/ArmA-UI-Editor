@@ -304,6 +304,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-/Project Resources
+/Project Resources/Output
 *.old
 ArmAClassParser/SQF/ClassParser/Generated/Scanner.cs.old
