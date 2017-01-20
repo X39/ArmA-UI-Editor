@@ -22,6 +22,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
             public NormalPropertyConverter(string key) : base(key) { }
             public override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)
             {
+                Logger.Trace(string.Format("{0} args: {1}", GetTraceInfo(), string.Join(", ", value, targetType, parameter, culture)));
                 if (!value.IsArray)
                     return null;
                 StringBuilder builder = new StringBuilder();
@@ -34,6 +35,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 
             public override object DoConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             {
+                Logger.Trace(string.Format("{0} args: {1}", GetTraceInfo(), string.Join(", ", value, targetType, parameter, culture)));
                 using (var memStream = new System.IO.MemoryStream())
                 {
                     var writer = new System.IO.StreamWriter(memStream);

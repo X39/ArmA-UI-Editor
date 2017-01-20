@@ -28,11 +28,13 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 
             public override string DoConvertBackToString(object value, Type targetType, object parameter, CultureInfo culture)
             {
+                Logger.Trace(string.Format("{0} args: {1}", GetTraceInfo(), string.Join(", ", value, targetType, parameter, culture)));
                 return string.Format(CultureInfo.InvariantCulture, "{0}", this.DataList[(int)value].Value);
             }
 
             public override object DoConvertFromString(string value, Type targetType, object parameter, CultureInfo culture)
             {
+                Logger.Trace(string.Format("{0} args: {1}", GetTraceInfo(), string.Join(", ", value, targetType, parameter, culture)));
                 for (int i = 0; i < this.DataList.Count; i++)
                 {
                     if (this.DataList[i].Value == value)

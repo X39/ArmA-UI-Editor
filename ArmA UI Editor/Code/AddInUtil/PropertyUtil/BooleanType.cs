@@ -23,6 +23,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
             public SqfPropertyConverter(string key, PTypeDataTag tag) : base(key, tag) { }
             public override object DoConvertFromString(string value, Type targetType, object parameter, CultureInfo culture)
             {
+                Logger.Trace(string.Format("{0} args: {1}", GetTraceInfo(), string.Join(", ", value, targetType, parameter, culture)));
                 if (string.IsNullOrWhiteSpace(value))
                     return -1;
                 return bool.Parse(value) ? 1 : 0;
@@ -30,6 +31,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 
             public override string DoConvertBackToString(object value, Type targetType, object parameter, CultureInfo culture)
             {
+                Logger.Trace(string.Format("{0} args: {1}", GetTraceInfo(), string.Join(", ", value, targetType, parameter, culture)));
                 return (int)value > 0 ? "true" : "false";
             }
         }

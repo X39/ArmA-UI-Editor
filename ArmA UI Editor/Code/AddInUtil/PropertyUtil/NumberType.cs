@@ -75,6 +75,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
             public NormalPropertyConverter(string key) : base(key) { }
             public override object DoConvert(ConfigField value, Type targetType, object parameter, CultureInfo culture)
             {
+                Logger.Trace(string.Format("{0} args: {1}", GetTraceInfo(), string.Join(", ", value, targetType, parameter, culture)));
                 ConverterPropertyData data = (ConverterPropertyData)parameter;
                 switch (data.Conversion)
                 {
@@ -93,6 +94,7 @@ namespace ArmA_UI_Editor.Code.AddInUtil.PropertyUtil
 
             public override object DoConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             {
+                Logger.Trace(string.Format("{0} args: {1}", GetTraceInfo(), string.Join(", ", value, targetType, parameter, culture)));
                 ConverterPropertyData data = (ConverterPropertyData)parameter;
                 if (value is string)
                 {
