@@ -394,9 +394,15 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void SelectionOverlay_OnOperationFinalized(object sender, FrameworkElement[] e)
         {
-            foreach(var it in e)
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender.ToString(), string.Concat('{', e.Select((it) => it == null ? "null" : it.ToString()), '}'))));
+            foreach (var it in e)
             {
+                if (it == null)
+                {
+                    continue;
+                }
                 TAG_CanvasChildElement tag = (TAG_CanvasChildElement)it.Tag;
+                
                 this.UpdateConfigKey(string.Concat(tag.Key, "/x"));
                 this.UpdateConfigKey(string.Concat(tag.Key, "/w"));
                 this.UpdateConfigKey(string.Concat(tag.Key, "/y"));
