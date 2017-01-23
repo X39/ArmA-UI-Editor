@@ -396,7 +396,9 @@ namespace ArmA_UI_Editor.UI.Snaps
         }
         private void SelectionOverlay_OnOperationFinalized(object sender, FrameworkElement[] e)
         {
-            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender.ToString(), string.Concat('{', e.Select((it) => it == null ? "null" : it.ToString()), '}'))));
+            System.Diagnostics.Debug.Assert(sender != null);
+            System.Diagnostics.Debug.Assert(e.All((it) => it != null));
+            Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender.ToString(), string.Concat('{', string.Join(", ", e.Select((it) => it == null ? "null" : it.ToString())), '}'))));
             foreach (var it in e)
             {
                 if (it == null)
@@ -821,14 +823,14 @@ namespace ArmA_UI_Editor.UI.Snaps
                     var curField = value as ConfigField;
                     if(string.IsNullOrWhiteSpace(curField.ConfigParentName))
                     {
-                        Logger.Warn(string.Format(App.Current.Resources["STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNoBaseClass"] as String), curField.Key);
+                        Logger.Warn(App.Current.Resources["STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNoBaseClass"] as String, curField.Key);
                         continue;
                     }
                     //ToDo: Check ALL base classes if they implement an AddIn (--> ConfigField function/field)
                     var addInUiElement = AddInManager.Instance.GetElement(curField.ConfigParentName);
                     if (addInUiElement == null)
                     {
-                        Logger.Warn(string.Format(App.Current.Resources["STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNotDefinedInAddins"] as String), curField.Key);
+                        Logger.Warn(App.Current.Resources["STR_Snaps_EditingSnap_Logger_Warning_IgnoringElementAsNotDefinedInAddins"] as String, curField.Key);
                         continue;
                     }
                     Code.Markup.BindConfig.AddInPath = addInUiElement.Parent.ThisPath;

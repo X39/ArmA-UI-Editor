@@ -22,7 +22,7 @@ namespace ArmA_UI_Editor
         private class TraceListener : System.Diagnostics.TraceListener
         {
             public LimitedQueue<string> StringQueue;
-            private const int MAX_CACHED_MESSAGES = 1024;
+            private const int MAX_CACHED_MESSAGES = 1024*4;
             public TraceListener()
             {
                 this.StringQueue = new LimitedQueue<string>(MAX_CACHED_MESSAGES);
@@ -97,16 +97,6 @@ namespace ArmA_UI_Editor
 #endif
                 writer.WriteEndElement();
                 #endregion
-                #region <trace>
-                writer.WriteStartElement("trace");
-                foreach (var it in this.TraceListenerInstance.StringQueue)
-                {
-                    writer.WriteStartElement("log");
-                    writer.WriteString(it.Replace("\r", ""));
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                #endregion
                 #region <stacktrace>
                 writer.WriteStartElement("stacktrace");
                 var builder = new StringBuilder();
@@ -120,6 +110,16 @@ namespace ArmA_UI_Editor
                     tabCount++;
                 }
                 writer.WriteCData(builder.ToString());
+                writer.WriteEndElement();
+                #endregion
+                #region <trace>
+                writer.WriteStartElement("trace");
+                foreach (var it in this.TraceListenerInstance.StringQueue)
+                {
+                    writer.WriteStartElement("log");
+                    writer.WriteString(it.Replace("\r", ""));
+                    writer.WriteEndElement();
+                }
                 writer.WriteEndElement();
                 #endregion
 
