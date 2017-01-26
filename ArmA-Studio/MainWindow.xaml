@@ -1,0 +1,40 @@
+﻿<Window x:Class="UI_Editor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UI_Editor"
+        xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <ad:DockingManager>
+        <ad:LayoutRoot>
+            <ad:LayoutPanel Orientation="Horizontal">
+                <ad:LayoutPanel Orientation="Vertical">
+                    <ad:LayoutPanel Orientation="Horizontal">
+                        <ad:LayoutDocumentPaneGroup x:Name="leftDocumentGroup">
+                            <ad:LayoutDocumentPane>
+                                <ad:LayoutDocument Title="Left Doc"></ad:LayoutDocument>
+                            </ad:LayoutDocumentPane>
+                        </ad:LayoutDocumentPaneGroup>
+                        <ad:LayoutDocumentPaneGroup x:Name="rightDocumentGroup">
+                            <ad:LayoutDocumentPane>
+                                <ad:LayoutDocument Title="Right Doc"></ad:LayoutDocument>
+                            </ad:LayoutDocumentPane>
+                        </ad:LayoutDocumentPaneGroup>
+                    </ad:LayoutPanel>
+                    <ad:LayoutAnchorablePaneGroup x:Name="bottomAnchorableGroup">
+                        <ad:LayoutAnchorablePane>
+                            <ad:LayoutAnchorable Title="Bottom Anch"></ad:LayoutAnchorable>
+                        </ad:LayoutAnchorablePane>
+                    </ad:LayoutAnchorablePaneGroup>
+                </ad:LayoutPanel>
+                <ad:LayoutAnchorablePaneGroup x:Name="rightAnchorableGroup">
+                    <ad:LayoutAnchorablePane>
+                        <ad:LayoutAnchorable Title="Right Anch"></ad:LayoutAnchorable>
+                    </ad:LayoutAnchorablePane>
+                </ad:LayoutAnchorablePaneGroup>
+            </ad:LayoutPanel>
+        </ad:LayoutRoot>
+    </ad:DockingManager>
+</Window>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmA UI Editor", "ArmA UI Editor\ArmA UI Editor.csproj", "{336E80CF-8AA9-4276-8347-6FF2D9D668BD}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -9,6 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmA UI Editor", "ArmA UI E
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmAClassParser", "ArmAClassParser\ArmAClassParser.csproj", "{2E1B48AD-1DE2-457E-AE85-8230969296BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRealityEngine", "VirtualRealityEngine\VirtualRealityEngine.csproj", "{391819A9-BAF2-4C1D-BA57-3050B6565123}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmA-Studio", "ArmA-Studio\ArmA-Studio.csproj", "{C8A8B1E4-9FE9-4D77-BC69-82740F2051C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{E95CB476-AA64-429D-9349-64290B8164BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualRealityEngine_WpfUtility", "VirtualRealityEngine_WpfUtility\VirtualRealityEngine_WpfUtility.csproj", "{15F3CEC8-B46A-410D-BBE0-1705CC546344}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +32,22 @@ Global
 		{2E1B48AD-1DE2-457E-AE85-8230969296BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E1B48AD-1DE2-457E-AE85-8230969296BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E1B48AD-1DE2-457E-AE85-8230969296BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{391819A9-BAF2-4C1D-BA57-3050B6565123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{391819A9-BAF2-4C1D-BA57-3050B6565123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{391819A9-BAF2-4C1D-BA57-3050B6565123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{391819A9-BAF2-4C1D-BA57-3050B6565123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8A8B1E4-9FE9-4D77-BC69-82740F2051C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8A8B1E4-9FE9-4D77-BC69-82740F2051C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8A8B1E4-9FE9-4D77-BC69-82740F2051C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8A8B1E4-9FE9-4D77-BC69-82740F2051C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E95CB476-AA64-429D-9349-64290B8164BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E95CB476-AA64-429D-9349-64290B8164BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E95CB476-AA64-429D-9349-64290B8164BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E95CB476-AA64-429D-9349-64290B8164BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15F3CEC8-B46A-410D-BBE0-1705CC546344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15F3CEC8-B46A-410D-BBE0-1705CC546344}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15F3CEC8-B46A-410D-BBE0-1705CC546344}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15F3CEC8-B46A-410D-BBE0-1705CC546344}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
