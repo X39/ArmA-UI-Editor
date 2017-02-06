@@ -398,6 +398,7 @@ namespace ArmA_UI_Editor.UI.Snaps
         {
             System.Diagnostics.Debug.Assert(sender != null);
             System.Diagnostics.Debug.Assert(e.All((it) => it != null));
+            System.Diagnostics.Debug.Assert(e.All((it) => it.Tag != null));
             Logger.Trace(string.Format("{0} args: {1}", this.GetTraceInfo(), string.Join(", ", sender.ToString(), string.Concat('{', string.Join(", ", e.Select((it) => it == null ? "null" : it.ToString())), '}'))));
             foreach (var it in e)
             {

@@ -1,0 +1,44 @@
+﻿<!-- https://github.com/icsharpcode/AvalonEdit/blob/697ff0d38c95c9e5a536fbc05ae2307ec9ef2a63/ICSharpCode.AvalonEdit/Highlighting/Resources/Tex-Mode.xshd -->
+<SyntaxDefinition name="SQF">
+	<Digits name="Digits" bold="false" italic="false" color="Chocolate"/>
+	<RuleSets>
+		<RuleSet ignorecase="true">
+			<Delimiters>&amp;&lt;&gt;~!@$%^*()-+=|\#/{}[]:;"' , .?</Delimiters>
+			<Span color="Blue" name="stringNormal">
+				<Begin>"</Begin>
+				<End>"</End>
+			</Span>
+			<Span color="Blue" name="stringSingle">
+				<Begin>'</Begin>
+				<End>'</End>
+			</Span>
+			<Span color="Gray" name="PreProcessor" stopateol="true">
+				<Begin>\#</Begin>
+			</Span>
+			<Span color="Green" name="LineComment" stopateol="true">
+				<Begin>//</Begin>
+			</Span>
+			<Span color="Blue" name="MultiLineComment">
+				<Begin>/\*</Begin>
+				<End>\*/</End>
+			</Span>
+			<KeyWords color="Crimson" bold="true" name="ControlStructures">
+				<Key word="try"/>
+				<Key word="catch"/>
+				<Key word="do"/>
+				<Key word="while"/>
+				<Key word="for"/>
+				<Key word="from"/>
+				<Key word="step"/>
+				<Key word="switch"/>
+				<Key word="case"/>
+				<Key word="default"/>
+				<Key word="if"/>
+				<Key word="then"/>
+				<Key word="else"/>
+				<Key word="breakout"/>
+				<Key word="breakto"/>
+			</KeyWords>
+		</RuleSet>
+	</RuleSets>
+</SyntaxDefinition>

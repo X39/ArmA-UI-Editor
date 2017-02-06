@@ -296,14 +296,8 @@ namespace ArmA_UI_Editor.UI
             if (MoveState != MoveStateEnum.NONE)
             {
                 MoveState = MoveStateEnum.NONE;
-                if (this.OnStopMove != null)
-                {
-                    this.OnStopMove(this, new EventArgs());
-                }
-                if(this.OnOperationFinalized != null)
-                {
-                    this.OnOperationFinalized(this, this.ToggledElements.ToArray());
-                }
+                this.OnStopMove?.Invoke(this, new EventArgs());
+                this.OnOperationFinalized?.Invoke(this, this.ToggledElements.ToArray());
                 this.ResizeDirection = null;
             }
         }

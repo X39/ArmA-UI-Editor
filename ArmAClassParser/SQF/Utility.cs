@@ -63,22 +63,5 @@ namespace SQF
                 builder.Append('"');
             return builder.ToString();
         }
-        /// <summary>
-        /// Creates a new array containing all items from startIndex to length in thisArray
-        /// </summary>
-        /// <param name="thisArray">Array to get the range from</param>
-        /// <param name="startIndex">index where to start</param>
-        /// <param name="length">length of the items to receive or -1</param>
-        /// <returns></returns>
-        public static string[] GetRange(this string[] thisArray, int startIndex, int length = -1)
-        {
-            string[] outArray = new string[length == -1 ? thisArray.Length - startIndex : length];
-            int outArrayIndex = 0;
-            for(int i = startIndex; i < (length == -1 ? thisArray.Length : length); i++)
-            {
-                outArray[outArrayIndex++] = thisArray[i];
-            }
-            return outArray;
-        }
     }
 }

@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml.Serialization;
-using ArmA.Studio.UI;
 
 namespace ArmA.Studio.SolutionUtil
 {
-    [XmlRoot("file")]
-    public sealed class SolutionFile : UI.ViewModel.IPropertiesViewModel
+    [XmlRoot("config")]
+    public class SolutionFile : SolutionFileBase
     {
-        [XmlAttribute]
-        public string RelativePath { get { return this._RelativePath; } set { this._RelativePath = value; this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RelativePath")); } }
-        private string _RelativePath;
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        public override ObservableCollection<SolutionFileBase> Children { get { return null; } set { } }
+        public override DataTemplate GetPropertiesTemplate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -3,30 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using SQF.ClassParser;
 
 COMPILER CONFIGFILE
-    SQF.ClassParser.ConfigField MainField = null;
-    RangeDescription Range = null;
-    StringList KeysAdded = new StringList();
-    
-    public void ApplyRemovedFields()
-    {
-        var curKeys = this.MainField.GetEnumeratorDeep(false);
-        var patchKeys = this.KeysAdded;
-        var missingKeys = curKeys.Except(patchKeys);
-        foreach (var key in missingKeys)
-        {
-#if DEBUG
-                if (!this.MainField.TreeRoot.Contains(key))
-                    System.Diagnostics.Debugger.Break();
-#endif
-            var field = this.MainField.TreeRoot[key];
-            field.Parent.RemoveKey(field.Name);
-        }
-    }
-    
-    public string KeyToFind = string.Empty;
+    FlowDocument doc;
+	ConfigEntry Root;
 
     CHARACTERS
 		DIGIT = "0123456789".
@@ -49,155 +31,115 @@ COMPILER CONFIGFILE
 		
 	PRODUCTIONS
 		CONFIGFILE =
-            (.
-                StringList list = new StringList();
-            .)
-            CONFIG<list>
             {
-                CONFIG<list>
+                CONFIG<Root>
             }
 		.
-        CONFIG<StringList list> (. ConfigField thisField; var tmpStartIndex = la.charPos; .) =
+        CONFIG<ConfigEntry parent> (. var cur = new ConfigEntry(parent); .) =
             "class"
             T_IDENT (.
-                list.Add(t.val);
-                thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
-                if (!thisField.IsClass)
-                {
-                    thisField.ToClass();
-                }
-                thisField.Name = t.val;
-				if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-				{
-					this.Range.WholeStart = tmpStartIndex;
-					this.Range.NameStart = t.charPos;
-					this.Range.NameEnd = t.charPos + t.val.Length;
-				};
-            .)
+				cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			.)
             [
                 ':'
-                T_IDENT (. thisField.ConfigParentName = t.val; .)
+                T_IDENT (.
+					cur.ParentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+					cur.ParentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+				.)
             ]
             [
-                '{' (. var beginIndex = la.charPos; .)
+                '{'
                 {
-                    FIELD<list>
+                    FIELD<cur>
                     |
-                    CONFIG<list>
+                    CONFIG<cur>
                 }
-                (.
-					if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-					{
-						this.Range.ValueStart = beginIndex;
-						this.Range.ValueEnd = t.charPos + t.val.Length;
-					}
-				.)
                 '}'
             ]
             ';'
-            (.
-				if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-				{
-					this.Range.WholeEnd = t.charPos + t.val.Length;
-				}
-				KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
-                list.Remove(list.Last());
-            .)
         .
-        FIELD<StringList list> (. ConfigField thisField; var tmpStartIndex = la.charPos; .) =
+        FIELD<ConfigEntry parent> (. var cur = new ConfigEntry(parent); .) =
             T_IDENT (.
-                list.Add(t.val);
-                thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
-                if (thisField.IsClass)
-                {
-                    thisField.ToField();
-                }
-                thisField.Name = t.val;
-                KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
-				if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-				{
-					this.Range.WholeStart = tmpStartIndex;
-					this.Range.NameStart = t.charPos;
-					this.Range.NameEnd = t.charPos + t.val.Length;
-				};
-
-            .)
+				cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			.)
             [
                 '['
                 ']'
             ]
             '='
             (
-                (. object tmp; var beginIndex = la.charPos; .)
                 (
-                    ARRAY<out tmp> (. thisField.Array = (object[])tmp; .)
+                    ARRAY (.
+						cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+					.)
                     |
-                    SCALAR<out tmp> (. thisField.Number = (double)tmp; .)
+                    SCALAR (.
+						cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+					.)
                     |
-                    STRING<out tmp> (. thisField.String = (string)tmp; .)
+                    STRING (.
+						cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+					.)
                     |
-                    BOOLEAN<out tmp> (. thisField.Boolean = (bool)tmp; .)
+                    BOOLEAN (.
+						cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+					.)
                     |
-                    ANY (. tmp = new StringList(); (tmp as StringList).Add(t.val); .)
+					(
+						ANY (. cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); .)
+						{
+							ANY
+						}
+						(. cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
+					)
                 )
-                [
-                    ANY (. tmp = new StringList(); (tmp as StringList).Add(t.val); .)
-                    {
-                        ANY (. tmp = new StringList(); (tmp as StringList).Add(t.val); .)
-                    }
-                    (. thisField.String = string.Join(" ", (tmp as StringList).ToArray()); .)
-                ]
-                (.
-					if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-					{
-						this.Range.ValueStart = beginIndex;
-						this.Range.ValueEnd = t.charPos + t.val.Length;
-						this.Range.WholeEnd = la.charPos + la.val.Length;
-					}
-				.)
             )
             ';'
-            (. list.Remove(list.Last()); .)
         .
-        SCALAR<out object v> (. v = 0; .) =
-            T_SCALAR (. v = Double.Parse(t.val, System.Globalization.CultureInfo.InvariantCulture); .)
+        SCALAR =
+            T_SCALAR
             |
-            T_HEX (. v = (double)Convert.ToInt32(t.val.Substring(2), 16); .)
+            T_HEX
         .
-        STRING<out object v> (. v = string.Empty; .) = 
+        STRING =
             (
-                T_STRING (. v = t.val.FromSqfString(); .)
+                T_STRING
                 |
-                T_STRINGTABLESTRING (. v = t.val.Substring(1); .)
+                T_STRINGTABLESTRING
             )
         .
-        BOOLEAN<out object v> (. v = false; .) =
+        BOOLEAN =
             (
-                "true" (. v = true; .)
+                "true"
                 |
                 "false"
             )
         .
-        ARRAY<out object v> (. List<object> objectList = new List<object>(); object tmp; .) = 
+        ARRAY = 
             '{'
             (
-                SCALAR<out tmp> (. objectList.Add(tmp); .)
+                SCALAR
                 |
-                STRING<out tmp> (. objectList.Add(tmp); .)
+                STRING
                 |
-                BOOLEAN<out tmp> (. objectList.Add(tmp); .)
+                BOOLEAN
             )
             {
                 ','
                 (
-                    SCALAR<out tmp> (. objectList.Add(tmp); .)
+                    SCALAR
                     |
-                    STRING<out tmp> (. objectList.Add(tmp); .)
+                    STRING
                     |
-                    BOOLEAN<out tmp> (. objectList.Add(tmp); .)
+                    BOOLEAN
                 )
             }
             '}'
-            (. v = objectList.ToArray(); .)
         .
 END CONFIGFILE.

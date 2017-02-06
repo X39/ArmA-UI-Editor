@@ -1,0 +1,48 @@
+﻿<Window x:Class="ArmA.Studio.Dialogs.WorkspaceSelectorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ArmA.Studio.Dialogs"
+        xmlns:p="clr-namespace:ArmA.Studio.Properties"
+        xmlns:att="clr-namespace:ArmA.Studio.UI.Attached"
+        mc:Ignorable="d"
+        Title="{x:Static p:Localization.WorkspaceSelectorDialog_Title}" Height="200" Width="512" Icon="/ArmA-Studio;component/Resources/Logo.ico" att:DialogResultAttached.DialogResult="{Binding DialogResult}">
+    <Grid Grid.Column="1">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="32" FontWeight="SemiBold" Margin="8 0" Text="{x:Static p:Localization.WorkspaceSelectorDialog_Header}"/>
+            <Image Grid.Column="1" Margin="8 0" Source="/ArmA-Studio;component/Resources/Logo.ico" Width="64" Height="64"/>
+        </Grid>
+        <Border Grid.Row="1" BorderThickness="0 1">
+            <Border.BorderBrush>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionColorKey}}"/>
+            </Border.BorderBrush>
+            <Border.Background>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.MenuColorKey}}"/>
+            </Border.Background>
+            <Grid VerticalAlignment="Center" Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding CurrentPath}" Foreground="Gray"/>
+                <Button Grid.Column="1" Content="{x:Static p:Localization.WorkspaceSelectorDialog_Browse}" Padding="8 0" MinWidth="100" Command="{Binding CmdBrowse}"/>
+            </Grid>
+        </Border>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Margin="8">
+            <Button Padding="8 0" Margin="2 0" MinWidth="100" Command="{Binding CmdOK}">
+                <TextBlock Text="{x:Static p:Localization.WorkspaceSelectorDialog_OK}"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

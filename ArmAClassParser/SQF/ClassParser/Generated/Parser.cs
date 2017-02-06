@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using SQF.ClassParser;
 
 
@@ -32,27 +33,8 @@ namespace SQF.ClassParser.Generated
         public Token t;    // last recognized token
         public Token la;   // lookahead token
         int errDist = minErrDist;
-    SQF.ClassParser.ConfigField MainField = null;
-    RangeDescription Range = null;
-    StringList KeysAdded = new StringList();
-    
-    public void ApplyRemovedFields()
-    {
-        var curKeys = this.MainField.GetEnumeratorDeep(false);
-        var patchKeys = this.KeysAdded;
-        var missingKeys = curKeys.Except(patchKeys);
-        foreach (var key in missingKeys)
-        {
-#if DEBUG
-                if (!this.MainField.TreeRoot.Contains(key))
-                    System.Diagnostics.Debugger.Break();
-#endif
-            var field = this.MainField.TreeRoot[key];
-            field.Parent.RemoveKey(field.Name);
-        }
-    }
-    
-    public string KeyToFind = string.Empty;
+    FlowDocument doc;
+	ConfigEntry Root;
 
     
 
@@ -153,183 +135,122 @@ namespace SQF.ClassParser.Generated
 
         
     	void CONFIGFILE() {
-		StringList list = new StringList();
-		
-		CONFIG(list);
 		while (la.kind == 6) {
-			CONFIG(list);
+			CONFIG(Root);
 		}
 	}
 
-	void CONFIG(StringList list) {
-		ConfigField thisField; var tmpStartIndex = la.charPos; 
+	void CONFIG(ConfigEntry parent) {
+		var cur = new ConfigEntry(parent); 
 		Expect(6);
 		Expect(5);
-		list.Add(t.val);
-		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
-		if (!thisField.IsClass)
-		{
-		   thisField.ToClass();
-		}
-		thisField.Name = t.val;
-		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-		{
-		this.Range.WholeStart = tmpStartIndex;
-		this.Range.NameStart = t.charPos;
-		this.Range.NameEnd = t.charPos + t.val.Length;
-		};
+		cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
 		
 		if (la.kind == 7) {
 			Get();
 			Expect(5);
-			thisField.ConfigParentName = t.val; 
+			cur.ParentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ParentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			
 		}
 		if (la.kind == 8) {
 			Get();
-			var beginIndex = la.charPos; 
 			while (la.kind == 5 || la.kind == 6) {
 				if (la.kind == 5) {
-					FIELD(list);
+					FIELD(cur);
 				} else {
-					CONFIG(list);
+					CONFIG(cur);
 				}
 			}
-			if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-			{
-			this.Range.ValueStart = beginIndex;
-			this.Range.ValueEnd = t.charPos + t.val.Length;
-			}
-			
 			Expect(9);
 		}
 		Expect(10);
-		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-		{
-		this.Range.WholeEnd = t.charPos + t.val.Length;
-		}
-		KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
-		           list.Remove(list.Last());
-		       
 	}
 
-	void FIELD(StringList list) {
-		ConfigField thisField; var tmpStartIndex = la.charPos; 
+	void FIELD(ConfigEntry parent) {
+		var cur = new ConfigEntry(parent); 
 		Expect(5);
-		list.Add(t.val);
-		thisField = this.MainField.GetKey(string.Join("/", list.ToArray()), ConfigField.KeyMode.CreateNew);
-		if (thisField.IsClass)
-		{
-		   thisField.ToField();
-		}
-		thisField.Name = t.val;
-		KeysAdded.Add(string.Join("/", this.MainField.Key, string.Join("/", list.ToArray())).Replace("//", "/"));
-		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-		{
-		this.Range.WholeStart = tmpStartIndex;
-		this.Range.NameStart = t.charPos;
-		this.Range.NameEnd = t.charPos + t.val.Length;
-		};
-		
+		cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
 		
 		if (la.kind == 11) {
 			Get();
 			Expect(12);
 		}
 		Expect(13);
-		object tmp; var beginIndex = la.charPos; 
 		if (la.kind == 8) {
-			ARRAY(out tmp);
-			thisField.Array = (object[])tmp; 
+			ARRAY();
+			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			
 		} else if (la.kind == 1 || la.kind == 2) {
-			SCALAR(out tmp);
-			thisField.Number = (double)tmp; 
+			SCALAR();
+			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			
 		} else if (la.kind == 3 || la.kind == 4) {
-			STRING(out tmp);
-			thisField.String = (string)tmp; 
+			STRING();
+			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			
 		} else if (la.kind == 14 || la.kind == 15) {
-			BOOLEAN(out tmp);
-			thisField.Boolean = (bool)tmp; 
+			BOOLEAN();
+			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			
 		} else if (StartOf(1)) {
 			Get();
-			tmp = new StringList(); (tmp as StringList).Add(t.val); 
-		} else SynErr(18);
-		if (StartOf(2)) {
-			Get();
-			tmp = new StringList(); (tmp as StringList).Add(t.val); 
+			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); 
 			while (StartOf(2)) {
 				Get();
-				tmp = new StringList(); (tmp as StringList).Add(t.val); 
 			}
-			thisField.String = string.Join(" ", (tmp as StringList).ToArray()); 
-		}
-		if(this.Range != null && string.Concat("/", string.Join("/", list.ToArray())).Equals(KeyToFind, StringComparison.InvariantCultureIgnoreCase))
-		{
-		this.Range.ValueStart = beginIndex;
-		this.Range.ValueEnd = t.charPos + t.val.Length;
-		this.Range.WholeEnd = la.charPos + la.val.Length;
-		}
-		
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
+		} else SynErr(18);
 		Expect(10);
-		list.Remove(list.Last()); 
 	}
 
-	void ARRAY(out object v) {
-		List<object> objectList = new List<object>(); object tmp; 
+	void ARRAY() {
 		Expect(8);
 		if (la.kind == 1 || la.kind == 2) {
-			SCALAR(out tmp);
-			objectList.Add(tmp); 
+			SCALAR();
 		} else if (la.kind == 3 || la.kind == 4) {
-			STRING(out tmp);
-			objectList.Add(tmp); 
+			STRING();
 		} else if (la.kind == 14 || la.kind == 15) {
-			BOOLEAN(out tmp);
-			objectList.Add(tmp); 
+			BOOLEAN();
 		} else SynErr(19);
 		while (la.kind == 16) {
 			Get();
 			if (la.kind == 1 || la.kind == 2) {
-				SCALAR(out tmp);
-				objectList.Add(tmp); 
+				SCALAR();
 			} else if (la.kind == 3 || la.kind == 4) {
-				STRING(out tmp);
-				objectList.Add(tmp); 
+				STRING();
 			} else if (la.kind == 14 || la.kind == 15) {
-				BOOLEAN(out tmp);
-				objectList.Add(tmp); 
+				BOOLEAN();
 			} else SynErr(20);
 		}
 		Expect(9);
-		v = objectList.ToArray(); 
 	}
 
-	void SCALAR(out object v) {
-		v = 0; 
+	void SCALAR() {
 		if (la.kind == 1) {
 			Get();
-			v = Double.Parse(t.val, System.Globalization.CultureInfo.InvariantCulture); 
 		} else if (la.kind == 2) {
 			Get();
-			v = (double)Convert.ToInt32(t.val.Substring(2), 16); 
 		} else SynErr(21);
 	}
 
-	void STRING(out object v) {
-		v = string.Empty; 
+	void STRING() {
 		if (la.kind == 3) {
 			Get();
-			v = t.val.FromSqfString(); 
 		} else if (la.kind == 4) {
 			Get();
-			v = t.val.Substring(1); 
 		} else SynErr(22);
 	}
 
-	void BOOLEAN(out object v) {
-		v = false; 
+	void BOOLEAN() {
 		if (la.kind == 14) {
 			Get();
-			v = true; 
 		} else if (la.kind == 15) {
 			Get();
 		} else SynErr(23);
@@ -337,43 +258,10 @@ namespace SQF.ClassParser.Generated
 
 
     
-        private void doRoot()
-        {
+        public void Parse() {
     		CONFIGFILE();
 		Expect(0);
 
-        }
-        
-        public RangeDescription GetRange(string key)
-        {
-            this.KeyToFind = key;
-			this.Range = new RangeDescription();
-            this.MainField = new SQF.ClassParser.ConfigField();
-            this.MainField.ToClass();
-            la = new Token();
-            la.val = "";
-            Get();
-			doRoot();
-            return this.Range.IsFilled ? this.Range : null;
-        }
-
-        public SQF.ClassParser.ConfigField Parse() {
-            this.MainField = new SQF.ClassParser.ConfigField();
-            this.MainField.ToClass();
-            la = new Token();
-            la.val = "";		
-            Get();
-            doRoot();
-            return this.MainField;
-        }
-        public void Patch(SQF.ClassParser.ConfigField field, bool AutoRemove) {
-            this.MainField = field;
-            la = new Token();
-            la.val = "";		
-            Get();
-            doRoot();
-            if(AutoRemove)
-                ApplyRemovedFields();
         }
         
         static readonly bool[,] set = {

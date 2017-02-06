@@ -35,8 +35,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="INIFileParser, Version=2.3.0.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
+      <HintPath>..\packages\ini-parser.2.3.0\lib\net20\INIFileParser.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -80,18 +91,68 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Factories\PropertyDataTemplateFactory.cs" />
+    <Compile Include="ConfigHost.cs" />
+    <Compile Include="DataContext\PropertiesPane.cs" />
+    <Compile Include="DataContext\UiEditorDocument.cs" />
+    <Compile Include="DataContext\SqfReaderDocument.cs" />
+    <Compile Include="DataContext\TextEditorDocument.cs" />
+    <Compile Include="Dialogs\WorkspaceSelectorDialog.xaml.cs">
+      <DependentUpon>WorkspaceSelectorDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\WorkspaceSelectorDialogDataContext.cs" />
+    <Compile Include="Dialogs\License.cs" />
+    <Compile Include="Dialogs\LicenseViewer.xaml.cs">
+      <DependentUpon>LicenseViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\LicenseViewerDataContext.cs" />
+    <Compile Include="DockableBase.cs" />
+    <Compile Include="DocumentBase.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="LayoutUpdateStrategy.cs" />
+    <Compile Include="PanelBase.cs" />
+    <Compile Include="SolutionUtil\Solution.cs" />
     <Compile Include="SolutionUtil\SolutionFile.cs" />
+    <Compile Include="SolutionUtil\SolutionFileBase.cs" />
+    <Compile Include="Properties\Localization.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Localization.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SolutionUtil\SolutionFolder.cs" />
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Attached\ChangePropertiesViewCurrentAttached.cs" />
+    <Compile Include="UI\Attached\Eventing\Closing.cs" />
+    <Compile Include="UI\Attached\Eventing\Unloaded.cs" />
+    <Compile Include="UI\Attached\Eventing\KeyDown.cs" />
+    <Compile Include="UI\Attached\Eventing\Initialized.cs" />
+    <Compile Include="UI\Attached\Eventing\TextChanged.cs" />
+    <Compile Include="UI\Attached\Eventing\MouseDoubleClick.cs" />
+    <Compile Include="UI\Attached\DialogResultAttached.cs" />
     <Compile Include="UI\Attached\TextboxInputTypeAttached.cs" />
+    <Compile Include="UI\Commands\RelayCommand.cs" />
+    <Compile Include="UI\Commands\RelayCommandAsync.cs" />
+    <Compile Include="UI\Converters\EqualityConverter.cs" />
+    <Compile Include="UI\Converters\PathExtensionConverter.cs" />
+    <Compile Include="UI\DataTemplates\AvalonDockStyleSelector.cs" />
+    <Compile Include="UI\DataTemplates\AvalonDockTemplateSelector.cs" />
+    <EmbeddedResource Include="UI\DataTemplates\TextEditorDocumentTemplate.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Compile Include="UI\UserInteractionEventArgs.cs" />
-    <Compile Include="UI\ViewModel\IPropertiesViewModel.cs" />
+    <Compile Include="UI\ViewModel\IPropertyDataTemplateProvider.cs" />
     <Compile Include="UI\ViewModel\IUserInteractable.cs" />
     <Compile Include="UI\ViewModel\IViewModel.cs" />
-    <Compile Include="UI\ViewModel\ISolutionExplorerViewModel.cs" />
     <Compile Include="Workspace.cs" />
+    <Page Include="Dialogs\WorkspaceSelectorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\LicenseViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -108,9 +169,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Panel\SolutionExplorer.xaml">
+    <EmbeddedResource Include="UI\DataTemplates\SolutionExplorer.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DataTemplates\Properties.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DataTemplates\DocumentBase.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Page Include="UI\DataTemplates\UiEditorDocumentTemplate.xaml">
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -131,17 +200,34 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Localization.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="SyntaxFiles\armaconfig.xshd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SyntaxFiles\sqf.xshd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ArmAClassParser\ArmAClassParser.csproj">
+      <Project>{2e1b48ad-1de2-457e-ae85-8230969296bf}</Project>
+      <Name>ArmAClassParser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utility\Utility.csproj">
       <Project>{e95cb476-aa64-429d-9349-64290b8164bb}</Project>
       <Name>Utility</Name>
@@ -150,6 +236,30 @@
       <Project>{391819a9-baf2-4c1d-ba57-3050b6565123}</Project>
       <Name>VirtualRealityEngine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Xceed.Wpf.AvalonDock.Themes.ArmAStudio\Xceed.Wpf.AvalonDock.Themes.ArmAStudio.csproj">
+      <Project>{b3fc3e21-5f2d-4581-aea2-59f671cffc21}</Project>
+      <Name>Xceed.Wpf.AvalonDock.Themes.ArmAStudio</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\FileTypes\Folder.png" />
+    <Resource Include="Resources\FileTypes\FolderExpanded.png" />
+    <Resource Include="Resources\FileTypes\SQF.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\FileTypes\Document.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\back1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SnapToGrid\SnapGridOn_18x15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SnapToGrid\SnapGridOff_18x15.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

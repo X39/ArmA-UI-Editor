@@ -143,41 +143,8 @@ namespace SQF.ClassParser.Generated
         
     -->productions
     
-        private void doRoot()
-        {
+        public void Parse() {
     -->parseRoot
-        }
-        
-        public RangeDescription GetRange(string key)
-        {
-            this.KeyToFind = key;
-			this.Range = new RangeDescription();
-            this.MainField = new SQF.ClassParser.ConfigField();
-            this.MainField.ToClass();
-            la = new Token();
-            la.val = "";
-            Get();
-			doRoot();
-            return this.Range.IsFilled ? this.Range : null;
-        }
-
-        public SQF.ClassParser.ConfigField Parse() {
-            this.MainField = new SQF.ClassParser.ConfigField();
-            this.MainField.ToClass();
-            la = new Token();
-            la.val = "";		
-            Get();
-            doRoot();
-            return this.MainField;
-        }
-        public void Patch(SQF.ClassParser.ConfigField field, bool AutoRemove) {
-            this.MainField = field;
-            la = new Token();
-            la.val = "";		
-            Get();
-            doRoot();
-            if(AutoRemove)
-                ApplyRemovedFields();
         }
         
         static readonly bool[,] set = {

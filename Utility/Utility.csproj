@@ -41,7 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IEnumerableExtensionMethods.cs" />
-    <Compile Include="StringExtendedMethods.cs" />
+    <Compile Include="ObjectExtensionMethods.cs" />
+    <Compile Include="StringExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

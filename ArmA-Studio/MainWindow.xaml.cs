@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace UI_Editor
+namespace ArmA.Studio
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -22,6 +22,7 @@ namespace UI_Editor
     {
         public MainWindow()
         {
+            this.DataContext = Workspace.CurrentWorkspace;
             InitializeComponent();
         }
     }

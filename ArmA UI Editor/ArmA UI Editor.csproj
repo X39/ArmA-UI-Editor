@@ -224,7 +224,6 @@
     </None>
     <None Include="packages.config" />
     <None Include="X39_VisualStudio_Key.pfx" />
-    <None Include="X39_VisualStuidio_Key.pfx" />
     <None Include="AddIns\Base\Xaml\IGUIBack.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

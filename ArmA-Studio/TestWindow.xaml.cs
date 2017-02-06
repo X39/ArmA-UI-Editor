@@ -22,7 +22,7 @@ namespace ArmA.Studio
         public TestWindow()
         {
             InitializeComponent();
-            this.img.Source = BitmapImage
+           // this.img.Source = BitmapImage
         }
     }
 }
