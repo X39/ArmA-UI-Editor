@@ -10,8 +10,8 @@
         xmlns:ev="clr-namespace:ArmA.Studio.UI.Attached.Eventing"
         mc:Ignorable="d"
         Title="ArmA-Studio"
-        Height="350"
-        Width="525"
+        Height="512"
+        Width="1024"
         DataContext="{x:Static local:Workspace.CurrentWorkspace}"
         Icon="Resources/Logo.ico"
         ev:Closing.Command="{Binding CmdMainWindowClosing}">
