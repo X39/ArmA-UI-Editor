@@ -1,6 +1,6 @@
 ﻿namespace VirtualRealityEngine.Config.Control
 {
-    internal class MessageBox : ControlBase
+    public abstract class TextBase : ControlBase
     {
     }
 }

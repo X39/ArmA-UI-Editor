@@ -134,10 +134,11 @@ namespace ArmA.Studio
 
         public void OpenOrFocusDocument(string path)
         {
+            var fullPath = Path.Combine(this.WorkingDir, path);
             //Check if document is already open and select instead of open
-            foreach(var doc in DocumentsDisplayed)
+            foreach (var doc in DocumentsDisplayed)
             {
-                if(doc.FilePath == path)
+                if(doc.FilePath == fullPath)
                 {
                     doc.IsSelected = true;
                     return;
@@ -160,7 +161,7 @@ namespace ArmA.Studio
                 return;
             }
             var instance = Activator.CreateInstance(docType) as DocumentBase;
-            instance.OpenDocument(Path.Combine(this.WorkingDir, path));
+            instance.OpenDocument(fullPath);
             this.DocumentsDisplayed.Add(instance);
             instance.IsSelected = true;
         }

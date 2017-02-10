@@ -1,6 +1,7 @@
 ﻿namespace VirtualRealityEngine.Config.Control
 {
-    internal class StaticControl : ControlBase
+    public class StaticControl : ControlBase
     {
+        public override EType ControlType { get { return EType.CT_STATIC; } }
     }
 }

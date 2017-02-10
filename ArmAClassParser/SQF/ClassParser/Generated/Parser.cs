@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
-using SQF.ClassParser;
 
 
 
@@ -12,7 +11,7 @@ using System;
 using NLog;
 
 
-namespace SQF.ClassParser.Generated
+namespace VirtualRealityEngine.Config.Parser
 {
     public class Parser {
     	public const int _EOF = 0;
@@ -33,8 +32,8 @@ namespace SQF.ClassParser.Generated
         public Token t;    // last recognized token
         public Token la;   // lookahead token
         int errDist = minErrDist;
-    FlowDocument doc;
-	ConfigEntry Root;
+    public FlowDocument doc;
+	public ConfigEntry Root;
 
     
 
@@ -80,7 +79,7 @@ namespace SQF.ClassParser.Generated
         
         
         void SynErr (int n) {
-            if (errDist >= minErrDist) errors.SynErr(la.line, la.col, n);
+            if (errDist >= minErrDist) errors.SynErr(la.line, la.col, n, t.charPos, t == null ? 0 : t.val.Length);
             errDist = 0;
         }
         void Warning (string msg) {
@@ -88,7 +87,7 @@ namespace SQF.ClassParser.Generated
         }
 
         public void SemErr (string msg) {
-            if (errDist >= minErrDist) errors.SemErr(t.line, t.col, msg);
+            if (errDist >= minErrDist) errors.SemErr(t.line, t.col, msg, t.charPos, t == null ? 0 : t.val.Length);
             errDist = 0;
         }
         
@@ -135,14 +134,16 @@ namespace SQF.ClassParser.Generated
 
         
     	void CONFIGFILE() {
+		CONFIG(Root);
 		while (la.kind == 6) {
 			CONFIG(Root);
 		}
 	}
 
 	void CONFIG(ConfigEntry parent) {
-		var cur = new ConfigEntry(parent); 
+		var cur = new ConfigEntry(parent); cur.IsField = true; 
 		Expect(6);
+		cur.FullStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); 
 		Expect(5);
 		cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
 		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
@@ -156,6 +157,7 @@ namespace SQF.ClassParser.Generated
 		}
 		if (la.kind == 8) {
 			Get();
+			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Forward); 
 			while (la.kind == 5 || la.kind == 6) {
 				if (la.kind == 5) {
 					FIELD(cur);
@@ -164,14 +166,16 @@ namespace SQF.ClassParser.Generated
 				}
 			}
 			Expect(9);
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Backward); 
 		}
 		Expect(10);
+		cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
 	}
 
 	void FIELD(ConfigEntry parent) {
-		var cur = new ConfigEntry(parent); 
+		var cur = new ConfigEntry(parent); cur.IsField = true; 
 		Expect(5);
-		cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+		cur.FullStart = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
 		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
 		
 		if (la.kind == 11) {
@@ -208,6 +212,7 @@ namespace SQF.ClassParser.Generated
 			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
 		} else SynErr(18);
 		Expect(10);
+		cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
 	}
 
 	void ARRAY() {
@@ -259,6 +264,9 @@ namespace SQF.ClassParser.Generated
 
     
         public void Parse() {
+		la = new Token();
+		la.val = "";		
+		Get();
     		CONFIGFILE();
 		Expect(0);
 
@@ -275,14 +283,16 @@ namespace SQF.ClassParser.Generated
 
     public class Errors {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        public int count = 0;                                    // number of errors detected
-        public System.IO.TextWriter errorStream = Console.Out;   // error messages go to this stream
+        public int Count { get { return this.ErrorList.Count; } }
+        public List<Tuple<int, int>> ErrorList;
         public string errMsgFormat = "line {0} col {1}: {2}"; // 0=line, 1=column, 2=text
         public Errors()
         {
+            ErrorList = new List<Tuple<int, int>>();
         }
 
-        public virtual void SynErr (int line, int col, int n) {
+        public virtual void SynErr (int line, int col, int n, int offset, int length) {
+            ErrorList.Add(new Tuple<int, int>(offset, length));
             string s;
             switch (n) {
     			case 0: s = "EOF expected"; break;
@@ -313,32 +323,25 @@ namespace SQF.ClassParser.Generated
                 default: s = "error " + n; break;
             }
             logger.Error(string.Format(errMsgFormat, line, col, s));
-            //errorStream.WriteLine(errMsgFormat, line, col, s);
-            count++;
         }
 
-        public virtual void SemErr (int line, int col, string s) {
+        public virtual void SemErr (int line, int col, string s, int offset, int length) {
+            ErrorList.Add(new Tuple<int, int>(offset, length));
             logger.Error(string.Format(errMsgFormat, line, col, s));
-            //errorStream.WriteLine(errMsgFormat, line, col, s);
-            count++;
         }
         
         public virtual void SemErr (string s) {
             logger.Error(s);
-            //errorStream.WriteLine(s);
-            count++;
         }
         
         public virtual void Warning (int line, int col, string s) {
             logger.Warn(string.Format(errMsgFormat, line, col, s));
-            //errorStream.WriteLine(errMsgFormat, line, col, s);
         }
         
         public virtual void Warning(string s) {
             logger.Warn(s);
-            //errorStream.WriteLine(s);
         }
-    } // Errors
+    }
 
 
     public class FatalError: Exception {

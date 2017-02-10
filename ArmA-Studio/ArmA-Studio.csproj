@@ -93,12 +93,17 @@
     </ApplicationDefinition>
     <Compile Include="ConfigHost.cs" />
     <Compile Include="DataContext\PropertiesPane.cs" />
+    <Compile Include="DataContext\ConfigEditorDocument.cs" />
     <Compile Include="DataContext\UiEditorDocument.cs" />
     <Compile Include="DataContext\SqfReaderDocument.cs" />
     <Compile Include="DataContext\TextEditorDocument.cs" />
+    <Compile Include="Dialogs\ConfigEntrySelectorDialog.xaml.cs">
+      <DependentUpon>ConfigEntrySelectorDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\WorkspaceSelectorDialog.xaml.cs">
       <DependentUpon>WorkspaceSelectorDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\ConfigEntrySelectorDialogDataContext.cs" />
     <Compile Include="Dialogs\WorkspaceSelectorDialogDataContext.cs" />
     <Compile Include="Dialogs\License.cs" />
     <Compile Include="Dialogs\LicenseViewer.xaml.cs">
@@ -124,6 +129,7 @@
     </Compile>
     <Compile Include="UI\Attached\ChangePropertiesViewCurrentAttached.cs" />
     <Compile Include="UI\Attached\Eventing\Closing.cs" />
+    <Compile Include="UI\Attached\Eventing\MouseLeftButtonDown.cs" />
     <Compile Include="UI\Attached\Eventing\Unloaded.cs" />
     <Compile Include="UI\Attached\Eventing\KeyDown.cs" />
     <Compile Include="UI\Attached\Eventing\Initialized.cs" />
@@ -135,6 +141,7 @@
     <Compile Include="UI\Commands\RelayCommandAsync.cs" />
     <Compile Include="UI\Converters\EqualityConverter.cs" />
     <Compile Include="UI\Converters\PathExtensionConverter.cs" />
+    <Compile Include="UI\CustomBinding.cs" />
     <Compile Include="UI\DataTemplates\AvalonDockStyleSelector.cs" />
     <Compile Include="UI\DataTemplates\AvalonDockTemplateSelector.cs" />
     <EmbeddedResource Include="UI\DataTemplates\TextEditorDocumentTemplate.xaml">
@@ -145,6 +152,10 @@
     <Compile Include="UI\ViewModel\IUserInteractable.cs" />
     <Compile Include="UI\ViewModel\IViewModel.cs" />
     <Compile Include="Workspace.cs" />
+    <Page Include="Dialogs\ConfigEntrySelectorDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\WorkspaceSelectorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -178,9 +189,9 @@
     <EmbeddedResource Include="UI\DataTemplates\DocumentBase.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Page Include="UI\DataTemplates\UiEditorDocumentTemplate.xaml">
+    <EmbeddedResource Include="UI\DataTemplates\UiEditorDocumentTemplate.xaml">
       <SubType>Designer</SubType>
-    </Page>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -260,6 +271,20 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\SnapToGrid\SnapGridOff_18x15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Pictograms\AddItem.png" />
+    <Resource Include="Resources\Pictograms\Folder.png" />
+    <Resource Include="Resources\Pictograms\NewItem.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\FileTypes\UI.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\FileTypes\ConfigurationFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\FileTypes\HeaderFile.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

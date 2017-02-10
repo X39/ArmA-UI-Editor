@@ -1,6 +1,7 @@
 ﻿namespace VirtualRealityEngine.Config.Control
 {
-    internal class Slider : ControlBase
+    public class Slider : ControlBase
     {
+        public override EType ControlType { get { return EType.CT_SLIDER; } }
     }
 }

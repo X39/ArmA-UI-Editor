@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\Control\ActiveText.cs" />
+    <Compile Include="Config\Control\Attributes\ConfigPathDescriptor.cs" />
     <Compile Include="Config\Control\Button.cs" />
     <Compile Include="Config\Control\CheckBox.cs" />
     <Compile Include="Config\Control\ComboBox.cs" />
@@ -48,13 +50,18 @@
     <Compile Include="Config\Control\EStyle.cs" />
     <Compile Include="Config\Control\EType.cs" />
     <Compile Include="Config\Control\ControlBase.cs" />
+    <Compile Include="Config\Control\HtmlView.cs" />
     <Compile Include="Config\Control\ListBox.cs" />
+    <Compile Include="Config\Control\ListNBox.cs" />
+    <Compile Include="Config\Control\MapControl.cs" />
+    <Compile Include="Config\Control\MapHostControl.cs" />
     <Compile Include="Config\Control\StaticControl.cs" />
-    <Compile Include="Config\Control\MessageBox.cs" />
     <Compile Include="Config\Control\ProgressBar.cs" />
     <Compile Include="Config\Control\Slider.cs" />
     <Compile Include="Config\Control\Attributes\ControlInfoAttribute.cs" />
     <Compile Include="Config\Control\Attributes\StyleInfoAttribute.cs" />
+    <Compile Include="Config\Control\StructuredText.cs" />
+    <Compile Include="Config\Control\TextBase.cs" />
     <Compile Include="Config\Control\TextBox.cs" />
     <Compile Include="Config\Control\ToolBox.cs" />
     <Compile Include="Config\Control\TreeView.cs" />

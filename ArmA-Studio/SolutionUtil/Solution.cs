@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Controls;
 using System.Xml.Serialization;
 using ArmA.Studio.UI;
 using Utility;
@@ -37,6 +39,13 @@ namespace ArmA.Studio.SolutionUtil
         public override string Title { get { return Properties.Localization.PanelDisplayName_Solution; } }
         [XmlIgnore]
         public override bool AutoAddPanel { get { return false; } }
+
+        [XmlIgnore]
+        public ICommand CmdContextMenu_Add_NewItem { get; private set; }
+        [XmlIgnore]
+        public ICommand CmdContextMenu_Add_ExistingItem { get; private set; }
+        [XmlIgnore]
+        public ICommand CmdContextMenu_Add_NewFolder { get; private set; }
 
         [XmlIgnore]
         public FileSystemWatcher FSWatcher { get; private set; }

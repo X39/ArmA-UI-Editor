@@ -1,6 +1,7 @@
 ﻿namespace VirtualRealityEngine.Config.Control
 {
-    internal class Button : ControlBase
+    public class Button : ControlBase
     {
+        public override EType ControlType { get { return EType.CT_BUTTON; } }
     }
 }

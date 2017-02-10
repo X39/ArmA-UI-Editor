@@ -1,6 +1,7 @@
 ﻿namespace VirtualRealityEngine.Config.Control
 {
-    internal class ComboBox : ControlBase
+    public class ComboBox : ControlBase
     {
+        public override EType ControlType { get { return EType.CT_COMBO; } }
     }
 }

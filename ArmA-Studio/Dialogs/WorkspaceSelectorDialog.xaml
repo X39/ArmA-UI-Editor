@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="32" FontWeight="SemiBold" Margin="8 0" Text="{x:Static p:Localization.WorkspaceSelectorDialog_Header}"/>
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="26" FontWeight="SemiBold" Margin="8 0" Text="{x:Static p:Localization.WorkspaceSelectorDialog_Header}" TextWrapping="Wrap"/>
             <Image Grid.Column="1" Margin="8 0" Source="/ArmA-Studio;component/Resources/Logo.ico" Width="64" Height="64"/>
         </Grid>
         <Border Grid.Row="1" BorderThickness="0 1">
@@ -41,7 +41,7 @@
         </Border>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Margin="8">
             <Button Padding="8 0" Margin="2 0" MinWidth="100" Command="{Binding CmdOK}">
-                <TextBlock Text="{x:Static p:Localization.WorkspaceSelectorDialog_OK}"/>
+                <TextBlock Text="{x:Static p:Localization.OK}"/>
             </Button>
         </StackPanel>
     </Grid>

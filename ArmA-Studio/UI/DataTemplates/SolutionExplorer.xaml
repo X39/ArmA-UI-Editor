@@ -5,13 +5,24 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
       xmlns:SolutionUtil="clr-namespace:ArmA.Studio.SolutionUtil;assembly=ArmA-Studio"
+      xmlns:p="clr-namespace:ArmA.Studio.Properties;assembly=ArmA-Studio"
       xmlns:ev="clr-namespace:ArmA.Studio.UI.Attached.Eventing;assembly=ArmA-Studio"
       mc:Ignorable="d" DataType="{x:Type SolutionUtil:Solution}">
     <TreeView ItemsSource="{Binding FilesCollection}">
+        <TreeView.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="{x:Static p:Localization.Add}">
+                    <MenuItem Header="{x:Static p:Localization.NewItem}" Icon="/ArmA-Studio;component/Resources/Pictograms/NewItem.png" Command="{Binding CmdContextMenu_Add_NewItem}"/>
+                    <MenuItem Header="{x:Static p:Localization.ExistingItem}" Icon="/ArmA-Studio;component/Resources/Pictograms/AddItem.png" Command="{Binding CmdContextMenu_Add_ExistingItem}"/>
+                    <MenuItem Header="{x:Static p:Localization.NewFolder}" Icon="/ArmA-Studio;component/Resources/Pictograms/Folder.png" Command="{Binding CmdContextMenu_Add_NewFolder}"/>
+                </MenuItem>
+            </ContextMenu>
+        </TreeView.ContextMenu>
         <TreeView.ItemContainerStyle>
             <Style TargetType="TreeViewItem">
                 <Setter Property="ev:MouseDoubleClick.Command" Value="{Binding CmdMouseDoubleClick}"/>
                 <Setter Property="ev:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
+                <Setter Property="ContextMenu" Value="{Binding ContextMenu}"/>
             </Style>
         </TreeView.ItemContainerStyle>
         <TreeView.Resources>
@@ -33,7 +44,7 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                    <TextBlock Grid.Column="1" Text="{Binding FileName}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding FileName}" ev:MouseLeftButtonDown.Command="{Binding CmdMouseLeftButtonDown}"/>
                 </Grid>
             </HierarchicalDataTemplate>
             <DataTemplate DataType="{x:Type SolutionUtil:SolutionFile}">
@@ -50,11 +61,23 @@
                                     <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".sqf">
                                         <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/SQF.png"/>
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".uic">
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/UI.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".cpp">
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".ext">
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".hpp">
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/HeaderFile.png"/>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
                     </Image>
-                    <TextBlock Grid.Column="1" Text="{Binding FileName}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding FileName}" ev:MouseLeftButtonDown.Command="{Binding CmdMouseLeftButtonDown}"/>
                 </Grid>
             </DataTemplate>
         </TreeView.Resources>

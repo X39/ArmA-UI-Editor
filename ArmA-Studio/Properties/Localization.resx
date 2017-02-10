@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Choose" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="ConfigEntrySelectorDialog_Header" xml:space="preserve">
+    <value>Please choose the UI-Main Config</value>
+  </data>
+  <data name="ConfigEntrySelectorDialog_Title" xml:space="preserve">
+    <value>UI-Config Selector</value>
+  </data>
   <data name="DocumentBase_CloseSaveConfirmation_Body" xml:space="preserve">
     <value>Current document contains unsaved changes.
 Do you want to save before close?</value>
@@ -127,8 +139,26 @@ Do you want to save before close?</value>
   <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="ExistingItem" xml:space="preserve">
+    <value>Existing Item...</value>
+  </data>
   <data name="FileNotFound" xml:space="preserve">
     <value>The file '{0}' was not found.</value>
+  </data>
+  <data name="NewFolder" xml:space="preserve">
+    <value>New Folder</value>
+  </data>
+  <data name="NewItem" xml:space="preserve">
+    <value>New Item...</value>
+  </data>
+  <data name="NoConfigPresent_Body" xml:space="preserve">
+    <value>In the current document, there is no config entry available the UI-View could be generated from.</value>
+  </data>
+  <data name="NoConfigPresent_Title" xml:space="preserve">
+    <value>Missing Config Entry</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
   </data>
   <data name="PanelDisplayName_Properties" xml:space="preserve">
     <value>Properties</value>
@@ -154,9 +184,6 @@ Do you want to save before close?</value>
   </data>
   <data name="WorkspaceSelectorDialog_NoWorkspaceSelected" xml:space="preserve">
     <value>Please select a valid workspace</value>
-  </data>
-  <data name="WorkspaceSelectorDialog_OK" xml:space="preserve">
-    <value>OK</value>
   </data>
   <data name="WorkspaceSelectorDialog_Title" xml:space="preserve">
     <value>Workspace Dialog</value>

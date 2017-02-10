@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
-using SQF.ClassParser;
 
 COMPILER CONFIGFILE
-    FlowDocument doc;
-	ConfigEntry Root;
+    public FlowDocument doc;
+	public ConfigEntry Root;
 
     CHARACTERS
 		DIGIT = "0123456789".
@@ -31,12 +30,13 @@ COMPILER CONFIGFILE
 		
 	PRODUCTIONS
 		CONFIGFILE =
+			CONFIG<Root>
             {
                 CONFIG<Root>
             }
 		.
-        CONFIG<ConfigEntry parent> (. var cur = new ConfigEntry(parent); .) =
-            "class"
+        CONFIG<ConfigEntry parent> (. var cur = new ConfigEntry(parent); cur.IsField = true; .) =
+            "class" (. cur.FullStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); .)
             T_IDENT (.
 				cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
 				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
@@ -49,19 +49,19 @@ COMPILER CONFIGFILE
 				.)
             ]
             [
-                '{'
+                '{' (. cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Forward); .)
                 {
                     FIELD<cur>
                     |
                     CONFIG<cur>
                 }
-                '}'
+                '}' (. cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Backward); .)
             ]
-            ';'
+            ';' (. cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
         .
-        FIELD<ConfigEntry parent> (. var cur = new ConfigEntry(parent); .) =
+        FIELD<ConfigEntry parent> (. var cur = new ConfigEntry(parent); cur.IsField = true; .) =
             T_IDENT (.
-				cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+				cur.FullStart = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
 				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
 			.)
             [
@@ -100,7 +100,7 @@ COMPILER CONFIGFILE
 					)
                 )
             )
-            ';'
+            ';' (. cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
         .
         SCALAR =
             T_SCALAR

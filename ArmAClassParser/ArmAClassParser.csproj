@@ -7,7 +7,7 @@
     <ProjectGuid>{2E1B48AD-1DE2-457E-AE85-8230969296BF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ArmAClassParser</RootNamespace>
+    <RootNamespace>VirtualRealityEngine.Config.Parser</RootNamespace>
     <AssemblyName>ArmAClassParser</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

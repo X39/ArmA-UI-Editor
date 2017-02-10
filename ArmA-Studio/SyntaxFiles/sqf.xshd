@@ -1,28 +1,28 @@
-﻿<!-- https://github.com/icsharpcode/AvalonEdit/blob/697ff0d38c95c9e5a536fbc05ae2307ec9ef2a63/ICSharpCode.AvalonEdit/Highlighting/Resources/Tex-Mode.xshd -->
+﻿<!-- https://github.com/icsharpcode/AvalonEdit/blob/master/ICSharpCode.AvalonEdit/Highlighting/Resources/ModeV2.xsd -->
 <SyntaxDefinition name="SQF">
 	<Digits name="Digits" bold="false" italic="false" color="Chocolate"/>
 	<RuleSets>
 		<RuleSet ignorecase="true">
 			<Delimiters>&amp;&lt;&gt;~!@$%^*()-+=|\#/{}[]:;"' , .?</Delimiters>
-			<Span color="Blue" name="stringNormal">
+			<Span color="Crimson" name="stringNormal">
 				<Begin>"</Begin>
 				<End>"</End>
 			</Span>
-			<Span color="Blue" name="stringSingle">
+			<Span color="Crimson" name="stringSingle">
 				<Begin>'</Begin>
 				<End>'</End>
 			</Span>
 			<Span color="Gray" name="PreProcessor" stopateol="true">
-				<Begin>\#</Begin>
+				<Begin>#</Begin>
 			</Span>
-			<Span color="Green" name="LineComment" stopateol="true">
+			<Span color="Darkgreen" name="LineComment" stopateol="true">
 				<Begin>//</Begin>
 			</Span>
-			<Span color="Blue" name="MultiLineComment">
-				<Begin>/\*</Begin>
-				<End>\*/</End>
+			<Span color="Darkgreen" name="MultiLineComment">
+				<Begin>/*</Begin>
+				<End>*/</End>
 			</Span>
-			<KeyWords color="Crimson" bold="true" name="ControlStructures">
+			<KeyWords color="Blue" bold="true" name="ControlStructures">
 				<Key word="try"/>
 				<Key word="catch"/>
 				<Key word="do"/>
@@ -38,6 +38,7 @@
 				<Key word="else"/>
 				<Key word="breakout"/>
 				<Key word="breakto"/>
+				<Key word="waitUntil"/>
 			</KeyWords>
 		</RuleSet>
 	</RuleSets>

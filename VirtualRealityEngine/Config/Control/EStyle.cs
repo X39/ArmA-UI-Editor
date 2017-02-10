@@ -201,20 +201,22 @@ namespace VirtualRealityEngine.Config.Control
         [StyleInfo(Type = typeof(TreeView))]
         TR_AUTOCOLLAPSE = 2,
 
-        /// <summary>
-        /// MessageBox style
-        /// </summary>
-        [StyleInfo(Type = typeof(MessageBox))]
-        MB_BUTTON_OK = 1,
-        /// <summary>
-        /// MessageBox style
-        /// </summary>
-        [StyleInfo(Type = typeof(MessageBox))]
-        MB_BUTTON_CANCEL = 2,
-        /// <summary>
-        /// MessageBox style
-        /// </summary>
-        [StyleInfo(Type = typeof(MessageBox))]
-        MB_BUTTON_USER = 4
+        //ToDo: Reenable
+        //Disabled as MessageBox is currently non-existing
+        // /// <summary>
+        // /// MessageBox style
+        // /// </summary>
+        // //[StyleInfo(Type = typeof(MessageBox))]
+        // MB_BUTTON_OK = 1,
+        // /// <summary>
+        // /// MessageBox style
+        // /// </summary>
+        // [StyleInfo(Type = typeof(MessageBox))]
+        // MB_BUTTON_CANCEL = 2,
+        // /// <summary>
+        // /// MessageBox style
+        // /// </summary>
+        // [StyleInfo(Type = typeof(MessageBox))]
+        // MB_BUTTON_USER = 4
     }
 }

@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Controls;
 using System.Xml.Serialization;
 using ArmA.Studio.UI;
 
@@ -56,6 +57,8 @@ namespace ArmA.Studio.SolutionUtil
 
         [XmlIgnore]
         public ICommand CmdMouseDoubleClick { get { return new UI.Commands.RelayCommand(OnMouseDoubleClick); } }
+        [XmlIgnore]
+        public abstract ContextMenu ContextMenu { get; }
 
         protected virtual void OnMouseDoubleClick(object param)
         {

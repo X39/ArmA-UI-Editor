@@ -6,6 +6,7 @@
              xmlns:conv="clr-namespace:ArmA.Studio.UI.Converters"
              xmlns:dlg="clr-namespace:ArmA.Studio.Dialogs"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:ae="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
              Startup="Application_Startup"
              
              DispatcherUnhandledException="Application_DispatcherUnhandledException"
@@ -113,6 +114,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</sys:
                             </dlg:License.Value>
                         </dlg:License>
                     </x:Array>
+                </ResourceDictionary>
+                <ResourceDictionary x:Name="GlobalStyles">
+                    <Style TargetType="ae:TextEditor">
+                        <Setter Property="FontFamily" Value="Consolas"/>
+                    </Style>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

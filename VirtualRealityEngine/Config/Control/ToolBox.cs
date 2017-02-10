@@ -1,6 +1,7 @@
 ﻿namespace VirtualRealityEngine.Config.Control
 {
-    internal class ToolBox : ControlBase
+    public class ToolBox : ControlBase
     {
+        public override EType ControlType { get { return EType.CT_TOOLBOX; } }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace VirtualRealityEngine.Config.Control
 {
-    internal class TreeView : ControlBase
+    public class TreeView : ControlBase
     {
+        public override EType ControlType { get { return EType.CT_TREE; } }
     }
 }

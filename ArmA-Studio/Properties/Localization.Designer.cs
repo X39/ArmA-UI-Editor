@@ -61,6 +61,42 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose.
+        /// </summary>
+        public static string Choose {
+            get {
+                return ResourceManager.GetString("Choose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please choose the UI-Main Config.
+        /// </summary>
+        public static string ConfigEntrySelectorDialog_Header {
+            get {
+                return ResourceManager.GetString("ConfigEntrySelectorDialog_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UI-Config Selector.
+        /// </summary>
+        public static string ConfigEntrySelectorDialog_Title {
+            get {
+                return ResourceManager.GetString("ConfigEntrySelectorDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Current document contains unsaved changes.
         ///Do you want to save before close?.
         /// </summary>
@@ -89,11 +125,65 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Existing Item....
+        /// </summary>
+        public static string ExistingItem {
+            get {
+                return ResourceManager.GetString("ExistingItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file &apos;{0}&apos; was not found..
         /// </summary>
         public static string FileNotFound {
             get {
                 return ResourceManager.GetString("FileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Folder.
+        /// </summary>
+        public static string NewFolder {
+            get {
+                return ResourceManager.GetString("NewFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Item....
+        /// </summary>
+        public static string NewItem {
+            get {
+                return ResourceManager.GetString("NewItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In the current document, there is no config entry available the UI-View could be generated from..
+        /// </summary>
+        public static string NoConfigPresent_Body {
+            get {
+                return ResourceManager.GetString("NoConfigPresent_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing Config Entry.
+        /// </summary>
+        public static string NoConfigPresent_Title {
+            get {
+                return ResourceManager.GetString("NoConfigPresent_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
             }
         }
         
@@ -166,15 +256,6 @@ namespace ArmA.Studio.Properties {
         public static string WorkspaceSelectorDialog_NoWorkspaceSelected {
             get {
                 return ResourceManager.GetString("WorkspaceSelectorDialog_NoWorkspaceSelected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OK.
-        /// </summary>
-        public static string WorkspaceSelectorDialog_OK {
-            get {
-                return ResourceManager.GetString("WorkspaceSelectorDialog_OK", resourceCulture);
             }
         }
         

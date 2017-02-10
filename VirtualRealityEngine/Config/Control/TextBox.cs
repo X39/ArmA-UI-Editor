@@ -1,6 +1,9 @@
-﻿namespace VirtualRealityEngine.Config.Control
+﻿using System;
+
+namespace VirtualRealityEngine.Config.Control
 {
-    internal class TextBox : ControlBase
+    public class TextBox : ControlBase
     {
+        public override EType ControlType { get { return EType.CT_EDIT; } }
     }
 }
