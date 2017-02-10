@@ -31,7 +31,16 @@ namespace ArmA.Studio
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            if(ConfigHost.Instance.AppIni["App"] == null)
+            //ToDo: Add NLog Logger
+            /*
+            var target = new UI.Snaps.OutputSnap.EventedTarget(); //NLog.Targets.TargetWithLayout
+            NLog.Config.ConfigurationItemFactory.Default.Targets.RegisterDefinition("EventedTarget", typeof(UI.Snaps.OutputSnap.EventedTarget));
+            LogManager.Configuration.LoggingRules.Add(new NLog.Config.LoggingRule("*", LogLevel.Info, target));
+            LogManager.Configuration.AddTarget(target);
+            LogManager.ReconfigExistingLoggers();
+            */
+
+            if (ConfigHost.Instance.AppIni["App"] == null)
             {
                 ConfigHost.Instance.AppIni.Sections.AddSection("App");
             }
