@@ -9,18 +9,18 @@ using System.Windows.Input;
 
 namespace ArmA.Studio.UI.Attached.Eventing
 {
-    public class TextChanged
+    public class ContextMenuOpening
     {
         public static DependencyProperty CommandProperty =
             DependencyProperty.RegisterAttached("Command",
             typeof(ICommand),
-            typeof(TextChanged),
+            typeof(ContextMenuOpening),
             new UIPropertyMetadata(CommandChanged));
 
         public static DependencyProperty CommandParameterProperty =
             DependencyProperty.RegisterAttached("CommandParameter",
                                                 typeof(object),
-                                                typeof(TextChanged),
+                                                typeof(ContextMenuOpening),
                                                 new UIPropertyMetadata(null));
 
         public static void SetCommand(DependencyObject target, ICommand value)
@@ -40,8 +40,8 @@ namespace ArmA.Studio.UI.Attached.Eventing
         private static void CommandChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
         {
             var type = target.GetType();
-            var ev = type.GetEvent("TextChanged");
-            var method = typeof(TextChanged).GetMethod("OnTextChanged");
+            var ev = type.GetEvent("ContextMenuOpening");
+            var method = typeof(ContextMenuOpening).GetMethod("OnContextMenuOpening");
 
             if ((e.NewValue != null) && (e.OldValue == null))
             {
@@ -53,13 +53,18 @@ namespace ArmA.Studio.UI.Attached.Eventing
             }
         }
 
-        public static void OnTextChanged(object sender, EventArgs e)
+        public static void OnContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var control = sender as FrameworkElement;
-            var command = (ICommand)control.GetValue(CommandProperty);
-            var commandParameter = control.GetValue(CommandParameterProperty);
-            command.Execute(commandParameter);
+            if (control.ContextMenu != null)
+            {
+                var command = (ICommand)control.GetValue(CommandProperty);
+                var commandParameter = control.GetValue(CommandParameterProperty);
+                command.Execute(commandParameter);
+                control.ContextMenu.IsOpen = true;
+                e.Handled = true;
+            }
         }
-    }
 
+    }
 }

@@ -55,9 +55,9 @@ namespace ArmA.Studio.UI.Attached.Eventing
 
         public static void OnKeyDown(object sender, EventArgs e)
         {
-            Control control = sender as Control;
-            ICommand command = (ICommand)control.GetValue(CommandProperty);
-            object commandParameter = control.GetValue(CommandParameterProperty);
+            var control = sender as FrameworkElement;
+            var command = (ICommand)control.GetValue(CommandProperty);
+            var commandParameter = control.GetValue(CommandParameterProperty);
             command.Execute(commandParameter);
         }
     }

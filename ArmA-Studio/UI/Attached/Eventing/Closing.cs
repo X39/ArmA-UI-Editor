@@ -32,7 +32,7 @@ namespace ArmA.Studio.UI.Attached.Eventing
         {
             target.SetValue(CommandParameterProperty, value);
         }
-        public static object GetCommandParameter(DependencyObject target)
+        public static object GetCommandParameter(Window target)
         {
             return target.GetValue(CommandParameterProperty);
         }
@@ -55,9 +55,9 @@ namespace ArmA.Studio.UI.Attached.Eventing
 
         public static void OnClosing(object sender, EventArgs e)
         {
-            Control control = sender as Control;
-            ICommand command = (ICommand)control.GetValue(CommandProperty);
-            object commandParameter = control.GetValue(CommandParameterProperty);
+            var control = sender as Window;
+            var command = (ICommand)control.GetValue(CommandProperty);
+            var commandParameter = control.GetValue(CommandParameterProperty);
             command.Execute(commandParameter);
         }
     }

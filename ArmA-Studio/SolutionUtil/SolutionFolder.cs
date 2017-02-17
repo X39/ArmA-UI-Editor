@@ -12,10 +12,9 @@ namespace ArmA.Studio.SolutionUtil
     [XmlRoot("folder")]
     public class SolutionFolder : SolutionFileBase
     {
-        public override ContextMenu ContextMenu { get { return null; } }
         public override DataTemplate GetPropertiesTemplate()
         {
-            throw new NotImplementedException();
+            return null;
         }
         protected override void OnMouseDoubleClick(object param) { }
     }

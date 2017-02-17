@@ -46,6 +46,8 @@ namespace ArmA.Studio.SolutionUtil
         public ICommand CmdContextMenu_Add_ExistingItem { get; private set; }
         [XmlIgnore]
         public ICommand CmdContextMenu_Add_NewFolder { get; private set; }
+        [XmlIgnore]
+        public ICommand CmdContextMenu_RescanWorkspace { get; private set; }
 
         [XmlIgnore]
         public FileSystemWatcher FSWatcher { get; private set; }

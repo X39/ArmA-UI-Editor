@@ -97,6 +97,15 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Current document contains unsaved changes.
         ///Do you want to save before close?.
         /// </summary>
@@ -202,6 +211,24 @@ namespace ArmA.Studio.Properties {
         public static string PanelDisplayName_Solution {
             get {
                 return ResourceManager.GetString("PanelDisplayName_Solution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        public static string Rename {
+            get {
+                return ResourceManager.GetString("Rename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rescan Workspace.
+        /// </summary>
+        public static string RescanWorkspace {
+            get {
+                return ResourceManager.GetString("RescanWorkspace", resourceCulture);
             }
         }
         

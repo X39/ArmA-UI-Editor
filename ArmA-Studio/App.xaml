@@ -17,6 +17,7 @@
                 <ResourceDictionary x:Name="Converters">
                     <conv:PathExtensionConverter x:Key="PathExtensionConverter"/>
                     <conv:EqualityConverter x:Key="EqualityConverter"/>
+                    <conv:BoolInvertConverter x:Key="BoolInvertConverter"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="Colors">
                     <Color x:Key="C_LightBlue">#007ACC</Color>

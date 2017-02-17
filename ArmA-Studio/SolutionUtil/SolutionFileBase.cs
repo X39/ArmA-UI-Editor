@@ -37,6 +37,7 @@ namespace ArmA.Studio.SolutionUtil
                 }
             }
         }
+
         [XmlIgnore]
         public SolutionFileBase Parent { get { SolutionFileBase sfb; if (this._Parent != null && this._Parent.TryGetTarget(out sfb)) return sfb; else return null; } set { if(this.Parent != null) this.PerformMoveInFileSystem(value.RelativePath); this._Parent = new WeakReference<SolutionFileBase>(value); this.RaisePropertyChanged(); } }
         private WeakReference<SolutionFileBase> _Parent;
@@ -44,6 +45,7 @@ namespace ArmA.Studio.SolutionUtil
         [XmlAttribute("name")]
         public string FileName { get { return this._FileName; } set { if (value.IndexOfAny(Path.GetInvalidFileNameChars()) != -1) throw new InvalidOperationException(Properties.Localization.SolutionFile_NameContainsInvalidFiles); this.PerformRenameInFileSystem(value); this._FileName = value; this.RaisePropertyChanged(); } }
         private string _FileName;
+
         [XmlArray("childs", IsNullable = true)]
         [XmlArrayItem]
         [XmlArrayItem("folder", Type = typeof(SolutionFolder))]
@@ -57,24 +59,58 @@ namespace ArmA.Studio.SolutionUtil
 
         [XmlIgnore]
         public ICommand CmdMouseDoubleClick { get { return new UI.Commands.RelayCommand(OnMouseDoubleClick); } }
+
         [XmlIgnore]
-        public abstract ContextMenu ContextMenu { get; }
+        public ICommand CmdContextMenuOpening { get { return new UI.Commands.RelayCommand(OnContextMenuOpening); } }
+
+        [XmlIgnore]
+        public ICommand CmdContextMenu_Rename { get { return new UI.Commands.RelayCommand((o) => this.IsInRenameMode = true); } }
+
+        [XmlIgnore]
+        public ICommand CmdContextMenu_Delete { get { return new UI.Commands.RelayCommand(OnDelete); } }
+
+        [XmlIgnore]
+        public ICommand CmdTextBoxLostKeyboardFocus { get { return new UI.Commands.RelayCommand((o) => this.IsInRenameMode = false); } }
+
+        [XmlIgnore]
+        public bool IsInRenameMode { get { return this._IsInRenameMode; } set { this._IsInRenameMode = value; this.RaisePropertyChanged(); } }
+        private bool _IsInRenameMode;
+
+        [XmlIgnore]
+        public bool IsSelected { get { return this._IsSelected; } set { this._IsSelected = value; this.RaisePropertyChanged(); } }
+        private bool _IsSelected;
 
         protected virtual void OnMouseDoubleClick(object param)
         {
+            if (this.IsInRenameMode)
+                return;
             var sfb = param as SolutionFileBase;
             if (sfb != null)
             {
                 Workspace.CurrentWorkspace.OpenOrFocusDocument(sfb.RelativePath);
-                
+
             }
+        }
+        protected virtual void OnContextMenuOpening(object param)
+        {
+            if (this.IsInRenameMode)
+                return;
+            var sfb = param as SolutionFileBase;
+            if (sfb != null)
+            {
+                this.IsSelected = true;
+
+            }
+        }
+        protected virtual void OnDelete(object param)
+        {
+            throw new NotImplementedException();
         }
 
         public SolutionFileBase()
         {
             this._Children = new ObservableCollection<SolutionFileBase>();
         }
-
         private void PerformRenameInFileSystem(string newFileName)
         {
             if (string.IsNullOrWhiteSpace(this.FileName))

@@ -133,7 +133,11 @@
     </Compile>
     <Compile Include="UI\Attached\ChangePropertiesViewCurrentAttached.cs" />
     <Compile Include="UI\Attached\Eventing\Closing.cs" />
+    <Compile Include="UI\Attached\Eventing\LostKeyboardFocus.cs" />
+    <Compile Include="UI\Attached\Eventing\ContextMenuOpening.cs" />
+    <Compile Include="UI\Attached\Eventing\MouseRightButtonDown.cs" />
     <Compile Include="UI\Attached\Eventing\MouseLeftButtonDown.cs" />
+    <Compile Include="UI\Attached\Eventing\LostFocus.cs" />
     <Compile Include="UI\Attached\Eventing\Unloaded.cs" />
     <Compile Include="UI\Attached\Eventing\KeyDown.cs" />
     <Compile Include="UI\Attached\Eventing\Initialized.cs" />
@@ -143,6 +147,7 @@
     <Compile Include="UI\Attached\TextboxInputTypeAttached.cs" />
     <Compile Include="UI\Commands\RelayCommand.cs" />
     <Compile Include="UI\Commands\RelayCommandAsync.cs" />
+    <Compile Include="UI\Converters\BoolInvertConverter.cs" />
     <Compile Include="UI\Converters\EqualityConverter.cs" />
     <Compile Include="UI\Converters\PathExtensionConverter.cs" />
     <Compile Include="UI\CustomBinding.cs" />
@@ -281,7 +286,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Pictograms\AddItem.png" />
-    <Resource Include="Resources\Pictograms\Folder.png" />
+    <Resource Include="Resources\Pictograms\NewFolder.png" />
     <Resource Include="Resources\Pictograms\NewItem.png" />
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +297,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\FileTypes\HeaderFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Pictograms\FindSymbol.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Pictograms\Rename.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Pictograms\Delete.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

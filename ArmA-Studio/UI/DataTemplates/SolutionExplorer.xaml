@@ -12,9 +12,21 @@
         <TreeView.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="{x:Static p:Localization.Add}">
-                    <MenuItem Header="{x:Static p:Localization.NewItem}" Icon="/ArmA-Studio;component/Resources/Pictograms/NewItem.png" Command="{Binding CmdContextMenu_Add_NewItem}"/>
-                    <MenuItem Header="{x:Static p:Localization.ExistingItem}" Icon="/ArmA-Studio;component/Resources/Pictograms/AddItem.png" Command="{Binding CmdContextMenu_Add_ExistingItem}"/>
-                    <MenuItem Header="{x:Static p:Localization.NewFolder}" Icon="/ArmA-Studio;component/Resources/Pictograms/Folder.png" Command="{Binding CmdContextMenu_Add_NewFolder}"/>
+                    <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding CmdContextMenu_Add_NewItem}">
+                        <MenuItem.Icon>
+                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="{x:Static p:Localization.ExistingItem}" Command="{Binding CmdContextMenu_Add_ExistingItem}">
+                        <MenuItem.Icon>
+                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="{x:Static p:Localization.NewFolder}" Command="{Binding CmdContextMenu_Add_NewFolder}">
+                        <MenuItem.Icon>
+                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewFolder.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
             </ContextMenu>
         </TreeView.ContextMenu>
@@ -22,62 +34,161 @@
             <Style TargetType="TreeViewItem">
                 <Setter Property="ev:MouseDoubleClick.Command" Value="{Binding CmdMouseDoubleClick}"/>
                 <Setter Property="ev:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
-                <Setter Property="ContextMenu" Value="{Binding ContextMenu}"/>
+                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
             </Style>
         </TreeView.ItemContainerStyle>
         <TreeView.Resources>
             <HierarchicalDataTemplate DataType="{x:Type SolutionUtil:SolutionFolder}" ItemsSource="{Binding Children}">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0">
-                        <Image.Style>
-                            <Style TargetType="Image">
-                                <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Folder.png"/>
+                    <Grid>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="ev:ContextMenuOpening.Command" Value="{Binding CmdContextMenuOpening}"/>
+                                <Setter Property="ev:ContextMenuOpening.CommandParameter" Value="{Binding}"/>
+                                <Setter Property="Visibility" Value="Visible"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=TreeViewItem, Mode=FindAncestor}}" Value="True">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/FolderExpanded.png"/>
+                                    <DataTrigger Binding="{Binding IsInRenameMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </Image.Style>
-                    </Image>
-                    <TextBlock Grid.Column="1" Text="{Binding FileName}" ev:MouseLeftButtonDown.Command="{Binding CmdMouseLeftButtonDown}"/>
+                        </Grid.Style>
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="{x:Static p:Localization.Add}">
+                                    <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding CmdContextMenu_Add_NewItem}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="{x:Static p:Localization.ExistingItem}" Command="{Binding CmdContextMenu_Add_ExistingItem}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="{x:Static p:Localization.NewFolder}" Command="{Binding CmdContextMenu_Add_NewFolder}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewFolder.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </MenuItem>
+                                <MenuItem Header="{x:Static p:Localization.Delete}" Command="{Binding CmdContextMenu_Delete}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/Delete.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{x:Static p:Localization.Rename}" Command="{Binding CmdContextMenu_Rename}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/Rename.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Folder.png"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=TreeViewItem, Mode=FindAncestor}}" Value="True">
+                                            <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/FolderExpanded.png"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock Grid.Column="1" Text="{Binding FileName}"/>
+                    </Grid>
+                    <TextBox Text="{Binding FileName}" ev:LostKeyboardFocus.Command="{Binding CmdTextBoxLostKeyboardFocus}">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsInRenameMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
                 </Grid>
             </HierarchicalDataTemplate>
             <DataTemplate DataType="{x:Type SolutionUtil:SolutionFile}">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0">
-                        <Image.Style>
-                            <Style TargetType="Image">
-                                <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Document.png"/>
+                    <Grid>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="ev:ContextMenuOpening.Command" Value="{Binding CmdContextMenuOpening}"/>
+                                <Setter Property="ev:ContextMenuOpening.CommandParameter" Value="{Binding}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".sqf">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/SQF.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".uic">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/UI.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".cpp">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".ext">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".hpp">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/HeaderFile.png"/>
+                                    <DataTrigger Binding="{Binding IsInRenameMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </Image.Style>
-                    </Image>
-                    <TextBlock Grid.Column="1" Text="{Binding FileName}" ev:MouseLeftButtonDown.Command="{Binding CmdMouseLeftButtonDown}"/>
+                        </Grid.Style>
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="{x:Static p:Localization.Delete}" Command="{Binding CmdContextMenu_Delete}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/Delete.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{x:Static p:Localization.Rename}" Command="{Binding CmdContextMenu_Rename}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/Rename.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Document.png"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".sqf">
+                                            <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/SQF.png"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".uic">
+                                            <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/UI.png"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".cpp">
+                                            <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".ext">
+                                            <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".hpp">
+                                            <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/HeaderFile.png"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock Grid.Column="1" Text="{Binding FileName}"/>
+                    </Grid>
+                    <TextBox Text="{Binding FileName}" ev:LostKeyboardFocus.Command="{Binding CmdTextBoxLostKeyboardFocus}">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsInRenameMode}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
                 </Grid>
             </DataTemplate>
         </TreeView.Resources>

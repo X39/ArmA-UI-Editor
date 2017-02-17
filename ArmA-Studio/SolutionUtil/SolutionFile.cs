@@ -15,11 +15,9 @@ namespace ArmA.Studio.SolutionUtil
     {
         public override ObservableCollection<SolutionFileBase> Children { get { return null; } set { } }
 
-        public override ContextMenu ContextMenu { get { return null; } }
-
         public override DataTemplate GetPropertiesTemplate()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

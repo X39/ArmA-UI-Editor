@@ -129,6 +129,9 @@
   <data name="ConfigEntrySelectorDialog_Title" xml:space="preserve">
     <value>UI-Config Selector</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
   <data name="DocumentBase_CloseSaveConfirmation_Body" xml:space="preserve">
     <value>Current document contains unsaved changes.
 Do you want to save before close?</value>
@@ -165,6 +168,12 @@ Do you want to save before close?</value>
   </data>
   <data name="PanelDisplayName_Solution" xml:space="preserve">
     <value>Solution Explorer</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="RescanWorkspace" xml:space="preserve">
+    <value>Rescan Workspace</value>
   </data>
   <data name="SolutionFile_NameContainsInvalidFiles" xml:space="preserve">
     <value>Provided value contains invalid characters</value>
