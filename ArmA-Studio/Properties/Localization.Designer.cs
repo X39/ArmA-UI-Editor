@@ -152,6 +152,24 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Licenses.
+        /// </summary>
+        public static string LicenseViewer_Header {
+            get {
+                return ResourceManager.GetString("LicenseViewer_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License Viewer.
+        /// </summary>
+        public static string LicenseViewer_Title {
+            get {
+                return ResourceManager.GetString("LicenseViewer_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete the file &apos;{0}&apos;?.
         /// </summary>
         public static string MessageBoxDeleteFileConfirmation_Body {
