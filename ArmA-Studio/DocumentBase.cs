@@ -62,5 +62,6 @@ namespace ArmA.Studio
         }
         public abstract void SaveDocument(string path);
         public abstract void OpenDocument(string path);
+        public abstract void ReloadDocument();
     }
 }

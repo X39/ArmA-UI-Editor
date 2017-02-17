@@ -47,6 +47,17 @@ namespace ArmA.Studio
 
         public string WorkingDir { get; private set; }
 
+        public DocumentBase GetDocumentOfSolutionFileBase(SolutionUtil.SolutionFileBase sfb)
+        {
+            foreach (var it in this.DocumentsDisplayed)
+            {
+                if (it.FilePath == sfb.FullPath)
+                {
+                    return it;
+                }
+            }
+            return null;
+        }
 
         public Workspace(string path)
         {

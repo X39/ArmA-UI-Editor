@@ -62,11 +62,46 @@ namespace ArmA.Studio.SolutionUtil
             this._FilesCollection = new ObservableCollection<SolutionFileBase>();
             this.curWorkspace = workspace;
             this.FSWatcher = new FileSystemWatcher(workspace.WorkingDir);
+            this.FSWatcher.Changed += FSWatcher_Changed;
             foreach(var file in Directory.EnumerateFiles(workspace.WorkingDir, "*.*", SearchOption.AllDirectories).Pick((it) => FileFilter.Contains(Path.GetExtension(it))))
             {
                 this.GetOrCreateFileReference(file);
             }
         }
+
+        private void FSWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            SolutionFile solutionFile = null;
+            
+            var existsInSolution = SolutionFileBase.WalkThrough(this.FilesCollection, (sfb) =>
+            {
+                if(sfb is SolutionFile && sfb.FullPath.Equals(sfb.FullPath, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    solutionFile = sfb as SolutionFile;
+                    return true;
+                }
+                return false;
+            });
+            if(existsInSolution)
+            {
+                DocumentBase docBase = null;
+                foreach(var it in Workspace.CurrentWorkspace.DocumentsDisplayed)
+                {
+                    if(it.FilePath == e.FullPath)
+                    {
+                        docBase = it;
+                        break;
+                    }
+                }
+                if (docBase == null)
+                    return;
+                var msgBoxResult = MessageBox.Show(Properties.Localization.MessageBoxFileChanged_Body, Properties.Localization.MessageBoxFileChanged_Title, MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (msgBoxResult != MessageBoxResult.Yes)
+                    return;
+                docBase.ReloadDocument();
+            }
+        }
+
         internal SolutionFileBase GetOrCreateFileReference(string path)
         {
             if(Path.IsPathRooted(path))

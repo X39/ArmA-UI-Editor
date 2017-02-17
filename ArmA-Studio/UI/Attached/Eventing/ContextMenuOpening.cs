@@ -61,6 +61,7 @@ namespace ArmA.Studio.UI.Attached.Eventing
                 var command = (ICommand)control.GetValue(CommandProperty);
                 var commandParameter = control.GetValue(CommandParameterProperty);
                 command.Execute(commandParameter);
+                control.ContextMenu.DataContext = control.DataContext;
                 control.ContextMenu.IsOpen = true;
                 e.Handled = true;
             }

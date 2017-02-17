@@ -37,6 +37,8 @@ namespace ArmA.Studio.SolutionUtil
                 }
             }
         }
+        [XmlIgnore]
+        public string FullPath { get { return Path.Combine(Workspace.CurrentWorkspace.WorkingDir, RelativePath); } }
 
         [XmlIgnore]
         public SolutionFileBase Parent { get { SolutionFileBase sfb; if (this._Parent != null && this._Parent.TryGetTarget(out sfb)) return sfb; else return null; } set { if(this.Parent != null) this.PerformMoveInFileSystem(value.RelativePath); this._Parent = new WeakReference<SolutionFileBase>(value); this.RaisePropertyChanged(); } }
@@ -73,6 +75,9 @@ namespace ArmA.Studio.SolutionUtil
         public ICommand CmdTextBoxLostKeyboardFocus { get { return new UI.Commands.RelayCommand((o) => this.IsInRenameMode = false); } }
 
         [XmlIgnore]
+        public abstract ICommand CmdContextMenu_OpenInExplorer { get; }
+
+        [XmlIgnore]
         public bool IsInRenameMode { get { return this._IsInRenameMode; } set { this._IsInRenameMode = value; this.RaisePropertyChanged(); } }
         private bool _IsInRenameMode;
 
@@ -104,7 +109,21 @@ namespace ArmA.Studio.SolutionUtil
         }
         protected virtual void OnDelete(object param)
         {
-            throw new NotImplementedException();
+            var msgBoxResult = MessageBox.Show(string.Format(Properties.Localization.MessageBoxDeleteFileConfirmation_Body, this.RelativePath), Properties.Localization.MessageBoxDeleteFileConfirmation_Title, MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (msgBoxResult != MessageBoxResult.Yes)
+                return;
+            try
+            {
+                if (File.Exists(this.FullPath))
+                {
+                    File.Delete(this.FullPath);
+                }
+                this.Parent.Children.Remove(this);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format(Properties.Localization.MessageBoxOperationFailed_Body, ex.Message, ex.GetType().FullName, ex.StackTrace), Properties.Localization.MessageBoxOperationFailed_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         public SolutionFileBase()
@@ -115,16 +134,38 @@ namespace ArmA.Studio.SolutionUtil
         {
             if (string.IsNullOrWhiteSpace(this.FileName))
                 return;
-            var relativePath = this.RelativePath;
+            var fPath = this.FullPath;
             //ToDo: Catch IOException and notify user
-            File.Move(relativePath, Path.Combine(Path.GetDirectoryName(relativePath), newFileName));
+            try
+            {
+                var docBase = Workspace.CurrentWorkspace.GetDocumentOfSolutionFileBase(this);
+                docBase.SaveDocument(docBase.FilePath);
+                Workspace.CurrentWorkspace.DocumentsDisplayed.Remove(docBase);
+                File.Move(fPath, Path.Combine(Path.GetDirectoryName(fPath), newFileName));
+                Workspace.CurrentWorkspace.OpenOrFocusDocument(Path.Combine(Path.GetDirectoryName(fPath), newFileName));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format(Properties.Localization.MessageBoxOperationFailed_Body, ex.Message, ex.GetType().FullName, ex.StackTrace), Properties.Localization.MessageBoxOperationFailed_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
         private void PerformMoveInFileSystem(string newParentFolder)
         {
             if (this.Parent == null)
                 return;
             //ToDo: Catch IOException and notify user
-            File.Move(this.RelativePath, Path.Combine(newParentFolder, FileName));
+            try
+            {
+                var docBase = Workspace.CurrentWorkspace.GetDocumentOfSolutionFileBase(this);
+                docBase.SaveDocument(docBase.FilePath);
+                Workspace.CurrentWorkspace.DocumentsDisplayed.Remove(docBase);
+                File.Move(this.FullPath, Path.Combine(newParentFolder, FileName));
+                Workspace.CurrentWorkspace.OpenOrFocusDocument(Path.Combine(newParentFolder, FileName));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format(Properties.Localization.MessageBoxOperationFailed_Body, ex.Message, ex.GetType().FullName, ex.StackTrace), Properties.Localization.MessageBoxOperationFailed_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
         public override string ToString()
         {

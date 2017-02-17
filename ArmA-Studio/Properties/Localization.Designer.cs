@@ -152,6 +152,64 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete the file &apos;{0}&apos;?.
+        /// </summary>
+        public static string MessageBoxDeleteFileConfirmation_Body {
+            get {
+                return ResourceManager.GetString("MessageBoxDeleteFileConfirmation_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Delete Confirmation.
+        /// </summary>
+        public static string MessageBoxDeleteFileConfirmation_Title {
+            get {
+                return ResourceManager.GetString("MessageBoxDeleteFileConfirmation_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file has changed outside of the studio.
+        ///Do you want to reload?
+        ///Current progress will be lost..
+        /// </summary>
+        public static string MessageBoxFileChanged_Body {
+            get {
+                return ResourceManager.GetString("MessageBoxFileChanged_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Has Changed.
+        /// </summary>
+        public static string MessageBoxFileChanged_Title {
+            get {
+                return ResourceManager.GetString("MessageBoxFileChanged_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation failed with &apos;{0}&apos;
+        ///{1}
+        ///{2}.
+        /// </summary>
+        public static string MessageBoxOperationFailed_Body {
+            get {
+                return ResourceManager.GetString("MessageBoxOperationFailed_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation Failed.
+        /// </summary>
+        public static string MessageBoxOperationFailed_Title {
+            get {
+                return ResourceManager.GetString("MessageBoxOperationFailed_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Folder.
         /// </summary>
         public static string NewFolder {
@@ -193,6 +251,15 @@ namespace ArmA.Studio.Properties {
         public static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open in File Explorer.
+        /// </summary>
+        public static string OpenInExplorer {
+            get {
+                return ResourceManager.GetString("OpenInExplorer", resourceCulture);
             }
         }
         

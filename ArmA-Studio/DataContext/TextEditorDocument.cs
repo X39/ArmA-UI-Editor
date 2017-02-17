@@ -65,7 +65,7 @@ namespace ArmA.Studio.DataContext
             }
         }
 
-        public override void SaveDocument(string path)
+        public override bool SaveDocument(string path)
         {
             this.HasChanges = false;
             this.RaisePropertyChanged("Title");
@@ -94,6 +94,10 @@ namespace ArmA.Studio.DataContext
                 this.Document.Text = new StreamReader(stream).ReadToEnd();
             }
         }
+        public override void ReloadDocument()
+        {
+            this.OpenDocument(this.FilePath);
+        }
 
         protected static IHighlightingDefinition LoadAvalonEditSyntaxFiles(string path)
         {
@@ -115,5 +119,6 @@ namespace ArmA.Studio.DataContext
                 return null;
             }
         }
+
     }
 }

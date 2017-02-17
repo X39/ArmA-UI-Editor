@@ -148,6 +148,28 @@ Do you want to save before close?</value>
   <data name="FileNotFound" xml:space="preserve">
     <value>The file '{0}' was not found.</value>
   </data>
+  <data name="MessageBoxDeleteFileConfirmation_Body" xml:space="preserve">
+    <value>Are you sure you want to delete the file '{0}'?</value>
+  </data>
+  <data name="MessageBoxDeleteFileConfirmation_Title" xml:space="preserve">
+    <value>File Delete Confirmation</value>
+  </data>
+  <data name="MessageBoxFileChanged_Body" xml:space="preserve">
+    <value>The file has changed outside of the studio.
+Do you want to reload?
+Current progress will be lost.</value>
+  </data>
+  <data name="MessageBoxFileChanged_Title" xml:space="preserve">
+    <value>File Has Changed</value>
+  </data>
+  <data name="MessageBoxOperationFailed_Body" xml:space="preserve">
+    <value>Operation failed with '{0}'
+{1}
+{2}</value>
+  </data>
+  <data name="MessageBoxOperationFailed_Title" xml:space="preserve">
+    <value>Operation Failed</value>
+  </data>
   <data name="NewFolder" xml:space="preserve">
     <value>New Folder</value>
   </data>
@@ -162,6 +184,9 @@ Do you want to save before close?</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="OpenInExplorer" xml:space="preserve">
+    <value>Open in File Explorer</value>
   </data>
   <data name="PanelDisplayName_Properties" xml:space="preserve">
     <value>Properties</value>
