@@ -65,7 +65,7 @@ namespace ArmA.Studio.DataContext
             }
         }
 
-        public override bool SaveDocument(string path)
+        public override void SaveDocument(string path)
         {
             this.HasChanges = false;
             this.RaisePropertyChanged("Title");
