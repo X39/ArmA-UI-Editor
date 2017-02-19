@@ -23,7 +23,7 @@
             <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="26" FontWeight="SemiBold" Margin="8 0" Text="{x:Static p:Localization.LicenseViewer_Header}" TextWrapping="Wrap"/>
             <Image Grid.Column="1" Margin="8 0" Source="/ArmA-Studio;component/Resources/Logo.ico" Width="64" Height="64"/>
         </Grid>
-        <Border Grid.Row="1" BorderThickness="0 1">
+        <Border Grid.Row="1" BorderThickness="0 1" Padding="16">
             <Border.BorderBrush>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionColorKey}}"/>
             </Border.BorderBrush>
