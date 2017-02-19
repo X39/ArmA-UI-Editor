@@ -9,11 +9,11 @@
       xmlns:ev="clr-namespace:ArmA.Studio.UI.Attached.Eventing;assembly=ArmA-Studio"
       xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
       mc:Ignorable="d" DataType="{x:Type SolutionUtil:Solution}">
-    <TreeView ItemsSource="{Binding FilesCollection}">
+    <TreeView x:Name="SolutionExplorerTreeView" ItemsSource="{Binding FilesCollection}">
         <TreeView.ContextMenu>
-            <ContextMenu>
+            <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="{x:Static p:Localization.Add}">
-                    <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding CmdContextMenu_Add_NewItem}">
+                    <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding CmdContextMenu_Add_NewItem}" CommandParameter="/">
                         <MenuItem.Icon>
                             <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem.png"/>
                         </MenuItem.Icon>
@@ -36,6 +36,7 @@
                 <Setter Property="ev:MouseDoubleClick.Command" Value="{Binding CmdMouseDoubleClick}"/>
                 <Setter Property="ev:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
                 <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                <Setter Property="IsExpanded" Value="{Binding IsExpanded}"/>
             </Style>
         </TreeView.ItemContainerStyle>
         <TreeView.Resources>
@@ -57,17 +58,17 @@
                         <Grid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="{x:Static p:Localization.Add}">
-                                    <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding CmdContextMenu_Add_NewItem}">
+                                    <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding __Sol.CmdContextMenu_Add_NewItem}" CommandParameter="{Binding FullPath}">
                                         <MenuItem.Icon>
                                             <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem.png"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="{x:Static p:Localization.ExistingItem}" Command="{Binding CmdContextMenu_Add_ExistingItem}">
+                                    <MenuItem Header="{x:Static p:Localization.ExistingItem}" Command="{Binding __Sol.CmdContextMenu_Add_ExistingItem}" CommandParameter="{Binding FullPath}">
                                         <MenuItem.Icon>
                                             <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem.png"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="{x:Static p:Localization.NewFolder}" Command="{Binding CmdContextMenu_Add_NewFolder}">
+                                    <MenuItem Header="{x:Static p:Localization.NewFolder}" Command="{Binding __Sol.CmdContextMenu_Add_NewFolder}" CommandParameter="{Binding FullPath}">
                                         <MenuItem.Icon>
                                             <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewFolder.png"/>
                                         </MenuItem.Icon>
@@ -83,7 +84,7 @@
                                         <Image Source="/ArmA-Studio;component/Resources/Pictograms/Rename.png"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="{x:Static p:Localization.OpenInExplorer}" Command="{Binding CmdContextMenu_OpenInExplorer, diag:PresentationTraceSources.TraceLevel=High}">
+                                <MenuItem Header="{x:Static p:Localization.OpenInExplorer}" Command="{Binding CmdContextMenu_OpenInExplorer}">
                                     <MenuItem.Icon>
                                         <Image Source="/ArmA-Studio;component/Resources/Pictograms/ArrowOpen.png"/>
                                     </MenuItem.Icon>

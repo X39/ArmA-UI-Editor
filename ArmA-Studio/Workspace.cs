@@ -61,11 +61,11 @@ namespace ArmA.Studio
 
         public Workspace(string path)
         {
+            this.WorkingDir = path;
             this._AllPanels = new ObservableCollection<PanelBase>(FindAllAnchorablePanelsInAssembly());
             this._PanelsDisplayed = new ObservableCollection<PanelBase>();
             this._DocumentsDisplayed = new ObservableCollection<DocumentBase>();
             this._AvailableDocuments = new ObservableCollection<DocumentBase>(FindAllDocumentsInAssembly());
-            this.WorkingDir = path;
             this.CmdDisplayPanel = new RelayCommand((p) =>
             {
                 if (p is PanelBase)
@@ -185,7 +185,8 @@ namespace ArmA.Studio
                 try
                 {
                     this.CurrentSolution = solutionFile.XmlDeserialize<SolutionUtil.Solution>();
-                    this.CurrentSolution.RestoreFromXml(this);
+                    this.CurrentSolution.RestoreFromXml();
+                    this.CurrentSolution.Prepare(this);
                 }
                 catch (Exception ex)
                 {
@@ -193,13 +194,17 @@ namespace ArmA.Studio
                         ex = ex.InnerException;
                     //ToDo: Properly write down message
                     MessageBox.Show(ex.Message);
-                    this.CurrentSolution = new SolutionUtil.Solution(this);
+                    this.CurrentSolution = new SolutionUtil.Solution();
+                    this.CurrentSolution.Prepare(this);
+                    this.CurrentSolution.ReScan();
                 }
             }
             else
             {
                 //Create new solution as no existing is present
-                this.CurrentSolution = new SolutionUtil.Solution(this);
+                this.CurrentSolution = new SolutionUtil.Solution();
+                this.CurrentSolution.Prepare(this);
+                this.CurrentSolution.ReScan();
             }
             this.AllPanels.Add(this.CurrentSolution);
 

@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\ObservableSortedCollection.cs" />
     <Compile Include="IEnumerableExtensionMethods.cs" />
     <Compile Include="ObjectExtensionMethods.cs" />
     <Compile Include="StringExtensionMethods.cs" />

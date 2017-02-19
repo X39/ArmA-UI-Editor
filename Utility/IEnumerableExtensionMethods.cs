@@ -48,5 +48,21 @@ namespace Utility
             return list;
         }
         #endregion
+        #region Cast
+        public static IEnumerator<T> Cast<T>(this IEnumerator iterator)
+        {
+            while (iterator.MoveNext())
+            {
+                yield return (T)iterator.Current;
+            }
+        }
+        public static IEnumerator Cast<T>(this IEnumerator<T> iterator)
+        {
+            while (iterator.MoveNext())
+            {
+                yield return iterator.Current;
+            }
+        }
+        #endregion
     }
 }

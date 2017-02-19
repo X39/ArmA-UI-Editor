@@ -11,10 +11,11 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Xml.Serialization;
 using ArmA.Studio.UI;
+using Utility.Collections;
 
 namespace ArmA.Studio.SolutionUtil
 {   
-    public abstract class SolutionFileBase : UI.ViewModel.IPropertyDatatemplateProvider
+    public abstract class SolutionFileBase : UI.ViewModel.IPropertyDatatemplateProvider, IComparable
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName]string callerName = "") { this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(callerName)); }
@@ -41,19 +42,58 @@ namespace ArmA.Studio.SolutionUtil
         public string FullPath { get { return Path.Combine(Workspace.CurrentWorkspace.WorkingDir, RelativePath); } }
 
         [XmlIgnore]
-        public SolutionFileBase Parent { get { SolutionFileBase sfb; if (this._Parent != null && this._Parent.TryGetTarget(out sfb)) return sfb; else return null; } set { if(this.Parent != null) this.PerformMoveInFileSystem(value.RelativePath); this._Parent = new WeakReference<SolutionFileBase>(value); this.RaisePropertyChanged(); } }
+        public SolutionFileBase Parent
+        {
+            get
+            {
+                SolutionFileBase sfb;
+                if (this._Parent != null && this._Parent.TryGetTarget(out sfb))
+                    return sfb;
+                else
+                    return null;
+            }
+            set
+            {
+                if (this.Parent != null)
+                    this.PerformMoveInFileSystem(value.RelativePath);
+                this._Parent = new WeakReference<SolutionFileBase>(value);
+                this.RaisePropertyChanged();
+            }
+        }
         private WeakReference<SolutionFileBase> _Parent;
 
         [XmlAttribute("name")]
-        public string FileName { get { return this._FileName; } set { if (value.IndexOfAny(Path.GetInvalidFileNameChars()) != -1) throw new InvalidOperationException(Properties.Localization.SolutionFile_NameContainsInvalidFiles); this.PerformRenameInFileSystem(value); this._FileName = value; this.RaisePropertyChanged(); } }
+        public string FileName
+        {
+            get { return this._FileName; }
+            set
+            {
+                if (value.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+                    throw new InvalidOperationException(Properties.Localization.SolutionFile_NameContainsInvalidFiles);
+                var wasNull = string.IsNullOrWhiteSpace(this._FileName);
+                this.PerformRenameInFileSystem(value);
+                this._FileName = value;
+                this.RaisePropertyChanged();
+                if (wasNull)
+                    return;
+                if(this.Parent != null)
+                {
+                    this.Parent.Children.Sort();
+                }
+                else
+                {
+                    __Sol?.FilesCollection.Sort();
+                }
+            }
+        }
         private string _FileName;
 
         [XmlArray("childs", IsNullable = true)]
         [XmlArrayItem]
         [XmlArrayItem("folder", Type = typeof(SolutionFolder))]
         [XmlArrayItem("file", Type = typeof(SolutionFile))]
-        public virtual ObservableCollection<SolutionFileBase> Children { get { return this._Children; } set { this._Children = value; this.RaisePropertyChanged(); } }
-        private ObservableCollection<SolutionFileBase> _Children;
+        public virtual ObservableSortedCollection<SolutionFileBase> Children { get { return this._Children; } set { this._Children = value; this.RaisePropertyChanged(); } }
+        private ObservableSortedCollection<SolutionFileBase> _Children;
 
         [XmlIgnore]
         public DataTemplate PropertiesTemplate { get { return this.GetPropertiesTemplate(); } }
@@ -72,6 +112,10 @@ namespace ArmA.Studio.SolutionUtil
         public ICommand CmdContextMenu_Delete { get { return new UI.Commands.RelayCommand(OnDelete); } }
 
         [XmlIgnore]
+        ///FUCK CONTEXTMENUS! ... workaround for lack of double-relativesource-binding
+        public Solution __Sol { get { return Workspace.CurrentWorkspace.CurrentSolution; } }
+
+        [XmlIgnore]
         public ICommand CmdTextBoxLostKeyboardFocus { get { return new UI.Commands.RelayCommand((o) => this.IsInRenameMode = false); } }
 
         [XmlIgnore]
@@ -84,6 +128,10 @@ namespace ArmA.Studio.SolutionUtil
         [XmlIgnore]
         public bool IsSelected { get { return this._IsSelected; } set { this._IsSelected = value; this.RaisePropertyChanged(); } }
         private bool _IsSelected;
+
+        [XmlAttribute("expanded")]
+        public bool IsExpanded { get { return this._IsExpanded; } set { this._IsExpanded = value; this.RaisePropertyChanged(); } }
+        private bool _IsExpanded;
 
         protected virtual void OnMouseDoubleClick(object param)
         {
@@ -119,6 +167,14 @@ namespace ArmA.Studio.SolutionUtil
                     File.Delete(this.FullPath);
                 }
                 this.Parent.Children.Remove(this);
+                foreach(var doc in Workspace.CurrentWorkspace.DocumentsDisplayed)
+                {
+                    if(doc.FilePath == this.FullPath)
+                    {
+                        Workspace.CurrentWorkspace.DocumentsDisplayed.Remove(doc);
+                        break;
+                    }
+                }
             }
             catch(Exception ex)
             {
@@ -128,7 +184,7 @@ namespace ArmA.Studio.SolutionUtil
 
         public SolutionFileBase()
         {
-            this._Children = new ObservableCollection<SolutionFileBase>();
+            this._Children = new ObservableSortedCollection<SolutionFileBase>();
         }
         private void PerformRenameInFileSystem(string newFileName)
         {
@@ -186,6 +242,26 @@ namespace ArmA.Studio.SolutionUtil
                 }
             }
             return false;
+        }
+
+        public virtual int CompareTo(object obj)
+        {
+            if ((obj is SolutionFolder) && !(this is SolutionFolder))
+            {
+                return -1;
+            }
+            else if (!(obj is SolutionFolder) && (this is SolutionFolder))
+            {
+                return 1;
+            }
+            else if (obj is SolutionFileBase)
+            {
+                return this.FileName.CompareTo((obj as SolutionFileBase).FileName);
+            }
+            else
+            {
+                return this.FileName.CompareTo(obj);
+            }
         }
     }
 }

@@ -97,6 +97,24 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please choose File Type.
+        /// </summary>
+        public static string CreateNewFileDialog_Header {
+            get {
+                return ResourceManager.GetString("CreateNewFileDialog_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create New File.
+        /// </summary>
+        public static string CreateNewFileDialog_Title {
+            get {
+                return ResourceManager.GetString("CreateNewFileDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string Delete {
@@ -139,6 +157,15 @@ namespace ArmA.Studio.Properties {
         public static string ExistingItem {
             get {
                 return ResourceManager.GetString("ExistingItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Name.
+        /// </summary>
+        public static string FileName {
+            get {
+                return ResourceManager.GetString("FileName", resourceCulture);
             }
         }
         

@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:ArmA.Studio"
              xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:conv="clr-namespace:ArmA.Studio.UI.Converters"
+             xmlns:convm="clr-namespace:ArmA.Studio.UI.Converters.Multi"
              xmlns:dlg="clr-namespace:ArmA.Studio.Dialogs"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:ae="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
@@ -18,6 +19,11 @@
                     <conv:PathExtensionConverter x:Key="PathExtensionConverter"/>
                     <conv:EqualityConverter x:Key="EqualityConverter"/>
                     <conv:BoolInvertConverter x:Key="BoolInvertConverter"/>
+                    <conv:IsNullConverter x:Key="IsNullConverter"/>
+                    <conv:IsStringNullConverter x:Key="IsStringNullConverter"/>
+                    
+                    <convm:AllTrueMultiConverter x:Key="AllTrueMultiConverter"/>
+                    <convm:AllFalseMultiConverter x:Key="AllFalseMultiConverter"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="Colors">
                     <Color x:Key="C_LightBlue">#007ACC</Color>
@@ -204,6 +210,36 @@ EFFET JURIDIQUE. Le présent contrat décrit certains droits juridiques. Vous po
                     <Style TargetType="ae:TextEditor">
                         <Setter Property="FontFamily" Value="Consolas"/>
                     </Style>
+                </ResourceDictionary>
+                <ResourceDictionary x:Name="FileTypes">
+                    <x:Array Type="dlg:FileType" x:Key="FileTypes">
+                        <dlg:FileType Image="/ArmA-Studio;component/Resources/FileTypes/SQF.png" FileTypeName="SQF" Extension="sqf">
+                            <dlg:FileType.DefaultContent>
+                                <sys:String xml:space="preserve">/*
+ * @Author: 
+ * 
+ * @Description: 
+ * 
+ * @Arguments: -/-
+ * @Return: -/-
+ */
+params [];</sys:String>
+                            </dlg:FileType.DefaultContent>
+                        </dlg:FileType>
+                        <dlg:FileType Image="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png" FileTypeName="Config" Extension="cpp">
+                                <dlg:FileType.DefaultContent>
+                                    <sys:String xml:space="preserve">/*
+ * @Author: 
+ * 
+ * @Description: 
+ * 
+ * @Arguments: -/-
+ * @Return: -/-
+ */
+params [];</sys:String>
+                                </dlg:FileType.DefaultContent>
+                            </dlg:FileType>
+                    </x:Array>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

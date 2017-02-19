@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Xml.Serialization;
 using ArmA.Studio.UI;
 using Utility;
+using Utility.Collections;
 
 namespace ArmA.Studio.SolutionUtil
 {
@@ -24,7 +25,8 @@ namespace ArmA.Studio.SolutionUtil
         [XmlArrayItem]
         [XmlArrayItem("folder", Type = typeof(SolutionFolder))]
         [XmlArrayItem("file", Type = typeof(SolutionFile))]
-        public ObservableCollection<SolutionFileBase> FilesCollection { get { return this._FilesCollection; } set { this._FilesCollection = value; this.RaisePropertyChanged(); } }
+        public ObservableSortedCollection<SolutionFileBase> FilesCollection { get { return this._FilesCollection; } set { this._FilesCollection = value; this.RaisePropertyChanged(); } }
+        private ObservableSortedCollection<SolutionFileBase> _FilesCollection;
 
         [XmlIgnore]
         public DataTemplate PropertiesTemplate
@@ -52,20 +54,87 @@ namespace ArmA.Studio.SolutionUtil
         [XmlIgnore]
         public FileSystemWatcher FSWatcher { get; private set; }
 
-        private ObservableCollection<SolutionFileBase> _FilesCollection;
         private Workspace curWorkspace;
-
-        private Solution() { }
-
-        public Solution(Workspace workspace)
+        
+        public Solution()
         {
-            this._FilesCollection = new ObservableCollection<SolutionFileBase>();
+        }
+        public void Prepare(Workspace workspace)
+        {
+            if (this.curWorkspace == workspace)
+                return;
+            if(this._FilesCollection == null)
+                this._FilesCollection = new ObservableSortedCollection<SolutionFileBase>();
+            this.CmdContextMenu_Add_NewItem = new UI.Commands.RelayCommand(this.CreateNewItem);
             this.curWorkspace = workspace;
-            this.FSWatcher = new FileSystemWatcher(workspace.WorkingDir);
+            this.FSWatcher = new FileSystemWatcher(this.curWorkspace.WorkingDir);
             this.FSWatcher.Changed += FSWatcher_Changed;
-            foreach(var file in Directory.EnumerateFiles(workspace.WorkingDir, "*.*", SearchOption.AllDirectories).Pick((it) => FileFilter.Contains(Path.GetExtension(it))))
+        }
+        public void ReScan()
+        {
+            foreach (var file in Directory.EnumerateFiles(this.curWorkspace.WorkingDir, "*.*", SearchOption.AllDirectories).Pick((it) => FileFilter.Contains(Path.GetExtension(it))))
             {
                 this.GetOrCreateFileReference(file);
+            }
+        }
+        public void CreateNewItem(object param)
+        {
+            var path = param as string;
+            if (path == null)
+                return;
+            SolutionFileBase sfb;
+            var result = ShowCreateFileDialog(path, out sfb);
+            if(result)
+            {
+                this.curWorkspace.OpenOrFocusDocument(sfb.FullPath);
+            }
+        }
+
+        /// <summary>
+        /// Displays the <see cref="Dialogs.CreateNewFileDialog"/> and creates the file.
+        /// </summary>
+        /// <param name="fileDirectory">Base directory (relative or full) to use.</param>
+        /// <param name="newFile">Will be either null if user aborted or the created <see cref="SolutionFileBase"/>.</param>
+        /// <returns><see cref="true"/> if file was created, <see cref="false"/> if not.</returns>
+        public bool ShowCreateFileDialog(string fileDirectory, out SolutionFileBase newFile)
+        {
+            var dlgDc = new Dialogs.CreateNewFileDialogDataContext();
+            var dlg = new Dialogs.CreateNewFileDialog(dlgDc);
+            fileDirectory = fileDirectory.TrimStart('/', '\\');
+            if (!Path.IsPathRooted(fileDirectory))
+            {
+                fileDirectory = Path.Combine(this.curWorkspace.WorkingDir, fileDirectory);
+            }
+
+            var dlgResult = dlg.ShowDialog();
+            if(dlgResult.HasValue && dlgResult.Value)
+            {
+                var fName = dlgDc.SelectedName;
+                if(!Path.HasExtension(fName))
+                {
+                    fName = string.Concat(fName, '.', ((Dialogs.FileType)dlgDc.SelectedItem).Extension);
+                }
+                using (var writer = File.CreateText(Path.Combine(fileDirectory, fName)))
+                {
+                    writer.Write(((Dialogs.FileType)dlgDc.SelectedItem).DefaultContent);
+                }
+                newFile = GetOrCreateFileReference(Path.Combine(fileDirectory, fName));
+
+                //Expand the tree till here
+                var current = newFile.Parent;
+                while(current != null)
+                {
+                    current.IsExpanded = true;
+                    current = current.Parent;
+                }
+                //Select new file
+                newFile.IsSelected = true;
+                return true;
+            }
+            else
+            {
+                newFile = null;
+                return false;
             }
         }
 
@@ -85,7 +154,7 @@ namespace ArmA.Studio.SolutionUtil
             if(existsInSolution)
             {
                 DocumentBase docBase = null;
-                foreach(var it in Workspace.CurrentWorkspace.DocumentsDisplayed)
+                foreach(var it in this.curWorkspace.DocumentsDisplayed)
                 {
                     if(it.FilePath == e.FullPath)
                     {
@@ -104,11 +173,12 @@ namespace ArmA.Studio.SolutionUtil
 
         internal SolutionFileBase GetOrCreateFileReference(string path)
         {
-            if(Path.IsPathRooted(path))
+            path = path.TrimStart('/', '\\');
+            if (Path.IsPathRooted(path))
             {
                 path = path.Substring(this.curWorkspace.WorkingDir.Length + 1);
             }
-            Collection<SolutionFileBase> sfbCollection = null;
+            ICollection<SolutionFileBase> sfbCollection = null;
             SolutionFileBase sfbCollectionOwner = null;
             var parent = Path.GetDirectoryName(path);
             var filename = Path.GetFileName(path);
@@ -154,15 +224,15 @@ namespace ArmA.Studio.SolutionUtil
             return sfb;
         }
 
-        internal void RestoreFromXml(Workspace workspace)
+        internal void RestoreFromXml()
         {
-            this.curWorkspace = workspace;
             SolutionFileBase.WalkThrough(this.FilesCollection, (it) =>
             {
                 if (it.Children != null)
                 {
                     foreach (var child in it.Children)
-                        child.Parent = it;
+                        if(child.Parent != it)
+                            child.Parent = it;
                 }
                 return false;
             });

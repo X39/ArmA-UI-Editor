@@ -104,6 +104,11 @@
     <Compile Include="Dialogs\ConfigEntrySelectorDialog.xaml.cs">
       <DependentUpon>ConfigEntrySelectorDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\FileType.cs" />
+    <Compile Include="Dialogs\CreateNewFileDialog.xaml.cs">
+      <DependentUpon>CreateNewFileDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CreateNewFileDialogDataContext.cs" />
     <Compile Include="Dialogs\WorkspaceSelectorDialog.xaml.cs">
       <DependentUpon>WorkspaceSelectorDialog.xaml</DependentUpon>
     </Compile>
@@ -148,7 +153,11 @@
     <Compile Include="UI\Commands\RelayCommand.cs" />
     <Compile Include="UI\Commands\RelayCommandAsync.cs" />
     <Compile Include="UI\Converters\BoolInvertConverter.cs" />
+    <Compile Include="UI\Converters\IsStringNullConverter.cs" />
+    <Compile Include="UI\Converters\IsNullConverter.cs" />
     <Compile Include="UI\Converters\EqualityConverter.cs" />
+    <Compile Include="UI\Converters\Multi\AllFalseMultiConverter.cs" />
+    <Compile Include="UI\Converters\Multi\AllTrueMultiConverter.cs" />
     <Compile Include="UI\Converters\PathExtensionConverter.cs" />
     <Compile Include="UI\CustomBinding.cs" />
     <Compile Include="UI\DataTemplates\AvalonDockStyleSelector.cs" />
@@ -162,6 +171,10 @@
     <Compile Include="UI\ViewModel\IViewModel.cs" />
     <Compile Include="Workspace.cs" />
     <Page Include="Dialogs\ConfigEntrySelectorDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\CreateNewFileDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

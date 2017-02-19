@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Serialization;
+using Utility.Collections;
 
 namespace ArmA.Studio.SolutionUtil
 {
@@ -16,7 +17,7 @@ namespace ArmA.Studio.SolutionUtil
     {
         public override ICommand CmdContextMenu_OpenInExplorer { get { return new UI.Commands.RelayCommand((o) => System.Diagnostics.Process.Start("explorer.exe", string.Format("/select,\"{0}\"", this.FullPath))); } }
 
-        public override ObservableCollection<SolutionFileBase> Children { get { return null; } set { } }
+        public override ObservableSortedCollection<SolutionFileBase> Children { get { return null; } set { } }
 
         public override DataTemplate GetPropertiesTemplate()
         {
