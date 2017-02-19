@@ -84,7 +84,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0">
+                    <Image Grid.Column="0" Margin="0 0 4 0">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Folder.png"/>
@@ -150,7 +150,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0">
+                    <Image Grid.Column="0" Margin="0 0 4 0">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Document.png"/>

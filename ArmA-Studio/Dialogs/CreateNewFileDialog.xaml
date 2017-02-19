@@ -43,7 +43,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" Source="{Binding Image}"/>
+                                <Image Grid.Column="0" Source="{Binding Image}" Margin="0 0 4 0"/>
                                 <TextBlock Grid.Column="1" Text="{Binding FileTypeName}"/>
                             </Grid>
                         </DataTemplate>
