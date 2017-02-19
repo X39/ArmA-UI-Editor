@@ -44,6 +44,7 @@ namespace ArmA.Studio
         public ICommand CmdDockingManagerInitialized { get; private set; }
         public ICommand CmdDockingManagerUnloaded { get; private set; }
         public ICommand CmdMainWindowClosing { get; private set; }
+        public ICommand CmdSwitchWorkspace { get; private set; }
 
         public string WorkingDir { get; private set; }
 
@@ -92,9 +93,9 @@ namespace ArmA.Studio
                 if (dm == null)
                     return;
                 LoadLayout(dm, Path.Combine(App.ConfigPath, CONST_DOCKING_MANAGER_LAYOUT_NAME));
-                foreach(var panel in AllPanels)
+                foreach (var panel in AllPanels)
                 {
-                    if(panel.IsSelected)
+                    if (panel.IsSelected)
                     {
                         this.PanelsDisplayed.Add(panel);
                     }
@@ -108,7 +109,9 @@ namespace ArmA.Studio
                 SaveLayout(dm, Path.Combine(App.ConfigPath, CONST_DOCKING_MANAGER_LAYOUT_NAME));
             });
             this.CmdMainWindowClosing = new RelayCommand((p) => App.Current.Shutdown((int)App.ExitCodes.OK));
+            this.CmdSwitchWorkspace = new RelayCommand((p) => { if (App.SwitchWorkspace()) App.Shutdown(App.ExitCodes.Restart); });
         }
+
 
         private static void LoadLayout(DockingManager dm, string v)
         {

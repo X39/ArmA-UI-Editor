@@ -20,12 +20,13 @@ namespace ArmA.Studio
         public enum ExitCodes
         {
             NoWorkspaceSelected = -1,
-            OK,
-            Restart
+            OK = 0,
+            Restart = 1
         }
-        public static string ExecutablePath { get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase).Substring("file:\\\\".Length - 1); } }
-        public static string SyntaxFilesPath { get { return Path.Combine(ExecutablePath, "SyntaxFiles"); } }
-        public static string ConfigPath { get { return Path.Combine(ExecutablePath, "Configuration"); } }
+        public static string ExecutableDirectory { get { return Path.GetDirectoryName(ExecutableFile); } }
+        public static string ExecutableFile { get { return Assembly.GetExecutingAssembly().GetName().CodeBase.Substring("file:///".Length); } }
+        public static string SyntaxFilesPath { get { return Path.Combine(ExecutableDirectory, "SyntaxFiles"); } }
+        public static string ConfigPath { get { return Path.Combine(ExecutableDirectory, "Configuration"); } }
         public static string TempPath { get { return Path.Combine(Path.GetTempPath(), @"X39\ArmA-Studio"); } }
         public static string CommonApplicationDataPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"X39\ArmA-Studio"); } }
 
@@ -46,22 +47,29 @@ namespace ArmA.Studio
             }
 
             var workspace = ConfigHost.Instance.AppIni["App"]["workspace"];
-            if (string.IsNullOrWhiteSpace(workspace))
+            if (string.IsNullOrWhiteSpace(workspace) && !SwitchWorkspace())
             {
-                var dlgDc = new Dialogs.WorkspaceSelectorDialogDataContext();
-                var dlg = new Dialogs.WorkspaceSelectorDialog(dlgDc);
-                var dlgResult = dlg.ShowDialog();
-                if (!dlgResult.HasValue || !dlgResult.Value)
-                {
-                    this.Shutdown((int)ExitCodes.NoWorkspaceSelected);
-                    return;
-                }
-                workspace = dlgDc.CurrentPath;
-                ConfigHost.Instance.AppIni["App"]["workspace"] = workspace;
+                this.Shutdown((int)ExitCodes.NoWorkspaceSelected);
+                return;
             }
+            workspace = ConfigHost.Instance.AppIni["App"]["workspace"];
             Workspace.CurrentWorkspace = new Workspace(workspace);
             var mwnd = new MainWindow();
             mwnd.Show();
+        }
+
+        public static bool SwitchWorkspace()
+        {
+            var dlgDc = new Dialogs.WorkspaceSelectorDialogDataContext();
+            var dlg = new Dialogs.WorkspaceSelectorDialog(dlgDc);
+            var dlgResult = dlg.ShowDialog();
+            if (!dlgResult.HasValue || !dlgResult.Value)
+            {
+                return false;
+            }
+            var workspace = dlgDc.CurrentPath;
+            ConfigHost.Instance.AppIni["App"]["workspace"] = workspace;
+            return true;
         }
 
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -78,8 +86,13 @@ namespace ArmA.Studio
             ConfigHost.Instance.Save();
             if(e.ApplicationExitCode == (int)ExitCodes.Restart)
             {
-                Process.Start(ExecutablePath);
+                Process.Start(ExecutableFile);
             }
+        }
+
+        public static void Shutdown(ExitCodes code)
+        {
+            App.Current.Shutdown((int)code);
         }
     }
 }

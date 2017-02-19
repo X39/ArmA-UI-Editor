@@ -19,6 +19,9 @@
         <DockPanel.Resources>
         </DockPanel.Resources>
         <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Switch Workspace" Command="{Binding CmdSwitchWorkspace}"/>
+            </MenuItem>
             <MenuItem Header="Panels" ItemsSource="{Binding AllPanels}">
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="MenuItem">
