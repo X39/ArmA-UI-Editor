@@ -68,6 +68,11 @@ namespace ArmA.Studio.SolutionUtil
             get { return this._FileName; }
             set
             {
+                if(this.CancelRename)
+                {
+                    this.CancelRename = false;
+                    return;
+                }
                 if (value.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
                     throw new InvalidOperationException(Properties.Localization.SolutionFile_NameContainsInvalidFiles);
                 var wasNull = string.IsNullOrWhiteSpace(this._FileName);
@@ -112,6 +117,18 @@ namespace ArmA.Studio.SolutionUtil
         public ICommand CmdContextMenu_Delete { get { return new UI.Commands.RelayCommand(OnDelete); } }
 
         [XmlIgnore]
+        public ICommand CmdTextBoxKeyDown { get { return new UI.Commands.RelayCommand(OnTextBoxKeyDown); } }
+
+        private void OnTextBoxKeyDown(object obj)
+        {
+            if(Keyboard.IsKeyDown(Key.Escape))
+            {
+                this.CancelRename = true;
+                this.IsInRenameMode = false;
+            }
+        }
+
+        [XmlIgnore]
         ///FUCK CONTEXTMENUS! ... workaround for lack of double-relativesource-binding
         public Solution __Sol { get { return Workspace.CurrentWorkspace.CurrentSolution; } }
 
@@ -131,6 +148,10 @@ namespace ArmA.Studio.SolutionUtil
 
         [XmlAttribute("expanded")]
         public bool IsExpanded { get { return this._IsExpanded; } set { this._IsExpanded = value; this.RaisePropertyChanged(); } }
+
+        [XmlIgnore]
+        public bool CancelRename { get; private set; }
+
         private bool _IsExpanded;
 
         protected virtual void OnMouseDoubleClick(object param)
@@ -194,11 +215,25 @@ namespace ArmA.Studio.SolutionUtil
             //ToDo: Catch IOException and notify user
             try
             {
-                var docBase = Workspace.CurrentWorkspace.GetDocumentOfSolutionFileBase(this);
-                docBase.SaveDocument(docBase.FilePath);
-                Workspace.CurrentWorkspace.DocumentsDisplayed.Remove(docBase);
-                File.Move(fPath, Path.Combine(Path.GetDirectoryName(fPath), newFileName));
-                Workspace.CurrentWorkspace.OpenOrFocusDocument(Path.Combine(Path.GetDirectoryName(fPath), newFileName));
+                var fInfo = new FileInfo(fPath);
+                if(fInfo.Attributes == FileAttributes.Directory)
+                {
+                    Directory.Move(fPath, Path.Combine(Path.GetDirectoryName(fPath), newFileName));
+                }
+                else
+                {
+                    var docBase = Workspace.CurrentWorkspace.GetDocumentOfSolutionFileBase(this);
+                    if (docBase != null)
+                    {
+                        docBase.SaveDocument(docBase.FilePath);
+                        Workspace.CurrentWorkspace.DocumentsDisplayed.Remove(docBase);
+                    }
+                    File.Move(fPath, Path.Combine(Path.GetDirectoryName(fPath), newFileName));
+                    if (docBase != null)
+                    {
+                        Workspace.CurrentWorkspace.OpenOrFocusDocument(Path.Combine(Path.GetDirectoryName(fPath), newFileName));
+                    }
+                }
             }
             catch (Exception ex)
             {

@@ -149,6 +149,9 @@
     <Compile Include="UI\Attached\Eventing\TextChanged.cs" />
     <Compile Include="UI\Attached\Eventing\MouseDoubleClick.cs" />
     <Compile Include="UI\Attached\DialogResultAttached.cs" />
+    <Compile Include="UI\Attached\LooseFocusOnKeyAttached.cs" />
+    <Compile Include="UI\Attached\SelectFileNameOnFocusAttached.cs" />
+    <Compile Include="UI\Attached\SelectAllOnFocusAttached.cs" />
     <Compile Include="UI\Attached\TextboxInputTypeAttached.cs" />
     <Compile Include="UI\Commands\RelayCommand.cs" />
     <Compile Include="UI\Commands\RelayCommandAsync.cs" />
