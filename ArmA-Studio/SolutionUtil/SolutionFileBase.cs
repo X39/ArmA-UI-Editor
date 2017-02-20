@@ -79,6 +79,8 @@ namespace ArmA.Studio.SolutionUtil
                 this.PerformRenameInFileSystem(value);
                 this._FileName = value;
                 this.RaisePropertyChanged();
+                this.RaisePropertyChanged("FullPath");
+                this.RaisePropertyChanged("RelativePath");
                 if (wasNull)
                     return;
                 if(this.Parent != null)

@@ -11,6 +11,6 @@
       xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
       xmlns:SolutionUtil="clr-namespace:ArmA.Studio.SolutionUtil;assembly=ArmA-Studio">
     <Grid>
-        <ae:TextEditor Document="{Binding Document}" SyntaxHighlighting="{Binding SyntaxDefinition, diag:PresentationTraceSources.TraceLevel=High}" ev:TextChanged.Command="{Binding CmdTextChanged}" ev:KeyDown.Command="{Binding CmdKeyDown}" ShowLineNumbers="True" FontFamily="Consolas"></ae:TextEditor>
+        <ae:TextEditor x:Name="TextEditor" Document="{Binding Document}" SyntaxHighlighting="{Binding SyntaxDefinition, diag:PresentationTraceSources.TraceLevel=High}" ev:TextChanged.Command="{Binding CmdTextChanged}" ev:KeyDown.Command="{Binding CmdKeyDown}" ShowLineNumbers="True" FontFamily="Consolas" ev:Initialized.Command="{Binding CmdTextEditorInitialized}" ev:Initialized.CommandParameter="{Binding RelativeSource={RelativeSource Self}}"></ae:TextEditor>
     </Grid>
 </DataTemplate>

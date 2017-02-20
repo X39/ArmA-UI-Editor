@@ -40,8 +40,12 @@ namespace ArmA.Studio.DataContext
         public TextDocument Document { get { return this._Document; } set { this._Document = value; this.RaisePropertyChanged(); } }
         private TextDocument _Document;
 
+        public ICSharpCode.AvalonEdit.TextEditor Editor { get { return this._Editor; } set { this._Editor = value; this.RaisePropertyChanged(); this.OnTextEditorSet(); } }
+        private ICSharpCode.AvalonEdit.TextEditor _Editor;
+
         public ICommand CmdTextChanged { get; private set; }
         public ICommand CmdKeyDown { get; private set; }
+        public ICommand CmdTextEditorInitialized { get; private set; }
 
         public SolutionUtil.SolutionFileBase SFBRef { get; private set; }
 
@@ -49,6 +53,7 @@ namespace ArmA.Studio.DataContext
         {
             this.CmdTextChanged = new UI.Commands.RelayCommand(OnTextChanged);
             this.CmdKeyDown = new UI.Commands.RelayCommand(OnKeyDown);
+            this.CmdTextEditorInitialized = new UI.Commands.RelayCommand((p) => this.Editor = p as ICSharpCode.AvalonEdit.TextEditor);
             this._Document = new TextDocument();
         }
 
@@ -57,6 +62,7 @@ namespace ArmA.Studio.DataContext
             this.HasChanges = true;
             this.RaisePropertyChanged("Title");
         }
+        protected virtual void OnTextEditorSet() { }
         protected virtual void OnKeyDown(object param)
         {
             if (Keyboard.IsKeyDown(Key.S) && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))

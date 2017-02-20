@@ -23,5 +23,10 @@ namespace ArmA.Studio.SolutionUtil
         {
             return null;
         }
+
+        [XmlArray("breakpoints")]
+        [XmlArrayItem("breakpoint")]
+        public ObservableSortedCollection<int> BreakPoints { get { return this._BreakPoints; } set { this._BreakPoints = value; this.RaisePropertyChanged(); } }
+        private ObservableSortedCollection<int> _BreakPoints;
     }
 }

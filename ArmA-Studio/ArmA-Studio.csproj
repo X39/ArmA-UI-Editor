@@ -153,6 +153,7 @@
     <Compile Include="UI\Attached\SelectFileNameOnFocusAttached.cs" />
     <Compile Include="UI\Attached\SelectAllOnFocusAttached.cs" />
     <Compile Include="UI\Attached\TextboxInputTypeAttached.cs" />
+    <Compile Include="UI\BreakPointMargin.cs" />
     <Compile Include="UI\Commands\RelayCommand.cs" />
     <Compile Include="UI\Commands\RelayCommandAsync.cs" />
     <Compile Include="UI\Converters\BoolInvertConverter.cs" />
