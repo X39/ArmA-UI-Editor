@@ -159,27 +159,27 @@ namespace VirtualRealityEngine.Config.Parser
     public class Errors {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         public int Count { get { return this.ErrorList.Count; } }
-        public List<Tuple<int, int>> ErrorList;
+        public List<Tuple<int, int, string>> ErrorList;
         public string errMsgFormat = "line {0} col {1}: {2}"; // 0=line, 1=column, 2=text
         public Errors()
         {
-            ErrorList = new List<Tuple<int, int>>();
+            ErrorList = new List<Tuple<int, int, string>>();
         }
 
         public virtual void SynErr (int line, int col, int n, int offset, int length) {
-            ErrorList.Add(new Tuple<int, int>(offset, length));
             string s;
             switch (n) {
     -->errors
                 default: s = "error " + n; break;
             }
             logger.Error(string.Format(errMsgFormat, line, col, s));
-        }
+                    ErrorList.Add(new Tuple<int, int, string>(offset, length, s));
+}
 
         public virtual void SemErr (int line, int col, string s, int offset, int length) {
-            ErrorList.Add(new Tuple<int, int>(offset, length));
             logger.Error(string.Format(errMsgFormat, line, col, s));
-        }
+                    ErrorList.Add(new Tuple<int, int, string>(offset, length, s));
+}
         
         public virtual void SemErr (string s) {
             logger.Error(s);

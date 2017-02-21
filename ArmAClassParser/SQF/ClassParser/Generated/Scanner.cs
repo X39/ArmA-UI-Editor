@@ -338,6 +338,19 @@ namespace VirtualRealityEngine.Config.Parser
 	bool Comment0() {
 		int level = 1, pos0 = pos, line0 = line, col0 = col, charPos0 = charPos;
 		NextCh();
+			for(;;) {
+				if (ch == 10) {
+					level--;
+					if (level == 0) { oldEols = line - line0; NextCh(); return true; }
+					NextCh();
+				} else if (ch == Buffer.EOF) return false;
+				else NextCh();
+			}
+	}
+
+	bool Comment1() {
+		int level = 1, pos0 = pos, line0 = line, col0 = col, charPos0 = charPos;
+		NextCh();
 		if (ch == '/') {
 			NextCh();
 			for(;;) {
@@ -354,7 +367,7 @@ namespace VirtualRealityEngine.Config.Parser
 		return false;
 	}
 
-	bool Comment1() {
+	bool Comment2() {
 		int level = 1, pos0 = pos, line0 = line, col0 = col, charPos0 = charPos;
 		NextCh();
 		if (ch == '*') {
@@ -395,7 +408,7 @@ namespace VirtualRealityEngine.Config.Parser
             while (ch == ' ' ||
     			ch >= 9 && ch <= 10 || ch == 13
             ) NextCh();
-    		if (ch == '/' && Comment0() ||ch == '/' && Comment1()) return NextToken();
+    		if (ch == '#' && Comment0() ||ch == '/' && Comment1() ||ch == '/' && Comment2()) return NextToken();
             int recKind = noSym;
             int recEnd = pos;
             t = new Token();

@@ -26,6 +26,7 @@ COMPILER CONFIGFILE
 		
 	COMMENTS FROM "/*" TO "*/" NESTED
 	COMMENTS FROM "//" TO '\n'
+	COMMENTS FROM "#" TO '\n'
 	IGNORE '\t' + '\r' + '\n'
 		
 	PRODUCTIONS
@@ -35,34 +36,34 @@ COMPILER CONFIGFILE
                 CONFIG<Root>
             }
 		.
-        CONFIG<ConfigEntry parent> (. var cur = new ConfigEntry(parent); cur.IsField = true; .) =
-            "class" (. cur.FullStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); .)
+        CONFIG<ConfigEntry parent> (. ConfigEntry cur = Root == null ? null : new ConfigEntry(parent); if(Root != null) cur.IsField = true; .) =
+            "class" (. if(Root != null) cur.FullStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); .)
             T_IDENT (.
-				cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+				if(Root != null) {cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 			.)
             [
                 ':'
                 T_IDENT (.
-					cur.ParentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-					cur.ParentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+					if(Root != null) {cur.ParentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+					cur.ParentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 				.)
             ]
             [
-                '{' (. cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Forward); .)
+                '{' (. if(Root != null) cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Forward); .)
                 {
                     FIELD<cur>
                     |
                     CONFIG<cur>
                 }
-                '}' (. cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Backward); .)
+                '}' (. if(Root != null) cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Backward); .)
             ]
-            ';' (. cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
+            ';' (. if(Root != null) cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
         .
-        FIELD<ConfigEntry parent> (. var cur = new ConfigEntry(parent); cur.IsField = true; .) =
+        FIELD<ConfigEntry parent> (. ConfigEntry cur = Root == null ? null : new ConfigEntry(parent); if(Root != null) cur.IsField = true; .) =
             T_IDENT (.
-				cur.FullStart = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+				if(Root != null) {cur.FullStart = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 			.)
             [
                 '['
@@ -72,35 +73,35 @@ COMPILER CONFIGFILE
             (
                 (
                     ARRAY (.
-						cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 					.)
                     |
                     SCALAR (.
-						cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 					.)
                     |
                     STRING (.
-						cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 					.)
                     |
                     BOOLEAN (.
-						cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 					.)
                     |
 					(
-						ANY (. cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); .)
+						ANY (. if(Root != null) cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); .)
 						{
 							ANY
 						}
-						(. cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
+						(. if(Root != null) cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
 					)
                 )
             )
-            ';' (. cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
+            ';' (. if(Root != null) cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
         .
         SCALAR =
             T_SCALAR
@@ -123,23 +124,25 @@ COMPILER CONFIGFILE
         .
         ARRAY = 
             '{'
-            (
-                SCALAR
-                |
-                STRING
-                |
-                BOOLEAN
-            )
-            {
-                ','
-                (
-                    SCALAR
-                    |
-                    STRING
-                    |
-                    BOOLEAN
-                )
-            }
+            [
+				(
+					SCALAR
+					|
+					STRING
+					|
+					BOOLEAN
+				)
+				{
+					','
+					(
+						SCALAR
+						|
+						STRING
+						|
+						BOOLEAN
+					)
+				}
+			]
             '}'
         .
 END CONFIGFILE.

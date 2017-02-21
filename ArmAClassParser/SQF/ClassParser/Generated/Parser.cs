@@ -141,23 +141,23 @@ namespace VirtualRealityEngine.Config.Parser
 	}
 
 	void CONFIG(ConfigEntry parent) {
-		var cur = new ConfigEntry(parent); cur.IsField = true; 
+		ConfigEntry cur = Root == null ? null : new ConfigEntry(parent); if(Root != null) cur.IsField = true; 
 		Expect(6);
-		cur.FullStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); 
+		if(Root != null) cur.FullStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); 
 		Expect(5);
-		cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+		if(Root != null) {cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 		
 		if (la.kind == 7) {
 			Get();
 			Expect(5);
-			cur.ParentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ParentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			if(Root != null) {cur.ParentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ParentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 			
 		}
 		if (la.kind == 8) {
 			Get();
-			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Forward); 
+			if(Root != null) cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Forward); 
 			while (la.kind == 5 || la.kind == 6) {
 				if (la.kind == 5) {
 					FIELD(cur);
@@ -166,17 +166,17 @@ namespace VirtualRealityEngine.Config.Parser
 				}
 			}
 			Expect(9);
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Backward); 
+			if(Root != null) cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Backward); 
 		}
 		Expect(10);
-		cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
+		if(Root != null) cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
 	}
 
 	void FIELD(ConfigEntry parent) {
-		var cur = new ConfigEntry(parent); cur.IsField = true; 
+		ConfigEntry cur = Root == null ? null : new ConfigEntry(parent); if(Root != null) cur.IsField = true; 
 		Expect(5);
-		cur.FullStart = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+		if(Root != null) {cur.FullStart = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 		
 		if (la.kind == 11) {
 			Get();
@@ -185,54 +185,56 @@ namespace VirtualRealityEngine.Config.Parser
 		Expect(13);
 		if (la.kind == 8) {
 			ARRAY();
-			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 			
 		} else if (la.kind == 1 || la.kind == 2) {
 			SCALAR();
-			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 			
 		} else if (la.kind == 3 || la.kind == 4) {
 			STRING();
-			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 			
 		} else if (la.kind == 14 || la.kind == 15) {
 			BOOLEAN();
-			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);
+			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
+			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
 			
 		} else if (StartOf(1)) {
 			Get();
-			cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); 
+			if(Root != null) cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); 
 			while (StartOf(2)) {
 				Get();
 			}
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
+			if(Root != null) cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
 		} else SynErr(18);
 		Expect(10);
-		cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
+		if(Root != null) cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
 	}
 
 	void ARRAY() {
 		Expect(8);
-		if (la.kind == 1 || la.kind == 2) {
-			SCALAR();
-		} else if (la.kind == 3 || la.kind == 4) {
-			STRING();
-		} else if (la.kind == 14 || la.kind == 15) {
-			BOOLEAN();
-		} else SynErr(19);
-		while (la.kind == 16) {
-			Get();
+		if (StartOf(3)) {
 			if (la.kind == 1 || la.kind == 2) {
 				SCALAR();
 			} else if (la.kind == 3 || la.kind == 4) {
 				STRING();
-			} else if (la.kind == 14 || la.kind == 15) {
+			} else {
 				BOOLEAN();
-			} else SynErr(20);
+			}
+			while (la.kind == 16) {
+				Get();
+				if (la.kind == 1 || la.kind == 2) {
+					SCALAR();
+				} else if (la.kind == 3 || la.kind == 4) {
+					STRING();
+				} else if (la.kind == 14 || la.kind == 15) {
+					BOOLEAN();
+				} else SynErr(19);
+			}
 		}
 		Expect(9);
 	}
@@ -242,7 +244,7 @@ namespace VirtualRealityEngine.Config.Parser
 			Get();
 		} else if (la.kind == 2) {
 			Get();
-		} else SynErr(21);
+		} else SynErr(20);
 	}
 
 	void STRING() {
@@ -250,7 +252,7 @@ namespace VirtualRealityEngine.Config.Parser
 			Get();
 		} else if (la.kind == 4) {
 			Get();
-		} else SynErr(22);
+		} else SynErr(21);
 	}
 
 	void BOOLEAN() {
@@ -258,7 +260,7 @@ namespace VirtualRealityEngine.Config.Parser
 			Get();
 		} else if (la.kind == 15) {
 			Get();
-		} else SynErr(23);
+		} else SynErr(22);
 	}
 
 
@@ -275,7 +277,8 @@ namespace VirtualRealityEngine.Config.Parser
         static readonly bool[,] set = {
     		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
 		{_x,_x,_x,_x, _x,_T,_T,_T, _x,_T,_T,_T, _T,_T,_x,_x, _T,_T,_x},
-		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _T,_T,_T,_T, _T,_T,_x}
+		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _T,_T,_T,_T, _T,_T,_x},
+		{_x,_T,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _x,_x,_x}
 
         };
     } // end Parser
@@ -284,15 +287,14 @@ namespace VirtualRealityEngine.Config.Parser
     public class Errors {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         public int Count { get { return this.ErrorList.Count; } }
-        public List<Tuple<int, int>> ErrorList;
+        public List<Tuple<int, int, string>> ErrorList;
         public string errMsgFormat = "line {0} col {1}: {2}"; // 0=line, 1=column, 2=text
         public Errors()
         {
-            ErrorList = new List<Tuple<int, int>>();
+            ErrorList = new List<Tuple<int, int, string>>();
         }
 
         public virtual void SynErr (int line, int col, int n, int offset, int length) {
-            ErrorList.Add(new Tuple<int, int>(offset, length));
             string s;
             switch (n) {
     			case 0: s = "EOF expected"; break;
@@ -315,20 +317,20 @@ namespace VirtualRealityEngine.Config.Parser
 			case 17: s = "??? expected"; break;
 			case 18: s = "invalid FIELD"; break;
 			case 19: s = "invalid ARRAY"; break;
-			case 20: s = "invalid ARRAY"; break;
-			case 21: s = "invalid SCALAR"; break;
-			case 22: s = "invalid STRING"; break;
-			case 23: s = "invalid BOOLEAN"; break;
+			case 20: s = "invalid SCALAR"; break;
+			case 21: s = "invalid STRING"; break;
+			case 22: s = "invalid BOOLEAN"; break;
 
                 default: s = "error " + n; break;
             }
             logger.Error(string.Format(errMsgFormat, line, col, s));
-        }
+                    ErrorList.Add(new Tuple<int, int, string>(offset, length, s));
+}
 
         public virtual void SemErr (int line, int col, string s, int offset, int length) {
-            ErrorList.Add(new Tuple<int, int>(offset, length));
             logger.Error(string.Format(errMsgFormat, line, col, s));
-        }
+                    ErrorList.Add(new Tuple<int, int, string>(offset, length, s));
+}
         
         public virtual void SemErr (string s) {
             logger.Error(s);
