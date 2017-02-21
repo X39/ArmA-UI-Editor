@@ -131,6 +131,10 @@ namespace ArmA.Studio
             {
                 //ToDo: Log failed layout loading
             }
+            foreach (var it in CurrentWorkspace.CurrentSolution.LastOpenDocumentPaths)
+            {
+                CurrentWorkspace.OpenOrFocusDocument(it);
+            }
         }
         private static void SaveLayout(DockingManager dm, string v)
         {
@@ -148,6 +152,11 @@ namespace ArmA.Studio
 
         public void OpenOrFocusDocument(string path)
         {
+            path = path.Trim('/', '\\');
+            if (Path.IsPathRooted(path))
+            {
+                path = path.Substring(this.WorkingDir.Length + 1);
+            }
             var fullPath = Path.Combine(this.WorkingDir, path);
             //Check if document is already open and select instead of open
             foreach (var doc in DocumentsDisplayed)
@@ -232,7 +241,6 @@ namespace ArmA.Studio
         private void Close()
         {
             var solutionFile = Directory.EnumerateFiles(this.WorkingDir, "*.assln").FirstOrDefault();
-            this.CurrentSolution.XmlSerialize(Path.Combine(this.WorkingDir, solutionFile == null ? string.Concat(Path.GetFileName(this.WorkingDir), ".assln") : solutionFile));
             //Save Layout GUIDs of the panels
             foreach (var panel in AllPanels)
             {
@@ -243,6 +251,8 @@ namespace ArmA.Studio
                 section["ContentId"] = panel.ContentId;
                 section["IsSelected"] = panel.IsSelected.ToString();
             }
+            this.CurrentSolution.LastOpenDocumentPaths = this.DocumentsDisplayed.Select((d) => d.FilePath.Substring(this.WorkingDir.Length)).ToList();
+            this.CurrentSolution.XmlSerialize(Path.Combine(this.WorkingDir, solutionFile == null ? string.Concat(Path.GetFileName(this.WorkingDir), ".assln") : solutionFile));
         }
 
         private static IEnumerable<PanelBase> FindAllAnchorablePanelsInAssembly()
