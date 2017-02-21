@@ -53,7 +53,11 @@ namespace ArmA.Studio.DataContext
         {
             this.CmdTextChanged = new UI.Commands.RelayCommand(OnTextChanged);
             this.CmdKeyDown = new UI.Commands.RelayCommand(OnKeyDown);
-            this.CmdTextEditorInitialized = new UI.Commands.RelayCommand((p) => this.Editor = p as ICSharpCode.AvalonEdit.TextEditor);
+            this.CmdTextEditorInitialized = new UI.Commands.RelayCommand((p) =>
+            {
+                this.Editor = p as ICSharpCode.AvalonEdit.TextEditor;
+                this.Editor.TextArea.TextView.BackgroundRenderers.Add(new UI.LineHighlighterBackgroundRenderer(this.Editor));
+            });
             this._Document = new TextDocument();
         }
 
