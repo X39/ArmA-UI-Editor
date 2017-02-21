@@ -118,9 +118,9 @@ namespace ArmA.Studio.UI
             {
                 var line = this.Document.GetLineByNumber(lNum);
                 var segment = new TextSegment { StartOffset = line.Offset, EndOffset = line.EndOffset };
-                foreach (Rect r in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment))
+                foreach (var rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment))
                 {
-                    drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(16, 200, 0, 0)), null, new Rect(r.Location, new Size(textView.ActualWidth, r.Height)));
+                    drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(32, 200, 0, 0)), null, new Rect(rect.Location, new Size(textView.ActualWidth, rect.Height)));
                 }
             }
         }
