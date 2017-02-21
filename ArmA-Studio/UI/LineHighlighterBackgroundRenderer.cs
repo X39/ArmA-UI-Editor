@@ -32,9 +32,11 @@ namespace ArmA.Studio.UI
             textView.EnsureVisualLines();
             var line = this.Editor.Document.GetLineByOffset(this.Editor.CaretOffset);
             var segment = new TextSegment { StartOffset = line.Offset, EndOffset = line.EndOffset };
+            var color = new SolidColorBrush(ConfigHost.Coloring.HighlightColor);
+            var pen = new Pen(new SolidColorBrush(ConfigHost.Coloring.HighlightColorBorder), 1);
             foreach (var rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment))
             {
-                drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(64, 255, 255, 255)), null, new Rect(rect.Location, new Size(textView.ActualWidth, rect.Height)));
+                drawingContext.DrawRectangle(color, pen, new Rect(rect.Location, new Size(textView.ActualWidth, rect.Height)));
             }
         }
     }

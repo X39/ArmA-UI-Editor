@@ -61,6 +61,8 @@ namespace ArmA.Studio.UI
             if (view == null || !view.VisualLinesValid)
                 return;
             drawingContext.DrawRectangle(Brushes.LightGray, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+            var color = new SolidColorBrush(ConfigHost.Coloring.BreakpointColor);
+            var pen = new Pen(new SolidColorBrush(ConfigHost.Coloring.BreakpointColorBorder), 1);
             foreach (var line in view.VisualLines)
             {
                 var lineNumber = this.GetLineNumber(line);
@@ -68,7 +70,7 @@ namespace ArmA.Studio.UI
                 {
                     double lineTop = line.GetTextLineVisualYPosition(line.TextLines[0], VisualYPosition.TextTop) - view.VerticalOffset;
                     double LineBot = line.GetTextLineVisualYPosition(line.TextLines[0], VisualYPosition.TextBottom) - view.VerticalOffset;
-                    drawingContext.DrawRoundedRectangle(Brushes.Red, new Pen(Brushes.White, 1), new Rect((18 - 12) / 2, lineTop, 12, 12), 5, 5);
+                    drawingContext.DrawRoundedRectangle(color, pen, new Rect((18 - 12) / 2, lineTop, 12, 12), 5, 5);
                 }
             }
             
@@ -114,13 +116,14 @@ namespace ArmA.Studio.UI
         public void Draw(TextView textView, DrawingContext drawingContext)
         {
             textView.EnsureVisualLines();
+            var color = new SolidColorBrush(ConfigHost.Coloring.BreakpointRectColor);
             foreach (var lNum in this.SolutionFileRef.BreakPoints)
             {
                 var line = this.Document.GetLineByNumber(lNum);
                 var segment = new TextSegment { StartOffset = line.Offset, EndOffset = line.EndOffset };
                 foreach (var rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment))
                 {
-                    drawingContext.DrawRectangle(new SolidColorBrush(Color.FromArgb(32, 200, 0, 0)), null, new Rect(rect.Location, new Size(textView.ActualWidth, rect.Height)));
+                    drawingContext.DrawRectangle(color, null, new Rect(rect.Location, new Size(textView.ActualWidth, rect.Height)));
                 }
             }
         }

@@ -25,6 +25,22 @@ namespace Utility
             double dummy;
             return double.TryParse(val, style, culture, out dummy);
         }
+
+        public static bool IsInteger(this string val)
+        {
+            int dummy;
+            return int.TryParse(val, NumberStyles.Number, CultureInfo.InvariantCulture, out dummy);
+        }
+        public static bool IsInteger(this string val, CultureInfo culture)
+        {
+            int dummy;
+            return int.TryParse(val, NumberStyles.Number, culture, out dummy);
+        }
+        public static bool IsInteger(this string val, CultureInfo culture, NumberStyles style)
+        {
+            int dummy;
+            return int.TryParse(val, style, culture, out dummy);
+        }
         #endregion
     }
 }

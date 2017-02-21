@@ -41,18 +41,13 @@ namespace ArmA.Studio
             LogManager.ReconfigExistingLoggers();
             */
 
-            if (ConfigHost.Instance.AppIni["App"] == null)
-            {
-                ConfigHost.Instance.AppIni.Sections.AddSection("App");
-            }
-
-            var workspace = ConfigHost.Instance.AppIni["App"]["workspace"];
+            var workspace = ConfigHost.App.WorkspacePath;
             if (string.IsNullOrWhiteSpace(workspace) && !SwitchWorkspace())
             {
                 this.Shutdown((int)ExitCodes.NoWorkspaceSelected);
                 return;
             }
-            workspace = ConfigHost.Instance.AppIni["App"]["workspace"];
+            workspace = ConfigHost.App.WorkspacePath;
             Workspace.CurrentWorkspace = new Workspace(workspace);
             var mwnd = new MainWindow();
             mwnd.Show();
@@ -68,7 +63,7 @@ namespace ArmA.Studio
                 return false;
             }
             var workspace = dlgDc.CurrentPath;
-            ConfigHost.Instance.AppIni["App"]["workspace"] = workspace;
+            ConfigHost.App.WorkspacePath = workspace;
             return true;
         }
 
@@ -81,13 +76,12 @@ namespace ArmA.Studio
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            
             Workspace.CurrentWorkspace = null;
-            ConfigHost.Instance.Save();
             if(e.ApplicationExitCode == (int)ExitCodes.Restart)
             {
                 Process.Start(ExecutableFile);
             }
+            ConfigHost.Instance.Save(ConfigHost.EIniSelector.Layout);
         }
 
         public static void Shutdown(ExitCodes code)

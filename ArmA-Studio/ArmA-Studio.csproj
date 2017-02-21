@@ -95,6 +95,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IniHelper.cs" />
     <Compile Include="UI\LineHighlighterBackgroundRenderer.cs" />
     <Compile Include="ConfigHost.cs" />
     <Compile Include="DataContext\PropertiesPane.cs" />
