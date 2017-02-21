@@ -9,6 +9,9 @@ using System.Windows;
 using System.Reflection;
 using System.Diagnostics;
 using System.Xml;
+using NLog;
+using ArmA.Studio.LoggerTargets;
+using NLog.Config;
 
 namespace ArmA.Studio
 {
@@ -30,17 +33,21 @@ namespace ArmA.Studio
         public static string TempPath { get { return Path.Combine(Path.GetTempPath(), @"X39\ArmA-Studio"); } }
         public static string CommonApplicationDataPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"X39\ArmA-Studio"); } }
 
+        public static SubscribableTarget SubscribableLoggerTarget { get; private set; }
+        private void SetupNLog()
+        {
+            //this.TraceListenerInstance = new TraceListener();
+            //System.Diagnostics.Trace.Listeners.Add(this.TraceListenerInstance);
+            SubscribableLoggerTarget = new SubscribableTarget();
+            ConfigurationItemFactory.Default.Targets.RegisterDefinition("SubscribableTarget", typeof(SubscribableTarget));
+            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, SubscribableLoggerTarget));
+            LogManager.Configuration.AddTarget(SubscribableLoggerTarget);
+            LogManager.ReconfigExistingLoggers();
+        }
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            //ToDo: Add NLog Logger
-            /*
-            var target = new UI.Snaps.OutputSnap.EventedTarget(); //NLog.Targets.TargetWithLayout
-            NLog.Config.ConfigurationItemFactory.Default.Targets.RegisterDefinition("EventedTarget", typeof(UI.Snaps.OutputSnap.EventedTarget));
-            LogManager.Configuration.LoggingRules.Add(new NLog.Config.LoggingRule("*", LogLevel.Info, target));
-            LogManager.Configuration.AddTarget(target);
-            LogManager.ReconfigExistingLoggers();
-            */
-
+            this.SetupNLog();
             var workspace = ConfigHost.App.WorkspacePath;
             if (string.IsNullOrWhiteSpace(workspace) && !SwitchWorkspace())
             {

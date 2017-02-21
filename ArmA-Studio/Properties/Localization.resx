@@ -203,6 +203,12 @@ Current progress will be lost.</value>
   <data name="OpenInExplorer" xml:space="preserve">
     <value>Open in File Explorer</value>
   </data>
+  <data name="Output_ClearAllToolTip" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="PanelDisplayName_Output" xml:space="preserve">
+    <value>Output</value>
+  </data>
   <data name="PanelDisplayName_Properties" xml:space="preserve">
     <value>Properties</value>
   </data>

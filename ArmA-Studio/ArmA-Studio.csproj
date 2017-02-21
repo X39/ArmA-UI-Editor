@@ -95,7 +95,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataContext\OutputPane.cs" />
     <Compile Include="IniHelper.cs" />
+    <Compile Include="LoggerTargets\SubscribableTarget.cs" />
     <Compile Include="UI\LineHighlighterBackgroundRenderer.cs" />
     <Compile Include="ConfigHost.cs" />
     <Compile Include="DataContext\PropertiesPane.cs" />
@@ -220,6 +222,9 @@
     <EmbeddedResource Include="UI\DataTemplates\UiEditorDocumentTemplate.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\DataTemplates\Output.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -328,6 +333,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Pictograms\ArrowOpen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Pictograms\ClearWindowContent.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

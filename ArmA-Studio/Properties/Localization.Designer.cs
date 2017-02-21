@@ -309,6 +309,24 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear All.
+        /// </summary>
+        public static string Output_ClearAllToolTip {
+            get {
+                return ResourceManager.GetString("Output_ClearAllToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output.
+        /// </summary>
+        public static string PanelDisplayName_Output {
+            get {
+                return ResourceManager.GetString("PanelDisplayName_Output", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Properties.
         /// </summary>
         public static string PanelDisplayName_Properties {

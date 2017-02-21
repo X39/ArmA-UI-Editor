@@ -14,6 +14,7 @@ namespace ArmA.Studio.UI.DataTemplates
         public static DataTemplate SolutionExplorerPane { get; private set; }
         public static DataTemplate PropertiesPane { get; private set; }
         public static DataTemplate DocumentBase { get; private set; }
+        public static DataTemplate OutputPane { get; private set; }
         static AvalonDockTemplateSelector()
         {
             var ass = System.Reflection.Assembly.GetExecutingAssembly();
@@ -50,6 +51,9 @@ namespace ArmA.Studio.UI.DataTemplates
                     case "ArmA.Studio.UI.DataTemplates.DocumentBase.xaml":
                         DocumentBase = template;
                         break;
+                    case "ArmA.Studio.UI.DataTemplates.Output.xaml":
+                        OutputPane = template;
+                        break;
                 }
             }
         }
@@ -62,6 +66,8 @@ namespace ArmA.Studio.UI.DataTemplates
                 return PropertiesPane;
             if (item is DocumentBase)
                 return DocumentBase;
+            if (item is DataContext.OutputPane)
+                return OutputPane;
 
             return base.SelectTemplate(item, container);
         }
