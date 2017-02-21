@@ -22,6 +22,7 @@ namespace ArmA.Studio.UI
             
         }
         
+        
 
         protected override void OnTextViewChanged(TextView oldTextView, TextView newTextView)
         {

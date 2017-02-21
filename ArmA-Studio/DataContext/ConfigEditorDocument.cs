@@ -27,7 +27,7 @@ namespace ArmA.Studio.DataContext
         {
             
         }
-        public override IEnumerable<TextSegment> GetSyntaxErrors()
+        protected override IEnumerable<SyntaxError> GetSyntaxErrors()
         {
             using (var memstream = new MemoryStream())
             {
@@ -42,7 +42,7 @@ namespace ArmA.Studio.DataContext
                 parser.Root = null;
                 parser.doc = null;
                 parser.Parse();
-                return parser.errors.ErrorList.Select((it) => new TextSegment() { StartOffset = it.Item1, Length = it.Item2, EndOffset = it.Item1 + it.Item2 });
+                return parser.errors.ErrorList.Select((it) => new SyntaxError() { StartOffset = it.Item1, Length = it.Item2, Message = it.Item3 });
             }
         }
     }

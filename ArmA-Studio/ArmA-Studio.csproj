@@ -96,6 +96,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DataContext\OutputPane.cs" />
+    <Compile Include="DataContext\SyntaxError.cs" />
     <Compile Include="IniHelper.cs" />
     <Compile Include="LoggerTargets\SubscribableTarget.cs" />
     <Compile Include="SyntaxErrorMarker.cs" />

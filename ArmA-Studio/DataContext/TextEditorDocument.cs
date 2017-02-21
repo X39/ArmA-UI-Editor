@@ -12,6 +12,7 @@ using System.Xml;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Windows.Controls;
 
 namespace ArmA.Studio.DataContext
 {
@@ -50,15 +51,22 @@ namespace ArmA.Studio.DataContext
         public SolutionUtil.SolutionFileBase SFBRef { get; private set; }
 
         internal UI.SyntaxErrorBackgroundRenderer SyntaxErrorRenderer { get; private set; }
+        public IEnumerable<SyntaxError> SyntaxErrors { get; private set; }
+
+        private ToolTip EditorTooltip;
 
         public TextEditorDocument()
         {
+            this.EditorTooltip = new ToolTip();
             this.SyntaxErrorRenderer = new UI.SyntaxErrorBackgroundRenderer();
             this.CmdTextChanged = new UI.Commands.RelayCommand(OnTextChanged);
             this.CmdKeyDown = new UI.Commands.RelayCommand(OnKeyDown);
             this.CmdTextEditorInitialized = new UI.Commands.RelayCommand((p) =>
             {
                 this.Editor = p as ICSharpCode.AvalonEdit.TextEditor;
+                this.Editor.MouseHover += Editor_MouseHover;
+                this.Editor.MouseHoverStopped += Editor_MouseHoverStopped;
+                ;
                 this.Editor.TextArea.TextView.BackgroundRenderers.Add(new UI.LineHighlighterBackgroundRenderer(this.Editor));
                 this.Editor.TextArea.TextView.BackgroundRenderers.Add(this.SyntaxErrorRenderer);
             });
@@ -66,9 +74,35 @@ namespace ArmA.Studio.DataContext
             this._Document.TextChanged += Document_TextChanged;
         }
 
+
+        private void Editor_MouseHover(object sender, MouseEventArgs e)
+        {
+            var pos = e.GetPosition(this.Editor);
+            var textViewPos = this.Editor.GetPositionFromPoint(pos);
+            if (textViewPos.HasValue)
+            {
+                var textOffset = this.Document.GetOffset(textViewPos.Value.Location);
+                var errors = this.SyntaxErrors;
+                foreach(var error in this.SyntaxErrors)
+                {
+                    if(error.StartOffset <= textOffset && error.EndOffset >= textOffset)
+                    {
+                        this.EditorTooltip.PlacementTarget = this.Editor;
+                        this.EditorTooltip.Content = error.Message;
+                        this.EditorTooltip.IsOpen = true;
+                        break;
+                    }
+                }
+            }
+        }
+        private void Editor_MouseHoverStopped(object sender, MouseEventArgs e)
+        {
+            this.EditorTooltip.IsOpen = false;
+        }
+
         private void Document_TextChanged(object sender, EventArgs e)
         {
-            SyntaxErrorRenderer.SyntaxErrors = this.GetSyntaxErrors();
+            this.SyntaxErrors = SyntaxErrorRenderer.SyntaxErrors = this.GetSyntaxErrors();
         }
 
         protected virtual void OnTextChanged(object param)
@@ -139,9 +173,9 @@ namespace ArmA.Studio.DataContext
                 return null;
             }
         }
-        public virtual IEnumerable<TextSegment> GetSyntaxErrors()
+        protected virtual IEnumerable<SyntaxError> GetSyntaxErrors()
         {
-            return new TextSegment[0];
+            return new SyntaxError[0];
         }
     }
 }
