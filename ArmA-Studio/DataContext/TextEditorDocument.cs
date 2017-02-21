@@ -49,16 +49,26 @@ namespace ArmA.Studio.DataContext
 
         public SolutionUtil.SolutionFileBase SFBRef { get; private set; }
 
+        internal UI.SyntaxErrorBackgroundRenderer SyntaxErrorRenderer { get; private set; }
+
         public TextEditorDocument()
         {
+            this.SyntaxErrorRenderer = new UI.SyntaxErrorBackgroundRenderer();
             this.CmdTextChanged = new UI.Commands.RelayCommand(OnTextChanged);
             this.CmdKeyDown = new UI.Commands.RelayCommand(OnKeyDown);
             this.CmdTextEditorInitialized = new UI.Commands.RelayCommand((p) =>
             {
                 this.Editor = p as ICSharpCode.AvalonEdit.TextEditor;
                 this.Editor.TextArea.TextView.BackgroundRenderers.Add(new UI.LineHighlighterBackgroundRenderer(this.Editor));
+                this.Editor.TextArea.TextView.BackgroundRenderers.Add(this.SyntaxErrorRenderer);
             });
             this._Document = new TextDocument();
+            this._Document.TextChanged += Document_TextChanged;
+        }
+
+        private void Document_TextChanged(object sender, EventArgs e)
+        {
+            SyntaxErrorRenderer.SyntaxErrors = this.GetSyntaxErrors();
         }
 
         protected virtual void OnTextChanged(object param)
@@ -129,6 +139,9 @@ namespace ArmA.Studio.DataContext
                 return null;
             }
         }
-
+        public virtual IEnumerable<TextSegment> GetSyntaxErrors()
+        {
+            return new TextSegment[0];
+        }
     }
 }

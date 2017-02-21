@@ -62,7 +62,9 @@ namespace ArmA.Studio.UI
                 return;
             drawingContext.DrawRectangle(Brushes.LightGray, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
             var color = new SolidColorBrush(ConfigHost.Coloring.BreakpointColor);
+            color.Freeze();
             var pen = new Pen(new SolidColorBrush(ConfigHost.Coloring.BreakpointColorBorder), 1);
+            pen.Freeze();
             foreach (var line in view.VisualLines)
             {
                 var lineNumber = this.GetLineNumber(line);
@@ -117,6 +119,7 @@ namespace ArmA.Studio.UI
         {
             textView.EnsureVisualLines();
             var color = new SolidColorBrush(ConfigHost.Coloring.BreakpointRectColor);
+            color.Freeze();
             foreach (var lNum in this.SolutionFileRef.BreakPoints)
             {
                 var line = this.Document.GetLineByNumber(lNum);

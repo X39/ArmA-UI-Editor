@@ -37,6 +37,7 @@ namespace ArmA.Studio.DataContext
         private void Logger_OnLog(object sender, string e)
         {
             this.Document.Insert(this.Document.TextLength, e);
+            this.Document.Insert(this.Document.TextLength, "\r\n");
         }
     }
 }

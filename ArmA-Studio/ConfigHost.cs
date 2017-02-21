@@ -29,6 +29,7 @@ namespace ArmA.Studio
         {
             public static void Reset()
             {
+                SyntaxErrorColor = Color.FromArgb(255, 255, 0, 0);
                 HighlightColor = Color.FromArgb(16, 0, 0, 0);
                 HighlightColorBorder = Color.FromArgb(32, 0, 0, 0);
                 BreakpointColor = Color.FromArgb(255, 255, 0, 0);
@@ -54,6 +55,12 @@ namespace ArmA.Studio
             public static string ColorParse(Color colorInput)
             {
                 return string.Join(",", colorInput.A, colorInput.R, colorInput.G, colorInput.B);
+            }
+
+            public static Color SyntaxErrorColor
+            {
+                get { return ColorParse(Instance.ColoringIni.GetValueOrNull("Coloring", "SyntaxErrorColor")); }
+                set { Instance.ColoringIni.SetValue("Coloring", "SyntaxErrorColor", ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
             }
 
             public static Color HighlightColor

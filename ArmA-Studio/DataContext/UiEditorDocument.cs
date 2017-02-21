@@ -17,21 +17,14 @@ using System.Windows.Threading;
 
 namespace ArmA.Studio.DataContext
 {
-    public class UiEditorDocument : TextEditorDocument
+    public class UiEditorDocument : ConfigEditorDocument
     {
         private sealed class ConfigEntryUiControlBinding : UI.CustomBinding<ConfigEntry, ControlBase>
         {
             public ConfigEntryUiControlBinding(PropertyInfo propSource, ConfigEntry source, PropertyInfo propTarget, ControlBase target) : base(propSource, source, propTarget, target) { }
         }
         private static DataTemplate ThisTemplate { get; set; }
-        private static IHighlightingDefinition ThisSyntaxName { get; set; }
-        static UiEditorDocument()
-        {
-            ThisSyntaxName = LoadAvalonEditSyntaxFiles(Path.Combine(App.SyntaxFilesPath, "armaconfig.xshd"));
-            ThisTemplate = GetDataTemplateFromAssemblyRes("ArmA.Studio.UI.DataTemplates.UiEditorDocumentTemplate.xaml");
-        }
         public override string[] SupportedFileExtensions { get { return new string[] { ".uic" }; } }
-        public override IHighlightingDefinition SyntaxDefinition { get { return ThisSyntaxName; } }
 
         public FlowDocument VirtualConfigDocument { get { return this._VirtualConfigDocument; } set { this._VirtualConfigDocument = value; this.RaisePropertyChanged(); } }
         private FlowDocument _VirtualConfigDocument;
@@ -80,7 +73,7 @@ namespace ArmA.Studio.DataContext
             base.OnTextChanged(param);
         }
 
-        public UiEditorDocument()
+        public UiEditorDocument() : base()
         {
             
         }

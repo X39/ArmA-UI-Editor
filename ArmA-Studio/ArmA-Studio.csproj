@@ -98,6 +98,8 @@
     <Compile Include="DataContext\OutputPane.cs" />
     <Compile Include="IniHelper.cs" />
     <Compile Include="LoggerTargets\SubscribableTarget.cs" />
+    <Compile Include="SyntaxErrorMarker.cs" />
+    <Compile Include="UI\SyntaxErrorBackgroundRenderer.cs" />
     <Compile Include="UI\LineHighlighterBackgroundRenderer.cs" />
     <Compile Include="ConfigHost.cs" />
     <Compile Include="DataContext\PropertiesPane.cs" />
