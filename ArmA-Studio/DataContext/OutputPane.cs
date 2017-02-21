@@ -34,9 +34,9 @@ namespace ArmA.Studio.DataContext
             App.SubscribableLoggerTarget.OnLog += Logger_OnLog;
         }
 
-        private void Logger_OnLog(object sender, string e)
+        private void Logger_OnLog(object sender, LoggerTargets.SubscribableTarget.OnLogEventArgs e)
         {
-            this.Document.Insert(this.Document.TextLength, e);
+            this.Document.Insert(this.Document.TextLength, e.Message);
             this.Document.Insert(this.Document.TextLength, "\r\n");
         }
     }
