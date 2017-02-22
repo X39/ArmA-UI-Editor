@@ -204,8 +204,7 @@ namespace ArmA.Studio
                 {
                     while (ex.InnerException != null)
                         ex = ex.InnerException;
-                    //ToDo: Properly write down message
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(string.Format(Properties.Localization.MessageBoxOperationFailed_Body, ex.Message, ex.GetType().FullName, ex.StackTrace), Properties.Localization.MessageBoxOperationFailed_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
                     this.CurrentSolution = new SolutionUtil.Solution();
                     this.CurrentSolution.Prepare(this);
                     this.CurrentSolution.ReScan();
