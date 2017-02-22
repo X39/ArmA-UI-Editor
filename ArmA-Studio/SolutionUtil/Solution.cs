@@ -66,6 +66,8 @@ namespace ArmA.Studio.SolutionUtil
 
         public Solution()
         {
+            this.LastOpenDocumentPaths = new List<string>();
+            this.FilesCollection = new ObservableSortedCollection<SolutionFileBase>();
         }
         public void Prepare(Workspace workspace)
         {

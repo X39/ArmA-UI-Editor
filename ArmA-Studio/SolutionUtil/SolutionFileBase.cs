@@ -208,13 +208,13 @@ namespace ArmA.Studio.SolutionUtil
         public SolutionFileBase()
         {
             this._Children = new ObservableSortedCollection<SolutionFileBase>();
+            
         }
         private void PerformRenameInFileSystem(string newFileName)
         {
             if (string.IsNullOrWhiteSpace(this.FileName))
                 return;
             var fPath = this.FullPath;
-            //ToDo: Catch IOException and notify user
             try
             {
                 var fInfo = new FileInfo(fPath);
@@ -246,7 +246,6 @@ namespace ArmA.Studio.SolutionUtil
         {
             if (this.Parent == null)
                 return;
-            //ToDo: Catch IOException and notify user
             try
             {
                 var docBase = Workspace.CurrentWorkspace.GetDocumentOfSolutionFileBase(this);
