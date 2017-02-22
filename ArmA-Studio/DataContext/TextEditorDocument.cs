@@ -146,6 +146,7 @@ namespace ArmA.Studio.DataContext
             using (var stream = File.OpenRead(path))
             {
                 this.Document.Text = new StreamReader(stream).ReadToEnd();
+                this.Document.UndoStack.ClearAll();
             }
         }
         public override void ReloadDocument()
