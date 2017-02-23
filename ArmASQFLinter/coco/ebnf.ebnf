@@ -202,6 +202,7 @@ COMPILER SQFDOCUMENT
 				'!'
 			)
 			[
+				(. if(la.kind == _T_IDENT && _BINARY_OPERATORS.Contains(la.val.ToLower()) && !_UNARY_OPERATORS.Contains(la.val.ToLower())) return; .)
 				EXP_HIGHEST (. if(tmpToken.kind == _T_IDENT && !_UNARY_OPERATORS.Contains(tmpToken.val.ToLower())) SemErr(tmpToken.line, tmpToken.col, _ERR_NO_UNARY_OPERATOR, tmpToken.charPos, tmpToken.val.Length); .)
 			]
 		.
