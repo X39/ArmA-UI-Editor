@@ -39,6 +39,8 @@ namespace VirtualRealityEngine.SQF.Parser
 	public readonly string _ERR_NO_UNARY_OPERATOR = "Expected unary operator.";
 	public readonly string _ERR_NO_NULL_OPERATOR = "Expected null operator.";
 	
+	//ToDo: Fix -<EXPRESSION> not being detected correctly
+	
     
 
         public Parser(Scanner scanner) {
