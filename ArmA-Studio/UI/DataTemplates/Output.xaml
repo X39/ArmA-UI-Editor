@@ -16,6 +16,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <ToolBar ToolBarTray.IsLocked="True">
+            <TextBlock Text="{x:Static p:Localization.ShowOutputFromSource}" VerticalAlignment="Center"/>
+            <ComboBox SelectedItem="{Binding SelectedTarget}" ItemsSource="{Binding AvailableTargets}" MinWidth="128"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
             <Button Command="{Binding CmdClearOutputWindow}" ToolTip="{x:Static p:Localization.Output_ClearAllToolTip}">
                 <Image Source="/ArmA-Studio;component/Resources/Pictograms/ClearWindowContent.png"/>
             </Button>

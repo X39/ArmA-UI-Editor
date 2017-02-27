@@ -363,6 +363,15 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show output from:.
+        /// </summary>
+        public static string ShowOutputFromSource {
+            get {
+                return ResourceManager.GetString("ShowOutputFromSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Provided value contains invalid characters.
         /// </summary>
         public static string SolutionFile_NameContainsInvalidFiles {

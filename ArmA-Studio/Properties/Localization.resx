@@ -221,6 +221,9 @@ Current progress will be lost.</value>
   <data name="RescanWorkspace" xml:space="preserve">
     <value>Rescan Workspace</value>
   </data>
+  <data name="ShowOutputFromSource" xml:space="preserve">
+    <value>Show output from:</value>
+  </data>
   <data name="SolutionFile_NameContainsInvalidFiles" xml:space="preserve">
     <value>Provided value contains invalid characters</value>
   </data>

@@ -13,22 +13,30 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ArmA.Studio.UI.Commands;
+using Utility.Collections;
 
 namespace ArmA.Studio.DataContext
 {
     public class OutputPane : PanelBase
     {
-        public TextDocument Document { get { return this._Document; } set { this._Document = value; this.RaisePropertyChanged(); } }
-        private TextDocument _Document;
+        public override string Title { get { return Properties.Localization.PanelDisplayName_Output; } }
 
         public ICommand CmdClearOutputWindow { get; private set; }
 
-        public override string Title { get { return Properties.Localization.PanelDisplayName_Output; } }
+        private Dictionary<string, TextDocument> DocumentDictionary { get; set; }
 
+        public TextDocument Document { get { return this.SelectedTarget == null ? null : DocumentDictionary[this.SelectedTarget as string]; } }
+
+        public object SelectedTarget { get { return this._SelectedTarget; } set { this._SelectedTarget = value; this.RaisePropertyChanged(); this.RaisePropertyChanged(nameof(this.Document)); } }
+        private object _SelectedTarget;
+
+        public ObservableSortedCollection<string> AvailableTargets { get { return this._AvailableTargets; } set { this._AvailableTargets = value; this.RaisePropertyChanged(); } }
+        private ObservableSortedCollection<string> _AvailableTargets;
 
         public OutputPane()
         {
-            this.Document = new TextDocument();
+            this.DocumentDictionary = new Dictionary<string, TextDocument>();
+            this._AvailableTargets = new ObservableSortedCollection<string>();
             this.CmdClearOutputWindow = new RelayCommand((p) => this.Document.Text = string.Empty);
 
             App.SubscribableLoggerTarget.OnLog += Logger_OnLog;
@@ -36,8 +44,13 @@ namespace ArmA.Studio.DataContext
 
         private void Logger_OnLog(object sender, LoggerTargets.SubscribableTarget.OnLogEventArgs e)
         {
-            this.Document.Insert(this.Document.TextLength, e.Message);
-            this.Document.Insert(this.Document.TextLength, "\r\n");
+            if (!this.DocumentDictionary.ContainsKey(e.Logger))
+            {
+                this.DocumentDictionary.Add(e.Logger, new TextDocument());
+                AvailableTargets.Add(e.Logger);
+            }
+            var doc = this.DocumentDictionary[e.Logger];
+            doc.Insert(doc.TextLength, string.Concat(e.Severity, ": ", e.Message, "\r\n"));
         }
     }
 }
