@@ -14,20 +14,40 @@ namespace ArmA.Studio
         private bool BeforeInsert_(LayoutRoot layout, LayoutContent anchorableToShow)
         {
             var dockable = (DockableBase)anchorableToShow.Content;
-            var layoutContent = layout.Descendents().OfType<LayoutContent>().FirstOrDefault(x => x.ContentId == dockable.ContentId);
+            var layoutContent = layout.Descendents().OfType<LayoutContent>().FirstOrDefault(it => it.ContentId == dockable.ContentId);
             if (layoutContent == null)
-                return false;
+            {
+                layoutContent = layout.Hidden.FirstOrDefault(it => it.ContentId == dockable.ContentId);
+                if(layoutContent == null)
+                    return false;
+            }
             layoutContent.Content = anchorableToShow.Content;
 
 
             var layoutContainer = layoutContent.GetType().GetProperty("PreviousContainer", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(layoutContent, null) as ILayoutContainer;
-            if (layoutContainer is LayoutAnchorablePane)
+            if (layoutContainer == null)
+            {
+                return true;
+            }
+            else if (layoutContainer is LayoutAnchorablePane)
+            {
                 (layoutContainer as LayoutAnchorablePane).Children.Add(layoutContent as LayoutAnchorable);
+                return true;
+            }
             else if (layoutContainer is LayoutDocumentPane)
+            {
                 (layoutContainer as LayoutDocumentPane).Children.Add(layoutContent);
+                return true;
+            }
+            else if(layoutContainer is LayoutAnchorGroup)
+            {
+                (layoutContainer as LayoutAnchorGroup).Children.Add(layoutContent as LayoutAnchorable);
+                return true;
+            }
             else
+            {
                 return false;
-            return true;
+            }
         }
 
         public void AfterInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableShown)
