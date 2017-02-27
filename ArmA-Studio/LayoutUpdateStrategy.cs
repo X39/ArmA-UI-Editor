@@ -23,11 +23,18 @@ namespace ArmA.Studio
         public bool BeforeInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableToShow, ILayoutContainer destinationContainer)
         {
             var dockableBase = (DockableBase)anchorableToShow.Content;
-            if(dockableBase.ContentId == null)
+            if(string.IsNullOrWhiteSpace(dockableBase.ContentId))
             {
                 dockableBase.ContentId = Guid.NewGuid().ToString();
             }
-            var layoutContent = layout.Descendents().OfType<LayoutContent>().FirstOrDefault(x => x.ContentId == dockableBase.ContentId);
+            var layoutContent = layout.Descendents().OfType<LayoutContent>().FirstOrDefault(x =>
+            {
+                if(string.IsNullOrWhiteSpace(x.ContentId))
+                {
+                    x.ContentId = Guid.NewGuid().ToString();
+                }
+                return x.ContentId == dockableBase.ContentId;
+            });
             if (layoutContent == null)
                 return false;
             layoutContent.Content = anchorableToShow.Content;

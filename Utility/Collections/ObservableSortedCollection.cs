@@ -7,12 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utility;
+using System.ComponentModel;
 
 namespace Utility.Collections
 {
-    public class ObservableSortedCollection<T> : CollectionBase, IList<T>, INotifyCollectionChanged, IEnumerable<T> where T : IComparable
+    public class ObservableSortedCollection<T> : CollectionBase, IList<T>, INotifyCollectionChanged, IEnumerable<T>, INotifyPropertyChanged where T : IComparable
     {
         public event NotifyCollectionChangedEventHandler CollectionChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public T this[int index] { get { return (T)this.InnerList[index]; } set { this.InnerList[index] = value; } }
 

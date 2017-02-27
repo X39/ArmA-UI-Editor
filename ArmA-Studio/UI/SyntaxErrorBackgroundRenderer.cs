@@ -32,6 +32,8 @@ namespace ArmA.Studio.UI
 
         public void Draw(TextView textView, DrawingContext drawingContext)
         {
+            if (this.SyntaxErrors == null)
+                return;
             var color = new SolidColorBrush(ConfigHost.Coloring.SyntaxErrorColor);
             color.Freeze();
             var pen = new Pen(color, 1);

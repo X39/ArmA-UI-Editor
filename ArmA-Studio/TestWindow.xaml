@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ArmA.Studio"
         mc:Ignorable="d"
         Title="TestWindow" Height="300" Width="300">
-    <Image x:Name="img">
-        
-    </Image>
+    <Popup Placement="Center">
+
+    </Popup>
 </Window>

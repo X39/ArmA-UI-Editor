@@ -15,16 +15,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <StackPanel.Resources>
-                <Style TargetType="Button">
-                    <Setter Property="Margin" Value="0, 0, 8, 0"/>
-                </Style>
-            </StackPanel.Resources>
+        <ToolBar ToolBarTray.IsLocked="True">
             <Button Command="{Binding CmdClearOutputWindow}" ToolTip="{x:Static p:Localization.Output_ClearAllToolTip}">
                 <Image Source="/ArmA-Studio;component/Resources/Pictograms/ClearWindowContent.png"/>
             </Button>
-        </StackPanel>
+        </ToolBar>
         <ae:TextEditor Grid.Row="1" x:Name="TextEditor" Document="{Binding Document}" IsReadOnly="True" FontFamily="Consolas"/>
     </Grid>
 </DataTemplate>

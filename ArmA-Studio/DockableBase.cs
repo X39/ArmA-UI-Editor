@@ -9,10 +9,22 @@ using System.Windows.Media;
 
 namespace ArmA.Studio
 {
-    public abstract class DockableBase : INotifyPropertyChanged
+    public abstract class DockableBase : INotifyPropertyChanged, IComparable
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName]string callerName = "") { this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(callerName)); }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is DockableBase)
+            {
+                return this.Title.CompareTo((obj as DockableBase).Title);
+            }
+            else
+            {
+                return this.Title.CompareTo(obj);
+            }
+        }
 
         public abstract string Title { get; }
         public ImageSource IconSource { get; }

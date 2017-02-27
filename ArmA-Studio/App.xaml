@@ -21,7 +21,8 @@
                     <conv:BoolInvertConverter x:Key="BoolInvertConverter"/>
                     <conv:IsNullConverter x:Key="IsNullConverter"/>
                     <conv:IsStringNullConverter x:Key="IsStringNullConverter"/>
-                    
+
+                    <convm:CollectionContainsConverter x:Key="CollectionContainsConverter"/>
                     <convm:AllTrueMultiConverter x:Key="AllTrueMultiConverter"/>
                     <convm:AllFalseMultiConverter x:Key="AllFalseMultiConverter"/>
                 </ResourceDictionary>

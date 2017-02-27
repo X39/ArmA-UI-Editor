@@ -8,6 +8,7 @@
         xmlns:ads="clr-namespace:Xceed.Wpf.AvalonDock.Themes;assembly=Xceed.Wpf.AvalonDock.Themes.ArmAStudio"
         xmlns:dt="clr-namespace:ArmA.Studio.UI.DataTemplates"
         xmlns:ev="clr-namespace:ArmA.Studio.UI.Attached.Eventing"
+        xmlns:win="clr-namespace:System.Windows;assembly=PresentationCore"
         mc:Ignorable="d"
         Title="ArmA-Studio"
         Height="512"
@@ -28,7 +29,15 @@
                         <Setter Property="Command" Value="{Binding DataContext.CmdDisplayPanel, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"/>
                         <Setter Property="CommandParameter" Value="{Binding}"/>
                         <Setter Property="IsCheckable" Value="True"/>
-                        <Setter Property="IsChecked" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                        <!-- ToDo: Fix panels are only checked when in focus -->
+                        <Setter Property="IsChecked">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource CollectionContainsConverter}" Mode="OneWay">
+                                    <Binding Path="DataContext.PanelsDisplayed" Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}"/>
+                                    <Binding Mode="OneWay"/>
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
                         <Setter Property="Header" Value="{Binding Title}"/>
                     </Style>
                 </MenuItem.ItemContainerStyle>
@@ -40,8 +49,6 @@
         <ad:DockingManager
             ev:Initialized.Command="{Binding CmdDockingManagerInitialized}"
             ev:Initialized.CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-            ev:Unloaded.Command="{Binding CmdDockingManagerUnloaded}"
-            ev:Unloaded.CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
             AnchorablesSource="{Binding PanelsDisplayed}"
             DocumentsSource="{Binding DocumentsDisplayed}">
             <ad:DockingManager.LayoutUpdateStrategy>

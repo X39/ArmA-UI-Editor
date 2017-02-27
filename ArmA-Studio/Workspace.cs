@@ -12,7 +12,7 @@ using ArmA.Studio.UI.Commands;
 using System.Reflection;
 using Xceed.Wpf.AvalonDock;
 using Utility;
-
+using Utility.Collections;
 
 namespace ArmA.Studio
 {
@@ -31,22 +31,41 @@ namespace ArmA.Studio
         public UI.ViewModel.IPropertyDatatemplateProvider CurrentSelectedProperty { get { return this._CurrentSelectedProperty; } set { this._CurrentSelectedProperty = value; this.RaisePropertyChanged(); } }
         public DataTemplate CurrentSelectedPropertyTemplate { get { return this._CurrentSelectedProperty?.PropertiesTemplate; } }
         private UI.ViewModel.IPropertyDatatemplateProvider _CurrentSelectedProperty;
-        public ObservableCollection<PanelBase> PanelsDisplayed { get { return this._PanelsDisplayed; } set { this._PanelsDisplayed = value; this.RaisePropertyChanged(); this.RaisePropertyChanged("CurrentSelectedPropertyTemplate"); } }
+
+        public ObservableCollection<PanelBase> PanelsDisplayed
+        {
+            get { return this._PanelsDisplayed; }
+            set
+            {
+                if(this._PanelsDisplayed != null)
+                    this._PanelsDisplayed.CollectionChanged -= PanelsDisplayed_CollectionChanged;
+                this._PanelsDisplayed = value;
+                this.RaisePropertyChanged();
+                this.RaisePropertyChanged("CurrentSelectedPropertyTemplate");
+
+                this._PanelsDisplayed.CollectionChanged += PanelsDisplayed_CollectionChanged;
+            }
+        }
         private ObservableCollection<PanelBase> _PanelsDisplayed;
+
         public ObservableCollection<PanelBase> AllPanels { get { return this._AllPanels; } set { this._AllPanels = value; this.RaisePropertyChanged(); } }
         private ObservableCollection<PanelBase> _AllPanels;
+
         public ObservableCollection<DocumentBase> DocumentsDisplayed { get { return this._DocumentsDisplayed; } set { this._DocumentsDisplayed = value; this.RaisePropertyChanged(); } }
         private ObservableCollection<DocumentBase> _DocumentsDisplayed;
+
         public ObservableCollection<DocumentBase> AvailableDocuments { get { return this._AvailableDocuments; } set { this._AvailableDocuments = value; this.RaisePropertyChanged(); } }
         private ObservableCollection<DocumentBase> _AvailableDocuments;
+
         public ICommand CmdDisplayPanel { get; private set; }
         public ICommand CmdDisplayLicensesDialog { get; private set; }
         public ICommand CmdDockingManagerInitialized { get; private set; }
-        public ICommand CmdDockingManagerUnloaded { get; private set; }
         public ICommand CmdMainWindowClosing { get; private set; }
         public ICommand CmdSwitchWorkspace { get; private set; }
 
         public string WorkingDir { get; private set; }
+
+        private DockingManager MWDockingManager;
 
         public DocumentBase GetDocumentOfSolutionFileBase(SolutionUtil.SolutionFileBase sfb)
         {
@@ -64,7 +83,7 @@ namespace ArmA.Studio
         {
             this.WorkingDir = path;
             this._AllPanels = new ObservableCollection<PanelBase>(FindAllAnchorablePanelsInAssembly());
-            this._PanelsDisplayed = new ObservableCollection<PanelBase>();
+            this.PanelsDisplayed = new ObservableCollection<PanelBase>();
             this._DocumentsDisplayed = new ObservableCollection<DocumentBase>();
             this._AvailableDocuments = new ObservableCollection<DocumentBase>(FindAllDocumentsInAssembly());
             this.CmdDisplayPanel = new RelayCommand((p) =>
@@ -87,31 +106,19 @@ namespace ArmA.Studio
                 var dlg = new Dialogs.LicenseViewer();
                 var dlgResult = dlg.ShowDialog();
             });
-            this.CmdDockingManagerInitialized = new RelayCommand((p) =>
+            this.CmdDockingManagerInitialized = new RelayCommand((p) => this.DockingMangerInitialized(p as DockingManager));
+            this.CmdMainWindowClosing = new RelayCommand((p) =>
             {
-                var dm = p as DockingManager;
-                if (dm == null)
-                    return;
-                LoadLayout(dm, Path.Combine(App.ConfigPath, CONST_DOCKING_MANAGER_LAYOUT_NAME));
-                foreach (var panel in AllPanels)
-                {
-                    if (panel.IsSelected)
-                    {
-                        this.PanelsDisplayed.Add(panel);
-                    }
-                }
+                SaveLayout(this.MWDockingManager, Path.Combine(App.ConfigPath, CONST_DOCKING_MANAGER_LAYOUT_NAME));
+                App.Current.Shutdown((int)App.ExitCodes.OK);
             });
-            this.CmdDockingManagerUnloaded = new RelayCommand((p) =>
-            {
-                var dm = p as DockingManager;
-                if (dm == null)
-                    return;
-                SaveLayout(dm, Path.Combine(App.ConfigPath, CONST_DOCKING_MANAGER_LAYOUT_NAME));
-            });
-            this.CmdMainWindowClosing = new RelayCommand((p) => App.Current.Shutdown((int)App.ExitCodes.OK));
             this.CmdSwitchWorkspace = new RelayCommand((p) => { if (App.SwitchWorkspace()) App.Shutdown(App.ExitCodes.Restart); });
         }
 
+        private void PanelsDisplayed_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged("PanelsDisplayed");
+        }
 
         private static void LoadLayout(DockingManager dm, string v)
         {
@@ -129,7 +136,7 @@ namespace ArmA.Studio
             }
             catch (Exception ex)
             {
-                //ToDo: Log failed layout loading
+                MessageBox.Show(ex.Message, "docklayout.xml");
             }
             foreach (var it in CurrentWorkspace.CurrentSolution.LastOpenDocumentPaths)
             {
@@ -143,7 +150,7 @@ namespace ArmA.Studio
             {
                 Directory.CreateDirectory(dir);
             }
-            using (var writer = File.OpenWrite(v))
+            using (var writer = File.Open(v, FileMode.Create))
             {
                 var layoutSerializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(dm);
                 layoutSerializer.Serialize(writer);
@@ -189,6 +196,30 @@ namespace ArmA.Studio
             instance.IsSelected = true;
         }
 
+        private void DockingMangerInitialized(DockingManager dm)
+        {
+            if (dm == null)
+                return;
+            this.MWDockingManager = dm;
+            LoadLayout(dm, Path.Combine(App.ConfigPath, CONST_DOCKING_MANAGER_LAYOUT_NAME));
+            foreach (var panel in this.AllPanels)
+            {
+                var iniName = panel.GetIniSectionName();
+                if (ConfigHost.Instance.LayoutIni.Sections.ContainsSection(iniName))
+                {
+                    var section = ConfigHost.Instance.LayoutIni[iniName];
+                    if (section.ContainsKey("IsShown"))
+                    {
+                        bool flag;
+                        if (bool.TryParse(section["IsShown"], out flag) && flag)
+                        {
+                            this.PanelsDisplayed.Add(panel);
+                        }
+                    }
+                }
+            }
+        }
+
         private void Open()
         {
             var solutionFile = Directory.Exists(this.WorkingDir) ? Directory.EnumerateFiles(this.WorkingDir, "*.assln").FirstOrDefault() : string.Empty;
@@ -229,10 +260,6 @@ namespace ArmA.Studio
                     {
                         panel.ContentId = section["ContentId"];
                     }
-                    if (section.ContainsKey("IsSelected"))
-                    {
-                        panel.IsSelected = bool.Parse(section["IsSelected"]);
-                    }
                 }
             }
         }
@@ -248,7 +275,7 @@ namespace ArmA.Studio
                     ConfigHost.Instance.LayoutIni.Sections.AddSection(iniName);
                 var section = ConfigHost.Instance.LayoutIni[iniName];
                 section["ContentId"] = panel.ContentId;
-                section["IsSelected"] = panel.IsSelected.ToString();
+                section["IsShown"] = this.PanelsDisplayed.Contains(panel).ToString();
             }
             this.CurrentSolution.LastOpenDocumentPaths = this.DocumentsDisplayed.Select((d) => d.FilePath.Substring(this.WorkingDir.Length)).ToList();
             this.CurrentSolution.XmlSerialize(Path.Combine(this.WorkingDir, solutionFile == null ? string.Concat(Path.GetFileName(this.WorkingDir), ".assln") : solutionFile));
