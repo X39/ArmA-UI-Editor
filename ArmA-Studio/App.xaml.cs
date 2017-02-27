@@ -51,6 +51,7 @@ namespace ArmA.Studio
             var workspace = ConfigHost.App.WorkspacePath;
             if (string.IsNullOrWhiteSpace(workspace) && !SwitchWorkspace())
             {
+                MessageBox.Show(Studio.Properties.Localization.WorkspaceSelectorDialog_NoWorkspaceSelected, Studio.Properties.Localization.Whoops, MessageBoxButton.OK, MessageBoxImage.Error);
                 this.Shutdown((int)ExitCodes.NoWorkspaceSelected);
                 return;
             }

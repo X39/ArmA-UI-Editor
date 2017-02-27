@@ -7,45 +7,6 @@
         xmlns:p="clr-namespace:ArmA.Studio.Properties"
         xmlns:att="clr-namespace:ArmA.Studio.UI.Attached"
         mc:Ignorable="d"
-        Title="{x:Static p:Localization.ConfigEntrySelectorDialog_Title}" MinHeight="200" SizeToContent="Height" Width="512" Icon="/ArmA-Studio;component/Resources/Logo.ico" att:DialogResultAttached.DialogResult="{Binding DialogResult}">
-    <Grid Grid.Column="1">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="26" FontWeight="SemiBold" Margin="8 0" Text="{x:Static p:Localization.ConfigEntrySelectorDialog_Header}" TextWrapping="Wrap"/>
-            <Image Grid.Column="1" Margin="8 0" Source="/ArmA-Studio;component/Resources/Logo.ico" Width="64" Height="64"/>
-        </Grid>
-        <Border Grid.Row="1" BorderThickness="0 1">
-            <Border.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionColorKey}}"/>
-            </Border.BorderBrush>
-            <Border.Background>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.MenuColorKey}}"/>
-            </Border.Background>
-            <ListView VerticalAlignment="Center" Margin="16" ItemsSource="{Binding ThisCollection}" DisplayMemberPath="Name" SelectedValue="{Binding SelectedValue}"/>
-        </Border>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Margin="8">
-            <Button Padding="8 0" Margin="2 0" MinWidth="100" Command="{Binding CmdOK}">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="IsEnabled" Value="True"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedValue}" Value="{x:Null}">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-                <TextBlock Text="{x:Static p:Localization.Choose}"/>
-            </Button>
-        </StackPanel>
-    </Grid>
+        Title="{x:Static p:Localization.ConfigEntrySelectorDialog_Title}" Style="{StaticResource DialogWindow}">
+    <ListView VerticalAlignment="Center" ItemsSource="{Binding ThisCollection}" DisplayMemberPath="Name" SelectedValue="{Binding SelectedValue}"/>
 </Window>

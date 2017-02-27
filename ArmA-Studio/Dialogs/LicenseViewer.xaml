@@ -7,45 +7,16 @@
         xmlns:local="clr-namespace:ArmA.Studio.Dialogs"
         xmlns:att="clr-namespace:ArmA.Studio.UI.Attached"
         mc:Ignorable="d"
-        Title="{x:Static p:Localization.LicenseViewer_Title}" Height="384" Width="512" Icon="/ArmA-Studio;component/Resources/Logo.ico" att:DialogResultAttached.DialogResult="{Binding DialogResult}">
-    <Grid Grid.Column="1">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        Title="{x:Static p:Localization.LicenseViewer_Title}" Style="{StaticResource DialogWindow}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="26" FontWeight="SemiBold" Margin="8 0" Text="{x:Static p:Localization.LicenseViewer_Header}" TextWrapping="Wrap"/>
-            <Image Grid.Column="1" Margin="8 0" Source="/ArmA-Studio;component/Resources/Logo.ico" Width="64" Height="64"/>
-        </Grid>
-        <Border Grid.Row="1" BorderThickness="0 1" Padding="16">
-            <Border.BorderBrush>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionColorKey}}"/>
-            </Border.BorderBrush>
-            <Border.Background>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.MenuColorKey}}"/>
-            </Border.Background>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="3*"/>
-                </Grid.ColumnDefinitions>
-
-                <ListBox x:Name="lbTitles" Grid.Column="0" ItemsSource="{Binding Licenses}" DisplayMemberPath="Title" SelectedValuePath="Value"/>
-                <GridSplitter Grid.Column="1" Width="5" ResizeBehavior="PreviousAndNext"/>
-                <TextBox Grid.Column="2" HorizontalScrollBarVisibility="Hidden" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Text="{Binding SelectedValue, ElementName=lbTitles}"/>
-            </Grid>
-        </Border>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Margin="8">
-            <Button Padding="8 0" Margin="2 0" MinWidth="100" Command="{Binding CmdOK}">
-                <TextBlock Text="{x:Static p:Localization.OK}"/>
-            </Button>
-        </StackPanel>
+        <ListBox x:Name="lbTitles" Grid.Column="0" ItemsSource="{Binding Licenses}" DisplayMemberPath="Title" SelectedValuePath="Value"/>
+        <GridSplitter Grid.Column="1" Width="5" ResizeBehavior="PreviousAndNext"/>
+        <TextBox Grid.Column="2" HorizontalScrollBarVisibility="Hidden" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Text="{Binding SelectedValue, ElementName=lbTitles}"/>
     </Grid>
 </Window>

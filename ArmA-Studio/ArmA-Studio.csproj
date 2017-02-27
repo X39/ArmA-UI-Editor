@@ -97,6 +97,11 @@
     </ApplicationDefinition>
     <Compile Include="DataContext\OutputPane.cs" />
     <Compile Include="DataContext\SyntaxError.cs" />
+    <Compile Include="Dialogs\IDialogContext.cs" />
+    <Compile Include="Dialogs\PropertiesDialog.xaml.cs">
+      <DependentUpon>PropertiesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PropertiesDialogDataContext.cs" />
     <Compile Include="IniHelper.cs" />
     <Compile Include="LoggerTargets\SubscribableTarget.cs" />
     <Compile Include="SyntaxErrorMarker.cs" />
@@ -189,6 +194,10 @@
     <Page Include="Dialogs\CreateNewFileDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PropertiesDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\WorkspaceSelectorDialog.xaml">
       <SubType>Designer</SubType>
