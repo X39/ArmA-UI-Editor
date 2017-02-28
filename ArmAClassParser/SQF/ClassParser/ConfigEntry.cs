@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Documents;
 
-namespace VirtualRealityEngine.Config.Parser
+namespace RealVirtuality.Config.Parser
 {
     public class ConfigEntry : INotifyPropertyChanged
     {
@@ -57,7 +57,11 @@ namespace VirtualRealityEngine.Config.Parser
         public object Value { get { return _Value; } set {  this._Value = value; this.RaisePropertyChanged(); } }
         public ObservableCollection<ConfigEntry> Children { get { return (ObservableCollection<ConfigEntry>)_Value; } set { this._Value = value; this.RaisePropertyChanged(); this.RaisePropertyChanged("Value"); } }
 
-        public string Name { get { return this.NameStart == null || this.NameEnd == null ? null : new TextRange(this.NameStart, this.NameEnd).Text; } set { if (this.IsDummy) this.Create(); new TextRange(this.NameStart, this.NameEnd).Text = value; this.RaisePropertyChanged(); } }
+        public string Name
+        {
+            get { return this.NameStart == null || this.NameEnd == null ? null : new TextRange(this.NameStart, this.NameEnd).Text; }
+            set { if (this.IsDummy) this.Create(); new TextRange(this.NameStart, this.NameEnd).Text = value; this.RaisePropertyChanged(); }
+        }
         public string Parent
         {
             get { return this.ParentStart == null || this.ParentEnd == null ? null : new TextRange(this.ParentStart, this.ParentEnd).Text; }
@@ -85,9 +89,17 @@ namespace VirtualRealityEngine.Config.Parser
                 this.RaisePropertyChanged();
             }
         }
-        public string Content { get { return this.ContentStart == null || this.ContentEnd == null ? null : new TextRange(this.ContentStart, this.ContentEnd).Text.FromSqfString(); } set { if (this.IsDummy) this.Create(); new TextRange(this.ContentStart, this.ContentEnd).Text = value.ToSqfString(); this.RaisePropertyChanged(); } }
+        public string Content
+        {
+            get { return this.ContentStart == null || this.ContentEnd == null ? null : new TextRange(this.ContentStart, this.ContentEnd).Text; }
+            set { if (this.IsDummy) this.Create(); new TextRange(this.ContentStart, this.ContentEnd).Text = value; this.RaisePropertyChanged(); }
+        }
 
-        public string FullEntry { get { return this.FullStart == null || this.FullEnd == null ? null : new TextRange(this.FullStart, this.FullEnd).Text; } set { new TextRange(this.FullStart, this.FullEnd).Text = value; this.RaisePropertyChanged(); } }
+        public string FullEntry
+        {
+            get { return this.FullStart == null || this.FullEnd == null ? null : new TextRange(this.FullStart, this.FullEnd).Text; }
+            set { new TextRange(this.FullStart, this.FullEnd).Text = value; this.RaisePropertyChanged(); }
+        }
 
         public bool IsField { get; internal set; }
         public bool IsDummy { get { return this.FullStart.GetOffsetToPosition(this.FullEnd) == 0; } }
@@ -115,8 +127,7 @@ namespace VirtualRealityEngine.Config.Parser
                 {
                     var queue = new Queue<string>();
                     queue.Enqueue(key);
-                    var parent = this.TraverseParents(queue);
-                    return parent[key];
+                    return this.TraverseParents(queue);
                 }
                 return null;
             }
@@ -173,7 +184,6 @@ namespace VirtualRealityEngine.Config.Parser
                     }
                     else
                     {
-                        keyqueue.Enqueue(cur.Name);
                         cur = cur.ConfigEntryParent;
                     }
                 } while (cur != null);

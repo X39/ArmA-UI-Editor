@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections;
 
 
-namespace VirtualRealityEngine.Config.Parser
+namespace RealVirtuality.Config.Parser
 {
     public class Token {
         public int kind;    // token kind

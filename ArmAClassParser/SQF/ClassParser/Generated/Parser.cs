@@ -11,7 +11,7 @@ using System;
 using NLog;
 
 
-namespace VirtualRealityEngine.Config.Parser
+namespace RealVirtuality.Config.Parser
 {
     public class Parser {
     	public const int _EOF = 0;

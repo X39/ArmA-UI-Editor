@@ -10,7 +10,7 @@ using System;
 using NLog;
 
 
-namespace VirtualRealityEngine.SQF.Parser
+namespace RealVirtuality.SQF.Parser
 {
     public class Parser {
     	public const int _EOF = 0;
