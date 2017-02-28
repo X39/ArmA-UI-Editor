@@ -117,6 +117,7 @@ namespace ArmA.Studio.DataContext
         private void Document_TextChanged(object sender, EventArgs e)
         {
             this.SyntaxErrors = SyntaxErrorRenderer.SyntaxErrors = this.GetSyntaxErrors();
+            this.ShowIntelliSense();
         }
 
         protected virtual void OnTextChanged(object param)
@@ -145,6 +146,8 @@ namespace ArmA.Studio.DataContext
 
         private void ShowIntelliSense()
         {
+            if (this.Editor == null)
+                return;
             string curWord = string.Empty;
             for (var i = this.Editor.CaretOffset - 1; i >= 0; i--)
             {
@@ -156,7 +159,7 @@ namespace ArmA.Studio.DataContext
                 }
             }
             this.IntelliSenseEntries = this.GetIntelliSenseEntries(this.Document, curWord, this.Editor.CaretOffset);
-            if (this.IntelliSenseEntries.Count >= 0)
+            if (this.IntelliSenseEntries.Count > 0)
             {
                 this.IntelliSenseCurrentWord = curWord;
                 this.IntelliSensePopup.DataContext = this;

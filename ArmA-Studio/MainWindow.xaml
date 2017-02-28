@@ -57,9 +57,9 @@
             <ad:DockingManager.LayoutUpdateStrategy>
                 <local:LayoutUpdateStrategy/>
             </ad:DockingManager.LayoutUpdateStrategy>
-            <ad:DockingManager.Theme>
+            <!--<ad:DockingManager.Theme>
                 <ads:ArmAStudioTheme/>
-            </ad:DockingManager.Theme>
+            </ad:DockingManager.Theme>-->
             <ad:DockingManager.LayoutItemTemplateSelector>
                 <dt:AvalonDockTemplateSelector/>
             </ad:DockingManager.LayoutItemTemplateSelector>
