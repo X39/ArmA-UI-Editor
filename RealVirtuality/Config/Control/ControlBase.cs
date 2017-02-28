@@ -41,26 +41,26 @@ namespace RealVirtuality.Config.Control
         /// the position X of the control in fractions of screen size.
         /// </summary>
         [ConfigPathDescriptor("/x")]
-        public Rectangle PositionX { get { return this._PositionX; } set { this._PositionX = value; RaisePropertyChanged(); } }
-        private Rectangle _PositionX;
+        public double PositionX { get { return this._PositionX; } set { this._PositionX = value; RaisePropertyChanged(); } }
+        private double _PositionX;
         /// <summary>
         /// the position Y of the control in fractions of screen size.
         /// </summary>
         [ConfigPathDescriptor("/y")]
-        public Rectangle PositionY { get { return this._PositionY; } set { this._PositionY = value; RaisePropertyChanged(); } }
-        private Rectangle _PositionY;
+        public double PositionY { get { return this._PositionY; } set { this._PositionY = value; RaisePropertyChanged(); } }
+        private double _PositionY;
         /// <summary>
         /// the Width of the control in fractions of screen size.
         /// </summary>
         [ConfigPathDescriptor("/w")]
-        public Rectangle Width { get { return this._Width; } set { this._Width = value; RaisePropertyChanged(); } }
-        private Rectangle _Width;
+        public double Width { get { return this._Width; } set { this._Width = value; RaisePropertyChanged(); } }
+        private double _Width;
         /// <summary>
         /// the Height of the control in fractions of screen size.
         /// </summary>
         [ConfigPathDescriptor("/h")]
-        public Rectangle Height { get { return this._Height; } set { this._Height = value; RaisePropertyChanged(); } }
-        private Rectangle _Height;
+        public double Height { get { return this._Height; } set { this._Height = value; RaisePropertyChanged(); } }
+        private double _Height;
         ///<summary>
         ///the font size of text (0..1)
         ///</summary>
@@ -76,13 +76,13 @@ namespace RealVirtuality.Config.Control
         ///<summary>
         ///text color
         ///</summary>
-        [ConfigPathDescriptor("/foreground")]
+        [ConfigPathDescriptor("/foreground", Converter = typeof(ColorConverter))]
         public Color Foreground { get { return this._foreground; } set { this._foreground = value; this.RaisePropertyChanged(); } }
         private Color _foreground;
         ///<summary>
         ///background color
         ///</summary>
-        [ConfigPathDescriptor("/background")]
+        [ConfigPathDescriptor("/background", Converter = typeof(ColorConverter))]
         public Color Background { get { return this._Background; } set { this._Background = value; this.RaisePropertyChanged(); } }
         private Color _Background;
         ///<summary>
@@ -106,25 +106,25 @@ namespace RealVirtuality.Config.Control
         ///<summary>
         ///Tooltip background color
         ///</summary>
-        [ConfigPathDescriptor("/tooltipColorShade")]
+        [ConfigPathDescriptor("/tooltipColorShade", Converter = typeof(ColorConverter))]
         public Color TooltipColorShade { get { return this._tooltipColorShade; } set { this._tooltipColorShade = value; this.RaisePropertyChanged(); } }
         private Color _tooltipColorShade;
         ///<summary>
         ///Tooltip text color
         ///</summary>
-        [ConfigPathDescriptor("/tooltipColorText")]
+        [ConfigPathDescriptor("/tooltipColorText", Converter = typeof(ColorConverter))]
         public Color TooltipColorText { get { return this._tooltipColorText; } set { this._tooltipColorText = value; this.RaisePropertyChanged(); } }
         private Color _tooltipColorText;
         ///<summary>
         ///Tooltip border color	
         ///</summary>
-        [ConfigPathDescriptor("/TooltipColorBox")]
+        [ConfigPathDescriptor("/TooltipColorBox", Converter = typeof(ColorConverter))]
         public Color tooltipColorBox { get { return this._tooltipColorBox; } set { this._tooltipColorBox = value; this.RaisePropertyChanged(); } }
         private Color _tooltipColorBox;
         ///<summary>
         ///Option for entry fields (e.g. RscEdit) to activate autocompletion. For known script commands and functions use autocomplete = "scripting".
         ///</summary>
-        [ConfigPathDescriptor("/Autocompete")]
+        [ConfigPathDescriptor("/Autocompete", Converter = typeof(ColorConverter))]
         public string autocompete { get { return this._autocompete; } set { this._autocompete = value; this.RaisePropertyChanged(); } }
         private string _autocompete;
     }

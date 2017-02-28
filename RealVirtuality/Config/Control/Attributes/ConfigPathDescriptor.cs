@@ -13,6 +13,8 @@ namespace RealVirtuality.Config.Control.Attributes
 
         public string Path { get; set; }
 
+        public Type Converter;
+
         public ConfigPathDescriptor(string path)
         {
             this.Path = path;

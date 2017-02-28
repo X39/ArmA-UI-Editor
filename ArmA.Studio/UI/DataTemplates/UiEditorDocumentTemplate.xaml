@@ -97,7 +97,9 @@
                     </ScrollViewer.Template>
                     <ItemsControl ItemsSource="{Binding Controls}">
                         <ItemsControl.Resources>
-                            <DataTemplate DataType=""
+                            <DataTemplate DataType="rvc:ControlBase">
+                                
+                            </DataTemplate>
                         </ItemsControl.Resources>
                     <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -134,7 +136,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Ellipse Fill="Red" Width="25" Height="25" />
+                                <Rectangle Fill="Red" Width="{Binding Width}" Height="{Binding Height}" Canvas.Left="{Binding PositionX}" Canvas.Top="{Binding PositionY}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                         <ItemsControl.ItemContainerStyle>

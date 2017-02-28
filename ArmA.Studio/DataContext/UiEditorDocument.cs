@@ -14,6 +14,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using RealVirtuality.Config.Control;
 using RealVirtuality.Config.Control.Attributes;
 using RealVirtuality.Config.Parser;
+using RealVirtuality.Config;
 using System.Windows.Threading;
 using NLog;
 
@@ -22,9 +23,9 @@ namespace ArmA.Studio.DataContext
     public class UiEditorDocument : ConfigEditorDocument
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private sealed class ConfigEntryUiControlBinding : UI.CustomBinding<ConfigEntry, ControlBase>
+        private sealed class ConfigEntryUiControlBinding : UI.CustomBinding<ConfigEntryExpression, ControlBase>
         {
-            public ConfigEntryUiControlBinding(PropertyInfo propSource, ConfigEntry source, PropertyInfo propTarget, ControlBase target) : base(propSource, source, propTarget, target) { }
+            public ConfigEntryUiControlBinding(PropertyInfo propSource, ConfigEntryExpression source, PropertyInfo propTarget, ControlBase target) : base(propSource, source, propTarget, target) { }
         }
         private static DataTemplate ThisTemplate { get; set; }
         static UiEditorDocument()
@@ -42,6 +43,7 @@ namespace ArmA.Studio.DataContext
         private ObservableCollection<ControlBase> _Controls;
         public override DataTemplate Template { get { return ThisTemplate; } }
         //ToDo: Create Controls DataTemplates
+
 
         public int CurrentTabIndex
         {
@@ -78,6 +80,7 @@ namespace ArmA.Studio.DataContext
         }
         private int _CurrentTabIndex;
         private string ConfigEntryName;
+        private List<ConfigEntryUiControlBinding> Bindings;
 
         protected override void OnTextChanged(object param)
         {
@@ -87,6 +90,7 @@ namespace ArmA.Studio.DataContext
         public UiEditorDocument() : base()
         {
             this._Controls = new ObservableCollection<ControlBase>();
+            this.Bindings = new List<ConfigEntryUiControlBinding>();
         }
 
         public void BuildConfigTree()
@@ -145,6 +149,7 @@ namespace ArmA.Studio.DataContext
                     return;
                 }
                 this.Controls.Clear();
+
                 foreach (var it in controls.Children)
                 {
                     //Receive control type
@@ -177,6 +182,20 @@ namespace ArmA.Studio.DataContext
                     }
                     //create control
                     var control = Activator.CreateInstance(controlInfo.Type) as ControlBase;
+                    //Create CustomBindings
+                    foreach(var prop in control.GetType().GetProperties())
+                    {
+                        var descriptor = ConfigPathDescriptor.GetAttribute(prop);
+                        if (descriptor == null)
+                            return;
+                        var configExpression = new ConfigEntryExpression(it, descriptor.Path);
+                        this.Bindings.Add(new ConfigEntryUiControlBinding(
+                            typeof(ConfigEntryExpression).GetProperty(nameof(ConfigEntryExpression.Value)),
+                            configExpression,
+                            typeof(ControlBase).GetProperty(nameof(control.Height)),
+                            control)
+                        );
+                    }
                     //add to controls list
                     this.Controls.Add(control);
                 }

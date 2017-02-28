@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SQF\ClassParser\ConfigEntry.cs" />
+    <Compile Include="SQF\ClassParser\ConfigEntryExpression.cs" />
     <Compile Include="SQF\ClassParser\Generated\Parser.cs" />
     <Compile Include="SQF\ClassParser\Generated\Scanner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
