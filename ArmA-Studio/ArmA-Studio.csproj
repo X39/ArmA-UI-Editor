@@ -236,9 +236,10 @@
     <EmbeddedResource Include="UI\DataTemplates\Output.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Pictograms\ColorPalette_26x.xaml">
+    <Page Include="Resources\Pictograms\AddItem\AddItem_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
+    </Page>
     <Page Include="Resources\Pictograms\Cancel\Cancel_12x.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -335,7 +336,139 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\Pictograms\ClearWindowContent\ClearWindowContent_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\ClearWindowContent\F12_ClearWindowContent_32x96.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\ClearWindowContent\F12_ClearWindowContent_36x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\ColorPalette\ColorPalette_12x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\ColorPalette\ColorPalette_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\ColorPalette\ColorPalette_24x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\ColorPalette\ColorPalette_26x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Pictograms\Exit\Exit_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\FindSymbol\FindSymbol_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\F12_Folder_28x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\F12_Folder_54x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\FolderClosedGold_32xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\FolderClosedGold_32xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\FolderRamp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_16xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_16xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_21x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_24x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_25x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_32xLG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_32xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_32xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_64x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_grey_12x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\Folder_grey_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\VSO_Folder_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\VSO_Folder_lightGrey_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Folder\VSO_Folder_whiteNoHalo_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\NewItem\NewItem_16x.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -821,6 +954,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\Pictograms\AddItem\AddItem_16x.ai" />
     <None Include="Resources\Pictograms\Cancel\Cancel_12x.ai" />
     <None Include="Resources\Pictograms\Cancel\Cancel_14x.ai" />
     <None Include="Resources\Pictograms\Cancel\Cancel_16x.ai" />
@@ -846,7 +980,47 @@
     <None Include="Resources\Pictograms\Cancel\VSO_Cancel_grey_12x_16x.ai" />
     <None Include="Resources\Pictograms\Cancel\VSO_Cancel_noHalo_12x.ai" />
     <None Include="Resources\Pictograms\Cancel\VSO_Cancel_noHalo_16x.ai" />
+    <None Include="Resources\Pictograms\ClearWindowContent\ClearWindowContent_16x.ai" />
+    <None Include="Resources\Pictograms\ClearWindowContent\F12_ClearWindowContent_32x96.ai" />
+    <None Include="Resources\Pictograms\ClearWindowContent\F12_ClearWindowContent_36x108.ai" />
+    <None Include="Resources\Pictograms\ColorPalette\ColorPalette_12x.ai" />
+    <None Include="Resources\Pictograms\ColorPalette\ColorPalette_16x.ai" />
+    <None Include="Resources\Pictograms\ColorPalette\ColorPalette_24x.ai" />
+    <None Include="Resources\Pictograms\ColorPalette\ColorPalette_26x.ai" />
     <None Include="Resources\Pictograms\Exit\Exit_16x.ai" />
+    <None Include="Resources\Pictograms\FindSymbol\FindSymbol_16x.ai" />
+    <None Include="Resources\Pictograms\Folder\F12_Folder_28x.ai" />
+    <None Include="Resources\Pictograms\Folder\F12_Folder_54x108.ai" />
+    <None Include="Resources\Pictograms\Folder\FolderClosedGold_32xMD.ai" />
+    <None Include="Resources\Pictograms\Folder\FolderClosedGold_32xSM.ai" />
+    <None Include="Resources\Pictograms\Folder\FolderRamp.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_16x.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_16xMD.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_16xSM.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_21x.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_24x.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_256x.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_25x.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_32x.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_32xLG.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_32xMD.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_32xSM.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_48x.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_64x.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_grey_12x.ai" />
+    <None Include="Resources\Pictograms\Folder\Folder_grey_16x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_16x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_Grey_16x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_Grey_20x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_Grey_24x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_grey_32x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_16x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_20x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_24x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_32x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_lightGrey_16x.ai" />
+    <None Include="Resources\Pictograms\Folder\VSO_Folder_whiteNoHalo_16x.ai" />
+    <None Include="Resources\Pictograms\NewItem\NewItem_16x.ai" />
     <None Include="Resources\Pictograms\Pause\F12_Pause_36x108.ai" />
     <None Include="Resources\Pictograms\Pause\Pause_16x.ai" />
     <None Include="Resources\Pictograms\Pause\Pause_17x16.ai" />
@@ -1018,9 +1192,7 @@
     <Resource Include="Resources\SnapToGrid\SnapGridOff_18x15.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\AddItem_16x.png" />
     <Resource Include="Resources\Pictograms\NewFolder_16x.png" />
-    <Resource Include="Resources\Pictograms\NewItem_16x.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\FileTypes\UI_16x.png" />
@@ -1032,21 +1204,71 @@
     <Resource Include="Resources\FileTypes\HeaderFile_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\FindSymbol_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Pictograms\ArrowOpen_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\ClearWindowContent_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Pictograms\ColorPalette_26x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Pictograms\ColorPalette_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="Resources\Pictograms\FindSymbol\FindSymbol_16x.png" />
+    <Resource Include="Resources\Pictograms\FindSymbol\FindSymbol_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\FindSymbol\FindSymbol_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\ClearWindowContent\ClearWindowContent_16x.png" />
+    <Content Include="Resources\Pictograms\ClearWindowContent\ClearWindowContent_16x.svg" />
+    <Resource Include="Resources\Pictograms\ClearWindowContent\ClearWindowContent_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\ClearWindowContent\ClearWindowContent_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\ClearWindowContent\F12_ClearWindowContent_32x96.png" />
+    <Content Include="Resources\Pictograms\ClearWindowContent\F12_ClearWindowContent_32x96.svg" />
+    <Resource Include="Resources\Pictograms\ClearWindowContent\F12_ClearWindowContent_36x108.png" />
+    <Content Include="Resources\Pictograms\ClearWindowContent\F12_ClearWindowContent_36x108.svg" />
+    <Resource Include="Resources\Pictograms\Folder\F12_Folder_28x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder.ico" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_16x.png" />
+    <Content Include="Resources\Pictograms\Folder\Folder_16x.svg" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_16xMD.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_16xSM.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_16x_Green24.bmp" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_21x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_24x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_256x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_25x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_32x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_32xMD.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_32xMD_exp.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_32xSM.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_48x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_64x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_grey_12x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_grey_12x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_grey_16x.png" />
+    <Resource Include="Resources\Pictograms\Folder\Folder_grey_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_16x.png" />
+    <Content Include="Resources\Pictograms\Folder\VSO_Folder_16x.svg" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_Grey_16x.png" />
+    <Content Include="Resources\Pictograms\Folder\VSO_Folder_Grey_16x.svg" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_Grey_20x.png" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_Grey_24x.png" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_grey_32x.png" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_16x.png" />
+    <Content Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_16x.svg" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_20x.png" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_24x.png" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_hoverblue_32x.png" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_lightGrey_16x.png" />
+    <Content Include="Resources\Pictograms\Folder\VSO_Folder_lightGrey_16x.svg" />
+    <Resource Include="Resources\Pictograms\Folder\VSO_Folder_whiteNoHalo_16x.png" />
+    <Content Include="Resources\Pictograms\Folder\VSO_Folder_whiteNoHalo_16x.svg" />
+    <Resource Include="Resources\Pictograms\NewItem\NewItem_16x.png" />
+    <Resource Include="Resources\Pictograms\ColorPalette\ColorPalette_12x.png" />
+    <Resource Include="Resources\Pictograms\ColorPalette\ColorPalette_16x.png" />
+    <Content Include="Resources\Pictograms\ColorPalette\ColorPalette_16x.svg" />
+    <Resource Include="Resources\Pictograms\ColorPalette\ColorPalette_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\ColorPalette\ColorPalette_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\ColorPalette\ColorPalette_24x.png" />
+    <Resource Include="Resources\Pictograms\ColorPalette\ColorPalette_26x.png" />
+    <Resource Include="Resources\Pictograms\AddItem\AddItem_16x.png" />
+    <Content Include="Resources\Pictograms\AddItem\AddItem_16x.svg" />
+    <Resource Include="Resources\Pictograms\AddItem\AddItem_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\AddItem\AddItem_16x_32.bmp" />
     <Resource Include="Resources\Pictograms\Settings\F12_SettingsDropdown_54x108.png" />
     <Resource Include="Resources\Pictograms\Settings\F12_Settings_54x108.png" />
     <Resource Include="Resources\Pictograms\Settings\Monaco_Settings_16x.png" />

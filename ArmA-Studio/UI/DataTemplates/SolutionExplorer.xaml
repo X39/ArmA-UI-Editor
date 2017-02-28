@@ -17,12 +17,12 @@
                 <MenuItem Header="{x:Static p:Localization.Add}">
                     <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding CmdContextMenu_Add_NewItem}" CommandParameter="/">
                         <MenuItem.Icon>
-                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem_16x.png"/>
+                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem/NewItem_16x.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{x:Static p:Localization.ExistingItem}" Command="{Binding CmdContextMenu_Add_ExistingItem}">
                         <MenuItem.Icon>
-                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem_16x.png"/>
+                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem/AddItem_16x.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{x:Static p:Localization.NewFolder}" Command="{Binding CmdContextMenu_Add_NewFolder}">
@@ -49,12 +49,12 @@
                             <MenuItem Header="{x:Static p:Localization.Add}">
                                 <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding __Sol.CmdContextMenu_Add_NewItem}" CommandParameter="{Binding FullPath}">
                                     <MenuItem.Icon>
-                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem_16x.png"/>
+                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem/NewItem_16x.png"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{x:Static p:Localization.ExistingItem}" Command="{Binding __Sol.CmdContextMenu_Add_ExistingItem}" CommandParameter="{Binding FullPath}">
                                     <MenuItem.Icon>
-                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem_16x.png"/>
+                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem/AddItem_16x.png"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{x:Static p:Localization.NewFolder}" Command="{Binding __Sol.CmdContextMenu_Add_NewFolder}" CommandParameter="{Binding}">
