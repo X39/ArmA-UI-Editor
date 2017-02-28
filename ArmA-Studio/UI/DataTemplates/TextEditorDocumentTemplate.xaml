@@ -11,6 +11,29 @@
       xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
       xmlns:SolutionUtil="clr-namespace:ArmA.Studio.SolutionUtil;assembly=ArmA-Studio">
     <Grid>
-        <ae:TextEditor x:Name="TextEditor" Document="{Binding Document}" SyntaxHighlighting="{Binding SyntaxDefinition, diag:PresentationTraceSources.TraceLevel=High}" ev:TextChanged.Command="{Binding CmdTextChanged}" ev:KeyDown.Command="{Binding CmdKeyDown}" ShowLineNumbers="True" FontFamily="Consolas" ev:Initialized.Command="{Binding CmdTextEditorInitialized}" ev:Initialized.CommandParameter="{Binding RelativeSource={RelativeSource Self}}"></ae:TextEditor>
+        <Popup PlacementTarget="{Binding ElementName=TextEditor}" ev:Initialized.Command="{Binding CmdIntelliSensePopupInitialized}" ev:Initialized.CommandParameter="{Binding RelativeSource={RelativeSource Self}}">
+            <Grid Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="{Binding IntelliSenseCurrentWord}" Margin="4"/>
+                <ListView Grid.Row="1" MaxHeight="256" MinWidth="80" ItemsSource="{Binding IntelliSenseEntries}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{Binding IconPath}" Width="16" MaxHeight="16" VerticalAlignment="Center" Margin="0 0 2 0"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Text}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Popup>
+        <ae:TextEditor x:Name="TextEditor" Document="{Binding Document}" SyntaxHighlighting="{Binding SyntaxDefinition, diag:PresentationTraceSources.TraceLevel=High}" ev:TextChanged.Command="{Binding CmdTextChanged}" ev:KeyDown.Command="{Binding CmdKeyDown}" ev:KeyDown.KeyDownHandled="{Binding CmdKeyDownHandledValue}" ShowLineNumbers="True" FontFamily="Consolas" ev:Initialized.Command="{Binding CmdTextEditorInitialized}" ev:Initialized.CommandParameter="{Binding RelativeSource={RelativeSource Self}}" ev:PreviewMouseDown.Command="{Binding CmdEditorPreviewMouseDown}"></ae:TextEditor>
     </Grid>
 </DataTemplate>

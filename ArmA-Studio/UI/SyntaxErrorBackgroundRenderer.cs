@@ -8,6 +8,7 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using ArmA.Studio.DataContext;
+using ArmA.Studio.DataContext.TextEditorUtil;
 
 namespace ArmA.Studio.UI
 {

@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.postsharp.org/1.0/configuration" xmlns:d="clr-namespace:PostSharp.Patterns.Diagnostics;assembly:PostSharp.Patterns.Diagnostics" xmlns:p="http://schemas.postsharp.org/1.0/configuration">
-  <Property Name="LoggingEnabled" Value="{has-plugin('PostSharp.Patterns.Diagnostics')}" Deferred="true" />
-  <d:LoggingProfiles p:Condition="{$LoggingEnabled}">
-    <d:LoggingProfile Name="Default" OnEntryOptions="IncludeParameterType IncludeParameterName IncludeParameterValue IncludeThisArgument" OnSuccessOptions="IncludeParameterType IncludeParameterName IncludeParameterValue IncludeReturnValue IncludeThisArgument" OnExceptionOptions="IncludeParameterType IncludeParameterName IncludeParameterValue IncludeThisArgument" OnExceptionLevel="Info" />
-  </d:LoggingProfiles>
-</Project>

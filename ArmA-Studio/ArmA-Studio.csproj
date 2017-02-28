@@ -95,8 +95,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataContext\ObservableList.cs" />
     <Compile Include="DataContext\OutputPane.cs" />
-    <Compile Include="DataContext\SyntaxError.cs" />
+    <Compile Include="DataContext\TextEditorUtil\IntelliSenseEntry.cs" />
+    <Compile Include="DataContext\TextEditorUtil\SyntaxError.cs" />
     <Compile Include="Dialogs\IDialogContext.cs" />
     <Compile Include="Dialogs\PropertiesDialog.xaml.cs">
       <DependentUpon>PropertiesDialog.xaml</DependentUpon>
@@ -104,7 +106,8 @@
     <Compile Include="Dialogs\PropertiesDialogDataContext.cs" />
     <Compile Include="IniHelper.cs" />
     <Compile Include="LoggerTargets\SubscribableTarget.cs" />
-    <Compile Include="SyntaxErrorMarker.cs" />
+    <Compile Include="UI\Attached\Eventing\PreviewMouseDown.cs" />
+    <Compile Include="UI\Attached\Eventing\MouseDown.cs" />
     <Compile Include="UI\Converters\Multi\CollectionContainsConverter.cs" />
     <Compile Include="UI\SyntaxErrorBackgroundRenderer.cs" />
     <Compile Include="UI\LineHighlighterBackgroundRenderer.cs" />
@@ -146,9 +149,6 @@
       <DependentUpon>Localization.resx</DependentUpon>
     </Compile>
     <Compile Include="SolutionUtil\SolutionFolder.cs" />
-    <Compile Include="TestWindow.xaml.cs">
-      <DependentUpon>TestWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Attached\ChangePropertiesViewCurrentAttached.cs" />
     <Compile Include="UI\Attached\Eventing\Closing.cs" />
     <Compile Include="UI\Attached\Eventing\LostKeyboardFocus.cs" />
@@ -219,10 +219,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="TestWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <EmbeddedResource Include="UI\DataTemplates\SolutionExplorer.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -236,6 +232,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\DataTemplates\Output.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Pictograms\ColorPalette_26x.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
@@ -307,12 +306,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\FileTypes\Folder.png" />
-    <Resource Include="Resources\FileTypes\FolderExpanded.png" />
-    <Resource Include="Resources\FileTypes\SQF.png" />
+    <Resource Include="Resources\FileTypes\Folder_16x.png" />
+    <Resource Include="Resources\FileTypes\FolderExpanded_16x.png" />
+    <Resource Include="Resources\FileTypes\SQF_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\FileTypes\Document.png" />
+    <Resource Include="Resources\FileTypes\Document_16x.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Logo.ico" />
@@ -327,34 +326,41 @@
     <Resource Include="Resources\SnapToGrid\SnapGridOff_18x15.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\AddItem.png" />
-    <Resource Include="Resources\Pictograms\NewFolder.png" />
-    <Resource Include="Resources\Pictograms\NewItem.png" />
+    <Resource Include="Resources\Pictograms\AddItem_16x.png" />
+    <Resource Include="Resources\Pictograms\NewFolder_16x.png" />
+    <Resource Include="Resources\Pictograms\NewItem_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\FileTypes\UI.png" />
+    <Resource Include="Resources\FileTypes\UI_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\FileTypes\ConfigurationFile.png" />
+    <Resource Include="Resources\FileTypes\ConfigurationFile_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\FileTypes\HeaderFile.png" />
+    <Resource Include="Resources\FileTypes\HeaderFile_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\FindSymbol.png" />
+    <Resource Include="Resources\Pictograms\FindSymbol_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\Rename.png" />
+    <Resource Include="Resources\Pictograms\Rename_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\Delete.png" />
+    <Resource Include="Resources\Pictograms\Delete_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\ArrowOpen.png" />
+    <Resource Include="Resources\Pictograms\ArrowOpen_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\ClearWindowContent.png" />
+    <Resource Include="Resources\Pictograms\ClearWindowContent_16x.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Pictograms\ColorPalette_26x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Pictograms\ColorPalette_16x.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

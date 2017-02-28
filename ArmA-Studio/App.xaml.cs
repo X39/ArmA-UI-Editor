@@ -89,7 +89,7 @@ namespace ArmA.Studio
             {
                 Process.Start(ExecutableFile);
             }
-            ConfigHost.Instance.Save(ConfigHost.EIniSelector.Layout);
+            ConfigHost.Instance.ExecSave();
         }
 
         public static void Shutdown(ExitCodes code)

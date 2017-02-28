@@ -62,12 +62,13 @@ namespace ArmA.Studio
 
         public bool BeforeInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableToShow, ILayoutContainer destinationContainer)
         {
+            ConfigHost.Instance.Save(ConfigHost.EIniSelector.Layout);
             return this.BeforeInsert_(layout, anchorableToShow);
         }
 
         public bool BeforeInsertDocument(LayoutRoot layout, LayoutDocument anchorableToShow, ILayoutContainer destinationContainer)
         {
-            return this.BeforeInsert_(layout, anchorableToShow);
+            return false;//this.BeforeInsert_(layout, anchorableToShow);
         }
     }
 }

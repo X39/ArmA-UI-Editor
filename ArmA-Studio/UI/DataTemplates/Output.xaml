@@ -20,7 +20,7 @@
             <ComboBox SelectedItem="{Binding SelectedTarget}" ItemsSource="{Binding AvailableTargets}" MinWidth="128"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
             <Button Command="{Binding CmdClearOutputWindow}" ToolTip="{x:Static p:Localization.Output_ClearAllToolTip}">
-                <Image Source="/ArmA-Studio;component/Resources/Pictograms/ClearWindowContent.png"/>
+                <Image Source="/ArmA-Studio;component/Resources/Pictograms/ClearWindowContent_16x.png"/>
             </Button>
         </ToolBar>
         <ae:TextEditor Grid.Row="1" x:Name="TextEditor" Document="{Binding Document}" IsReadOnly="True" FontFamily="Consolas"/>

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using IniParser;
 using IniParser.Model;
 using IniParser.Parser;
-using System.IO;
-using System.Windows.Media;
 using Utility;
 
 namespace ArmA.Studio
@@ -22,6 +24,32 @@ namespace ArmA.Studio
         }
         public static class App
         {
+            public static WindowState WindowCurrentState
+            {
+                get { WindowState state; if (Enum.TryParse(Instance.AppIni.GetValueOrNull("MainWindow", "WindowCurrentState"), out state)) return state; return WindowState.Normal; }
+                set { Instance.AppIni.SetValue("MainWindow", "WindowCurrentState", value.ToString()); Instance.Save(EIniSelector.App); }
+            }
+            public static double WindowHeight
+            {
+                get { double d; if (double.TryParse(Instance.AppIni.GetValueOrNull("MainWindow", "WindowHeight"), out d)) return d; return -1; }
+                set { Instance.AppIni.SetValue("MainWindow", "WindowHeight", value.ToString(CultureInfo.InvariantCulture)); Instance.Save(EIniSelector.App); }
+            }
+            public static double WindowWidth
+            {
+                get { double d; if (double.TryParse(Instance.AppIni.GetValueOrNull("MainWindow", "WindowWidth"), out d)) return d; return -1;  }
+                set { Instance.AppIni.SetValue("MainWindow", "WindowWidth", value.ToString(CultureInfo.InvariantCulture)); Instance.Save(EIniSelector.App); }
+            }
+            public static double WindowTop
+            {
+                get { double d; if (double.TryParse(Instance.AppIni.GetValueOrNull("MainWindow", "WindowTop"), out d)) return d; return -1; }
+                set { Instance.AppIni.SetValue("MainWindow", "WindowTop", value.ToString(CultureInfo.InvariantCulture)); Instance.Save(EIniSelector.App); }
+            }
+            public static double WindowLeft
+            {
+                get { double d; if (double.TryParse(Instance.AppIni.GetValueOrNull("MainWindow", "WindowLeft"), out d)) return d; return -1;  }
+                set { Instance.AppIni.SetValue("MainWindow", "WindowLeft", value.ToString(CultureInfo.InvariantCulture)); Instance.Save(EIniSelector.App); }
+            }
+
             public static string WorkspacePath { get { return Instance.AppIni.GetValueOrNull("App", "Workspace"); } set { Instance.AppIni.SetValue("App", "Workspace", value); Instance.Save(EIniSelector.App); } }
 
         }
@@ -106,9 +134,12 @@ namespace ArmA.Studio
         public IniData AppIni { get; private set; }
         public IniData ColoringIni { get; private set; }
 
+        private Dictionary<EIniSelector, bool> SaveTriggers;
+
 
         public ConfigHost()
         {
+            this.SaveTriggers = new Dictionary<EIniSelector, bool>();
             string fPath;
             fPath = Path.Combine(ArmA.Studio.App.ConfigPath, "Layout.ini");
             if (File.Exists(fPath))
@@ -147,26 +178,37 @@ namespace ArmA.Studio
             {
                 this.Save(sel);
             }
+            this.ExecSave();
         }
 
         public void Save(EIniSelector selector)
         {
-            if (!Directory.Exists(ArmA.Studio.App.ConfigPath))
+            if (!Directory.Exists(Studio.App.ConfigPath))
             {
-                Directory.CreateDirectory(ArmA.Studio.App.ConfigPath);
+                Directory.CreateDirectory(Studio.App.ConfigPath);
             }
+            this.SaveTriggers[selector] = true;
+        }
+        public void ExecSave()
+        {
             var parser = new FileIniDataParser();
-            switch (selector)
+            foreach (var pair in this.SaveTriggers)
             {
-                case EIniSelector.App:
-                    parser.WriteFile(Path.Combine(ArmA.Studio.App.ConfigPath, "App.ini"), this.AppIni);
-                    break;
-                case EIniSelector.Coloring:
-                    parser.WriteFile(Path.Combine(ArmA.Studio.App.ConfigPath, "Coloring.ini"), this.ColoringIni);
-                    break;
-                case EIniSelector.Layout:
-                    parser.WriteFile(Path.Combine(ArmA.Studio.App.ConfigPath, "Layout.ini"), this.LayoutIni);
-                    break;
+                if(pair.Value)
+                {
+                    switch (pair.Key)
+                    {
+                        case EIniSelector.App:
+                            parser.WriteFile(Path.Combine(ArmA.Studio.App.ConfigPath, "App.ini"), this.AppIni);
+                            break;
+                        case EIniSelector.Coloring:
+                            parser.WriteFile(Path.Combine(ArmA.Studio.App.ConfigPath, "Coloring.ini"), this.ColoringIni);
+                            break;
+                        case EIniSelector.Layout:
+                            parser.WriteFile(Path.Combine(ArmA.Studio.App.ConfigPath, "Layout.ini"), this.LayoutIni);
+                            break;
+                    }
+                }
             }
         }
     }

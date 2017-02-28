@@ -13,6 +13,8 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System.Windows.Controls;
+using ArmA.Studio.DataContext.TextEditorUtil;
+using System.Windows.Controls.Primitives;
 
 namespace ArmA.Studio.DataContext
 {
@@ -44,16 +46,26 @@ namespace ArmA.Studio.DataContext
         public ICSharpCode.AvalonEdit.TextEditor Editor { get { return this._Editor; } set { this._Editor = value; this.RaisePropertyChanged(); this.OnTextEditorSet(); } }
         private ICSharpCode.AvalonEdit.TextEditor _Editor;
 
+        public bool CmdKeyDownHandledValue { get { return this._CmdKeyDownHandledValue; } set { this._CmdKeyDownHandledValue = value; this.RaisePropertyChanged(); } }
+        private bool _CmdKeyDownHandledValue;
+        public string IntelliSenseCurrentWord { get { return this._IntelliSenseCurrentWord; } set { this._IntelliSenseCurrentWord = value; this.RaisePropertyChanged(); } }
+        private string _IntelliSenseCurrentWord;
+
         public ICommand CmdTextChanged { get; private set; }
         public ICommand CmdKeyDown { get; private set; }
         public ICommand CmdTextEditorInitialized { get; private set; }
+        public ICommand CmdIntelliSensePopupInitialized { get; private set; }
+        public ICommand CmdEditorPreviewMouseDown { get; private set; }
 
         public SolutionUtil.SolutionFileBase SFBRef { get; private set; }
 
         internal UI.SyntaxErrorBackgroundRenderer SyntaxErrorRenderer { get; private set; }
         public IEnumerable<SyntaxError> SyntaxErrors { get; private set; }
+        public IList<IntelliSenseEntry> IntelliSenseEntries { get { return this._IntelliSenseEntries; } set { this._IntelliSenseEntries = value; this.RaisePropertyChanged(); } }
+        public IList<IntelliSenseEntry> _IntelliSenseEntries;
 
         private ToolTip EditorTooltip;
+        private Popup IntelliSensePopup;
 
         public TextEditorDocument()
         {
@@ -70,6 +82,8 @@ namespace ArmA.Studio.DataContext
                 this.Editor.TextArea.TextView.BackgroundRenderers.Add(new UI.LineHighlighterBackgroundRenderer(this.Editor));
                 this.Editor.TextArea.TextView.BackgroundRenderers.Add(this.SyntaxErrorRenderer);
             });
+            this.CmdIntelliSensePopupInitialized = new UI.Commands.RelayCommand((p) => this.IntelliSensePopup = p as Popup);
+            this.CmdEditorPreviewMouseDown = new UI.Commands.RelayCommand((p) => this.IntelliSensePopup.IsOpen = false);
             this._Document = new TextDocument();
             this._Document.TextChanged += Document_TextChanged;
         }
@@ -113,9 +127,43 @@ namespace ArmA.Studio.DataContext
         protected virtual void OnTextEditorSet() { }
         protected virtual void OnKeyDown(object param)
         {
+            this.CmdKeyDownHandledValue = true;
             if (Keyboard.IsKeyDown(Key.S) && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
             {
                 this.SaveDocument(this.FilePath);
+            }
+            else if (Keyboard.IsKeyDown(Key.Space) && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            {
+                this.ShowIntelliSense();
+            }
+            else
+            {
+                this.IntelliSensePopup.IsOpen = false;
+                this.CmdKeyDownHandledValue = false;
+            }
+        }
+
+        private void ShowIntelliSense()
+        {
+            string curWord = string.Empty;
+            for (var i = this.Editor.CaretOffset - 1; i >= 0; i--)
+            {
+                var c = this.Document.GetCharAt(i);
+                if (char.IsWhiteSpace(c))
+                {
+                    curWord = this.Document.GetText(i + 1, this.Editor.CaretOffset - i - 1);
+                    break;
+                }
+            }
+            this.IntelliSenseEntries = this.GetIntelliSenseEntries(this.Document, curWord, this.Editor.CaretOffset);
+            if (this.IntelliSenseEntries.Count >= 0)
+            {
+                this.IntelliSenseCurrentWord = curWord;
+                this.IntelliSensePopup.DataContext = this;
+                var pos = this.Editor.TextArea.TextView.GetVisualPosition(this.Editor.TextArea.Caret.Position, ICSharpCode.AvalonEdit.Rendering.VisualYPosition.TextBottom);
+                this.IntelliSensePopup.HorizontalOffset = pos.X + this.Editor.TextArea.LeftMargins.Sum((it) => it.RenderSize.Width) + 6;
+                this.IntelliSensePopup.VerticalOffset = pos.Y - this.Editor.ActualHeight;
+                this.IntelliSensePopup.IsOpen = true;
             }
         }
 
@@ -177,6 +225,11 @@ namespace ArmA.Studio.DataContext
         protected virtual IEnumerable<SyntaxError> GetSyntaxErrors()
         {
             return new SyntaxError[0];
+        }
+        protected virtual IList<IntelliSenseEntry> GetIntelliSenseEntries(TextDocument currentDocument, string currentWord, int caretOffset)
+        {
+            return new IntelliSenseEntry[0];
+            //return new IntelliSenseEntry[] { new IntelliSenseEntry() { Text = "asd" } };
         }
     }
 }

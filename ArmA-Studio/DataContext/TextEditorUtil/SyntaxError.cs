@@ -1,7 +1,7 @@
 ﻿using System;
 using ICSharpCode.AvalonEdit.Document;
 
-namespace ArmA.Studio.DataContext
+namespace ArmA.Studio.DataContext.TextEditorUtil
 {
     public class SyntaxError : ISegment
     {

@@ -18,6 +18,23 @@ namespace ArmA.Studio
 {
     public sealed class Workspace : INotifyPropertyChanged
     {
+        public double WindowWidth { get { return this._WindowWidth; } set { this._WindowWidth = value; ConfigHost.App.WindowWidth = value;  this.RaisePropertyChanged(); } }
+        private double _WindowWidth;
+
+        public double WindowHeight { get { return this._WindowHeight; } set { this._WindowHeight = value; ConfigHost.App.WindowHeight = value; this.RaisePropertyChanged(); } }
+        private double _WindowHeight;
+
+        public double WindowTop { get { return this._WindowTop; } set { this._WindowTop = value; ConfigHost.App.WindowTop = value; this.RaisePropertyChanged(); } }
+        private double _WindowTop;
+
+        public double WindowLeft { get { return this._WindowLeft; } set { this._WindowLeft = value; ConfigHost.App.WindowLeft = value; this.RaisePropertyChanged(); } }
+        private double _WindowLeft;
+
+        public WindowState WindowCurrentState { get { return this._WindowCurrentState; } set { this._WindowCurrentState = value; ConfigHost.App.WindowCurrentState = value; this.RaisePropertyChanged(); } }
+        private WindowState _WindowCurrentState;
+
+
+
         public const string CONST_DOCKING_MANAGER_LAYOUT_NAME = "docklayout.xml";
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -62,6 +79,7 @@ namespace ArmA.Studio
         public ICommand CmdDockingManagerInitialized { get; private set; }
         public ICommand CmdMainWindowClosing { get; private set; }
         public ICommand CmdSwitchWorkspace { get; private set; }
+        public ICommand CmdShowProperties { get; private set; }
 
         public string WorkingDir { get; private set; }
 
@@ -113,6 +131,36 @@ namespace ArmA.Studio
                 App.Current.Shutdown((int)App.ExitCodes.OK);
             });
             this.CmdSwitchWorkspace = new RelayCommand((p) => { if (App.SwitchWorkspace()) App.Shutdown(App.ExitCodes.Restart); });
+            this.CmdShowProperties = new RelayCommand((p) =>
+            {
+                var dlgDc = new Dialogs.PropertiesDialogDataContext();
+                var dlg = new Dialogs.PropertiesDialog(dlgDc);
+                dlg.ShowDialog();
+                if(dlgDc.RestartRequired)
+                {
+                    var msgResult = MessageBox.Show(Properties.Localization.ChangesRequireRestart_Body, Properties.Localization.ChangesRequireRestart_Title, MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if(msgResult == MessageBoxResult.Yes)
+                    {
+                        App.Shutdown(App.ExitCodes.Restart);
+                    }
+                }
+            });
+
+            const double DEF_WIN_HEIGHT = 512;
+            const double DEF_WIN_WIDTH = 1024;
+            this._WindowHeight = DEF_WIN_HEIGHT;
+            this._WindowWidth = DEF_WIN_WIDTH;
+            this._WindowLeft = (SystemParameters.PrimaryScreenWidth - DEF_WIN_WIDTH) / 2;
+            if (this._WindowLeft < 0)
+            {
+                this._WindowLeft = 0;
+            }
+            this._WindowTop = (SystemParameters.PrimaryScreenHeight - DEF_WIN_HEIGHT) / 2;
+            if (this._WindowTop < 0)
+            {
+                this._WindowTop = 0;
+            }
+            this._WindowCurrentState = WindowState.Normal;
         }
 
         private void PanelsDisplayed_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -262,6 +310,28 @@ namespace ArmA.Studio
                     }
                 }
             }
+            double d;
+            d = ConfigHost.App.WindowWidth;
+            if(d >= 0)
+            {
+                this.WindowWidth = d;
+            }
+            d = ConfigHost.App.WindowHeight;
+            if (d >= 0)
+            {
+                this.WindowHeight = d;
+            }
+            d = ConfigHost.App.WindowLeft;
+            if (d >= 0)
+            {
+                this.WindowLeft = d;
+            }
+            d = ConfigHost.App.WindowTop;
+            if (d >= 0)
+            {
+                this.WindowTop = d;
+            }
+            this.WindowCurrentState = ConfigHost.App.WindowCurrentState;
         }
 
         private void Close()

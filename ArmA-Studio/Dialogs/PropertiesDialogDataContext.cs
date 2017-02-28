@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -20,9 +21,13 @@ namespace ArmA.Studio.Dialogs
 
         public bool OKButtonEnabled { get { return true; } }
 
+        public bool RestartRequired { get; internal set; }
+
         public PropertiesDialogDataContext()
         {
             this.CmdOKButtonPressed = new UI.Commands.RelayCommand(Cmd_OKButtonPressed);
+            throw new NotImplementedException();
+            //ToDo: Implement Properties (automated, requires class Attribute for section, property attribute for "header" and optional conversion)
         }
         public void Cmd_OKButtonPressed(object param)
         {

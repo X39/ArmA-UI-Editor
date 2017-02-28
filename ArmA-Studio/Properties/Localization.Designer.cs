@@ -70,6 +70,25 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The changes you made require a restart.
+        ///Do you want to restart now?.
+        /// </summary>
+        public static string ChangesRequireRestart_Body {
+            get {
+                return ResourceManager.GetString("ChangesRequireRestart_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart Required.
+        /// </summary>
+        public static string ChangesRequireRestart_Title {
+            get {
+                return ResourceManager.GetString("ChangesRequireRestart_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose.
         /// </summary>
         public static string Choose {
@@ -193,6 +212,60 @@ namespace ArmA.Studio.Properties {
         public static string LicenseViewer_Title {
             get {
                 return ResourceManager.GetString("LicenseViewer_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _File.
+        /// </summary>
+        public static string MenuItem_File {
+            get {
+                return ResourceManager.GetString("MenuItem_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Help.
+        /// </summary>
+        public static string MenuItem_Help {
+            get {
+                return ResourceManager.GetString("MenuItem_Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Licenses.
+        /// </summary>
+        public static string MenuItem_Licenses {
+            get {
+                return ResourceManager.GetString("MenuItem_Licenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Panels.
+        /// </summary>
+        public static string MenuItem_Panels {
+            get {
+                return ResourceManager.GetString("MenuItem_Panels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string MenuItem_Properties {
+            get {
+                return ResourceManager.GetString("MenuItem_Properties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch _Workspace.
+        /// </summary>
+        public static string MenuItem_SwitchWorkspace {
+            get {
+                return ResourceManager.GetString("MenuItem_SwitchWorkspace", resourceCulture);
             }
         }
         

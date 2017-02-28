@@ -120,6 +120,13 @@
   <data name="Add" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="ChangesRequireRestart_Body" xml:space="preserve">
+    <value>The changes you made require a restart.
+Do you want to restart now?</value>
+  </data>
+  <data name="ChangesRequireRestart_Title" xml:space="preserve">
+    <value>Restart Required</value>
+  </data>
   <data name="Choose" xml:space="preserve">
     <value>Choose</value>
   </data>
@@ -162,6 +169,24 @@ Do you want to save before close?</value>
   </data>
   <data name="LicenseViewer_Title" xml:space="preserve">
     <value>License Viewer</value>
+  </data>
+  <data name="MenuItem_File" xml:space="preserve">
+    <value>_File</value>
+  </data>
+  <data name="MenuItem_Help" xml:space="preserve">
+    <value>_Help</value>
+  </data>
+  <data name="MenuItem_Licenses" xml:space="preserve">
+    <value>Licenses</value>
+  </data>
+  <data name="MenuItem_Panels" xml:space="preserve">
+    <value>_Panels</value>
+  </data>
+  <data name="MenuItem_Properties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="MenuItem_SwitchWorkspace" xml:space="preserve">
+    <value>Switch _Workspace</value>
   </data>
   <data name="MessageBoxDeleteFileConfirmation_Body" xml:space="preserve">
     <value>Are you sure you want to delete the file '{0}'?</value>

@@ -9,53 +9,39 @@ using System.Windows.Input;
 
 namespace ArmA.Studio.UI.Attached.Eventing
 {
-    public class KeyDown
+    public class PreviewMouseDown
     {
         public static DependencyProperty CommandProperty =
             DependencyProperty.RegisterAttached("Command",
             typeof(ICommand),
-            typeof(KeyDown),
+            typeof(PreviewMouseDown),
             new UIPropertyMetadata(CommandChanged));
 
         public static DependencyProperty CommandParameterProperty =
             DependencyProperty.RegisterAttached("CommandParameter",
                                                 typeof(object),
-                                                typeof(KeyDown),
+                                                typeof(PreviewMouseDown),
                                                 new UIPropertyMetadata(null));
 
-        public static DependencyProperty KeyDownHandledProperty =
-            DependencyProperty.RegisterAttached("KeyDownHandled",
-                                                typeof(bool),
-                                                typeof(KeyDown),
-                                                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        public static void SetCommand(DependencyObject target, ICommand value)
+        public static void SetCommand(Window target, ICommand value)
         {
             target.SetValue(CommandProperty, value);
         }
 
-        public static void SetCommandParameter(DependencyObject target, object value)
+        public static void SetCommandParameter(Window target, object value)
         {
             target.SetValue(CommandParameterProperty, value);
         }
-        public static object GetCommandParameter(DependencyObject target)
+        public static object GetCommandParameter(Window target)
         {
             return target.GetValue(CommandParameterProperty);
-        }
-        public static void SetKeyDownHandled(DependencyObject target, bool value)
-        {
-            target.SetValue(KeyDownHandledProperty, value);
-        }
-        public static bool GetKeyDownHandled(DependencyObject target)
-        {
-            return (bool)target.GetValue(KeyDownHandledProperty);
         }
 
         private static void CommandChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
         {
             var type = target.GetType();
-            var ev = type.GetEvent("KeyDown");
-            var method = typeof(KeyDown).GetMethod("OnKeyDown");
+            var ev = type.GetEvent("PreviewMouseDown");
+            var method = typeof(PreviewMouseDown).GetMethod("OnPreviewMouseDown");
 
             if ((e.NewValue != null) && (e.OldValue == null))
             {
@@ -67,14 +53,12 @@ namespace ArmA.Studio.UI.Attached.Eventing
             }
         }
 
-        public static void OnKeyDown(object sender, KeyEventArgs e)
+        public static void OnPreviewMouseDown(object sender, EventArgs e)
         {
-            var control = sender as FrameworkElement;
+            var control = sender as UIElement;
             var command = (ICommand)control.GetValue(CommandProperty);
             var commandParameter = control.GetValue(CommandParameterProperty);
             command.Execute(commandParameter);
-            e.Handled = GetKeyDownHandled(control);
-            SetKeyDownHandled(control, false);
         }
     }
 

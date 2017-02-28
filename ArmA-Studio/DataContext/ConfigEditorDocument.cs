@@ -10,6 +10,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Document;
 using VirtualRealityEngine.Config.Parser;
 using System.IO;
+using ArmA.Studio.DataContext.TextEditorUtil;
 
 namespace ArmA.Studio.DataContext
 {

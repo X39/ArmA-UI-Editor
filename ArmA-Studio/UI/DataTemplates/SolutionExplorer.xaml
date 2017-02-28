@@ -17,17 +17,17 @@
                 <MenuItem Header="{x:Static p:Localization.Add}">
                     <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding CmdContextMenu_Add_NewItem}" CommandParameter="/">
                         <MenuItem.Icon>
-                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem.png"/>
+                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem_16x.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{x:Static p:Localization.ExistingItem}" Command="{Binding CmdContextMenu_Add_ExistingItem}">
                         <MenuItem.Icon>
-                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem.png"/>
+                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem_16x.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{x:Static p:Localization.NewFolder}" Command="{Binding CmdContextMenu_Add_NewFolder}">
                         <MenuItem.Icon>
-                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewFolder.png"/>
+                            <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewFolder_16x.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
@@ -49,33 +49,33 @@
                             <MenuItem Header="{x:Static p:Localization.Add}">
                                 <MenuItem Header="{x:Static p:Localization.NewItem}" Command="{Binding __Sol.CmdContextMenu_Add_NewItem}" CommandParameter="{Binding FullPath}">
                                     <MenuItem.Icon>
-                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem.png"/>
+                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewItem_16x.png"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{x:Static p:Localization.ExistingItem}" Command="{Binding __Sol.CmdContextMenu_Add_ExistingItem}" CommandParameter="{Binding FullPath}">
                                     <MenuItem.Icon>
-                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem.png"/>
+                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/AddItem_16x.png"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{x:Static p:Localization.NewFolder}" Command="{Binding __Sol.CmdContextMenu_Add_NewFolder}" CommandParameter="{Binding}">
                                     <MenuItem.Icon>
-                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewFolder.png"/>
+                                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/NewFolder_16x.png"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </MenuItem>
                             <MenuItem Header="{x:Static p:Localization.Delete}" Command="{Binding CmdContextMenu_Delete}">
                                 <MenuItem.Icon>
-                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Delete.png"/>
+                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Delete_16x.png"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{x:Static p:Localization.Rename}" Command="{Binding CmdContextMenu_Rename}">
                                 <MenuItem.Icon>
-                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Rename.png"/>
+                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Rename_16x.png"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{x:Static p:Localization.OpenInExplorer}" Command="{Binding CmdContextMenu_OpenInExplorer}">
                                 <MenuItem.Icon>
-                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/ArrowOpen.png"/>
+                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/ArrowOpen_16x.png"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>
@@ -87,10 +87,10 @@
                     <Image Grid.Column="0" Margin="0 0 4 0">
                         <Image.Style>
                             <Style TargetType="Image">
-                                <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Folder.png"/>
+                                <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Folder_16x.png"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=TreeViewItem, Mode=FindAncestor}}" Value="True">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/FolderExpanded.png"/>
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/FolderExpanded_16x.png"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -131,17 +131,17 @@
                         <ContextMenu>
                             <MenuItem Header="{x:Static p:Localization.Delete}" Command="{Binding CmdContextMenu_Delete}">
                                 <MenuItem.Icon>
-                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Delete.png"/>
+                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Delete_16x.png"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{x:Static p:Localization.Rename}" Command="{Binding CmdContextMenu_Rename}">
                                 <MenuItem.Icon>
-                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Rename.png"/>
+                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Rename_16x.png"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{x:Static p:Localization.OpenInExplorer}" Command="{Binding CmdContextMenu_OpenInExplorer}">
                                 <MenuItem.Icon>
-                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/ArrowOpen.png"/>
+                                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/ArrowOpen_16x.png"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>
@@ -153,22 +153,22 @@
                     <Image Grid.Column="0" Margin="0 0 4 0">
                         <Image.Style>
                             <Style TargetType="Image">
-                                <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Document.png"/>
+                                <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Document_16x.png"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".sqf">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/SQF.png"/>
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/SQF_16x.png"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".uic">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/UI.png"/>
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/UI_16x.png"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".cpp">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png"/>
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile_16x.png"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".ext">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png"/>
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile_16x.png"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding FileName, Converter={StaticResource PathExtensionConverter}}" Value=".hpp">
-                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/HeaderFile.png"/>
+                                        <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/HeaderFile_16x.png"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

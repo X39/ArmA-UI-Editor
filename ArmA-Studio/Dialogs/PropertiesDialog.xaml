@@ -7,6 +7,14 @@
         mc:Ignorable="d"
         Title="PropertiesDialog" Style="{StaticResource DialogWindow}">
     <Grid>
-        <TextBlock Text="asd"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <ListBox x:Name="lbTitles" Grid.Column="0" ItemsSource="{Binding Licenses}" DisplayMemberPath="Title" SelectedValuePath="Value"/>
+        <GridSplitter Grid.Column="1" Width="5" ResizeBehavior="PreviousAndNext"/>
+        <TextBox Grid.Column="2" HorizontalScrollBarVisibility="Hidden" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Text="{Binding SelectedValue, ElementName=lbTitles}"/>
     </Grid>
 </Window>

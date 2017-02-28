@@ -273,7 +273,7 @@ EFFET JURIDIQUE. Le présent contrat décrit certains droits juridiques. Vous po
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="FileTypes">
                     <x:Array Type="dlg:FileType" x:Key="FileTypes">
-                        <dlg:FileType Image="/ArmA-Studio;component/Resources/FileTypes/SQF.png" FileTypeName="SQF" Extension="sqf">
+                        <dlg:FileType Image="/ArmA-Studio;component/Resources/FileTypes/SQF_16x.png" FileTypeName="SQF" Extension="sqf">
                             <dlg:FileType.DefaultContent>
                                 <sys:String xml:space="preserve">/*
  * @Author: 
@@ -286,7 +286,7 @@ EFFET JURIDIQUE. Le présent contrat décrit certains droits juridiques. Vous po
 params [];</sys:String>
                             </dlg:FileType.DefaultContent>
                         </dlg:FileType>
-                        <dlg:FileType Image="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile.png" FileTypeName="Config" Extension="cpp">
+                        <dlg:FileType Image="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile_16x.png" FileTypeName="Config" Extension="cpp">
                                 <dlg:FileType.DefaultContent>
                                     <sys:String xml:space="preserve">/*
  * @Author: 
