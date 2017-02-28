@@ -43,6 +43,9 @@ namespace ArmA.Studio
         public static Workspace CurrentWorkspace { get { return _CurrentWorkspace; } set { if (_CurrentWorkspace != null) _CurrentWorkspace.Close(); _CurrentWorkspace = value; value?.Open(); } }
         private static Workspace _CurrentWorkspace;
 
+        public DebuggerContext DebugContext { get { return this._DebugContext; } set { this._DebugContext = value; this.RaisePropertyChanged(); } }
+        private DebuggerContext _DebugContext;
+
         public SolutionUtil.Solution CurrentSolution { get { return this._CurrentSolution; } set { this._CurrentSolution = value; this.RaisePropertyChanged(); } }
         private SolutionUtil.Solution _CurrentSolution;
         public UI.ViewModel.IPropertyDatatemplateProvider CurrentSelectedProperty { get { return this._CurrentSelectedProperty; } set { this._CurrentSelectedProperty = value; this.RaisePropertyChanged(); } }
@@ -80,6 +83,9 @@ namespace ArmA.Studio
         public ICommand CmdMainWindowClosing { get; private set; }
         public ICommand CmdSwitchWorkspace { get; private set; }
         public ICommand CmdShowProperties { get; private set; }
+        public ICommand CmdQuit { get; private set; }
+        public ICommand CmdSave { get; private set; }
+        public ICommand CmdSaveAll { get; private set; }
 
         public string WorkingDir { get; private set; }
 
@@ -99,6 +105,7 @@ namespace ArmA.Studio
 
         public Workspace(string path)
         {
+            this._DebugContext = new DebuggerContext();
             this.WorkingDir = path;
             this._AllPanels = new ObservableCollection<PanelBase>(FindAllAnchorablePanelsInAssembly());
             this.PanelsDisplayed = new ObservableCollection<PanelBase>();
@@ -136,14 +143,39 @@ namespace ArmA.Studio
                 var dlgDc = new Dialogs.PropertiesDialogDataContext();
                 var dlg = new Dialogs.PropertiesDialog(dlgDc);
                 dlg.ShowDialog();
-                if(dlgDc.RestartRequired)
+                if (dlgDc.RestartRequired)
                 {
                     var msgResult = MessageBox.Show(Properties.Localization.ChangesRequireRestart_Body, Properties.Localization.ChangesRequireRestart_Title, MessageBoxButton.YesNo, MessageBoxImage.Information);
-                    if(msgResult == MessageBoxResult.Yes)
+                    if (msgResult == MessageBoxResult.Yes)
                     {
                         App.Shutdown(App.ExitCodes.Restart);
                     }
                 }
+            });
+            this.CmdQuit = new RelayCommand((p) => { App.Shutdown(App.ExitCodes.OK); });
+            this.CmdSave = new RelayCommand((p) =>
+            {
+                foreach (var doc in this.DocumentsDisplayed)
+                {
+                    if (doc.IsSelected)
+                    {
+                        if (!doc.HasChanges)
+                            break;
+                        doc.SaveDocument(doc.FilePath);
+                        break;
+                    }
+                }
+            });
+            this.CmdSaveAll = new RelayCommand((p) =>
+            {
+                foreach (var doc in this.DocumentsDisplayed)
+                {
+                    if (doc.HasChanges)
+                    {
+                        doc.SaveDocument(doc.FilePath);
+                    }
+                }
+                this.SaveSolution();
             });
 
             const double DEF_WIN_HEIGHT = 512;
@@ -336,7 +368,6 @@ namespace ArmA.Studio
 
         private void Close()
         {
-            var solutionFile = Directory.EnumerateFiles(this.WorkingDir, "*.assln").FirstOrDefault();
             //Save Layout GUIDs of the panels
             foreach (var panel in AllPanels)
             {
@@ -347,6 +378,12 @@ namespace ArmA.Studio
                 section["ContentId"] = panel.ContentId;
                 section["IsShown"] = this.PanelsDisplayed.Contains(panel).ToString();
             }
+            this.SaveSolution();
+        }
+
+        public void SaveSolution()
+        {
+            var solutionFile = Directory.EnumerateFiles(this.WorkingDir, "*.assln").FirstOrDefault();
             this.CurrentSolution.LastOpenDocumentPaths = this.DocumentsDisplayed.Select((d) => d.FilePath.Substring(this.WorkingDir.Length)).ToList();
             this.CurrentSolution.XmlSerialize(Path.Combine(this.WorkingDir, solutionFile == null ? string.Concat(Path.GetFileName(this.WorkingDir), ".assln") : solutionFile));
         }

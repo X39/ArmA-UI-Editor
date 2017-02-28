@@ -99,6 +99,7 @@
     <Compile Include="DataContext\OutputPane.cs" />
     <Compile Include="DataContext\TextEditorUtil\IntelliSenseEntry.cs" />
     <Compile Include="DataContext\TextEditorUtil\SyntaxError.cs" />
+    <Compile Include="DebuggerContext.cs" />
     <Compile Include="Dialogs\IDialogContext.cs" />
     <Compile Include="Dialogs\PropertiesDialog.xaml.cs">
       <DependentUpon>PropertiesDialog.xaml</DependentUpon>
@@ -108,6 +109,7 @@
     <Compile Include="LoggerTargets\SubscribableTarget.cs" />
     <Compile Include="UI\Attached\Eventing\PreviewMouseDown.cs" />
     <Compile Include="UI\Attached\Eventing\MouseDown.cs" />
+    <Compile Include="UI\Converters\Multi\BoolOrMultiConverter.cs" />
     <Compile Include="UI\Converters\Multi\CollectionContainsConverter.cs" />
     <Compile Include="UI\SyntaxErrorBackgroundRenderer.cs" />
     <Compile Include="UI\LineHighlighterBackgroundRenderer.cs" />
@@ -237,6 +239,554 @@
     <EmbeddedResource Include="Resources\Pictograms\ColorPalette_26x.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_12x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_14x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_16xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_16xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_24x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_7x16.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_7x_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_8x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_disable_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\Cancel_grey_16xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\F12_Cancel_24x72.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\F12_Cancel_36x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\F12_Cancel_36x96.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\VSO_Cancel_10x_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\VSO_Cancel_12x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\VSO_Cancel_12x_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\VSO_Cancel_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\VSO_Cancel_disabled_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\VSO_Cancel_noHalo_12x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Cancel\VSO_Cancel_noHalo_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Exit\Exit_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\F12_Pause_36x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_17x16.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_64x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_F12.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_grey_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_grey_16xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_grey_16xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Pause\Pause_grey_32xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\Rename_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\Rename_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\Rename_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\Rename_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\Rename_64x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\Rename_cyan_7x16.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\Rename_cyan_7x_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\Rename_hidden_14x_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\Rename_hidden_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Rename\VSO_Rename_hidden_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\CurrentRow_15x14.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\F12_Run_24x72.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\F12_Run_36x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\RunOutline_gray_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_16xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_16xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_24x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_5x9.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_64x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_grey_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_grey_16xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_grey_16xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_grey_32xLG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\Run_grey_32xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Run\VSO_Run_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\SaveAll\SaveAll_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\SaveAll\SaveAll_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\SaveAll\SaveAll_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\SaveAll\SaveAll_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\SaveAll\SaveAll_64x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\SaveAll\VSO_SaveAll_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\SaveAs\SaveAs_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\SaveAs\VSO_SaveAs_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\F12_Save_32x96.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\F12_Save_36x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\SaveStatusBar1_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\SaveStatusBar2_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\SaveStatusBar3_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\SaveStatusBar4_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\SaveStatusBar5_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\SaveStatusBar6_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\SaveStatusBar7_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\SaveStatusBar8_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\SaveStatusBar9_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_128x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\save_16xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\save_16xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_20x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_24x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_40x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_64x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\Save_grey_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\VSO_Save_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Save\VSO_Save_whiteNoHalo_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\F12_SettingsDropdown_54x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\F12_Settings_54x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Monaco_Settings_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_12x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_12x_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_16xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_16xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_24x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_32xMD.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_32xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_64x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\Settings_Inverse_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\VSO_Settings_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Settings\VSO_Settings_whiteNoHalo_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\StepIn\F12_StepIn_36x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\StepIn\StepIn_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\StepOut\F12_StepOut_36x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\StepOut\StepOut_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\StepOver\F12_StepOver_36x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\StepOver\StepOver_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\F12_Stop_36x108.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_12x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_24x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_64x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_disabled_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_grey_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_grey_16xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_grey_32xLG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\Stop\Stop_grey_32xSM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\SwitchSourceOrTarget\SwitchSourceOrTarget_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -271,6 +821,148 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_12x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_14x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_16x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_16xMD.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_16xSM.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_24x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_256x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_32x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_48x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_7x16.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_7x_16x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_8x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_disable_32x.ai" />
+    <None Include="Resources\Pictograms\Cancel\Cancel_grey_16xMD.ai" />
+    <None Include="Resources\Pictograms\Cancel\F12_Cancel_24x72.ai" />
+    <None Include="Resources\Pictograms\Cancel\F12_Cancel_36x108.ai" />
+    <None Include="Resources\Pictograms\Cancel\F12_Cancel_36x96.ai" />
+    <None Include="Resources\Pictograms\Cancel\VSO_Cancel_10x_16x.ai" />
+    <None Include="Resources\Pictograms\Cancel\VSO_Cancel_12x.ai" />
+    <None Include="Resources\Pictograms\Cancel\VSO_Cancel_12x_16x.ai" />
+    <None Include="Resources\Pictograms\Cancel\VSO_Cancel_16x.ai" />
+    <None Include="Resources\Pictograms\Cancel\VSO_Cancel_disabled_16x.ai" />
+    <None Include="Resources\Pictograms\Cancel\VSO_Cancel_grey_12x_16x.ai" />
+    <None Include="Resources\Pictograms\Cancel\VSO_Cancel_noHalo_12x.ai" />
+    <None Include="Resources\Pictograms\Cancel\VSO_Cancel_noHalo_16x.ai" />
+    <None Include="Resources\Pictograms\Exit\Exit_16x.ai" />
+    <None Include="Resources\Pictograms\Pause\F12_Pause_36x108.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_16x.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_17x16.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_256x.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_32x.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_48x.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_64x.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_grey_16x.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_grey_16xMD.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_grey_16xSM.ai" />
+    <None Include="Resources\Pictograms\Pause\Pause_grey_32xSM.ai" />
+    <None Include="Resources\Pictograms\Rename\Rename_16x.ai" />
+    <None Include="Resources\Pictograms\Rename\Rename_256x.ai" />
+    <None Include="Resources\Pictograms\Rename\Rename_32x.ai" />
+    <None Include="Resources\Pictograms\Rename\Rename_48x.ai" />
+    <None Include="Resources\Pictograms\Rename\Rename_64x.ai" />
+    <None Include="Resources\Pictograms\Rename\Rename_cyan_7x16.ai" />
+    <None Include="Resources\Pictograms\Rename\Rename_cyan_7x_16x.ai" />
+    <None Include="Resources\Pictograms\Rename\Rename_hidden_14x_16x.ai" />
+    <None Include="Resources\Pictograms\Rename\Rename_hidden_16x.ai" />
+    <None Include="Resources\Pictograms\Rename\VSO_Rename_16x.ai" />
+    <None Include="Resources\Pictograms\Rename\VSO_Rename_hidden_16x.ai" />
+    <None Include="Resources\Pictograms\Run\CurrentRow_15x14.ai" />
+    <None Include="Resources\Pictograms\Run\F12_Run_24x72.ai" />
+    <None Include="Resources\Pictograms\Run\F12_Run_36x108.ai" />
+    <None Include="Resources\Pictograms\Run\RunOutline_gray_16x.ai" />
+    <None Include="Resources\Pictograms\Run\RunOutline_gray_32x.ai" />
+    <None Include="Resources\Pictograms\Run\RunOutline_gray_8x.ai" />
+    <None Include="Resources\Pictograms\Run\Run_16x.ai" />
+    <None Include="Resources\Pictograms\Run\Run_16xMD.ai" />
+    <None Include="Resources\Pictograms\Run\Run_16xSM.ai" />
+    <None Include="Resources\Pictograms\Run\Run_24x.ai" />
+    <None Include="Resources\Pictograms\Run\Run_256x.ai" />
+    <None Include="Resources\Pictograms\Run\Run_32x.ai" />
+    <None Include="Resources\Pictograms\Run\Run_48x.ai" />
+    <None Include="Resources\Pictograms\Run\Run_5x9.ai" />
+    <None Include="Resources\Pictograms\Run\Run_64x.ai" />
+    <None Include="Resources\Pictograms\Run\Run_grey_16x.ai" />
+    <None Include="Resources\Pictograms\Run\Run_grey_16xMD.ai" />
+    <None Include="Resources\Pictograms\Run\Run_grey_16xSM.ai" />
+    <None Include="Resources\Pictograms\Run\Run_grey_32xLG.ai" />
+    <None Include="Resources\Pictograms\Run\Run_grey_32xSM.ai" />
+    <None Include="Resources\Pictograms\Run\VSO_Run_16x.ai" />
+    <None Include="Resources\Pictograms\SaveAll\SaveAll_16x.ai" />
+    <None Include="Resources\Pictograms\SaveAll\SaveAll_256x.ai" />
+    <None Include="Resources\Pictograms\SaveAll\SaveAll_32x.ai" />
+    <None Include="Resources\Pictograms\SaveAll\SaveAll_48x.ai" />
+    <None Include="Resources\Pictograms\SaveAll\SaveAll_64x.ai" />
+    <None Include="Resources\Pictograms\SaveAll\VSO_SaveAll_16x.ai" />
+    <None Include="Resources\Pictograms\SaveAs\SaveAs_16x.ai" />
+    <None Include="Resources\Pictograms\SaveAs\VSO_SaveAs_16x.ai" />
+    <None Include="Resources\Pictograms\Save\F12_Save_32x96.ai" />
+    <None Include="Resources\Pictograms\Save\F12_Save_36x108.ai" />
+    <None Include="Resources\Pictograms\Save\SaveStatusBar1_16x.ai" />
+    <None Include="Resources\Pictograms\Save\SaveStatusBar2_16x.ai" />
+    <None Include="Resources\Pictograms\Save\SaveStatusBar3_16x.ai" />
+    <None Include="Resources\Pictograms\Save\SaveStatusBar4_16x.ai" />
+    <None Include="Resources\Pictograms\Save\SaveStatusBar5_16x.ai" />
+    <None Include="Resources\Pictograms\Save\SaveStatusBar6_16x.ai" />
+    <None Include="Resources\Pictograms\Save\SaveStatusBar7_16x.ai" />
+    <None Include="Resources\Pictograms\Save\SaveStatusBar8_16x.ai" />
+    <None Include="Resources\Pictograms\Save\SaveStatusBar9_16x.ai" />
+    <None Include="Resources\Pictograms\Save\Save_128x.ai" />
+    <None Include="Resources\Pictograms\Save\Save_16x.ai" />
+    <None Include="Resources\Pictograms\Save\save_16xMD.ai" />
+    <None Include="Resources\Pictograms\Save\save_16xSM.ai" />
+    <None Include="Resources\Pictograms\Save\Save_20x.ai" />
+    <None Include="Resources\Pictograms\Save\Save_24x.ai" />
+    <None Include="Resources\Pictograms\Save\Save_256x.ai" />
+    <None Include="Resources\Pictograms\Save\Save_32x.ai" />
+    <None Include="Resources\Pictograms\Save\Save_40x.ai" />
+    <None Include="Resources\Pictograms\Save\Save_48x.ai" />
+    <None Include="Resources\Pictograms\Save\Save_64x.ai" />
+    <None Include="Resources\Pictograms\Save\Save_grey_16x.ai" />
+    <None Include="Resources\Pictograms\Save\VSO_Save_16x.ai" />
+    <None Include="Resources\Pictograms\Save\VSO_Save_whiteNoHalo_16x.ai" />
+    <None Include="Resources\Pictograms\Settings\F12_SettingsDropdown_54x108.ai" />
+    <None Include="Resources\Pictograms\Settings\F12_Settings_54x108.ai" />
+    <None Include="Resources\Pictograms\Settings\Monaco_Settings_16x.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_12x.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_12x_16x.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_16x.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_16xMD.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_16xSM.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_24x.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_256x.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_32x.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_32xMD.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_32xSM.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_48x.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_64x.ai" />
+    <None Include="Resources\Pictograms\Settings\Settings_Inverse_16x.ai" />
+    <None Include="Resources\Pictograms\Settings\VSO_Settings_16x.ai" />
+    <None Include="Resources\Pictograms\Settings\VSO_Settings_whiteBlackHalo_16x.ai" />
+    <None Include="Resources\Pictograms\Settings\VSO_Settings_whiteNoHalo_16x.ai" />
+    <None Include="Resources\Pictograms\StepIn\F12_StepIn_36x108.ai" />
+    <None Include="Resources\Pictograms\StepIn\StepIn_16x.ai" />
+    <None Include="Resources\Pictograms\StepOut\F12_StepOut_36x108.ai" />
+    <None Include="Resources\Pictograms\StepOut\StepOut_16x.ai" />
+    <None Include="Resources\Pictograms\StepOver\F12_StepOver_36x108.ai" />
+    <None Include="Resources\Pictograms\StepOver\StepOver_16x.ai" />
+    <None Include="Resources\Pictograms\Stop\F12_Stop_36x108.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_12x.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_16x.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_24x.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_256x.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_32x.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_48x.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_64x.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_disabled_16x.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_grey_16x.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_grey_16xSM.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_grey_32xLG.ai" />
+    <None Include="Resources\Pictograms\Stop\Stop_grey_32xSM.ai" />
+    <None Include="Resources\Pictograms\SwitchSourceOrTarget\SwitchSourceOrTarget_16x.ai" />
+    <None Include="Resources\Pictograms\SwitchSourceOrTarget\VSO_SwitchSourceOrTarget_16x.ai" />
     <None Include="SyntaxFiles\armaconfig.xshd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -343,12 +1035,6 @@
     <Resource Include="Resources\Pictograms\FindSymbol_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Pictograms\Rename_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Pictograms\Delete_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Pictograms\ArrowOpen_16x.png" />
   </ItemGroup>
   <ItemGroup>
@@ -360,7 +1046,241 @@
   <ItemGroup>
     <Resource Include="Resources\Pictograms\ColorPalette_16x.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Pictograms\Settings\F12_SettingsDropdown_54x108.png" />
+    <Resource Include="Resources\Pictograms\Settings\F12_Settings_54x108.png" />
+    <Resource Include="Resources\Pictograms\Settings\Monaco_Settings_16x.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings.ico" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_12x.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_12x_16x.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_16x.png" />
+    <Content Include="Resources\Pictograms\Settings\Settings_16x.svg" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_16xMD.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_16xSM.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_24x.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_24x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_256x.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_32x.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_32xMD.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_32xSM.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_48x.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_64x.png" />
+    <Resource Include="Resources\Pictograms\Settings\Settings_Inverse_16x.png" />
+    <Resource Include="Resources\Pictograms\Settings\VSO_Settings_16x.png" />
+    <Content Include="Resources\Pictograms\Settings\VSO_Settings_16x.svg" />
+    <Resource Include="Resources\Pictograms\Settings\VSO_Settings_whiteBlackHalo_16x.png" />
+    <Content Include="Resources\Pictograms\Settings\VSO_Settings_whiteBlackHalo_16x.svg" />
+    <Resource Include="Resources\Pictograms\Settings\VSO_Settings_whiteNoHalo_16x.png" />
+    <Content Include="Resources\Pictograms\Settings\VSO_Settings_whiteNoHalo_16x.svg" />
+    <Resource Include="Resources\Pictograms\SwitchSourceOrTarget\SwitchSourceOrTarget_16x.png" />
+    <Content Include="Resources\Pictograms\SwitchSourceOrTarget\SwitchSourceOrTarget_16x.svg" />
+    <Resource Include="Resources\Pictograms\SwitchSourceOrTarget\SwitchSourceOrTarget_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\SwitchSourceOrTarget\SwitchSourceOrTarget_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\SwitchSourceOrTarget\VSO_SwitchSourceOrTarget_16x.png" />
+    <Content Include="Resources\Pictograms\SwitchSourceOrTarget\VSO_SwitchSourceOrTarget_16x.svg" />
+    <Resource Include="Resources\Pictograms\Exit\Exit_16x.png" />
+    <Resource Include="Resources\Pictograms\Exit\Exit_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Exit\Exit_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel.ico" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_12x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_14x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_16x.png" />
+    <Content Include="Resources\Pictograms\Cancel\Cancel_16x.svg" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_16xMD.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_16xSM.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_24x.bmp" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_24x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_256x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_32x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_48x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_64x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_7x16.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_7x_16x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_7x_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_7x_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_8x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_disable_32x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_grey_16x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_grey_16xMD.png" />
+    <Resource Include="Resources\Pictograms\Cancel\Cancel_grey_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Cancel\F12_Cancel_24x72.png" />
+    <Resource Include="Resources\Pictograms\Cancel\F12_Cancel_36x108.png" />
+    <Resource Include="Resources\Pictograms\Cancel\F12_Cancel_36x96.png" />
+    <Resource Include="Resources\Pictograms\Cancel\icon-delete-small.png" />
+    <Resource Include="Resources\Pictograms\Cancel\icon-delete.png" />
+    <Resource Include="Resources\Pictograms\Cancel\VSO_Cancel_10x_16x.PNG" />
+    <Resource Include="Resources\Pictograms\Cancel\VSO_Cancel_12x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\VSO_Cancel_12x_16x.PNG" />
+    <Content Include="Resources\Pictograms\Cancel\VSO_Cancel_12x_16x.svg" />
+    <Resource Include="Resources\Pictograms\Cancel\VSO_Cancel_16x.png" />
+    <Content Include="Resources\Pictograms\Cancel\VSO_Cancel_16x.svg" />
+    <Resource Include="Resources\Pictograms\Cancel\VSO_Cancel_16x_24x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\VSO_Cancel_disabled_16x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\VSO_Cancel_grey_12x_16x.png" />
+    <Content Include="Resources\Pictograms\Cancel\VSO_Cancel_grey_12x_16x.svg" />
+    <Resource Include="Resources\Pictograms\Cancel\VSO_Cancel_noHalo_12x.png" />
+    <Resource Include="Resources\Pictograms\Cancel\VSO_Cancel_noHalo_16x.png" />
+    <Resource Include="Resources\Pictograms\Rename\Rename.ico" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_16x.png" />
+    <Content Include="Resources\Pictograms\Rename\Rename_16x.svg" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_256x.png" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_32x.png" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_48x.png" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_64x.png" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_cyan_7x16.png" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_cyan_7x_16x.png" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_cyan_7x_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_cyan_7x_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_hidden_14x_16x.png" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_hidden_14x_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_hidden_14x_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_hidden_16x.png" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_hidden_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Rename\Rename_hidden_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Rename\VSO_Rename_16x.png" />
+    <Content Include="Resources\Pictograms\Rename\VSO_Rename_16x.svg" />
+    <Resource Include="Resources\Pictograms\Rename\VSO_Rename_hidden_16x.png" />
+    <Resource Include="Resources\Pictograms\Run\CurrentRow_15x14.png" />
+    <Resource Include="Resources\Pictograms\Run\Run.ico" />
+    <Resource Include="Resources\Pictograms\Run\RunOutline_gray_16x.png" />
+    <Content Include="Resources\Pictograms\Run\RunOutline_gray_16x.svg" />
+    <Resource Include="Resources\Pictograms\Run\RunOutline_gray_32x.png" />
+    <Resource Include="Resources\Pictograms\Run\RunOutline_gray_8x.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_16x.png" />
+    <Content Include="Resources\Pictograms\Run\Run_16x.svg" />
+    <Resource Include="Resources\Pictograms\Run\Run_16xMD.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_16xSM.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Run\Run_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Run\Run_24x.bmp" />
+    <Resource Include="Resources\Pictograms\Run\Run_24x.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_256x.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_32x.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_48x.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_5x9.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_5x9_24.bmp" />
+    <Resource Include="Resources\Pictograms\Run\Run_64x.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_grey_16x.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_grey_16xMD.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_grey_16xSM.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_grey_32xLG.png" />
+    <Resource Include="Resources\Pictograms\Run\Run_grey_32xSM.png" />
+    <Resource Include="Resources\Pictograms\Run\VSO_Run_16x.png" />
+    <Content Include="Resources\Pictograms\Run\VSO_Run_16x.svg" />
+    <Resource Include="Resources\Pictograms\Stop\F12_Stop_36x108.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop.ico" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_12x.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_16x.png" />
+    <Content Include="Resources\Pictograms\Stop\Stop_16x.svg" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_24x.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_256x.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_32x.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_48x.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_64x.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_disabled_16x.png" />
+    <Content Include="Resources\Pictograms\Stop\Stop_disabled_16x.svg" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_disabled_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_grey_16x.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_grey_16xSM.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_grey_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_grey_32xLG.png" />
+    <Resource Include="Resources\Pictograms\Stop\Stop_grey_32xSM.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause.ico" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_16x.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_17x16.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_256x.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_32x.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_48x.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_64x.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_grey_16x.png" />
+    <Content Include="Resources\Pictograms\Pause\Pause_grey_16x.svg" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_grey_16xMD.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_grey_16xSM.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_grey_32xLG.png" />
+    <Resource Include="Resources\Pictograms\Pause\Pause_grey_32xSM.png" />
+    <Resource Include="Resources\Pictograms\StepOver\i_stepoverBlue_F12.png" />
+    <Resource Include="Resources\Pictograms\StepOver\i_stepoverGrey_F12.png" />
+    <Resource Include="Resources\Pictograms\StepOver\i_stepoverLtGrey_F12.png" />
+    <Resource Include="Resources\Pictograms\StepOver\StepOver_16x.png" />
+    <Content Include="Resources\Pictograms\StepOver\StepOver_16x.svg" />
+    <Resource Include="Resources\Pictograms\StepOver\StepOver_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\StepOver\StepOver_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\StepOut\i_stepoutBlue_F12.png" />
+    <Resource Include="Resources\Pictograms\StepOut\i_stepoutGrey_F12.png" />
+    <Resource Include="Resources\Pictograms\StepOut\i_stepoutLtGrey_F12.png" />
+    <Resource Include="Resources\Pictograms\StepOut\StepOut_16x.png" />
+    <Content Include="Resources\Pictograms\StepOut\StepOut_16x.svg" />
+    <Resource Include="Resources\Pictograms\StepOut\StepOut_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\StepOut\StepOut_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\StepIn\i_stepinBlue_F12.png" />
+    <Resource Include="Resources\Pictograms\StepIn\i_stepinGrey_F12.png" />
+    <Resource Include="Resources\Pictograms\StepIn\i_stepinLtGrey_F12.png" />
+    <Resource Include="Resources\Pictograms\StepIn\StepIn_16x.png" />
+    <Content Include="Resources\Pictograms\StepIn\StepIn_16x.svg" />
+    <Resource Include="Resources\Pictograms\StepIn\StepIn_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\StepIn\StepIn_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\SaveAs\SaveAs_16x.png" />
+    <Content Include="Resources\Pictograms\SaveAs\SaveAs_16x.svg" />
+    <Resource Include="Resources\Pictograms\SaveAs\SaveAs_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\SaveAs\SaveAs_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\SaveAs\VSO_SaveAs_16x.png" />
+    <Content Include="Resources\Pictograms\SaveAs\VSO_SaveAs_16x.svg" />
+    <Resource Include="Resources\Pictograms\SaveAll\SaveAll.ico" />
+    <Resource Include="Resources\Pictograms\SaveAll\SaveAll_16x.png" />
+    <Content Include="Resources\Pictograms\SaveAll\SaveAll_16x.svg" />
+    <Resource Include="Resources\Pictograms\SaveAll\SaveAll_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\SaveAll\SaveAll_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\SaveAll\SaveAll_256x.png" />
+    <Resource Include="Resources\Pictograms\SaveAll\SaveAll_32x.png" />
+    <Resource Include="Resources\Pictograms\SaveAll\SaveAll_48x.png" />
+    <Resource Include="Resources\Pictograms\SaveAll\SaveAll_64x.png" />
+    <Resource Include="Resources\Pictograms\SaveAll\VSO_SaveAll_16x.png" />
+    <Content Include="Resources\Pictograms\SaveAll\VSO_SaveAll_16x.svg" />
+    <Resource Include="Resources\Pictograms\Save\F12_Save_32x96.png" />
+    <Content Include="Resources\Pictograms\Save\F12_Save_32x96.svg" />
+    <Resource Include="Resources\Pictograms\Save\F12_Save_36x108.png" />
+    <Content Include="Resources\Pictograms\Save\F12_Save_36x108.svg" />
+    <Resource Include="Resources\Pictograms\Save\Save.ico" />
+    <Resource Include="Resources\Pictograms\Save\SaveStatusBar1_16x.png" />
+    <Resource Include="Resources\Pictograms\Save\SaveStatusBar2_16x.png" />
+    <Resource Include="Resources\Pictograms\Save\SaveStatusBar3_16x.png" />
+    <Resource Include="Resources\Pictograms\Save\SaveStatusBar4_16x.png" />
+    <Resource Include="Resources\Pictograms\Save\SaveStatusBar5_16x.png" />
+    <Resource Include="Resources\Pictograms\Save\SaveStatusBar6_16x.png" />
+    <Resource Include="Resources\Pictograms\Save\SaveStatusBar7_16x.png" />
+    <Resource Include="Resources\Pictograms\Save\SaveStatusBar8_16x.png" />
+    <Resource Include="Resources\Pictograms\Save\SaveStatusBar9_16x.png" />
+    <Resource Include="Resources\Pictograms\Save\Save_128x.png" />
+    <Resource Include="Resources\Pictograms\Save\Save_16x.png" />
+    <Content Include="Resources\Pictograms\Save\Save_16x.svg" />
+    <Resource Include="Resources\Pictograms\Save\save_16xMD.png" />
+    <Resource Include="Resources\Pictograms\Save\save_16xSM.png" />
+    <Resource Include="Resources\Pictograms\Save\Save_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Save\Save_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\Save\Save_20x.png" />
+    <Resource Include="Resources\Pictograms\Save\Save_24x.png" />
+    <Resource Include="Resources\Pictograms\Save\Save_256x.png" />
+    <Resource Include="Resources\Pictograms\Save\Save_32x.png" />
+    <Resource Include="Resources\Pictograms\Save\Save_40x.png" />
+    <Resource Include="Resources\Pictograms\Save\Save_48x.png" />
+    <Resource Include="Resources\Pictograms\Save\Save_64x.png" />
+    <Content Include="Resources\Pictograms\Save\Save_grey_16x.svg" />
+    <Resource Include="Resources\Pictograms\Save\Save_grey_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\Save\VSO_Save_16x.png" />
+    <Content Include="Resources\Pictograms\Save\VSO_Save_16x.svg" />
+    <Resource Include="Resources\Pictograms\Save\VSO_Save_whiteNoHalo_16x.png" />
+    <Content Include="Resources\Pictograms\Save\VSO_Save_whiteNoHalo_16x.svg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -27,6 +27,7 @@
                     <convm:CollectionContainsConverter x:Key="CollectionContainsConverter"/>
                     <convm:AllTrueMultiConverter x:Key="AllTrueMultiConverter"/>
                     <convm:AllFalseMultiConverter x:Key="AllFalseMultiConverter"/>
+                    <convm:BoolOrMultiConverter x:Key="BoolOrMultiConverter"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="Colors">
                     <Color x:Key="C_LightBlue">#007ACC</Color>

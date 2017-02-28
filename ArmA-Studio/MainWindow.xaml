@@ -23,9 +23,33 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="{x:Static p:Localization.MenuItem_File}">
-                <MenuItem Header="{x:Static p:Localization.MenuItem_SwitchWorkspace}" Command="{Binding CmdSwitchWorkspace}"/>
+                <MenuItem Header="{x:Static p:Localization.MenuItem_Save}" Command="{Binding CmdSave}">
+                    <MenuItem.Icon>
+                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/Save/Save.ico"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Localization.MenuItem_SaveAll}" Command="{Binding CmdSaveAll}">
+                    <MenuItem.Icon>
+                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/SaveAll/SaveAll.ico"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
-                <MenuItem Header="{x:Static p:Localization.MenuItem_Properties}" Command="{Binding CmdShowProperties}"/>
+                <MenuItem Header="{x:Static p:Localization.MenuItem_SwitchWorkspace}" Command="{Binding CmdSwitchWorkspace}">
+                    <MenuItem.Icon>
+                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/SwitchSourceOrTarget/SwitchSourceOrTarget_16x.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static p:Localization.MenuItem_Properties}" Command="{Binding CmdShowProperties}">
+                    <MenuItem.Icon>
+                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/Settings/Settings.ico"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="{x:Static p:Localization.MenuItem_Quit}" Command="{Binding CmdQuit}">
+                    <MenuItem.Icon>
+                        <Image Source="/ArmA-Studio;component/Resources/Pictograms/Exit/Exit_16x.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="{x:Static p:Localization.MenuItem_Panels}" ItemsSource="{Binding AllPanels}">
                 <MenuItem.ItemContainerStyle>
@@ -49,6 +73,72 @@
                 <MenuItem Header="{x:Static p:Localization.MenuItem_Licenses}" Command="{Binding CmdDisplayLicensesDialog}"/>
             </MenuItem>
         </Menu>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBarTray.Resources>
+                <Style TargetType="Image">
+                    <Setter Property="Height" Value="16"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" Value="False">
+                            <Setter Property="Opacity" Value="0.25"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ToolBarTray.Resources>
+            <ToolBar x:Name="ToolBar_FileIO">
+                <Button IsEnabled="{Binding IsDebuggerAttached}" Command="{Binding CmdSave}">
+                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Save/Save.ico"/>
+                </Button>
+                <Button IsEnabled="{Binding IsDebuggerAttached}" Command="{Binding CmdSaveAll}">
+                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/SaveAll/SaveAll.ico"/>
+                </Button>
+            </ToolBar>
+            <ToolBar x:Name="ToolBar_Debugger" DataContext="{Binding DebugContext}">
+                <Button Command="{Binding CmdRunDebuggerClick}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BoolOrMultiConverter}">
+                            <Binding Path="IsDebuggerAttached" Converter="{StaticResource BoolInvertConverter}"/>
+                            <Binding Path="IsPaused"/>
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Source="/ArmA-Studio;component/Resources/Pictograms/Run/Run.ico"/>
+                        <TextBlock Grid.Column="1">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{x:Static p:Localization.Debugger_Start}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDebuggerAttached}" Value="true">
+                                            <Setter Property="Text" Value="{x:Static p:Localization.Debugger_Continue}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Button>
+                <Separator/>
+                <Button IsEnabled="{Binding IsDebuggerAttached}" ToolTip="{x:Static p:Localization.Debugger_Pause_Tooltip}" Command="{Binding CmdPauseDebugger}">
+                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Pause/Pause.ico"/>
+                </Button>
+                <Button IsEnabled="{Binding IsDebuggerAttached}" ToolTip="{x:Static p:Localization.Debugger_Stop_Tooltip}" Command="{Binding CmdStopDebugger}">
+                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/Stop/Stop.ico"/>
+                </Button>
+                <Separator/>
+                <Button IsEnabled="{Binding IsDebuggerAttached}" ToolTip="{x:Static p:Localization.Debugger_StepInto_Tooltip}" Command="{Binding CmdStepInto}">
+                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/StepIn/StepIn_16x.png"/>
+                </Button>
+                <Button IsEnabled="{Binding IsDebuggerAttached}" ToolTip="{x:Static p:Localization.Debugger_StepOver_Tooltip}" Command="{Binding CmdStepOver}">
+                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/StepOver/StepOver_16x.png"/>
+                </Button>
+                <Button IsEnabled="{Binding IsDebuggerAttached}" ToolTip="{x:Static p:Localization.Debugger_StepOut_Tooltip}" Command="{Binding CmdStepOut}">
+                    <Image Source="/ArmA-Studio;component/Resources/Pictograms/StepOut/StepOut_16x.png"/>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
         <ad:DockingManager
             ev:Initialized.Command="{Binding CmdDockingManagerInitialized}"
             ev:Initialized.CommandParameter="{Binding RelativeSource={RelativeSource Self}}"

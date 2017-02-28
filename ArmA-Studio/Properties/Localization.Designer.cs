@@ -134,6 +134,69 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        public static string Debugger_Continue {
+            get {
+                return ResourceManager.GetString("Debugger_Continue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pauses the execution wherever it currently is..
+        /// </summary>
+        public static string Debugger_Pause_Tooltip {
+            get {
+                return ResourceManager.GetString("Debugger_Pause_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string Debugger_Start {
+            get {
+                return ResourceManager.GetString("Debugger_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step into current scope.
+        /// </summary>
+        public static string Debugger_StepInto_Tooltip {
+            get {
+                return ResourceManager.GetString("Debugger_StepInto_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step out of current scope.
+        /// </summary>
+        public static string Debugger_StepOut_Tooltip {
+            get {
+                return ResourceManager.GetString("Debugger_StepOut_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step over command.
+        /// </summary>
+        public static string Debugger_StepOver_Tooltip {
+            get {
+                return ResourceManager.GetString("Debugger_StepOver_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detaches the debugger and stops the debugging session..
+        /// </summary>
+        public static string Debugger_Stop_Tooltip {
+            get {
+                return ResourceManager.GetString("Debugger_Stop_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string Delete {
@@ -257,6 +320,33 @@ namespace ArmA.Studio.Properties {
         public static string MenuItem_Properties {
             get {
                 return ResourceManager.GetString("MenuItem_Properties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quit.
+        /// </summary>
+        public static string MenuItem_Quit {
+            get {
+                return ResourceManager.GetString("MenuItem_Quit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string MenuItem_Save {
+            get {
+                return ResourceManager.GetString("MenuItem_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save All.
+        /// </summary>
+        public static string MenuItem_SaveAll {
+            get {
+                return ResourceManager.GetString("MenuItem_SaveAll", resourceCulture);
             }
         }
         
