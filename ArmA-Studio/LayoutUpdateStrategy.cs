@@ -14,7 +14,14 @@ namespace ArmA.Studio
         private bool BeforeInsert_(LayoutRoot layout, LayoutContent anchorableToShow)
         {
             var dockable = (DockableBase)anchorableToShow.Content;
-            var layoutContent = layout.Descendents().OfType<LayoutContent>().FirstOrDefault(it => it.ContentId == dockable.ContentId);
+            var layoutContent = layout.Descendents().OfType<LayoutContent>().FirstOrDefault(it =>
+            {
+                if(it.ContentId == null)
+                {
+                    it.ContentId = Guid.NewGuid().ToString();
+                }
+                return it.ContentId == dockable.ContentId;
+            });
             if (layoutContent == null)
             {
                 layoutContent = layout.Hidden.FirstOrDefault(it => it.ContentId == dockable.ContentId);
