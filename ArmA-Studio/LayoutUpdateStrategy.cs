@@ -14,12 +14,12 @@ namespace ArmA.Studio
         private bool BeforeInsert_(LayoutRoot layout, LayoutContent anchorableToShow)
         {
             var dockable = (DockableBase)anchorableToShow.Content;
+            if (string.IsNullOrWhiteSpace(dockable.ContentId))
+            {
+                dockable.ContentId = Guid.NewGuid().ToString();
+            }
             var layoutContent = layout.Descendents().OfType<LayoutContent>().FirstOrDefault(it =>
             {
-                if(it.ContentId == null)
-                {
-                    it.ContentId = Guid.NewGuid().ToString();
-                }
                 return it.ContentId == dockable.ContentId;
             });
             if (layoutContent == null)
