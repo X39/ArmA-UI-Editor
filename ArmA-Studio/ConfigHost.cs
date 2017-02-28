@@ -199,13 +199,13 @@ namespace ArmA.Studio
                     switch (pair.Key)
                     {
                         case EIniSelector.App:
-                            parser.WriteFile(Path.Combine(ArmA.Studio.App.ConfigPath, "App.ini"), this.AppIni);
+                            parser.WriteFile(Path.Combine(Studio.App.ConfigPath, "App.ini"), this.AppIni);
                             break;
                         case EIniSelector.Coloring:
-                            parser.WriteFile(Path.Combine(ArmA.Studio.App.ConfigPath, "Coloring.ini"), this.ColoringIni);
+                            parser.WriteFile(Path.Combine(Studio.App.ConfigPath, "Coloring.ini"), this.ColoringIni);
                             break;
                         case EIniSelector.Layout:
-                            parser.WriteFile(Path.Combine(ArmA.Studio.App.ConfigPath, "Layout.ini"), this.LayoutIni);
+                            parser.WriteFile(Path.Combine(Studio.App.ConfigPath, "Layout.ini"), this.LayoutIni);
                             break;
                     }
                 }

@@ -29,9 +29,10 @@ namespace ArmA.Studio
         public static string ExecutableDirectory { get { return Path.GetDirectoryName(ExecutableFile); } }
         public static string ExecutableFile { get { return Assembly.GetExecutingAssembly().GetName().CodeBase.Substring("file:///".Length); } }
         public static string SyntaxFilesPath { get { return Path.Combine(ExecutableDirectory, "SyntaxFiles"); } }
-        public static string ConfigPath { get { return Path.Combine(ExecutableDirectory, "Configuration"); } }
-        public static string TempPath { get { return Path.Combine(Path.GetTempPath(), @"X39\ArmA-Studio"); } }
-        public static string CommonApplicationDataPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"X39\ArmA-Studio"); } }
+        public static string ConfigPath { get { return Path.Combine(ApplicationDataPath, "Configuration"); } }
+        public static string TempPath { get { return Path.Combine(Path.GetTempPath(), @"ArmA-Studio"); } }
+        public static string CommonApplicationDataPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"ArmA-Studio"); } }
+        public static string ApplicationDataPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"ArmA-Studio"); } }
 
         public static SubscribableTarget SubscribableLoggerTarget { get; private set; }
         private void SetupNLog()
