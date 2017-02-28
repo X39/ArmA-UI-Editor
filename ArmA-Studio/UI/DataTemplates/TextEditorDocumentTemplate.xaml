@@ -34,6 +34,6 @@
                 </ListView>
             </Grid>
         </Popup>
-        <ae:TextEditor x:Name="TextEditor" Document="{Binding Document}" SyntaxHighlighting="{Binding SyntaxDefinition, diag:PresentationTraceSources.TraceLevel=High}" ev:TextChanged.Command="{Binding CmdTextChanged}" ev:KeyDown.Command="{Binding CmdKeyDown}" ev:KeyDown.KeyDownHandled="{Binding CmdKeyDownHandledValue}" ShowLineNumbers="True" FontFamily="Consolas" ev:Initialized.Command="{Binding CmdTextEditorInitialized}" ev:Initialized.CommandParameter="{Binding RelativeSource={RelativeSource Self}}" ev:PreviewMouseDown.Command="{Binding CmdEditorPreviewMouseDown}"></ae:TextEditor>
+        <ae:TextEditor x:Name="TextEditor" Document="{Binding Document}" SyntaxHighlighting="{Binding SyntaxDefinition}" ev:TextChanged.Command="{Binding CmdTextChanged}" ev:KeyDown.Command="{Binding CmdKeyDown}" ev:KeyDown.KeyDownHandled="{Binding CmdKeyDownHandledValue}" ShowLineNumbers="True" FontFamily="Consolas" ev:Initialized.Command="{Binding CmdTextEditorInitialized}" ev:Initialized.CommandParameter="{Binding RelativeSource={RelativeSource Self}}" ev:PreviewMouseDown.Command="{Binding CmdEditorPreviewMouseDown}"></ae:TextEditor>
     </Grid>
 </DataTemplate>

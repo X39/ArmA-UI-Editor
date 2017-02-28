@@ -179,7 +179,7 @@ namespace ArmA.Studio.DataContext
             {
                 Directory.CreateDirectory(dir);
             }
-            using (var writer = new StreamWriter(File.OpenWrite(path)))
+            using (var writer = new StreamWriter(File.Open(path, FileMode.Create)))
             {
                 writer.Write(this.Document.Text);
                 writer.Flush();

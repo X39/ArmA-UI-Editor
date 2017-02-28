@@ -37,33 +37,33 @@ COMPILER CONFIGFILE
             }
 		.
         CONFIG<ConfigEntry parent> (. ConfigEntry cur = Root == null ? null : new ConfigEntry(parent); if(Root != null) cur.IsField = true; .) =
-            "class" (. if(Root != null) cur.FullStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); .)
+            "class" (. if(Root != null) cur.FullStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos); .)
             T_IDENT (.
-				if(Root != null) {cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+				if(Root != null) {cur.NameStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+				cur.NameEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 			.)
             [
                 ':'
                 T_IDENT (.
-					if(Root != null) {cur.ParentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-					cur.ParentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+					if(Root != null) {cur.ParentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+					cur.ParentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 				.)
             ]
             [
-                '{' (. if(Root != null) cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Forward); .)
+                '{' (. if(Root != null) cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length); .)
                 {
                     FIELD<cur>
                     |
                     CONFIG<cur>
                 }
-                '}' (. if(Root != null) cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Backward); .)
+                '}' (. if(Root != null) cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos); .)
             ]
-            ';' (. if(Root != null) cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
+            ';' (. if(Root != null) cur.FullEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length); .)
         .
         FIELD<ConfigEntry parent> (. ConfigEntry cur = Root == null ? null : new ConfigEntry(parent); if(Root != null) cur.IsField = true; .) =
             T_IDENT (.
-				if(Root != null) {cur.FullStart = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-				cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+				if(Root != null) {cur.FullStart = cur.NameStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+				cur.NameEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 			.)
             [
                 '['
@@ -73,35 +73,35 @@ COMPILER CONFIGFILE
             (
                 (
                     ARRAY (.
-						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+						cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 					.)
                     |
                     SCALAR (.
-						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+						cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 					.)
                     |
                     STRING (.
-						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+						cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 					.)
                     |
                     BOOLEAN (.
-						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-						cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+						if(Root != null) {cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+						cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 					.)
                     |
 					(
-						ANY (. if(Root != null) cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); .)
+						ANY (. if(Root != null) cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos); .)
 						{
 							ANY
 						}
-						(. if(Root != null) cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
+						(. if(Root != null) cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length); .)
 					)
                 )
             )
-            ';' (. if(Root != null) cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); .)
+            ';' (. if(Root != null) cur.FullEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length); .)
         .
         SCALAR =
             T_SCALAR

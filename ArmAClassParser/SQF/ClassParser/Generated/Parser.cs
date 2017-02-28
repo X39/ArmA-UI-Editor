@@ -143,21 +143,21 @@ namespace VirtualRealityEngine.Config.Parser
 	void CONFIG(ConfigEntry parent) {
 		ConfigEntry cur = Root == null ? null : new ConfigEntry(parent); if(Root != null) cur.IsField = true; 
 		Expect(6);
-		if(Root != null) cur.FullStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); 
+		if(Root != null) cur.FullStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos); 
 		Expect(5);
-		if(Root != null) {cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+		if(Root != null) {cur.NameStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+		cur.NameEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 		
 		if (la.kind == 7) {
 			Get();
 			Expect(5);
-			if(Root != null) {cur.ParentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ParentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+			if(Root != null) {cur.ParentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+			cur.ParentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 			
 		}
 		if (la.kind == 8) {
 			Get();
-			if(Root != null) cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Forward); 
+			if(Root != null) cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length); 
 			while (la.kind == 5 || la.kind == 6) {
 				if (la.kind == 5) {
 					FIELD(cur);
@@ -166,17 +166,17 @@ namespace VirtualRealityEngine.Config.Parser
 				}
 			}
 			Expect(9);
-			if(Root != null) cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Backward); 
+			if(Root != null) cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos); 
 		}
 		Expect(10);
-		if(Root != null) cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
+		if(Root != null) cur.FullEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length); 
 	}
 
 	void FIELD(ConfigEntry parent) {
 		ConfigEntry cur = Root == null ? null : new ConfigEntry(parent); if(Root != null) cur.IsField = true; 
 		Expect(5);
-		if(Root != null) {cur.FullStart = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-		cur.NameEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+		if(Root != null) {cur.FullStart = cur.NameStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+		cur.NameEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 		
 		if (la.kind == 11) {
 			Get();
@@ -185,34 +185,34 @@ namespace VirtualRealityEngine.Config.Parser
 		Expect(13);
 		if (la.kind == 8) {
 			ARRAY();
-			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+			cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 			
 		} else if (la.kind == 1 || la.kind == 2) {
 			SCALAR();
-			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+			cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 			
 		} else if (la.kind == 3 || la.kind == 4) {
 			STRING();
-			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+			cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 			
 		} else if (la.kind == 14 || la.kind == 15) {
 			BOOLEAN();
-			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward);
-			cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward);}
+			if(Root != null) {cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos);
+			cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length);}
 			
 		} else if (StartOf(1)) {
 			Get();
-			if(Root != null) cur.ContentStart = doc.ContentStart.GetPositionAtOffset(t.charPos, LogicalDirection.Forward); 
+			if(Root != null) cur.ContentStart = doc.ContentStart.GetPointerFromCharOffset(t.charPos); 
 			while (StartOf(2)) {
 				Get();
 			}
-			if(Root != null) cur.ContentEnd = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
+			if(Root != null) cur.ContentEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length); 
 		} else SynErr(18);
 		Expect(10);
-		if(Root != null) cur.FullEnd = cur.NameStart = doc.ContentStart.GetPositionAtOffset(t.charPos + t.val.Length, LogicalDirection.Backward); 
+		if(Root != null) cur.FullEnd = doc.ContentStart.GetPointerFromCharOffset(t.charPos + t.val.Length); 
 	}
 
 	void ARRAY() {

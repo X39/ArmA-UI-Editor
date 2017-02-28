@@ -24,6 +24,11 @@ namespace ArmA.Studio.DataContext
             public ConfigEntryUiControlBinding(PropertyInfo propSource, ConfigEntry source, PropertyInfo propTarget, ControlBase target) : base(propSource, source, propTarget, target) { }
         }
         private static DataTemplate ThisTemplate { get; set; }
+        static UiEditorDocument()
+        {
+            ThisTemplate = GetDataTemplateFromAssemblyRes("ArmA.Studio.UI.DataTemplates.UiEditorDocumentTemplate.xaml");
+        }
+
         public override string[] SupportedFileExtensions { get { return new string[] { ".uic" }; } }
 
         public FlowDocument VirtualConfigDocument { get { return this._VirtualConfigDocument; } set { this._VirtualConfigDocument = value; this.RaisePropertyChanged(); } }
@@ -50,9 +55,12 @@ namespace ArmA.Studio.DataContext
                     //ToDo: Clear UI-Controls and ConfigTree
                     if (VirtualConfigDocument != null)
                     {
-                        this.Document.Text = new TextRange(this.VirtualConfigDocument.ContentStart, this.VirtualConfigDocument.ContentEnd).Text;
+                        var txt = new TextRange(this.VirtualConfigDocument.ContentStart, this.VirtualConfigDocument.ContentEnd).Text;
                         this.VirtualConfigDocument = null;
                         this.ConfigTreeRoot = null;
+                        if (this.Document.Text.Equals(txt))
+                            return;
+                        this.Document.Text = txt;
                     }
                 }
                 else if(value == 1)
@@ -100,14 +108,6 @@ namespace ArmA.Studio.DataContext
 
                     Application.Current.Dispatcher.BeginInvoke((Action)delegate
                     { this.CurrentTabIndex = 0; }, DispatcherPriority.Render, null);
-
-                    //ToDo: Remove textBox and display it different to user
-                    MessageBox.Show("SyntaxError");
-
-                    //ToDo: Add error underlining to AvalonEdit
-                    //https://github.com/siegfriedpammer/AvalonEditSamples/blob/master/TextMarkerSample/SharpDevelop/TextMarkerService.cs
-                    //https://github.com/siegfriedpammer/AvalonEditSamples/blob/master/TextMarkerSample/SharpDevelop/ITextMarker.cs
-                    //https://github.com/siegfriedpammer/AvalonEditSamples/blob/master/TextMarkerSample/Window1.xaml.cs
                     return;
                 }
                 if(this.ConfigTreeRoot.Children.Count > 1)
@@ -128,7 +128,7 @@ namespace ArmA.Studio.DataContext
                 }
                 else if(this.ConfigTreeRoot.Children.Count == 0)
                 {
-                    System.Windows.MessageBox.Show(Properties.Localization.NoConfigPresent_Body, Properties.Localization.NoConfigPresent_Title, MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(Properties.Localization.NoConfigPresent_Body, Properties.Localization.NoConfigPresent_Title, MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
                 else
@@ -143,7 +143,7 @@ namespace ArmA.Studio.DataContext
                 }
                 foreach (var it in controls.Children)
                 {
-                    //ToDo: Add items to this.Controls
+                    this.Controls.Add(new ConfigControl());
                 }
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace VirtualRealityEngine
 {
@@ -63,5 +64,61 @@ namespace VirtualRealityEngine
                 builder.Append('"');
             return builder.ToString();
         }
+        public static TextPointer GetPointerFromCharOffset(this TextPointer tPtr, int charOffset)
+        {
+            //https://social.msdn.microsoft.com/Forums/vstudio/en-US/bc67d8c5-41f0-48bd-8d3d-79159e86b355/textpointer-into-a-flowdocument-based-on-character-index?forum=wpf
+            if (charOffset == 0)
+            {
+                return tPtr;
+            }
+
+            var navigator = tPtr;
+            var counter = 0;
+            var runMoveMode = true;
+            while (navigator != null && counter < charOffset)
+            {
+                var ptrContext = navigator.GetPointerContext(LogicalDirection.Forward);
+                if (runMoveMode)
+                {
+                    switch (ptrContext)
+                    {
+                        case TextPointerContext.ElementEnd:
+                            if (navigator.GetAdjacentElement(LogicalDirection.Forward) is Paragraph)
+                                counter += 2;
+                            navigator = navigator.GetNextContextPosition(LogicalDirection.Forward);
+                            break;
+                        case TextPointerContext.ElementStart:
+                        case TextPointerContext.EmbeddedElement:
+                        case TextPointerContext.None:
+                            navigator = navigator.GetNextContextPosition(LogicalDirection.Forward);
+                            break;
+                        case TextPointerContext.Text:
+                            var len = navigator.GetTextRunLength(LogicalDirection.Forward);
+                            if(counter + len >= charOffset)
+                            {
+                                runMoveMode = false;
+                            }
+                            else
+                            {
+                                counter += len;
+                                navigator = navigator.GetNextContextPosition(LogicalDirection.Forward);
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    if (ptrContext == TextPointerContext.Text)
+                    {
+                        counter++;
+                    }
+                    navigator = navigator.GetNextInsertionPosition(LogicalDirection.Forward);
+                }
+            }
+
+            return navigator;
+        }
+
+
     }
 }

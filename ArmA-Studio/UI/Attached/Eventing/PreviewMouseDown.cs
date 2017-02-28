@@ -23,16 +23,16 @@ namespace ArmA.Studio.UI.Attached.Eventing
                                                 typeof(PreviewMouseDown),
                                                 new UIPropertyMetadata(null));
 
-        public static void SetCommand(Window target, ICommand value)
+        public static void SetCommand(UIElement target, ICommand value)
         {
             target.SetValue(CommandProperty, value);
         }
 
-        public static void SetCommandParameter(Window target, object value)
+        public static void SetCommandParameter(UIElement target, object value)
         {
             target.SetValue(CommandParameterProperty, value);
         }
-        public static object GetCommandParameter(Window target)
+        public static object GetCommandParameter(UIElement target)
         {
             return target.GetValue(CommandParameterProperty);
         }
