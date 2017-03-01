@@ -171,7 +171,7 @@ Do you want to restart now?</value>
 Do you want to save before close?</value>
   </data>
   <data name="DocumentBase_CloseSaveConfirmation_Caption" xml:space="preserve">
-    <value>Unsafed Data</value>
+    <value>Unsaved Data</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>

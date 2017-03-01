@@ -216,7 +216,7 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unsafed Data.
+        ///   Looks up a localized string similar to Unsaved Data.
         /// </summary>
         public static string DocumentBase_CloseSaveConfirmation_Caption {
             get {
