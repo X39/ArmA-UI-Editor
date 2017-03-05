@@ -34,6 +34,7 @@ namespace ArmA.Studio
             }
         }
 
+        public override string ContentId { get { return this.FilePath; } set { throw new NotImplementedException(); } }
         public abstract string FilePath { get; }
         public abstract DataTemplate Template { get; }
         public abstract string[] SupportedFileExtensions { get; }

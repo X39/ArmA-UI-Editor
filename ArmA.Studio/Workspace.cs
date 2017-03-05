@@ -13,6 +13,7 @@ using System.Reflection;
 using Xceed.Wpf.AvalonDock;
 using Utility;
 using Utility.Collections;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace ArmA.Studio
 {
@@ -212,6 +213,7 @@ namespace ArmA.Studio
                 using (var reader = File.OpenRead(v))
                 {
                     var layoutSerializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(dm);
+                    layoutSerializer.LayoutSerializationCallback += LayoutSerializer_LayoutSerializationCallback;
                     layoutSerializer.Deserialize(reader);
                 }
             }
@@ -219,11 +221,26 @@ namespace ArmA.Studio
             {
                 MessageBox.Show(ex.Message, "docklayout.xml");
             }
-            foreach (var it in CurrentWorkspace.CurrentSolution.LastOpenDocumentPaths)
+        }
+
+        private static void LayoutSerializer_LayoutSerializationCallback(object sender, Xceed.Wpf.AvalonDock.Layout.Serialization.LayoutSerializationCallbackEventArgs e)
+        {
+            if (e.Model is LayoutAnchorable)
             {
-                CurrentWorkspace.OpenOrFocusDocument(it);
+                foreach (var panel in CurrentWorkspace.AllPanels)
+                {
+                    if (panel.ContentId != e.Model.ContentId)
+                        continue;
+                    e.Content = panel;
+                    break;
+                }
+            }
+            else if(e.Model is LayoutDocument)
+            {
+                e.Content = CurrentWorkspace.GetNewDocument(e.Model.ContentId);
             }
         }
+
         private static void SaveLayout(DockingManager dm, string v)
         {
             var dir = Path.GetDirectoryName(v);
@@ -256,6 +273,18 @@ namespace ArmA.Studio
                 }
             }
 
+            var instance = this.GetNewDocument(path);
+            this.DocumentsDisplayed.Add(instance);
+            instance.IsSelected = true;
+        }
+        public DocumentBase GetNewDocument(string path)
+        {
+            path = path.Trim('/', '\\');
+            if (Path.IsPathRooted(path))
+            {
+                path = path.Substring(this.WorkingDir.Length + 1);
+            }
+            var fullPath = Path.Combine(this.WorkingDir, path);
             Type docType = null;
             var fExt = Path.GetExtension(path);
             foreach (var doc in AvailableDocuments)
@@ -269,12 +298,11 @@ namespace ArmA.Studio
             {
                 //ToDo: Let user decide how to open this document
                 MessageBox.Show("No matching editor context found. Selecting is not yet implemented.");
-                return;
+                return null;
             }
             var instance = Activator.CreateInstance(docType) as DocumentBase;
             instance.OpenDocument(fullPath);
-            this.DocumentsDisplayed.Add(instance);
-            instance.IsSelected = true;
+            return instance;
         }
 
         private void DockingMangerInitialized(DockingManager dm)
@@ -283,22 +311,6 @@ namespace ArmA.Studio
                 return;
             this.MWDockingManager = dm;
             LoadLayout(dm, Path.Combine(App.ConfigPath, CONST_DOCKING_MANAGER_LAYOUT_NAME));
-            foreach (var panel in this.AllPanels)
-            {
-                var iniName = panel.GetIniSectionName();
-                if (ConfigHost.Instance.LayoutIni.Sections.ContainsSection(iniName))
-                {
-                    var section = ConfigHost.Instance.LayoutIni[iniName];
-                    if (section.ContainsKey("IsShown"))
-                    {
-                        bool flag;
-                        if (bool.TryParse(section["IsShown"], out flag) && flag)
-                        {
-                            this.PanelsDisplayed.Add(panel);
-                        }
-                    }
-                }
-            }
         }
 
         private void Open()
@@ -341,6 +353,12 @@ namespace ArmA.Studio
                     {
                         panel.ContentId = section["ContentId"];
                     }
+                    if (section.ContainsKey("IsSelected"))
+                    {
+                        bool isSelectedFlag;
+                        bool.TryParse(section["IsSelected"], out isSelectedFlag);
+                        panel.IsSelected = isSelectedFlag;
+                    }
                 }
             }
             double d;
@@ -377,7 +395,7 @@ namespace ArmA.Studio
                     ConfigHost.Instance.LayoutIni.Sections.AddSection(iniName);
                 var section = ConfigHost.Instance.LayoutIni[iniName];
                 section["ContentId"] = panel.ContentId;
-                section["IsShown"] = this.PanelsDisplayed.Contains(panel).ToString();
+                section["IsSelected"] = panel.IsSelected.ToString();
             }
             this.SaveSolution();
         }
@@ -385,7 +403,6 @@ namespace ArmA.Studio
         public void SaveSolution()
         {
             var solutionFile = Directory.EnumerateFiles(this.WorkingDir, "*.assln").FirstOrDefault();
-            this.CurrentSolution.LastOpenDocumentPaths = this.DocumentsDisplayed.Select((d) => d.FilePath.Substring(this.WorkingDir.Length)).ToList();
             this.CurrentSolution.XmlSerialize(Path.Combine(this.WorkingDir, solutionFile == null ? string.Concat(Path.GetFileName(this.WorkingDir), ".assln") : solutionFile));
         }
 

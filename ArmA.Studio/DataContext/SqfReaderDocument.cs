@@ -49,5 +49,34 @@ namespace ArmA.Studio.DataContext
                 return parser.errors.ErrorList.Select((it) => new SyntaxError() { StartOffset = it.Item1, Length = it.Item2, Message = it.Item3 });
             }
         }
+        protected override IEnumerable<LinterInfo> GetLinterInformations(MemoryStream memstream)
+        {
+            var inputStream = new Antlr4.Runtime.AntlrInputStream(memstream);
+
+            var lexer = new RealVirtuality.SQF.ANTLR.Parser.sqfLexer(inputStream);
+            var commonTokenStream = new Antlr4.Runtime.CommonTokenStream(lexer);
+            var p = new RealVirtuality.SQF.ANTLR.Parser.sqfParser(commonTokenStream);
+            memstream.Seek(0, SeekOrigin.Begin);
+
+            p.RemoveErrorListeners();
+            var se = new List<LinterInfo>();
+            p.AddErrorListener(new RealVirtuality.SQF.ANTLR.ErrorListener((recognizer, token, line, charPositionInLine, msg, ex) =>
+            {
+                se.Add(new LinterInfo()
+                {
+                    StartOffset = token.StartIndex,
+                    Length = token.Text.Length,
+                    Message = msg,
+                    Severity = ESeverity.Error,
+                    Line = line,
+                    LineOffset = charPositionInLine,
+                    FileName = Path.GetFileName(this.FilePath)
+                });
+            }));
+
+            var sqfContext = p.sqf();
+            return se;
+
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace ArmA.Studio
 
         public abstract string Title { get; }
         public ImageSource IconSource { get; }
-        public string ContentId { get; set; }
+        public virtual string ContentId { get; set; }
         public bool IsSelected { get { return this._IsSelected; } set { this._IsSelected = value; this.RaisePropertyChanged(); } }
         private bool _IsSelected;
         public bool IsActive { get { return this._IsActive; } set { this._IsActive = value; this.RaisePropertyChanged(); } }

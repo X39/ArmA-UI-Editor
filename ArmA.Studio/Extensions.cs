@@ -10,7 +10,7 @@ namespace ArmA.Studio
     {
         public static string GetIniSectionName(this object obj)
         {
-            return obj.GetType().FullName.Replace(".", "");
+            return obj.GetType().FullName;
         }
     }
 }

@@ -61,11 +61,13 @@ namespace ArmA.Studio.DataContext
 
         internal UI.SyntaxErrorBackgroundRenderer SyntaxErrorRenderer { get; private set; }
         public IEnumerable<SyntaxError> SyntaxErrors { get; private set; }
+        public IEnumerable<LinterInfo> LinterInfos { get; private set; }
         public IList<IntelliSenseEntry> IntelliSenseEntries { get { return this._IntelliSenseEntries; } set { this._IntelliSenseEntries = value; this.RaisePropertyChanged(); } }
         public IList<IntelliSenseEntry> _IntelliSenseEntries;
 
         private ToolTip EditorTooltip;
         private Popup IntelliSensePopup;
+        private Task LinterTask;
 
         public TextEditorDocument()
         {
@@ -114,35 +116,44 @@ namespace ArmA.Studio.DataContext
             this.EditorTooltip.IsOpen = false;
         }
 
+
         private void Document_TextChanged(object sender, EventArgs e)
         {
             this.SyntaxErrors = SyntaxErrorRenderer.SyntaxErrors = this.GetSyntaxErrors();
+            if (this.LinterTask == null || this.LinterTask.IsCompleted)
+            {
+                var memstream = new MemoryStream();
+                try
+                {
+                    //Load content into MemoryStream
+                    var writer = new StreamWriter(memstream);
+                    writer.Write(this.Document.Text);
+                    writer.Flush();
+                    memstream.Seek(0, SeekOrigin.Begin);
+                }
+                catch
+                {
+                    memstream.Close();
+                    memstream.Dispose();
+                }
+                this.LinterTask = Task.Run(() =>
+                {
+                    using (memstream)
+                    {
+                        var linterInfos = this.GetLinterInformations(memstream);
+                        if (linterInfos == null)
+                        {
+                            return;
+                        }
+                        this.SyntaxErrors = SyntaxErrorRenderer.SyntaxErrors = this.LinterInfos = linterInfos;
+                        ErrorListPane.Instance.LinterDictionary[this.FilePath] = this.LinterInfos;
+                    }
+                });
+            }
             this.ShowIntelliSense();
+
         }
 
-        protected virtual void OnTextChanged(object param)
-        {
-            this.HasChanges = true;
-            this.RaisePropertyChanged("Title");
-        }
-        protected virtual void OnTextEditorSet() { }
-        protected virtual void OnKeyDown(object param)
-        {
-            this.CmdKeyDownHandledValue = true;
-            if (Keyboard.IsKeyDown(Key.S) && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
-            {
-                this.SaveDocument(this.FilePath);
-            }
-            else if (Keyboard.IsKeyDown(Key.Space) && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
-            {
-                this.ShowIntelliSense();
-            }
-            else
-            {
-                this.IntelliSensePopup.IsOpen = false;
-                this.CmdKeyDownHandledValue = false;
-            }
-        }
 
         private void ShowIntelliSense()
         {
@@ -225,14 +236,42 @@ namespace ArmA.Studio.DataContext
                 return null;
             }
         }
+
+
+        protected virtual void OnTextChanged(object param)
+        {
+            this.HasChanges = true;
+            this.RaisePropertyChanged("Title");
+        }
+        protected virtual void OnTextEditorSet() { }
+        protected virtual void OnKeyDown(object param)
+        {
+            this.CmdKeyDownHandledValue = true;
+            if (Keyboard.IsKeyDown(Key.S) && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            {
+                this.SaveDocument(this.FilePath);
+            }
+            else if (Keyboard.IsKeyDown(Key.Space) && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            {
+                this.ShowIntelliSense();
+            }
+            else
+            {
+                this.IntelliSensePopup.IsOpen = false;
+                this.CmdKeyDownHandledValue = false;
+            }
+        }
         protected virtual IEnumerable<SyntaxError> GetSyntaxErrors()
         {
             return new SyntaxError[0];
         }
+        protected virtual IEnumerable<LinterInfo> GetLinterInformations(MemoryStream memstream)
+        {
+            return null;
+        }
         protected virtual IList<IntelliSenseEntry> GetIntelliSenseEntries(TextDocument currentDocument, string currentWord, int caretOffset)
         {
             return new IntelliSenseEntry[0];
-            //return new IntelliSenseEntry[] { new IntelliSenseEntry() { Text = "asd" } };
         }
     }
 }

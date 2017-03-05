@@ -54,19 +54,10 @@ namespace ArmA.Studio.SolutionUtil
         [XmlIgnore]
         public FileSystemWatcher FSWatcher { get; private set; }
 
-        /// <summary>
-        /// For saving/restoring last opened documents only.
-        /// Will not be up-to-date until close!
-        /// </summary>
-        [XmlArray("opendocuments")]
-        [XmlArrayItem("path")]
-        public List<string> LastOpenDocumentPaths { get; set; }
-
         private Workspace curWorkspace;
 
         public Solution()
         {
-            this.LastOpenDocumentPaths = new List<string>();
             this.FilesCollection = new ObservableSortedCollection<SolutionFileBase>();
         }
         public void Prepare(Workspace workspace)

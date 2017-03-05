@@ -76,9 +76,35 @@
     <Compile Include="Media\Drawing\PAA\TaggUtil\MaxColorTag.cs" />
     <Compile Include="Media\Drawing\PAA\TaggUtil\AverageColorTag.cs" />
     <Compile Include="Media\Drawing\PAA\TaggUtil\TagBase.cs" />
+    <Compile Include="ParseInfo.EInfoLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Localization.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Localization.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SQF\ESQFType.cs" />
+    <Compile Include="SQF\ITypeInfo.cs" />
+    <Compile Include="SQF\SQFCommand.cs" />
+    <Compile Include="SQF\SQFCommandNull.cs" />
+    <Compile Include="SQF\SQFCommandUnary.cs" />
+    <Compile Include="SQF\SQFCommandBinary.cs" />
+    <Compile Include="SQF\SQFDefinition.cs" />
+    <Compile Include="SQF\SQFDefinition.EKind.cs" />
+    <Compile Include="SQF\LogHelper.cs" />
+    <Compile Include="SQF\SQFVariable.cs" />
+    <Compile Include="SQF\SQFValue.cs" />
+    <Compile Include="SQF\SQFExpression.cs" />
+    <Compile Include="SQF\SQFDocument.cs" />
+    <Compile Include="SQF\ParseHelper.cs" />
+    <Compile Include="ParseInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Localization.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
