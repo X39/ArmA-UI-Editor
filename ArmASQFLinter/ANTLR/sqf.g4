@@ -37,11 +37,15 @@ fragment DIGIT: [0-9];
 fragment LETTER: (LOWERCASE | UPPERCASE);
 fragment HEXADIGIT: (DIGIT | [a-f] | [A-F]);
 fragment ANY: .;
-fragment PUNCTUATION: '||' | '&&' | '==' | '>=' | '<=' | '!=' | '*' | '/' | '>>' | '+' | '-';
-fragment PRIVATE: [pP][rR][iI][vV][aA][tT][eE];
-fragment WS: [ \t\r\n]+ -> skip;
-fragment INLINECOMMENT: '//' .*? '\n' -> channel(HIDDEN);
-fragment BLOCKCOMMENT: '/*' .*? '*/' -> channel(HIDDEN);
+PUNCTUATION: '||' | '&&' | '==' | '>=' | '<=' | '!=' | '*' | '/' | '>>' | '+' | '-';
+PRIVATE: [pP][rR][iI][vV][aA][tT][eE];
+WS: [ \t\r\n]+ -> skip;
+INLINECOMMENT: '//' .*? '\n' -> skip;
+BLOCKCOMMENT: '/*' .*? '*/' -> skip;
+PREPROCESSOR: '#' .*? '\n' -> skip;
+STRING: '"' ( ANY | '""' )*? '"' | '\'' ( ANY | '\'\'' )*? '\'';
+NUMBER: ('0x' | '$') HEXADIGIT+ |  '-'? DIGIT+ ( '.' DIGIT+ )?;
+IDENTIFIER: (LETTER | '_') (LETTER | DIGIT | '_')*;
 
 
 code:
@@ -54,22 +58,22 @@ statement:
          |
          ;
 assignment:
-              identifier '=' binaryexpression
-          |  PRIVATE identifier '=' binaryexpression
+			IDENTIFIER '=' binaryexpression
+          |	PRIVATE IDENTIFIER '=' binaryexpression
           ;
 binaryexpression:
                     primaryexpression
-                |    binaryexpression operator binaryexpression 
+                |	binaryexpression operator binaryexpression 
                 ;
 primaryexpression: 
-                     number
+                     NUMBER
                  |   unaryexpression
                  |   nularexpression
                  |   variable
-                 |   string
+                 |   STRING
                  |   '{' code '}'
                  |   '(' binaryexpression ')'
-                 |   '[' ( binaryexpression ( ',' binaryexpression )* )?
+                 |   '[' ( binaryexpression ( ',' binaryexpression )* )? ']'
                  ;
 nularexpression:
                    operator
@@ -78,21 +82,11 @@ unaryexpression:
                    operator primaryexpression
                ;
 variable:
-            identifier
+            IDENTIFIER
         ;
 operator:
-            identifier
+            IDENTIFIER
+		|	PRIVATE
         |   PUNCTUATION
         |   PUNCTUATION PUNCTUATION
         ;
-identifier:
-              (LETTER | '_') (LETTER | DIGIT | '_')*
-          ;
-number:
-          ('0x' | '$') HEXADIGIT+
-      |  '-'? DIGIT+ ( '.' DIGIT+ )?
-      ;
-string:
-          '"' ( ANY | '""' )*? '"'
-      |   '\'' ( ANY | '\'\'' )*? '\''
-      ;
