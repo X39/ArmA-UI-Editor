@@ -15,7 +15,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <ToolBar Grid.Row="0" ToolBarTray.IsLocked="True">
+        <StackPanel Grid.Row="0" ToolBarTray.IsLocked="True" Orientation="Horizontal" Margin="4">
+            <StackPanel.Resources>
+                <Style BasedOn="{StaticResource ToolToggleButton}" TargetType="ToggleButton"/>
+                <Style BasedOn="{StaticResource HorizontalSeparator}" TargetType="Separator"/>
+            </StackPanel.Resources>
             <ToggleButton Command="{Binding CmdClearOutputWindow}" IsChecked="{Binding IsErrorsDisplayed}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -38,7 +42,7 @@
                 </Grid>
             </ToggleButton>
             <Separator/>
-            <ToggleButton Command="{Binding CmdClearOutputWindow}" IsChecked="{Binding IsWarningsDisplayed}">
+            <ToggleButton Command="{Binding CmdClearOutputWindow}" IsChecked="{Binding IsWarningsDisplayed, FallbackValue=true}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -81,7 +85,7 @@
                     </TextBlock>
                 </Grid>
             </ToggleButton>
-        </ToolBar>
+        </StackPanel>
         <ListView Grid.Row="1" ItemsSource="{Binding ListView}">
             <ListView.View>
                 <GridView>

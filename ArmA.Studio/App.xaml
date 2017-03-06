@@ -303,6 +303,25 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</sys:String>
                             </Setter.Value>
                         </Setter>
                     </Style>
+                    <Style x:Key="ToolToggleButton" TargetType="ToggleButton">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Padding" Value="2"/>
+                    </Style>
+                    <Style x:Key="HorizontalSeparator" TargetType="Separator">
+                        <Setter Property="Margin" Value="4 0"/>
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <TransformGroup>
+                                    <TransformGroup.Children>
+                                        <TransformCollection>
+                                            <RotateTransform Angle="90"/>
+                                        </TransformCollection>
+                                    </TransformGroup.Children>
+                                </TransformGroup>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
                 </ResourceDictionary>
                 <ResourceDictionary x:Name="FileTypes">
                     <x:Array Type="dlg:FileType" x:Key="FileTypes">

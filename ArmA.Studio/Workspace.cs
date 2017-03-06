@@ -70,14 +70,14 @@ namespace ArmA.Studio
         }
         private ObservableCollection<PanelBase> _PanelsDisplayed;
 
-        public ObservableCollection<PanelBase> AllPanels { get { return this._AllPanels; } set { this._AllPanels = value; this.RaisePropertyChanged(); } }
-        private ObservableCollection<PanelBase> _AllPanels;
+        public ObservableCollection<PanelBase> PanelsAvailable { get { return this._PanelsAvailable; } set { this._PanelsAvailable = value; this.RaisePropertyChanged(); } }
+        private ObservableCollection<PanelBase> _PanelsAvailable;
 
         public ObservableCollection<DocumentBase> DocumentsDisplayed { get { return this._DocumentsDisplayed; } set { this._DocumentsDisplayed = value; this.RaisePropertyChanged(); } }
         private ObservableCollection<DocumentBase> _DocumentsDisplayed;
 
-        public ObservableCollection<DocumentBase> AvailableDocuments { get { return this._AvailableDocuments; } set { this._AvailableDocuments = value; this.RaisePropertyChanged(); } }
-        private ObservableCollection<DocumentBase> _AvailableDocuments;
+        public ObservableCollection<DocumentBase> DocumentsAvailable { get { return this._DocumentsAvailable; } set { this._DocumentsAvailable = value; this.RaisePropertyChanged(); } }
+        private ObservableCollection<DocumentBase> _DocumentsAvailable;
 
         public ICommand CmdDisplayPanel { get; private set; }
         public ICommand CmdDisplayLicensesDialog { get; private set; }
@@ -109,10 +109,10 @@ namespace ArmA.Studio
         {
             this._DebugContext = new DebuggerContext();
             this.WorkingDir = path;
-            this._AllPanels = new ObservableCollection<PanelBase>(FindAllAnchorablePanelsInAssembly());
+            this._PanelsAvailable = new ObservableCollection<PanelBase>(FindAllAnchorablePanelsInAssembly());
             this.PanelsDisplayed = new ObservableCollection<PanelBase>();
             this._DocumentsDisplayed = new ObservableCollection<DocumentBase>();
-            this._AvailableDocuments = new ObservableCollection<DocumentBase>(FindAllDocumentsInAssembly());
+            this._DocumentsAvailable = new ObservableCollection<DocumentBase>(FindAllDocumentsInAssembly());
             this.CmdDisplayPanel = new RelayCommand((p) =>
             {
                 if (p is PanelBase)
@@ -227,17 +227,20 @@ namespace ArmA.Studio
         {
             if (e.Model is LayoutAnchorable)
             {
-                foreach (var panel in CurrentWorkspace.AllPanels)
+                foreach (var panel in CurrentWorkspace.PanelsAvailable)
                 {
                     if (panel.ContentId != e.Model.ContentId)
                         continue;
                     e.Content = panel;
+                    CurrentWorkspace.PanelsDisplayed.Add(panel);
                     break;
                 }
             }
             else if(e.Model is LayoutDocument)
             {
-                e.Content = CurrentWorkspace.GetNewDocument(e.Model.ContentId);
+                var doc = CurrentWorkspace.GetNewDocument(e.Model.ContentId);
+                e.Content = doc;
+                CurrentWorkspace.DocumentsDisplayed.Add(doc);
             }
         }
 
@@ -287,7 +290,7 @@ namespace ArmA.Studio
             var fullPath = Path.Combine(this.WorkingDir, path);
             Type docType = null;
             var fExt = Path.GetExtension(path);
-            foreach (var doc in AvailableDocuments)
+            foreach (var doc in DocumentsAvailable)
             {
                 if (doc.SupportedFileExtensions.Contains(fExt))
                 {
@@ -341,9 +344,9 @@ namespace ArmA.Studio
                 this.CurrentSolution.Prepare(this);
                 this.CurrentSolution.ReScan();
             }
-            this.AllPanels.Add(this.CurrentSolution);
+            this.PanelsAvailable.Add(this.CurrentSolution);
 
-            foreach (var panel in this.AllPanels)
+            foreach (var panel in this.PanelsAvailable)
             {
                 var iniName = panel.GetIniSectionName();
                 if (ConfigHost.Instance.LayoutIni.Sections.ContainsSection(iniName))
@@ -388,7 +391,7 @@ namespace ArmA.Studio
         private void Close()
         {
             //Save Layout GUIDs of the panels
-            foreach (var panel in AllPanels)
+            foreach (var panel in PanelsAvailable)
             {
                 var iniName = panel.GetIniSectionName();
                 if (!ConfigHost.Instance.LayoutIni.Sections.ContainsSection(iniName))
