@@ -348,7 +348,7 @@ namespace ArmA.Studio
 
             foreach (var panel in this.PanelsAvailable)
             {
-                var iniName = panel.GetIniSectionName();
+                var iniName = panel.GetType().Name;
                 if (ConfigHost.Instance.LayoutIni.Sections.ContainsSection(iniName))
                 {
                     var section = ConfigHost.Instance.LayoutIni[iniName];
@@ -393,7 +393,7 @@ namespace ArmA.Studio
             //Save Layout GUIDs of the panels
             foreach (var panel in PanelsAvailable)
             {
-                var iniName = panel.GetIniSectionName();
+                var iniName = panel.GetType().Name;
                 if (!ConfigHost.Instance.LayoutIni.Sections.ContainsSection(iniName))
                     ConfigHost.Instance.LayoutIni.Sections.AddSection(iniName);
                 var section = ConfigHost.Instance.LayoutIni[iniName];

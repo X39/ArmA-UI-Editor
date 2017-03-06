@@ -28,23 +28,14 @@ namespace ArmA.Studio.DataContext
         {
             
         }
-        protected override IEnumerable<SyntaxError> GetSyntaxErrors()
+        protected override IEnumerable<LinterInfo> GetLinterInformations(MemoryStream memstream)
         {
-            using (var memstream = new MemoryStream())
-            {
-                { //Load content into MemoryStream
-                    var writer = new StreamWriter(memstream);
-                    writer.Write(this.Document.Text);
-                    writer.Flush();
-                    memstream.Seek(0, SeekOrigin.Begin);
-                }
-                //Setup base requirements for the parser
-                var parser = new Parser(new Scanner(memstream));
-                parser.Root = null;
-                parser.doc = null;
-                parser.Parse();
-                return parser.errors.ErrorList.Select((it) => new SyntaxError() { StartOffset = it.Item1, Length = it.Item2, Message = it.Item3 });
-            }
+            //Setup base requirements for the parser
+            var parser = new Parser(new Scanner(memstream));
+            parser.Root = null;
+            parser.doc = null;
+            parser.Parse();
+            return parser.errors.ErrorList.Select((it) => new LinterInfo() { StartOffset = it.Item1, Length = it.Item2, Message = it.Item3, Severity = ESeverity.Error });
         }
     }
 }

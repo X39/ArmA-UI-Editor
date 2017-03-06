@@ -51,9 +51,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ANTLR\ErrorListener.cs" />
+    <Compile Include="ANTLR\SqfAssignment.cs" />
+    <Compile Include="ANTLR\SqfBinaryExpression.cs" />
+    <Compile Include="ANTLR\SqfCode.cs" />
+    <Compile Include="ANTLR\SqfListener.cs" />
+    <Compile Include="ANTLR\SqfNullarExpression.cs" />
+    <Compile Include="ANTLR\SqfOperator.cs" />
+    <Compile Include="ANTLR\SqfPrimaryExpression.cs" />
+    <Compile Include="ANTLR\SqfStatement.cs" />
+    <Compile Include="ANTLR\SqfUnaryExpression.cs" />
+    <Compile Include="ANTLR\SqfVariable.cs" />
     <Compile Include="Parser\Generated\Parser.cs" />
     <Compile Include="Parser\Generated\Scanner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ESQFType.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="SqfNode.cs" />
+    <Compile Include="SQFDefinition.cs" />
+    <Compile Include="SQFDefinition.EKind.cs" />
+    <Compile Include="SQFDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="ANTLR\sqf.g4">

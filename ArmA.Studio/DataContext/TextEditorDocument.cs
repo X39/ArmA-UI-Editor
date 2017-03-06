@@ -59,8 +59,7 @@ namespace ArmA.Studio.DataContext
 
         public SolutionUtil.SolutionFileBase SFBRef { get; private set; }
 
-        internal UI.SyntaxErrorBackgroundRenderer SyntaxErrorRenderer { get; private set; }
-        public IEnumerable<SyntaxError> SyntaxErrors { get; private set; }
+        internal UI.UnderlineBackgroundRenderer SyntaxErrorRenderer { get; private set; }
         public IEnumerable<LinterInfo> LinterInfos { get; private set; }
         public IList<IntelliSenseEntry> IntelliSenseEntries { get { return this._IntelliSenseEntries; } set { this._IntelliSenseEntries = value; this.RaisePropertyChanged(); } }
         public IList<IntelliSenseEntry> _IntelliSenseEntries;
@@ -72,7 +71,7 @@ namespace ArmA.Studio.DataContext
         public TextEditorDocument()
         {
             this.EditorTooltip = new ToolTip();
-            this.SyntaxErrorRenderer = new UI.SyntaxErrorBackgroundRenderer();
+            this.SyntaxErrorRenderer = new UI.UnderlineBackgroundRenderer();
             this.CmdTextChanged = new UI.Commands.RelayCommand(OnTextChanged);
             this.CmdKeyDown = new UI.Commands.RelayCommand(OnKeyDown);
             this.CmdTextEditorInitialized = new UI.Commands.RelayCommand((p) =>
@@ -98,13 +97,12 @@ namespace ArmA.Studio.DataContext
             if (textViewPos.HasValue)
             {
                 var textOffset = this.Document.GetOffset(textViewPos.Value.Location);
-                var errors = this.SyntaxErrors;
-                foreach(var error in this.SyntaxErrors)
+                foreach(var info in this.LinterInfos)
                 {
-                    if(error.StartOffset <= textOffset && error.EndOffset >= textOffset)
+                    if(info.StartOffset <= textOffset && info.EndOffset >= textOffset)
                     {
                         this.EditorTooltip.PlacementTarget = this.Editor;
-                        this.EditorTooltip.Content = error.Message;
+                        this.EditorTooltip.Content = info.Message;
                         this.EditorTooltip.IsOpen = true;
                         break;
                     }
@@ -119,7 +117,6 @@ namespace ArmA.Studio.DataContext
 
         private void Document_TextChanged(object sender, EventArgs e)
         {
-            this.SyntaxErrors = SyntaxErrorRenderer.SyntaxErrors = this.GetSyntaxErrors();
             if (this.LinterTask == null || this.LinterTask.IsCompleted)
             {
                 var memstream = new MemoryStream();
@@ -145,7 +142,7 @@ namespace ArmA.Studio.DataContext
                         {
                             return;
                         }
-                        this.SyntaxErrors = SyntaxErrorRenderer.SyntaxErrors = this.LinterInfos = linterInfos;
+                        SyntaxErrorRenderer.SyntaxErrors = this.LinterInfos = linterInfos;
                         ErrorListPane.Instance.LinterDictionary[this.FilePath] = this.LinterInfos;
                     }
                 });
@@ -260,10 +257,6 @@ namespace ArmA.Studio.DataContext
                 this.IntelliSensePopup.IsOpen = false;
                 this.CmdKeyDownHandledValue = false;
             }
-        }
-        protected virtual IEnumerable<SyntaxError> GetSyntaxErrors()
-        {
-            return new SyntaxError[0];
         }
         protected virtual IEnumerable<LinterInfo> GetLinterInformations(MemoryStream memstream)
         {

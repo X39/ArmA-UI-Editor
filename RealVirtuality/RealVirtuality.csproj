@@ -83,20 +83,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Localization.resx</DependentUpon>
     </Compile>
-    <Compile Include="SQF\ESQFType.cs" />
-    <Compile Include="SQF\ITypeInfo.cs" />
-    <Compile Include="SQF\SQFCommand.cs" />
-    <Compile Include="SQF\SQFCommandNull.cs" />
-    <Compile Include="SQF\SQFCommandUnary.cs" />
-    <Compile Include="SQF\SQFCommandBinary.cs" />
-    <Compile Include="SQF\SQFDefinition.cs" />
-    <Compile Include="SQF\SQFDefinition.EKind.cs" />
-    <Compile Include="SQF\LogHelper.cs" />
-    <Compile Include="SQF\SQFVariable.cs" />
-    <Compile Include="SQF\SQFValue.cs" />
-    <Compile Include="SQF\SQFExpression.cs" />
-    <Compile Include="SQF\SQFDocument.cs" />
-    <Compile Include="SQF\ParseHelper.cs" />
     <Compile Include="ParseInfo.cs" />
   </ItemGroup>
   <ItemGroup>

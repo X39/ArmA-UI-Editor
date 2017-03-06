@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Documents;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ArmA.Studio.UI;
-using RealVirtuality.SQF.Parser;
-using System.IO;
+using System.Windows.Media;
 using ArmA.Studio.DataContext.TextEditorUtil;
+using ArmA.Studio.UI;
+using ICSharpCode.AvalonEdit.Highlighting;
+using RealVirtuality.SQF.Parser;
 
 namespace ArmA.Studio.DataContext
 {
@@ -19,7 +19,7 @@ namespace ArmA.Studio.DataContext
         private static IHighlightingDefinition ThisSyntaxName { get; set; }
         static SQFReaderDocument()
         {
-            ThisSyntaxName = LoadAvalonEditSyntaxFiles(System.IO.Path.Combine(App.SyntaxFilesPath, "sqf.xshd"));
+            ThisSyntaxName = LoadAvalonEditSyntaxFiles(Path.Combine(App.SyntaxFilesPath, "sqf.xshd"));
         }
         public override string[] SupportedFileExtensions { get { return new string[] { ".sqf" }; } }
         public override IHighlightingDefinition SyntaxDefinition { get { return ThisSyntaxName; } }
@@ -33,22 +33,6 @@ namespace ArmA.Studio.DataContext
             this.Editor.TextArea.TextView.BackgroundRenderers.Add(this.BreakPointMargin);
             this.Editor.TextArea.LeftMargins.Insert(0, BreakPointMargin);
         }
-        protected override IEnumerable<SyntaxError> GetSyntaxErrors()
-        {
-            using (var memstream = new MemoryStream())
-            {
-                { //Load content into MemoryStream
-                    var writer = new StreamWriter(memstream);
-                    writer.Write(this.Document.Text);
-                    writer.Flush();
-                    memstream.Seek(0, SeekOrigin.Begin);
-                }
-                //Setup base requirements for the parser
-                var parser = new Parser(new Scanner(memstream));
-                parser.Parse();
-                return parser.errors.ErrorList.Select((it) => new SyntaxError() { StartOffset = it.Item1, Length = it.Item2, Message = it.Item3 });
-            }
-        }
         protected override IEnumerable<LinterInfo> GetLinterInformations(MemoryStream memstream)
         {
             var inputStream = new Antlr4.Runtime.AntlrInputStream(memstream);
@@ -56,6 +40,8 @@ namespace ArmA.Studio.DataContext
             var lexer = new RealVirtuality.SQF.ANTLR.Parser.sqfLexer(inputStream);
             var commonTokenStream = new Antlr4.Runtime.CommonTokenStream(lexer);
             var p = new RealVirtuality.SQF.ANTLR.Parser.sqfParser(commonTokenStream);
+            var listener = new RealVirtuality.SQF.ANTLR.SqfListener();
+            p.AddParseListener(listener);
             memstream.Seek(0, SeekOrigin.Begin);
 
             p.RemoveErrorListeners();
@@ -73,10 +59,9 @@ namespace ArmA.Studio.DataContext
                     FileName = Path.GetFileName(this.FilePath)
                 });
             }));
-
-            var sqfContext = p.sqf();
+            
+            p.sqf();
             return se;
-
         }
     }
 }

@@ -40,6 +40,7 @@ fragment ANY: .;
 PUNCTUATION: '||' | '&&' | '==' | '>=' | '<=' | '!=' | '*' | '/' | '>>' | '+' | '-';
 PRIVATE: [pP][rR][iI][vV][aA][tT][eE];
 WS: [ \t\r\n]+ -> skip;
+INSTRUCTION: '//@' .*? '\n';
 INLINECOMMENT: '//' .*? '\n' -> skip;
 BLOCKCOMMENT: '/*' .*? '*/' -> skip;
 PREPROCESSOR: '#' .*? '\n' -> skip;

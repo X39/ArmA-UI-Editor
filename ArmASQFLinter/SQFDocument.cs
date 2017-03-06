@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace RealVirtuality.SQF
 {
-    public class SQFVariable
+    public class SqfDocument
     {
-        public string Name { get; set; }
-
-        public SQFVariable(string name)
-        {
-            this.Name = name;
-        }
-
+        public SqfCode Root { get; set; }
     }
 }

@@ -62,9 +62,9 @@ namespace ArmA.Studio.UI
             if (view == null || !view.VisualLinesValid)
                 return;
             drawingContext.DrawRectangle(Brushes.LightGray, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-            var color = new SolidColorBrush(ConfigHost.Coloring.BreakpointColor);
+            var color = new SolidColorBrush(ConfigHost.Coloring.BreakPoint.MainColor);
             color.Freeze();
-            var pen = new Pen(new SolidColorBrush(ConfigHost.Coloring.BreakpointColorBorder), 1);
+            var pen = new Pen(new SolidColorBrush(ConfigHost.Coloring.BreakPoint.BorderColor), 1);
             pen.Freeze();
             foreach (var line in view.VisualLines)
             {
@@ -121,7 +121,7 @@ namespace ArmA.Studio.UI
         public void Draw(TextView textView, DrawingContext drawingContext)
         {
             textView.EnsureVisualLines();
-            var color = new SolidColorBrush(ConfigHost.Coloring.BreakpointRectColor);
+            var color = new SolidColorBrush(ConfigHost.Coloring.BreakPoint.TextHighlightColor);
             color.Freeze();
             foreach (var lNum in this.SolutionFileRef.BreakPoints)
             {

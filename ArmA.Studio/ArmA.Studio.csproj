@@ -108,7 +108,6 @@
     <Compile Include="DataContext\TextEditorUtil\IntelliSenseEntry.cs" />
     <Compile Include="ESeverity.cs" />
     <Compile Include="DataContext\TextEditorUtil\LinterInfo.cs" />
-    <Compile Include="DataContext\TextEditorUtil\SyntaxError.cs" />
     <Compile Include="DebuggerContext.cs" />
     <Compile Include="Dialogs\IDialogContext.cs" />
     <Compile Include="Dialogs\PropertiesDialog.xaml.cs">
@@ -121,7 +120,7 @@
     <Compile Include="UI\Attached\Eventing\MouseDown.cs" />
     <Compile Include="UI\Converters\Multi\BoolOrMultiConverter.cs" />
     <Compile Include="UI\Converters\Multi\CollectionContainsConverter.cs" />
-    <Compile Include="UI\SyntaxErrorBackgroundRenderer.cs" />
+    <Compile Include="UI\UnderlineBackgroundRenderer.cs" />
     <Compile Include="UI\LineHighlighterBackgroundRenderer.cs" />
     <Compile Include="ConfigHost.cs" />
     <Compile Include="DataContext\PropertiesPane.cs" />
@@ -149,7 +148,6 @@
     <Compile Include="Dialogs\LicenseViewerDataContext.cs" />
     <Compile Include="DockableBase.cs" />
     <Compile Include="DocumentBase.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="LayoutUpdateStrategy.cs" />
     <Compile Include="PanelBase.cs" />
     <Compile Include="SolutionUtil\Solution.cs" />

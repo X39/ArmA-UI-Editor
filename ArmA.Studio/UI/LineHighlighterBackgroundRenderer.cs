@@ -32,9 +32,9 @@ namespace ArmA.Studio.UI
             textView.EnsureVisualLines();
             var line = this.Editor.Document.GetLineByOffset(this.Editor.CaretOffset);
             var segment = new TextSegment { StartOffset = line.Offset, EndOffset = line.EndOffset };
-            var color = new SolidColorBrush(ConfigHost.Coloring.HighlightColor);
+            var color = new SolidColorBrush(ConfigHost.Coloring.SelectedLine.Background);
             color.Freeze();
-            var pen = new Pen(new SolidColorBrush(ConfigHost.Coloring.HighlightColorBorder), 1);
+            var pen = new Pen(new SolidColorBrush(ConfigHost.Coloring.SelectedLine.Border), 1);
             pen.Freeze();
             foreach (var rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment))
             {

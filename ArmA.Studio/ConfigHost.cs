@@ -74,27 +74,41 @@ namespace ArmA.Studio
         }
         public static class Coloring
         {
-            public static void Reset()
+            public static void Reset(bool IsHard)
             {
-                SyntaxErrorColor = Color.FromArgb(255, 255, 0, 0);
-                HighlightColor = Color.FromArgb(16, 0, 0, 0);
-                HighlightColorBorder = Color.FromArgb(32, 0, 0, 0);
-                BreakpointColor = Color.FromArgb(255, 255, 0, 0);
-                BreakpointColorBorder = Color.FromArgb(255, 255, 255, 255);
-                BreakpointRectColor = Color.FromArgb(32, 200, 0, 0);
+                var coloringType = typeof(Coloring);
+                var list = new List<Type>(coloringType.GetNestedTypes());
+                list.Add(coloringType);
+                foreach(var it in list)
+                {
+                    var properties = from prop in it.GetProperties() where prop.PropertyType.IsEquivalentTo(typeof(Color)) select prop;
+                    foreach(var prop in properties)
+                    {
+                        var value = (Color)prop.GetMethod.Invoke(null, null);
+                        if(IsHard || value.Equals(Colors.Transparent))
+                        {
+                            var fields = from field in it.GetFields() where field.FieldType.IsEquivalentTo(typeof(Color)) select field;
+                            var f = fields.FirstOrDefault((field) => field.Name.EndsWith("_Default") && field.Name.StartsWith(prop.Name));
+                            if (f == null)
+                                throw new NotImplementedException();
+                            prop.SetMethod.Invoke(null, new object[] { f.GetValue(null) });
+                        }
+                    }
+                }
+
             }
             public static Color ColorParse(string inputs)
             {
                 if (string.IsNullOrWhiteSpace(inputs))
-                    return default(Color);
+                    return Colors.Transparent;
                 var splitInputs = inputs.Split(',');
                 if (splitInputs.Length != 4)
-                    return default(Color);
+                    return Colors.Transparent;
                 foreach (var input in splitInputs)
                 {
                     if (!input.IsInteger())
                     {
-                        return default(Color);
+                        return Colors.Transparent;
                     }
                 }
                 return Color.FromArgb(byte.Parse(splitInputs[0]), byte.Parse(splitInputs[1]), byte.Parse(splitInputs[2]), byte.Parse(splitInputs[3]));
@@ -104,49 +118,78 @@ namespace ArmA.Studio
                 return string.Join(",", colorInput.A, colorInput.R, colorInput.G, colorInput.B);
             }
 
-            public static Color SyntaxErrorColor
+            public static class EditorUnderlining
             {
-                get { return ColorParse(Instance.ColoringIni.GetValueOrNull("Coloring", "SyntaxErrorColor")); }
-                set { Instance.ColoringIni.SetValue("Coloring", "SyntaxErrorColor", ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                public static readonly Color ErrorColor_Default = Color.FromArgb(255, 255, 0, 0);
+                public static Color ErrorColor
+                {
+                    get { return ColorParse(Instance.ColoringIni.GetValueOrNull(nameof(EditorUnderlining), nameof(ErrorColor))); }
+                    set { Instance.ColoringIni.SetValue(nameof(EditorUnderlining), nameof(ErrorColor), ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                }
+
+                public static readonly Color WarningColor_Default = Color.FromArgb(255, 255, 153, 0);
+                public static Color WarningColor
+                {
+                    get { return ColorParse(Instance.ColoringIni.GetValueOrNull(nameof(EditorUnderlining), nameof(WarningColor))); }
+                    set { Instance.ColoringIni.SetValue(nameof(EditorUnderlining), nameof(WarningColor), ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                }
+
+                public static readonly Color InfoColor_Default = Color.FromArgb(255, 0, 255, 0);
+                public static Color InfoColor
+                {
+                    get { return ColorParse(Instance.ColoringIni.GetValueOrNull(nameof(EditorUnderlining), nameof(InfoColor))); }
+                    set { Instance.ColoringIni.SetValue(nameof(EditorUnderlining), nameof(InfoColor), ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                }
+            }
+            
+            public static class SelectedLine
+            {
+                public static readonly Color Background_Default = Color.FromArgb(16, 0, 0, 0);
+                public static Color Background
+                {
+                    get { return ColorParse(Instance.ColoringIni.GetValueOrNull(nameof(SelectedLine), nameof(Background))); }
+                    set { Instance.ColoringIni.SetValue(nameof(SelectedLine), nameof(Background), ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                }
+
+                public static readonly Color Border_Default = Color.FromArgb(32, 0, 0, 0);
+                public static Color Border
+                {
+                    get { return ColorParse(Instance.ColoringIni.GetValueOrNull(nameof(SelectedLine), nameof(Border))); }
+                    set { Instance.ColoringIni.SetValue(nameof(SelectedLine), nameof(Border), ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                }
             }
 
-            public static Color HighlightColor
+            public static class BreakPoint
             {
-                get { return ColorParse(Instance.ColoringIni.GetValueOrNull("Coloring", "HighlightColor")); }
-                set { Instance.ColoringIni.SetValue("Coloring", "HighlightColor", ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
-            }
-            public static Color HighlightColorBorder
-            {
-                get { return ColorParse(Instance.ColoringIni.GetValueOrNull("Coloring", "HighlightColorBorder")); }
-                set { Instance.ColoringIni.SetValue("Coloring", "HighlightColorBorder", ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                public static readonly Color MainColor_Default = Color.FromArgb(255, 255, 0, 0);
+                public static Color MainColor
+                {
+                    get { return ColorParse(Instance.ColoringIni.GetValueOrNull(nameof(BreakPoint), nameof(MainColor))); }
+                    set { Instance.ColoringIni.SetValue(nameof(BreakPoint), nameof(MainColor), ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                }
+
+                public static readonly Color BorderColor_Default = Color.FromArgb(255, 255, 255, 255);
+                public static Color BorderColor
+                {
+                    get { return ColorParse(Instance.ColoringIni.GetValueOrNull(nameof(BreakPoint), nameof(BorderColor))); }
+                    set { Instance.ColoringIni.SetValue(nameof(BreakPoint), nameof(BorderColor), ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                }
+
+                public static readonly Color TextHighlightColor_Default = Color.FromArgb(32, 200, 0, 0);
+                public static Color TextHighlightColor
+                {
+                    get { return ColorParse(Instance.ColoringIni.GetValueOrNull(nameof(BreakPoint), nameof(TextHighlightColor))); }
+                    set { Instance.ColoringIni.SetValue(nameof(BreakPoint), nameof(TextHighlightColor), ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
+                }
             }
 
-            public static Color BreakpointColor
-            {
-                get { return ColorParse(Instance.ColoringIni.GetValueOrNull("Coloring", "BreakpointColor")); }
-                set { Instance.ColoringIni.SetValue("Coloring", "BreakpointColor", ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
-            }
-            public static Color BreakpointColorBorder
-            {
-                get { return ColorParse(Instance.ColoringIni.GetValueOrNull("Coloring", "BreakpointColorBorder")); }
-                set { Instance.ColoringIni.SetValue("Coloring", "BreakpointColorBorder", ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
-            }
-
-            public static Color BreakpointRectColor
-            {
-                get { return ColorParse(Instance.ColoringIni.GetValueOrNull("Coloring", "BreakpointRectColor")); }
-                set { Instance.ColoringIni.SetValue("Coloring", "BreakpointRectColor", ColorParse(value)); Instance.Save(EIniSelector.Coloring); }
-            }
 
         }
         public static ConfigHost Instance { get; private set; }
         static ConfigHost()
         {
             Instance = new ConfigHost();
-            if(Instance.ColoringIni.Sections.Count == 0)
-            {
-                Coloring.Reset();
-            }
+            Coloring.Reset(false);
         }
 
         public IniData LayoutIni { get; private set; }

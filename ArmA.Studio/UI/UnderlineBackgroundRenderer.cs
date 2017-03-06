@@ -12,15 +12,15 @@ using ArmA.Studio.DataContext.TextEditorUtil;
 
 namespace ArmA.Studio.UI
 {
-    internal class SyntaxErrorBackgroundRenderer : IBackgroundRenderer
+    internal class UnderlineBackgroundRenderer : IBackgroundRenderer
     {
 
-        public SyntaxErrorBackgroundRenderer()
+        public UnderlineBackgroundRenderer()
         {
         }
         public KnownLayer Layer { get { return KnownLayer.Selection; } }
 
-        public IEnumerable<SyntaxError> SyntaxErrors { get; internal set; }
+        public IEnumerable<LinterInfo> SyntaxErrors { get; internal set; }
 
         private IEnumerable<Point> GetPoints(Rect rect, double offset, int count)
         {
@@ -35,10 +35,19 @@ namespace ArmA.Studio.UI
         {
             if (this.SyntaxErrors == null)
                 return;
-            var color = new SolidColorBrush(ConfigHost.Coloring.SyntaxErrorColor);
-            color.Freeze();
-            var pen = new Pen(color, 1);
-            pen.Freeze();
+            var colorError = new SolidColorBrush(ConfigHost.Coloring.EditorUnderlining.ErrorColor);
+            colorError.Freeze();
+            var colorWarning = new SolidColorBrush(ConfigHost.Coloring.EditorUnderlining.WarningColor);
+            colorWarning.Freeze();
+            var colorInfo = new SolidColorBrush(ConfigHost.Coloring.EditorUnderlining.InfoColor);
+            colorInfo.Freeze();
+
+            var penError = new Pen(colorError, 1);
+            penError.Freeze();
+            var penWarning = new Pen(colorWarning, 1);
+            penWarning.Freeze();
+            var penInfo = new Pen(colorInfo, 1);
+            penInfo.Freeze();
             textView.EnsureVisualLines();
             foreach(var segment in this.SyntaxErrors)
             {
@@ -52,9 +61,24 @@ namespace ArmA.Studio.UI
                     {
                         streamGeo.BeginFigure(rect.BottomLeft, false, false);
                         streamGeo.PolyLineTo(GetPoints(rect, vOffset, count).ToArray(), true, false);
-                        
                     }
                     geometry.Freeze();
+                    Pen pen;
+                    switch (segment.Severity)
+                    {
+                        case ESeverity.Error:
+                            pen = penError;
+                            break;
+                        case ESeverity.Warning:
+                            pen = penWarning;
+                            break;
+                        case ESeverity.Info:
+                            pen = penInfo;
+                            break;
+                        default:
+                            System.Diagnostics.Debugger.Break();
+                            throw new NotImplementedException();
+                    }
                     if (geometry != null)
                     {
                         drawingContext.DrawGeometry(null, pen, geometry);
