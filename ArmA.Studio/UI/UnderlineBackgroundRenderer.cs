@@ -21,6 +21,7 @@ namespace ArmA.Studio.UI
         public KnownLayer Layer { get { return KnownLayer.Selection; } }
 
         public IEnumerable<LinterInfo> SyntaxErrors { get; internal set; }
+        public int SyntaxErrors_TextLength { get; internal set; }
 
         private IEnumerable<Point> GetPoints(Rect rect, double offset, int count)
         {
@@ -35,6 +36,11 @@ namespace ArmA.Studio.UI
         {
             if (this.SyntaxErrors == null)
                 return;
+            if (this.SyntaxErrors_TextLength != textView.Document.TextLength)
+            {
+                //ToDo: Update TextLength
+                return; //for now just hide the existing syntax linting
+            }
             var colorError = new SolidColorBrush(ConfigHost.Coloring.EditorUnderlining.ErrorColor);
             colorError.Freeze();
             var colorWarning = new SolidColorBrush(ConfigHost.Coloring.EditorUnderlining.WarningColor);

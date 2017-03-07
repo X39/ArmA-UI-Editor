@@ -11,7 +11,7 @@ namespace RealVirtuality.SQF
             [XmlEnum]
             Binary = 'b',
             [XmlEnum]
-            Nullar = 'n',
+            Nular = 'n',
             [XmlEnum]
             Type = 't'
         }

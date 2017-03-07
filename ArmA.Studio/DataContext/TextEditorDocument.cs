@@ -69,7 +69,7 @@ namespace ArmA.Studio.DataContext
         private Task LinterTask;
         private Task WaitTimeoutTask;
         private DateTime LastTextChanged;
-        private const int CONST_LINTER_UPDATE_TIMEOUT_MS = 500;
+        private const int CONST_LINTER_UPDATE_TIMEOUT_MS = 200;
 
         public TextEditorDocument()
         {
@@ -124,11 +124,13 @@ namespace ArmA.Studio.DataContext
             if (this.LinterTask == null || this.LinterTask.IsCompleted)
             {
                 var memstream = new MemoryStream();
+                var txt = this.Document.Text;
                 try
                 {
+                    
                     //Load content into MemoryStream
                     var writer = new StreamWriter(memstream);
-                    writer.Write(this.Document.Text);
+                    writer.Write(txt);
                     writer.Flush();
                     memstream.Seek(0, SeekOrigin.Begin);
                 }
@@ -147,6 +149,7 @@ namespace ArmA.Studio.DataContext
                             return;
                         }
                         SyntaxErrorRenderer.SyntaxErrors = this.LinterInfos = linterInfos;
+                        SyntaxErrorRenderer.SyntaxErrors_TextLength = txt.Length;
                         ErrorListPane.Instance.LinterDictionary[this.FilePath] = this.LinterInfos;
                         if (this.Editor != null)
                         {

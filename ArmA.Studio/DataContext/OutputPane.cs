@@ -19,13 +19,14 @@ namespace ArmA.Studio.DataContext
 {
     public class OutputPane : PanelBase
     {
+        private static readonly TextDocument NullDocument = new TextDocument();
         public override string Title { get { return Properties.Localization.PanelDisplayName_Output; } }
 
         public ICommand CmdClearOutputWindow { get; private set; }
 
         private Dictionary<string, TextDocument> DocumentDictionary { get; set; }
 
-        public TextDocument Document { get { return this.SelectedTarget == null ? null : DocumentDictionary[this.SelectedTarget as string]; } }
+        public TextDocument Document { get { return this.SelectedTarget == null ? NullDocument : DocumentDictionary[this.SelectedTarget as string]; } }
 
         public object SelectedTarget { get { return this._SelectedTarget; } set { this._SelectedTarget = value; this.RaisePropertyChanged(); this.RaisePropertyChanged(nameof(this.Document)); } }
         private object _SelectedTarget;
@@ -44,13 +45,16 @@ namespace ArmA.Studio.DataContext
 
         private void Logger_OnLog(object sender, LoggerTargets.SubscribableTarget.OnLogEventArgs e)
         {
-            if (!this.DocumentDictionary.ContainsKey(e.Logger))
+            App.Current.Dispatcher.InvokeAsync(() =>
             {
-                this.DocumentDictionary.Add(e.Logger, new TextDocument());
-                AvailableTargets.Add(e.Logger);
-            }
-            var doc = this.DocumentDictionary[e.Logger];
-            doc.Insert(doc.TextLength, string.Concat(e.Severity, ": ", e.Message, "\r\n"));
+                if (!this.DocumentDictionary.ContainsKey(e.Logger))
+                {
+                    this.DocumentDictionary.Add(e.Logger, new TextDocument());
+                    AvailableTargets.Add(e.Logger);
+                }
+                var doc = this.DocumentDictionary[e.Logger];
+                doc.Insert(doc.TextLength, string.Concat(e.Severity, ": ", e.Message, "\r\n"));
+            });
         }
     }
 }

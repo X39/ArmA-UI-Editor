@@ -32,13 +32,13 @@ options
 	using System.Collections.Generic;
     using System.Linq;
 }
-@lexer::members
+@parser::members
 {
 	private IEnumerable<SqfDefinition> BinaryDefinitions;
 	private IEnumerable<SqfDefinition> UnaryDefinitions;
 	private IEnumerable<SqfDefinition> NullarDefinitions;
 
-	public sqfLexer(ICharStream input, IEnumerable<SqfDefinition> definitions) : this(input)
+	public sqfParser(ITokenStream input, IEnumerable<SqfDefinition> definitions) : this(input)
 	{
 		this.BinaryDefinitions = from def in definitions where def.Kind == SqfDefinition.EKind.Binary select def;
 		this.UnaryDefinitions = from def in definitions where def.Kind == SqfDefinition.EKind.Unary select def;
@@ -62,11 +62,8 @@ BLOCKCOMMENT: '/*' .*? '*/' -> skip;
 PREPROCESSOR: '#' .*? '\n' -> skip;
 STRING: '"' ( ANY | '""' )*? '"' | '\'' ( ANY | '\'\'' )*? '\'';
 NUMBER: ('0x' | '$') HEXADIGIT+ |  '-'? DIGIT+ ( '.' DIGIT+ )?;
-BINARY: { this.BinaryDefinitions.ContainsName(_input.GetTextTillWhitespace()) }? IDENTIFIER;
-UNARY: { this.UnaryDefinitions.ContainsName(_input.GetTextTillWhitespace()) }? IDENTIFIER;
-NULL: { this.NullarDefinitions.ContainsName(_input.GetTextTillWhitespace()) }? IDENTIFIER;
-IDENTIFIER: (LETTER | '_') (LETTER | DIGIT | '_')*;
 PRIVATE: { _input.GetTextTillWhitespace().Equals("private", System.StringComparison.InvariantCultureIgnoreCase) }? IDENTIFIER;
+IDENTIFIER: (LETTER | '_') (LETTER | DIGIT | '_')*;
 CURLYOPEN: '{';
 CURLYCLOSE: '}';
 ROUNDOPEN: '(';
@@ -87,8 +84,11 @@ assignment:
           |	PRIVATE IDENTIFIER '=' binaryexpression
           ;
 binaryexpression:
-					primaryexpression ( BINARY primaryexpression )*
+					primaryexpression ( { this.BinaryDefinitions.ContainsName(_input.Lt(1).Text) }? IDENTIFIER primaryexpression )*
                 ;
+roundbrackets: ROUNDOPEN binaryexpression ROUNDCLOSE;
+array: EDGYOPEN ( binaryexpression ( ',' binaryexpression )* )? EDGYCLOSE;
+
 primaryexpression: 
                      NUMBER
                  |   unaryexpression
@@ -96,15 +96,15 @@ primaryexpression:
                  |   variable
                  |   STRING
                  |   CURLYOPEN code? CURLYCLOSE
-                 |   ROUNDOPEN binaryexpression ROUNDCLOSE
-                 |   EDGYOPEN ( binaryexpression ( ',' binaryexpression )* )? EDGYCLOSE
+                 |   roundbrackets
+                 |   array
                  ;
 nularexpression:
                    operator
-			   |   NULL
+			   |   { this.NullarDefinitions.ContainsName(_input.Lt(1).Text) }? IDENTIFIER
                ;
 unaryexpression:
-                   UNARY primaryexpression
+                   { this.UnaryDefinitions.ContainsName(_input.Lt(1).Text) }? IDENTIFIER primaryexpression
                ;
 variable:
             IDENTIFIER

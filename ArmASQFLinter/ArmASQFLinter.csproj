@@ -56,10 +56,10 @@
     <Compile Include="SqfBinaryExpression.cs" />
     <Compile Include="SqfCode.cs" />
     <Compile Include="ANTLR\SqfListener.cs" />
-    <Compile Include="SqfNullarExpression.cs" />
+    <Compile Include="SqfNularExpression.cs" />
     <Compile Include="SqfOperator.cs" />
     <Compile Include="SqfPrimaryExpression.cs" />
-    <Compile Include="SqfStatement.cs" />
+    <Compile Include="SqfRemovable.cs" />
     <Compile Include="SqfValue.cs" />
     <Compile Include="SqfString.cs" />
     <Compile Include="SqfUnaryExpression.cs" />

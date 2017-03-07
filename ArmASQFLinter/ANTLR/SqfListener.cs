@@ -13,6 +13,7 @@ namespace RealVirtuality.SQF.ANTLR
 {
     public class SqfListener : IsqfListener
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         public struct SyntaxError
         {
             public int Line { get; set; }
@@ -36,16 +37,18 @@ namespace RealVirtuality.SQF.ANTLR
             this.Original = this.Current;
 #endif
         }
-    private void EnterGeneric(SqfNode node)
+        private void EnterGeneric(SqfNode node, [System.Runtime.CompilerServices.CallerMemberName]string caller = "")
         {
+            Logger.Info(string.Format("ENTER:{0}{1}", new string('\t', node.ParentCount()), caller.Remove(0, "Enter".Length)));
             Current.AddChild(node);
             Current = node;
         }
-        private T ExitGeneric<T>(ParserRuleContext ctx) where T : SqfNode
+        private T ExitGeneric<T>(ParserRuleContext ctx, [System.Runtime.CompilerServices.CallerMemberName]string caller = "") where T : SqfNode
         {
             var node = Current;
             Current = node.GetParent();
 
+            Logger.Info(string.Format("EXIT :{0}{1}: {2}", new string('\t', node.ParentCount()), caller.Remove(0, "Exit".Length), ctx.GetText()));
             node.StartOffset = ctx.Start.StartIndex;
             node.Line = ctx.Start.Line;
             node.Length = ctx.Stop == null ? ctx.GetText().Length : ctx.Stop.StopIndex - node.StartOffset;
@@ -75,7 +78,7 @@ namespace RealVirtuality.SQF.ANTLR
 
         public void EnterNularexpression([NotNull] sqfParser.NularexpressionContext context)
         {
-            this.EnterGeneric(new SqfNullarExpression(this.Current));
+            this.EnterGeneric(new SqfNularExpression(this.Current));
         }
 
         public void EnterOperator([NotNull] sqfParser.OperatorContext context)
@@ -85,13 +88,12 @@ namespace RealVirtuality.SQF.ANTLR
 
         public void EnterPrimaryexpression([NotNull] sqfParser.PrimaryexpressionContext context)
         {
-            
             this.EnterGeneric(new SqfPrimaryExpression(this.Current));
         }
 
         public void EnterStatement([NotNull] sqfParser.StatementContext context)
         {
-            this.EnterGeneric(new SqfStatement(this.Current));
+            this.EnterGeneric(new SqfRemovable(this.Current));
         }
 
         public void EnterUnaryexpression([NotNull] sqfParser.UnaryexpressionContext context)
@@ -103,6 +105,16 @@ namespace RealVirtuality.SQF.ANTLR
         {
             this.EnterGeneric(new SqfVariable(this.Current));
         }
+
+        public void EnterRoundbrackets([NotNull] sqfParser.RoundbracketsContext context)
+        {
+            this.EnterGeneric(new SqfRemovable(this.Current));
+        }
+        public void EnterArray([NotNull] sqfParser.ArrayContext context)
+        {
+            this.EnterGeneric(new SqfArray(this.Current));
+        }
+
         #endregion
         #region Exit
         public void ExitEveryRule(ParserRuleContext ctx) { }
@@ -152,7 +164,7 @@ namespace RealVirtuality.SQF.ANTLR
         public void ExitBinaryexpression([NotNull] sqfParser.BinaryexpressionContext context)
         {
             var node = this.ExitGeneric<SqfBinaryExpression>(context);
-            if(context.BINARY().Length == 0)
+            if(context.IDENTIFIER().Length == 0)
             {
                 node.RemoveFromTree();
             }
@@ -166,7 +178,7 @@ namespace RealVirtuality.SQF.ANTLR
                     exp.LValue = node.Children[index];
                     exp.RValue = node.Children[index + 1];
                     exp.Length = exp.RValue.StartOffset - lastExp.StartOffset + exp.RValue.Length;
-                    exp.Operation = context.BINARY(index++).GetText();
+                    exp.Operation = context.IDENTIFIER(index++).GetText();
                     exp.Line = exp.LValue.Line;
                     node.Children.Remove(exp.LValue);
                     node.Children.Remove(exp.RValue);
@@ -184,7 +196,7 @@ namespace RealVirtuality.SQF.ANTLR
 
         public void ExitNularexpression([NotNull] sqfParser.NularexpressionContext context)
         {
-            var node = this.ExitGeneric<SqfNullarExpression>(context);
+            var node = this.ExitGeneric<SqfNularExpression>(context);
             node.RemoveFromTree();
         }
 
@@ -220,16 +232,7 @@ namespace RealVirtuality.SQF.ANTLR
             }
             else
             {
-                if (context.GetToken(sqfLexer.EDGYOPEN, 0) != null)
-                {//Array
-                    SqfNode arr = new SqfArray(node.GetParent());
-                    arr.StartOffset = node.StartOffset;
-                    arr.Length = node.Length;
-                    arr.Col = node.Col;
-                    node.GetParent().Children[node.GetParent().Children.IndexOf(node)] = arr;
-                    arr.Children = node.Children;
-                }
-                else if (context.GetToken(sqfLexer.CURLYOPEN, 0) != null)
+                if (context.GetToken(sqfLexer.CURLYOPEN, 0) != null)
                 {
                     if (node.Children.Count > 0)
                     {
@@ -254,14 +257,14 @@ namespace RealVirtuality.SQF.ANTLR
 
         public void ExitStatement([NotNull] sqfParser.StatementContext context)
         {
-            var node = this.ExitGeneric<SqfStatement>(context);
+            var node = this.ExitGeneric<SqfRemovable>(context);
             node.RemoveFromTree();
         }
 
         public void ExitUnaryexpression([NotNull] sqfParser.UnaryexpressionContext context)
         {
             var node = this.ExitGeneric<SqfUnaryExpression>(context);
-            node.Operator = context.UNARY().GetText();
+            node.Operator = context.IDENTIFIER().GetText();
             node.Expression = node.Children[0];
         }
 
@@ -269,6 +272,17 @@ namespace RealVirtuality.SQF.ANTLR
         {
             var node = this.ExitGeneric<SqfVariable>(context);
             node.Identifier = context.GetText();
+        }
+        public void ExitRoundbrackets([NotNull] sqfParser.RoundbracketsContext context)
+        {
+            var node = this.ExitGeneric<SqfRemovable>(context);
+            node.RemoveFromTree();
+        }
+
+
+        public void ExitArray([NotNull] sqfParser.ArrayContext context)
+        {
+            var node = this.ExitGeneric<SqfArray>(context);
         }
         #endregion
 
@@ -280,5 +294,6 @@ namespace RealVirtuality.SQF.ANTLR
         public void VisitTerminal(ITerminalNode node)
         {
         }
+        
     }
 }

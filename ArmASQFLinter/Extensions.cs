@@ -36,6 +36,16 @@ namespace RealVirtuality.SQF
         {
             node.Children.Add(newChild);
         }
+        public static int ParentCount(this SqfNode node)
+        {
+            int i = 0;
+            var tmp = node;
+            while((tmp = tmp.GetParent()) != null)
+            {
+                i++;
+            }
+            return i;
+        }
         public static void RemoveFromTree(this SqfNode node)
         {
             var parent = node.GetParent();
