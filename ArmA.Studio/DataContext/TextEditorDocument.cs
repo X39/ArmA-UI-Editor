@@ -97,6 +97,8 @@ namespace ArmA.Studio.DataContext
             if (textViewPos.HasValue)
             {
                 var textOffset = this.Document.GetOffset(textViewPos.Value.Location);
+                if (this.LinterInfos == null)
+                    return;
                 foreach(var info in this.LinterInfos)
                 {
                     if(info.StartOffset <= textOffset && info.EndOffset >= textOffset)

@@ -14,6 +14,7 @@ using Xceed.Wpf.AvalonDock;
 using Utility;
 using Utility.Collections;
 using Xceed.Wpf.AvalonDock.Layout;
+using RealVirtuality.SQF;
 
 namespace ArmA.Studio
 {
@@ -195,6 +196,8 @@ namespace ArmA.Studio
                 this._WindowTop = 0;
             }
             this._WindowCurrentState = WindowState.Normal;
+
+            
         }
 
         private void PanelsDisplayed_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

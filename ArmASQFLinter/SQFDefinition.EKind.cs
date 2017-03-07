@@ -1,12 +1,19 @@
-﻿namespace RealVirtuality.SQF
+﻿using System.Xml.Serialization;
+
+namespace RealVirtuality.SQF
 {
-    public partial struct SQFDefinition
+    public partial struct SqfDefinition
     {
         public enum EKind
         {
+            [XmlEnum]
             Unary = 'u',
+            [XmlEnum]
             Binary = 'b',
-            Null = 'n'
+            [XmlEnum]
+            Nullar = 'n',
+            [XmlEnum]
+            Type = 't'
         }
     }
 }

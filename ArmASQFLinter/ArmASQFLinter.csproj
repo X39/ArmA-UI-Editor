@@ -51,25 +51,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ANTLR\ErrorListener.cs" />
-    <Compile Include="ANTLR\SqfAssignment.cs" />
-    <Compile Include="ANTLR\SqfBinaryExpression.cs" />
-    <Compile Include="ANTLR\SqfCode.cs" />
+    <Compile Include="SqfArray.cs" />
+    <Compile Include="SqfAssignment.cs" />
+    <Compile Include="SqfBinaryExpression.cs" />
+    <Compile Include="SqfCode.cs" />
     <Compile Include="ANTLR\SqfListener.cs" />
-    <Compile Include="ANTLR\SqfNullarExpression.cs" />
-    <Compile Include="ANTLR\SqfOperator.cs" />
-    <Compile Include="ANTLR\SqfPrimaryExpression.cs" />
-    <Compile Include="ANTLR\SqfStatement.cs" />
-    <Compile Include="ANTLR\SqfUnaryExpression.cs" />
-    <Compile Include="ANTLR\SqfVariable.cs" />
+    <Compile Include="SqfNullarExpression.cs" />
+    <Compile Include="SqfOperator.cs" />
+    <Compile Include="SqfPrimaryExpression.cs" />
+    <Compile Include="SqfStatement.cs" />
+    <Compile Include="SqfValue.cs" />
+    <Compile Include="SqfString.cs" />
+    <Compile Include="SqfUnaryExpression.cs" />
+    <Compile Include="SqfNumber.cs" />
+    <Compile Include="SqfVariable.cs" />
     <Compile Include="Parser\Generated\Parser.cs" />
     <Compile Include="Parser\Generated\Scanner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ESQFType.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="SqfNode.cs" />
-    <Compile Include="SQFDefinition.cs" />
-    <Compile Include="SQFDefinition.EKind.cs" />
-    <Compile Include="SQFDocument.cs" />
+    <Compile Include="SqfDefinition.cs" />
+    <Compile Include="SqfDefinition.EKind.cs" />
+    <Compile Include="SqfDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="ANTLR\sqf.g4">

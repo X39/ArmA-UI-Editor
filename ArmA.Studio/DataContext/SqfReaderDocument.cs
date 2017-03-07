@@ -37,7 +37,7 @@ namespace ArmA.Studio.DataContext
         {
             var inputStream = new Antlr4.Runtime.AntlrInputStream(memstream);
 
-            var lexer = new RealVirtuality.SQF.ANTLR.Parser.sqfLexer(inputStream);
+            var lexer = new RealVirtuality.SQF.ANTLR.Parser.sqfLexer(inputStream, new RealVirtuality.SQF.SqfDefinition[] { });
             var commonTokenStream = new Antlr4.Runtime.CommonTokenStream(lexer);
             var p = new RealVirtuality.SQF.ANTLR.Parser.sqfParser(commonTokenStream);
             var listener = new RealVirtuality.SQF.ANTLR.SqfListener();

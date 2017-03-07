@@ -27,7 +27,24 @@ options
 {
     language = cs;
 }
+@header
+{
+	using System.Collections.Generic;
+    using System.Linq;
+}
+@lexer::members
+{
+	private IEnumerable<SqfDefinition> BinaryDefinitions;
+	private IEnumerable<SqfDefinition> UnaryDefinitions;
+	private IEnumerable<SqfDefinition> NullarDefinitions;
 
+	public sqfLexer(ICharStream input, IEnumerable<SqfDefinition> definitions) : this(input)
+	{
+		this.BinaryDefinitions = from def in definitions where def.Kind == SqfDefinition.EKind.Binary select def;
+		this.UnaryDefinitions = from def in definitions where def.Kind == SqfDefinition.EKind.Unary select def;
+		this.NullarDefinitions = from def in definitions where def.Kind == SqfDefinition.EKind.Nullar select def;
+	}
+}
 
 sqf: code;
 
@@ -38,7 +55,6 @@ fragment LETTER: (LOWERCASE | UPPERCASE);
 fragment HEXADIGIT: (DIGIT | [a-f] | [A-F]);
 fragment ANY: .;
 PUNCTUATION: '||' | '&&' | '==' | '>=' | '<=' | '!=' | '*' | '/' | '>>' | '+' | '-';
-PRIVATE: [pP][rR][iI][vV][aA][tT][eE];
 WS: [ \t\r\n]+ -> skip;
 INSTRUCTION: '//@' .*? '\n';
 INLINECOMMENT: '//' .*? '\n' -> skip;
@@ -47,24 +63,31 @@ PREPROCESSOR: '#' .*? '\n' -> skip;
 STRING: '"' ( ANY | '""' )*? '"' | '\'' ( ANY | '\'\'' )*? '\'';
 NUMBER: ('0x' | '$') HEXADIGIT+ |  '-'? DIGIT+ ( '.' DIGIT+ )?;
 IDENTIFIER: (LETTER | '_') (LETTER | DIGIT | '_')*;
+CURLYOPEN: '{';
+CURLYCLOSE: '}';
+ROUNDOPEN: '(';
+ROUNDCLOSE: ')';
+EDGYOPEN: '[';
+EDGYCLOSE: ']';
+BINARY: { this.BinaryDefinitions.ContainsName(_input.GetTextTillWhitespace()) }?;
+UNARY: { this.UnaryDefinitions.ContainsName(_input.GetTextTillWhitespace()) }?;
+NULL: { this.NullarDefinitions.ContainsName(_input.GetTextTillWhitespace()) }?;
 
 
 code:
-        statement (';' statement)*
-    |
+        statement (';' statement?)*
     ;
 statement:
              assignment
          |   binaryexpression
-         |
          ;
 assignment:
 			IDENTIFIER '=' binaryexpression
-          |	PRIVATE IDENTIFIER '=' binaryexpression
+          |	IDENTIFIER IDENTIFIER '=' binaryexpression
           ;
 binaryexpression:
                     primaryexpression
-                |	binaryexpression operator binaryexpression 
+                |	binaryexpression BINARY binaryexpression 
                 ;
 primaryexpression: 
                      NUMBER
@@ -72,22 +95,22 @@ primaryexpression:
                  |   nularexpression
                  |   variable
                  |   STRING
-                 |   '{' code '}'
-                 |   '(' binaryexpression ')'
-                 |   '[' ( binaryexpression ( ',' binaryexpression )* )? ']'
+                 |   CURLYOPEN code CURLYCLOSE
+                 |   ROUNDOPEN binaryexpression ROUNDCLOSE
+                 |   EDGYOPEN ( binaryexpression ( ',' binaryexpression )* )? EDGYCLOSE
                  ;
 nularexpression:
                    operator
+			   |   NULL
                ;
 unaryexpression:
-                   operator primaryexpression
+                   UNARY primaryexpression
                ;
 variable:
             IDENTIFIER
         ;
 operator:
             IDENTIFIER
-		|	PRIVATE
         |   PUNCTUATION
         |   PUNCTUATION PUNCTUATION
         ;

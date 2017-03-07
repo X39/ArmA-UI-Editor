@@ -22,13 +22,14 @@ namespace ArmA.Studio
     {
         public enum ExitCodes
         {
+            ConfigError = -2,
             NoWorkspaceSelected = -1,
             OK = 0,
             Restart = 1
         }
-        public static string ExecutableDirectory { get { return Path.GetDirectoryName(ExecutableFile); } }
+        public static string ExecutablePath { get { return Path.GetDirectoryName(ExecutableFile); } }
         public static string ExecutableFile { get { return Assembly.GetExecutingAssembly().GetName().CodeBase.Substring("file:///".Length); } }
-        public static string SyntaxFilesPath { get { return Path.Combine(ExecutableDirectory, "SyntaxFiles"); } }
+        public static string SyntaxFilesPath { get { return Path.Combine(ExecutablePath, "SyntaxFiles"); } }
         public static string ConfigPath { get { return Path.Combine(ApplicationDataPath, "Configuration"); } }
         public static string TempPath { get { return Path.Combine(Path.GetTempPath(), @"ArmA-Studio"); } }
         public static string CommonApplicationDataPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"ArmA-Studio"); } }
@@ -48,6 +49,18 @@ namespace ArmA.Studio
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            try
+            {
+                //Invoke getter, will never be null
+                if (ConfigHost.Instance == null)
+                    return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException != null ? ex.InnerException.Message : ex.Message, "FATAL ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.Shutdown(ExitCodes.ConfigError);
+                return;
+            }
             this.SetupNLog();
             var workspace = ConfigHost.App.WorkspacePath;
             if (string.IsNullOrWhiteSpace(workspace) && !SwitchWorkspace())
@@ -85,6 +98,8 @@ namespace ArmA.Studio
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            if (e.ApplicationExitCode == (int)ExitCodes.ConfigError)
+                return;
             Workspace.CurrentWorkspace = null;
             if(e.ApplicationExitCode == (int)ExitCodes.Restart)
             {

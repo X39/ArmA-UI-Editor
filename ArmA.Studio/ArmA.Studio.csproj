@@ -1954,6 +1954,9 @@
     <None Include="Resources\Pictograms\Stop\Stop_grey_32xSM.ai" />
     <None Include="Resources\Pictograms\SwitchSourceOrTarget\SwitchSourceOrTarget_16x.ai" />
     <None Include="Resources\Pictograms\SwitchSourceOrTarget\VSO_SwitchSourceOrTarget_16x.ai" />
+    <Content Include="SqfDefinition.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="SyntaxFiles\armaconfig.xshd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

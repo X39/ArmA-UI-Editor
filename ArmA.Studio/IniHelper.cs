@@ -8,6 +8,7 @@ using IniParser;
 using IniParser.Model;
 using IniParser.Parser;
 using System.IO;
+using RealVirtuality.SQF;
 
 namespace ArmA.Studio
 {

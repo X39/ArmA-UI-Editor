@@ -5,5 +5,7 @@
         public SqfOperator(SqfNode parent) : base(parent)
         {
         }
+
+        public string Operator { get; internal set; }
     }
 }

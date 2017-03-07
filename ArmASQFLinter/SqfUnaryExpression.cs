@@ -5,5 +5,8 @@
         public SqfUnaryExpression(SqfNode parent) : base(parent)
         {
         }
+
+        public SqfNode Expression { get; internal set; }
+        public SqfNode Operator { get; internal set; }
     }
 }

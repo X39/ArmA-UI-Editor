@@ -195,6 +195,7 @@ namespace ArmA.Studio
         public IniData LayoutIni { get; private set; }
         public IniData AppIni { get; private set; }
         public IniData ColoringIni { get; private set; }
+        public IEnumerable<RealVirtuality.SQF.SqfDefinition> SqfDefinitions { get; private set; }
 
         private Dictionary<EIniSelector, bool> SaveTriggers;
 
@@ -203,7 +204,7 @@ namespace ArmA.Studio
         {
             this.SaveTriggers = new Dictionary<EIniSelector, bool>();
             string fPath;
-            fPath = Path.Combine(ArmA.Studio.App.ConfigPath, "Layout.ini");
+            fPath = Path.Combine(Studio.App.ConfigPath, "Layout.ini");
             if (File.Exists(fPath))
             {
                 var parser = new FileIniDataParser();
@@ -213,7 +214,7 @@ namespace ArmA.Studio
             {
                 this.LayoutIni = new IniData();
             }
-            fPath = Path.Combine(ArmA.Studio.App.ConfigPath, "App.ini");
+            fPath = Path.Combine(Studio.App.ConfigPath, "App.ini");
             if (File.Exists(fPath))
             {
                 var parser = new FileIniDataParser();
@@ -223,7 +224,7 @@ namespace ArmA.Studio
             {
                 this.AppIni = new IniData();
             }
-            fPath = Path.Combine(ArmA.Studio.App.ConfigPath, "Coloring.ini");
+            fPath = Path.Combine(Studio.App.ConfigPath, "Coloring.ini");
             if (File.Exists(fPath))
             {
                 var parser = new FileIniDataParser();
@@ -232,6 +233,15 @@ namespace ArmA.Studio
             else
             {
                 this.ColoringIni = new IniData();
+            }
+            fPath = Path.Combine(Studio.App.ExecutablePath, "SqfDefinition.ini");
+            if (File.Exists(fPath))
+            {
+                this.SqfDefinitions = fPath.XmlDeserialize<List<RealVirtuality.SQF.SqfDefinition>>();
+            }
+            else
+            {
+                this.SqfDefinitions = new List<RealVirtuality.SQF.SqfDefinition>();
             }
         }
         public void SaveAll()
