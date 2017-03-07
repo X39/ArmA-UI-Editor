@@ -10,6 +10,8 @@ namespace RealVirtuality.SQF
     {
         internal static bool ContainsName(this IEnumerable<SqfDefinition> enumerable, string s)
         {
+            if (s == null)
+                return false;
             foreach(var it in enumerable)
             {
                 if(it.Name.Equals(s, StringComparison.InvariantCultureIgnoreCase))

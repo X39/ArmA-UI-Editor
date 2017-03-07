@@ -1,4 +1,4 @@
-﻿namespace RealVirtuality.SQF.ANTLR
+﻿namespace RealVirtuality.SQF
 {
     internal class SqfArray : SqfNode
     {

@@ -62,16 +62,17 @@ BLOCKCOMMENT: '/*' .*? '*/' -> skip;
 PREPROCESSOR: '#' .*? '\n' -> skip;
 STRING: '"' ( ANY | '""' )*? '"' | '\'' ( ANY | '\'\'' )*? '\'';
 NUMBER: ('0x' | '$') HEXADIGIT+ |  '-'? DIGIT+ ( '.' DIGIT+ )?;
+BINARY: { this.BinaryDefinitions.ContainsName(_input.GetTextTillWhitespace()) }? IDENTIFIER;
+UNARY: { this.UnaryDefinitions.ContainsName(_input.GetTextTillWhitespace()) }? IDENTIFIER;
+NULL: { this.NullarDefinitions.ContainsName(_input.GetTextTillWhitespace()) }? IDENTIFIER;
 IDENTIFIER: (LETTER | '_') (LETTER | DIGIT | '_')*;
+PRIVATE: { _input.GetTextTillWhitespace().Equals("private", System.StringComparison.InvariantCultureIgnoreCase) }? IDENTIFIER;
 CURLYOPEN: '{';
 CURLYCLOSE: '}';
 ROUNDOPEN: '(';
 ROUNDCLOSE: ')';
 EDGYOPEN: '[';
 EDGYCLOSE: ']';
-BINARY: { this.BinaryDefinitions.ContainsName(_input.GetTextTillWhitespace()) }?;
-UNARY: { this.UnaryDefinitions.ContainsName(_input.GetTextTillWhitespace()) }?;
-NULL: { this.NullarDefinitions.ContainsName(_input.GetTextTillWhitespace()) }?;
 
 
 code:
@@ -83,11 +84,10 @@ statement:
          ;
 assignment:
 			IDENTIFIER '=' binaryexpression
-          |	IDENTIFIER IDENTIFIER '=' binaryexpression
+          |	PRIVATE IDENTIFIER '=' binaryexpression
           ;
 binaryexpression:
-                    primaryexpression
-                |	binaryexpression BINARY binaryexpression 
+					primaryexpression ( BINARY primaryexpression )*
                 ;
 primaryexpression: 
                      NUMBER
@@ -95,7 +95,7 @@ primaryexpression:
                  |   nularexpression
                  |   variable
                  |   STRING
-                 |   CURLYOPEN code CURLYCLOSE
+                 |   CURLYOPEN code? CURLYCLOSE
                  |   ROUNDOPEN binaryexpression ROUNDCLOSE
                  |   EDGYOPEN ( binaryexpression ( ',' binaryexpression )* )? EDGYCLOSE
                  ;

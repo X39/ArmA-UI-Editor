@@ -234,7 +234,7 @@ namespace ArmA.Studio
             {
                 this.ColoringIni = new IniData();
             }
-            fPath = Path.Combine(Studio.App.ExecutablePath, "SqfDefinition.ini");
+            fPath = Path.Combine(Studio.App.ExecutablePath, "SqfDefinition.xml");
             if (File.Exists(fPath))
             {
                 this.SqfDefinitions = fPath.XmlDeserialize<List<RealVirtuality.SQF.SqfDefinition>>();

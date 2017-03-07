@@ -7,6 +7,6 @@
         }
 
         public SqfNode Expression { get; internal set; }
-        public SqfNode Operator { get; internal set; }
+        public string Operator { get; internal set; }
     }
 }

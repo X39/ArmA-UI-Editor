@@ -48,7 +48,7 @@ namespace RealVirtuality.SQF.ANTLR
 
             node.StartOffset = ctx.Start.StartIndex;
             node.Line = ctx.Start.Line;
-            node.Length = ctx.Stop.StopIndex - node.StartOffset;
+            node.Length = ctx.Stop == null ? ctx.GetText().Length : ctx.Stop.StopIndex - node.StartOffset;
             node.Col = ctx.start.Column;
 
             return node as T;
@@ -85,6 +85,7 @@ namespace RealVirtuality.SQF.ANTLR
 
         public void EnterPrimaryexpression([NotNull] sqfParser.PrimaryexpressionContext context)
         {
+            
             this.EnterGeneric(new SqfPrimaryExpression(this.Current));
         }
 
@@ -111,10 +112,10 @@ namespace RealVirtuality.SQF.ANTLR
         {
             var node = this.ExitGeneric<SqfAssignment>(context);
             node.Context = context;
-            node.HasPrivateKeyword = context.IDENTIFIER(1) != null;
-            if(node.HasPrivateKeyword)
+            node.HasPrivateKeyword = context.PRIVATE() != null;
+            if (node.HasPrivateKeyword)
             {
-                if(!context.IDENTIFIER(0).GetText().Equals("private", StringComparison.InvariantCultureIgnoreCase))
+                if (!context.PRIVATE().GetText().Equals("private", StringComparison.InvariantCultureIgnoreCase))
                 {
                     this.OtherSyntaxErrors.Add(new SyntaxError()
                     {
@@ -124,14 +125,11 @@ namespace RealVirtuality.SQF.ANTLR
                         Line = context.Start.Line,
                         Message = "Expected { 'private' }"
                     });
-                    context.AddErrorNode(context.IDENTIFIER(0).Symbol);
+                    context.AddErrorNode(context.PRIVATE().Symbol);
                 }
-                node.VariableName = context.IDENTIFIER(1).GetText();
             }
-            else
-            {
-                node.VariableName = context.IDENTIFIER(0).GetText();
-            }
+            node.VariableName = context.IDENTIFIER().GetText();
+            
 
             if (node.Children.Count == 0)
             {
@@ -154,15 +152,28 @@ namespace RealVirtuality.SQF.ANTLR
         public void ExitBinaryexpression([NotNull] sqfParser.BinaryexpressionContext context)
         {
             var node = this.ExitGeneric<SqfBinaryExpression>(context);
-            if(context.BINARY() == null)
+            if(context.BINARY().Length == 0)
             {
                 node.RemoveFromTree();
             }
             else
             {
-                node.LValue = node.Children[0];
-                node.Operation = context.BINARY().GetText();
-                node.RValue = node.Children[1];
+                int index = 0;
+                SqfBinaryExpression lastExp = node;
+                while (node.Children.Count > 1)
+                {
+                    SqfBinaryExpression exp = new SqfBinaryExpression(node);
+                    exp.LValue = node.Children[index];
+                    exp.RValue = node.Children[index + 1];
+                    exp.Length = exp.RValue.StartOffset - lastExp.StartOffset + exp.RValue.Length;
+                    exp.Operation = context.BINARY(index++).GetText();
+                    exp.Line = exp.LValue.Line;
+                    node.Children.Remove(exp.LValue);
+                    node.Children.Remove(exp.RValue);
+                    node.Children.Insert(0, exp);
+                    lastExp = exp;
+                }
+                node.RemoveFromTree();
             }
         }
 
@@ -218,6 +229,22 @@ namespace RealVirtuality.SQF.ANTLR
                     node.GetParent().Children[node.GetParent().Children.IndexOf(node)] = arr;
                     arr.Children = node.Children;
                 }
+                else if (context.GetToken(sqfLexer.CURLYOPEN, 0) != null)
+                {
+                    if (node.Children.Count > 0)
+                    {
+                        node.RemoveFromTree();
+                    }
+                    else
+                    {
+                        var value = new SqfCode(node.GetParent());
+                        var numberContext = context.STRING();
+                        value.StartOffset = node.StartOffset;
+                        value.Length = node.Length;
+                        value.Col = node.Col;
+                        node.GetParent().Children[node.GetParent().Children.IndexOf(node)] = value;
+                    }
+                }
                 else
                 {
                     node.RemoveFromTree();
@@ -234,8 +261,8 @@ namespace RealVirtuality.SQF.ANTLR
         public void ExitUnaryexpression([NotNull] sqfParser.UnaryexpressionContext context)
         {
             var node = this.ExitGeneric<SqfUnaryExpression>(context);
-            node.Operator = node.Children[0];
-            node.Expression = node.Children[1];
+            node.Operator = context.UNARY().GetText();
+            node.Expression = node.Children[0];
         }
 
         public void ExitVariable([NotNull] sqfParser.VariableContext context)
@@ -252,7 +279,6 @@ namespace RealVirtuality.SQF.ANTLR
 
         public void VisitTerminal(ITerminalNode node)
         {
-            
         }
     }
 }

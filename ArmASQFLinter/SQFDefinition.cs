@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 
 namespace RealVirtuality.SQF
 {
-    [XmlRoot("definition")]
+    [XmlRoot]
     public partial struct SqfDefinition
     {
         [XmlAttribute]

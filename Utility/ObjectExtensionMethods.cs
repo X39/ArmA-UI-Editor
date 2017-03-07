@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.Xml.Serialization;
 using System.IO;
+using System.Collections;
 
 namespace Utility
 {
@@ -17,7 +18,7 @@ namespace Utility
         public static void XmlSerialize(this object val, string path)
         {
             var att = Attribute.GetCustomAttribute(val.GetType(), typeof(XmlRootAttribute));
-            if (att == null)
+            if (att == null && !(val is IList))
             {
                 throw new InvalidOperationException(ERR_XMLSERIALIZE_REQUIRES_XMLROOT_ATTRIBUTE);
             }
@@ -30,7 +31,7 @@ namespace Utility
         public static void XmlSerialize(this object val, Stream stream)
         {
             var att = Attribute.GetCustomAttribute(val.GetType(), typeof(XmlRootAttribute));
-            if (att == null)
+            if (att == null && !(val is IList))
             {
                 throw new InvalidOperationException(ERR_XMLSERIALIZE_REQUIRES_XMLROOT_ATTRIBUTE);
             }
@@ -43,7 +44,7 @@ namespace Utility
         public static T XmlDeserialize<T>(this string path) where T : class
         {
             var att = Attribute.GetCustomAttribute(typeof(T), typeof(XmlRootAttribute));
-            if (att == null)
+            if (att == null && !typeof(IList).IsAssignableFrom(typeof(T)))
             {
                 throw new InvalidOperationException(ERR_XMLDESERIALIZE_REQUIRES_XMLROOT_ATTRIBUTE);
             }
@@ -56,7 +57,7 @@ namespace Utility
         public static T XmlDeserialize<T>(this Stream stream) where T : class
         {
             var att = Attribute.GetCustomAttribute(typeof(T), typeof(XmlRootAttribute));
-            if (att == null)
+            if (att == null && !typeof(IList).IsAssignableFrom(typeof(T)))
             {
                 throw new InvalidOperationException(ERR_XMLDESERIALIZE_REQUIRES_XMLROOT_ATTRIBUTE);
             }

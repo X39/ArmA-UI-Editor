@@ -67,6 +67,9 @@ namespace ArmA.Studio.DataContext
         private ToolTip EditorTooltip;
         private Popup IntelliSensePopup;
         private Task LinterTask;
+        private Task WaitTimeoutTask;
+        private DateTime LastTextChanged;
+        private const int CONST_LINTER_UPDATE_TIMEOUT_MS = 500;
 
         public TextEditorDocument()
         {
@@ -115,9 +118,8 @@ namespace ArmA.Studio.DataContext
         {
             this.EditorTooltip.IsOpen = false;
         }
-
-
-        private void Document_TextChanged(object sender, EventArgs e)
+        //ToDo: Fix error offset moving
+        private void ExecuteLinter()
         {
             if (this.LinterTask == null || this.LinterTask.IsCompleted)
             {
@@ -146,11 +148,27 @@ namespace ArmA.Studio.DataContext
                         }
                         SyntaxErrorRenderer.SyntaxErrors = this.LinterInfos = linterInfos;
                         ErrorListPane.Instance.LinterDictionary[this.FilePath] = this.LinterInfos;
+                        if (this.Editor != null)
+                        {
+                            App.Current.Dispatcher.InvokeAsync(() => this.Editor.TextArea.TextView.InvalidateLayer(ICSharpCode.AvalonEdit.Rendering.KnownLayer.Selection)).Wait();
+                        }
                     }
                 });
             }
-            this.ShowIntelliSense();
+        }
 
+        private void Document_TextChanged(object sender, EventArgs e)
+        {
+            this.LastTextChanged = DateTime.Now;
+            if (this.WaitTimeoutTask == null || this.WaitTimeoutTask.IsCompleted)
+            {
+                this.WaitTimeoutTask = Task.Run(() =>
+                {
+                    System.Threading.SpinWait.SpinUntil(() => (DateTime.Now - this.LastTextChanged).TotalMilliseconds > CONST_LINTER_UPDATE_TIMEOUT_MS);
+                    App.Current.Dispatcher.Invoke(() => this.ExecuteLinter());
+                });
+            }
+            this.ShowIntelliSense();
         }
 
 

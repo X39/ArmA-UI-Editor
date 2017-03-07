@@ -37,14 +37,18 @@ namespace ArmA.Studio.DataContext
         {
             var inputStream = new Antlr4.Runtime.AntlrInputStream(memstream);
 
-            var lexer = new RealVirtuality.SQF.ANTLR.Parser.sqfLexer(inputStream, new RealVirtuality.SQF.SqfDefinition[] { });
+            var lexer = new RealVirtuality.SQF.ANTLR.Parser.sqfLexer(inputStream, ConfigHost.Instance.SqfDefinitions);
             var commonTokenStream = new Antlr4.Runtime.CommonTokenStream(lexer);
             var p = new RealVirtuality.SQF.ANTLR.Parser.sqfParser(commonTokenStream);
             var listener = new RealVirtuality.SQF.ANTLR.SqfListener();
             p.AddParseListener(listener);
             memstream.Seek(0, SeekOrigin.Begin);
-
             p.RemoveErrorListeners();
+#if DEBUG
+            p.BuildParseTree = true;
+            p.Context = new Antlr4.Runtime.ParserRuleContext();
+#endif
+            
             var se = new List<LinterInfo>();
             p.AddErrorListener(new RealVirtuality.SQF.ANTLR.ErrorListener((recognizer, token, line, charPositionInLine, msg, ex) =>
             {
@@ -59,8 +63,8 @@ namespace ArmA.Studio.DataContext
                     FileName = Path.GetFileName(this.FilePath)
                 });
             }));
-            
             p.sqf();
+            
             return se;
         }
     }
