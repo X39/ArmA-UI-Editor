@@ -134,7 +134,7 @@ Do you want to restart now?</value>
     <value>Column</value>
   </data>
   <data name="ConfigEntrySelectorDialog_Header" xml:space="preserve">
-    <value>Please choose the UI-Main Config</value>
+    <value>Please choose the UI-Main config entry</value>
   </data>
   <data name="ConfigEntrySelectorDialog_Title" xml:space="preserve">
     <value>UI-Config Selector</value>

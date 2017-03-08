@@ -33,7 +33,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="{x:Static p:Localization.FileName}" Margin="8 0" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Text="{Binding SelectedName, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="1" IsReadOnly="{Binding SelectedItem.StaticFileName, Converter={StaticResource IsNullConverter}, ConverterParameter=True}">
+                <TextBox.Text>
+                    <PriorityBinding>
+                        <Binding Path="SelectedItem.StaticFileName" Converter="{StaticResource NullToDependencyPropertyUnsetConverter}"/>
+                        <Binding Path="SelectedName" UpdateSourceTrigger="PropertyChanged"/>
+                    </PriorityBinding>
+                </TextBox.Text>
+            </TextBox>
         </Grid>
     </Grid>
 </Window>

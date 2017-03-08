@@ -12,7 +12,20 @@ namespace ArmA.Studio.UI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null;
+            bool flag;
+            if (parameter is string)
+            {
+                bool.TryParse(parameter as string, out flag);
+            }
+            else if (parameter is bool)
+            {
+                flag = (bool)parameter;
+            }
+            else
+            {
+                flag = false;
+            }
+            return flag ? value != null : value == null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

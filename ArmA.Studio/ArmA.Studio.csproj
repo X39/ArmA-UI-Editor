@@ -118,6 +118,7 @@
     <Compile Include="LoggerTargets\SubscribableTarget.cs" />
     <Compile Include="UI\Attached\Eventing\PreviewMouseDown.cs" />
     <Compile Include="UI\Attached\Eventing\MouseDown.cs" />
+    <Compile Include="UI\Converters\NullToDependencyPropertyUnsetConverter.cs" />
     <Compile Include="UI\Converters\Multi\BoolOrMultiConverter.cs" />
     <Compile Include="UI\Converters\Multi\CollectionContainsConverter.cs" />
     <Compile Include="UI\UnderlineBackgroundRenderer.cs" />
@@ -244,6 +245,26 @@
     <EmbeddedResource Include="UI\DataTemplates\Output.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Page Include="Resources\Pictograms\XMLFile\XMLFile_16x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\XMLFile\XMLFile_256x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\XMLFile\XMLFile_32x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\XMLFile\XMLFile_48x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Pictograms\XMLFile\XMLFile_64x.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Pictograms\AddItem\AddItem_16x.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1604,6 +1625,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\Pictograms\XMLFile\XMLFile_16x.ai" />
+    <None Include="Resources\Pictograms\XMLFile\XMLFile_256x.ai" />
+    <None Include="Resources\Pictograms\XMLFile\XMLFile_32x.ai" />
+    <None Include="Resources\Pictograms\XMLFile\XMLFile_48x.ai" />
+    <None Include="Resources\Pictograms\XMLFile\XMLFile_64x.ai" />
     <None Include="Resources\Pictograms\AddItem\AddItem_16x.ai" />
     <None Include="Resources\Pictograms\Cancel\Cancel_12x.ai" />
     <None Include="Resources\Pictograms\Cancel\Cancel_14x.ai" />
@@ -1954,6 +1980,15 @@
     <None Include="Resources\Pictograms\Stop\Stop_grey_32xSM.ai" />
     <None Include="Resources\Pictograms\SwitchSourceOrTarget\SwitchSourceOrTarget_16x.ai" />
     <None Include="Resources\Pictograms\SwitchSourceOrTarget\VSO_SwitchSourceOrTarget_16x.ai" />
+    <Resource Include="Resources\Pictograms\XMLFile\XMLFile.ico" />
+    <Resource Include="Resources\Pictograms\XMLFile\XMLFile_16x.png" />
+    <Content Include="Resources\Pictograms\XMLFile\XMLFile_16x.svg" />
+    <Resource Include="Resources\Pictograms\XMLFile\XMLFile_16x_24.bmp" />
+    <Resource Include="Resources\Pictograms\XMLFile\XMLFile_16x_32.bmp" />
+    <Resource Include="Resources\Pictograms\XMLFile\XMLFile_256x.png" />
+    <Resource Include="Resources\Pictograms\XMLFile\XMLFile_32x.png" />
+    <Resource Include="Resources\Pictograms\XMLFile\XMLFile_48x.png" />
+    <Resource Include="Resources\Pictograms\XMLFile\XMLFile_64x.png" />
     <Content Include="SqfDefinition.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

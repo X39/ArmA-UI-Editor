@@ -107,7 +107,7 @@ namespace ArmA.Studio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please choose the UI-Main Config.
+        ///   Looks up a localized string similar to Please choose the UI-Main config entry.
         /// </summary>
         public static string ConfigEntrySelectorDialog_Header {
             get {

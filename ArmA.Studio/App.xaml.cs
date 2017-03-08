@@ -31,6 +31,7 @@ namespace ArmA.Studio
         public static string ExecutableFile { get { return Assembly.GetExecutingAssembly().GetName().CodeBase.Substring("file:///".Length); } }
         public static string SyntaxFilesPath { get { return Path.Combine(ExecutablePath, "SyntaxFiles"); } }
         public static string ConfigPath { get { return Path.Combine(ApplicationDataPath, "Configuration"); } }
+        public static string FileTemplatePath { get { return Path.Combine(ApplicationDataPath, "Templates"); } }
         public static string TempPath { get { return Path.Combine(Path.GetTempPath(), @"ArmA-Studio"); } }
         public static string CommonApplicationDataPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"ArmA-Studio"); } }
         public static string ApplicationDataPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"ArmA-Studio"); } }
@@ -47,8 +48,21 @@ namespace ArmA.Studio
             LogManager.ReconfigExistingLoggers();
         }
 
+        private void CreateUserDirectories()
+        {
+            if (!Directory.Exists(ConfigPath))
+            {
+                Directory.CreateDirectory(ConfigPath);
+            }
+            if (!Directory.Exists(FileTemplatePath))
+            {
+                Directory.CreateDirectory(FileTemplatePath);
+            }
+        }
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            this.CreateUserDirectories();
             try
             {
                 //Invoke getter, will never be null

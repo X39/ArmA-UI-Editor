@@ -36,19 +36,19 @@ namespace ArmA.Studio.Dialogs
         public bool OKButtonEnabled { get { return this._OKButtonEnabled; } set { this._OKButtonEnabled = value; this.RaisePropertyChanged(); } }
         private bool _OKButtonEnabled;
 
+        public string FinalName { get { return string.IsNullOrWhiteSpace(((FileType)this.SelectedItem).StaticFileName) ? this.SelectedName : ((FileType)this.SelectedItem).StaticFileName; } }
+
         public CreateNewFileDialogDataContext()
         {
-            var arr = App.Current.TryFindResource("FileTypes") as Array;
-            this.FileTypeCollection = new ObservableCollection<FileType>(arr.Cast<FileType>());
+            this.FileTypeCollection = new ObservableCollection<FileType>(FileType.CurrentFileTypes);
             this.SelectedItem = this.FileTypeCollection.First();
             this.UpdateOkButtonEnabled();
         }
 
         private void UpdateOkButtonEnabled()
         {
-            this.OKButtonEnabled = this.SelectedItem != null && !string.IsNullOrWhiteSpace(SelectedName);
+            this.OKButtonEnabled = this.SelectedItem != null && !(string.IsNullOrWhiteSpace(this.SelectedName) && string.IsNullOrWhiteSpace(((FileType)this.SelectedItem).StaticFileName));
         }
-
 
     }
 }

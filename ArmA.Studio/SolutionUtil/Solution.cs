@@ -191,7 +191,7 @@ namespace ArmA.Studio.SolutionUtil
                 var dlgResult = dlg.ShowDialog();
                 if (dlgResult.HasValue && dlgResult.Value)
                 {
-                    var fName = dlgDc.SelectedName;
+                    var fName = dlgDc.FinalName;
                     if (!Path.HasExtension(fName))
                     {
                         fName = string.Concat(fName, '.', ((Dialogs.FileType)dlgDc.SelectedItem).Extension);

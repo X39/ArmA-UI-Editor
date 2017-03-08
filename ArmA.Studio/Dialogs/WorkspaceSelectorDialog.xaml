@@ -11,9 +11,10 @@
     <Grid VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="8"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding CurrentPath, UpdateSourceTrigger=PropertyChanged}" Foreground="Gray"/>
-        <Button Grid.Column="1" Content="{x:Static p:Localization.WorkspaceSelectorDialog_Browse}" Padding="8 0" MinWidth="100" Command="{Binding CmdBrowse}"/>
+        <Button Grid.Column="2" Content="{x:Static p:Localization.WorkspaceSelectorDialog_Browse}" Padding="8 0" MinWidth="100" Command="{Binding CmdBrowse}"/>
     </Grid>
 </Window>

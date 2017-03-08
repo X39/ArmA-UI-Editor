@@ -23,6 +23,7 @@
                     <conv:BoolInvertConverter x:Key="BoolInvertConverter"/>
                     <conv:IsNullConverter x:Key="IsNullConverter"/>
                     <conv:IsStringNullConverter x:Key="IsStringNullConverter"/>
+                    <conv:NullToDependencyPropertyUnsetConverter x:Key="NullToDependencyPropertyUnsetConverter"/>
 
                     <convm:CollectionContainsConverter x:Key="CollectionContainsConverter"/>
                     <convm:AllTrueMultiConverter x:Key="AllTrueMultiConverter"/>
@@ -253,6 +254,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</sys:String>
                         <Setter Property="MinWidth" Value="512"/>
                         <Setter Property="MinHeight" Value="200"/>
                         <Setter Property="att:DialogResultAttached.DialogResult" Value="{Binding DialogResult}"/>
+                        <Setter Property="Icon" Value="Resources/Logo.ico"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type Window}">
@@ -339,18 +341,37 @@ params [];</sys:String>
                             </dlg:FileType.DefaultContent>
                         </dlg:FileType>
                         <dlg:FileType Image="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile_16x.png" FileTypeName="Config" Extension="cpp">
-                                <dlg:FileType.DefaultContent>
-                                    <sys:String xml:space="preserve">/*
+                            <dlg:FileType.DefaultContent>
+                                <sys:String xml:space="preserve">/*
  * @Author: 
  * 
- * @Description: 
- * 
- * @Arguments: -/-
- * @Return: -/-
- */
-params [];</sys:String>
-                                </dlg:FileType.DefaultContent>
-                            </dlg:FileType>
+ * @Purpose: 
+ *
+ */</sys:String>
+                            </dlg:FileType.DefaultContent>
+                        </dlg:FileType>
+                        <dlg:FileType Image="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile_16x.png" FileTypeName="Addon MainConfig" Extension="cpp" StaticFileName="config.cpp">
+                            <dlg:FileType.DefaultContent>
+                                <sys:String xml:space="preserve">class CfgPatches
+{
+    class TAG_ModName
+    {
+        units[] = {};
+        weapons[] = {};
+        requiredVersion = 1.68;
+        requiredAddons[] = {};
+        author = "";
+        mail = "";
+        url = "";
+    };
+};</sys:String>
+                            </dlg:FileType.DefaultContent>
+                        </dlg:FileType>
+                        <dlg:FileType Image="/ArmA-Studio;component/Resources/FileTypes/ConfigurationFile_16x.png" FileTypeName="Mission MainConfig" Extension="ext" StaticFileName="description.ext">
+                            <dlg:FileType.DefaultContent>
+                                <sys:String xml:space="preserve">//ToDo: Fill</sys:String>
+                            </dlg:FileType.DefaultContent>
+                        </dlg:FileType>
                     </x:Array>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
