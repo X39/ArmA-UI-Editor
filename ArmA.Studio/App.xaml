@@ -24,6 +24,7 @@
                     <conv:IsNullConverter x:Key="IsNullConverter"/>
                     <conv:IsStringNullConverter x:Key="IsStringNullConverter"/>
                     <conv:NullToDependencyPropertyUnsetConverter x:Key="NullToDependencyPropertyUnsetConverter"/>
+                    <conv:CountEnumerableConverter x:Key="CountEnumerableConverter"/>
 
                     <convm:CollectionContainsConverter x:Key="CollectionContainsConverter"/>
                     <convm:AllTrueMultiConverter x:Key="AllTrueMultiConverter"/>

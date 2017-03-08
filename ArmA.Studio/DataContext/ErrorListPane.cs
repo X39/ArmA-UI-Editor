@@ -40,9 +40,14 @@ namespace ArmA.Studio.DataContext
         public string FileFilter { get { return this._FileFilter; } set { if (this._FileFilter.Equals(value)) return; this._FileFilter = value; this.UpdateListView(); this.RaisePropertyChanged(); } }
         private string _FileFilter;
 
-        public int CurrentErrorCount { get { return 0; } }
-        public int CurrentWarningCount { get { return 0; } }
-        public int CurrentInfoCount { get { return 0; } }
+        public int CurrentErrorCount { get { return this._CurrentErrorCount; } set { this._CurrentErrorCount = value; this.RaisePropertyChanged(); } }
+        private int _CurrentErrorCount;
+
+        public int CurrentWarningCount { get { return this._CurrentWarningCount; } set { this._CurrentWarningCount = value; this.RaisePropertyChanged(); } }
+        private int _CurrentWarningCount;
+
+        public int CurrentInfoCount { get { return this._CurrentInfoCount; } set { this._CurrentInfoCount = value; this.RaisePropertyChanged(); } }
+        private int _CurrentInfoCount;
 
 
         public ListCollectionView ListView { get { return this._ListView; } set { this._ListView = value; value.Filter = new Predicate<object>(ListViewFilter); this.RaisePropertyChanged(); } }
@@ -69,24 +74,34 @@ namespace ArmA.Studio.DataContext
 
         public void UpdateListView()
         {
-            if(this.FileFilter == null)
+            if (this.FileFilter == null)
             {
                 var list = new List<TextEditorUtil.LinterInfo>();
-                foreach(var val in this.LinterDictionary.Values)
+                foreach (var val in this.LinterDictionary.Values)
                 {
                     list.AddRange(val);
                 }
                 this.ListView = new ListCollectionView(list);
+                this.CurrentErrorCount = list.Count((it) => it.Severity == ESeverity.Error);
+                this.CurrentWarningCount = list.Count((it) => it.Severity == ESeverity.Warning);
+                this.CurrentInfoCount = list.Count((it) => it.Severity == ESeverity.Info);
             }
             else
             {
                 if (this.LinterDictionary.ContainsKey(this.FileFilter))
                 {
-                    this.ListView = new ListCollectionView(this.LinterDictionary[this.FileFilter].ToList());
+                    var list = this.LinterDictionary[this.FileFilter].ToList();
+                    this.ListView = new ListCollectionView(list);
+                    this.CurrentErrorCount = list.Count((it) => it.Severity == ESeverity.Error);
+                    this.CurrentWarningCount = list.Count((it) => it.Severity == ESeverity.Warning);
+                    this.CurrentInfoCount = list.Count((it) => it.Severity == ESeverity.Info);
                 }
                 else
                 {
                     this.ListView = new ListCollectionView(new List<object>());
+                    this.CurrentErrorCount = 0;
+                    this.CurrentWarningCount = 0;
+                    this.CurrentInfoCount = 0;
                 }
             }
         }

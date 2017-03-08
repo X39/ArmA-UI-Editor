@@ -27,18 +27,23 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="/ArmA-Studio;component/Resources/Pictograms/StatusCriticalError/StatusCriticalError.ico" Height="16"/>
-                    <TextBlock Grid.Column="1" Margin="4 0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Text" Value="{x:Static p:Localization.Errors}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentErrorCount}" Value="1">
-                                        <Setter Property="Text" Value="{x:Static p:Localization.Error}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Margin="4 0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{x:Static p:Localization.Errors}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentErrorCount}" Value="1">
+                                            <Setter Property="Text" Value="{x:Static p:Localization.Error}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding CurrentErrorCount}"/>
+                        <TextBlock Text=")"/>
+                    </StackPanel>
                 </Grid>
             </ToggleButton>
             <Separator/>
@@ -49,18 +54,23 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="/ArmA-Studio;component/Resources/Pictograms/StatusWarning/StatusWarning.ico" Height="16"/>
-                    <TextBlock Grid.Column="1" Margin="4 0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Text" Value="{x:Static p:Localization.Warnings}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentWarningCount}" Value="1">
-                                        <Setter Property="Text" Value="{x:Static p:Localization.Warning}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Margin="4 0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{x:Static p:Localization.Warnings}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentWarningCount}" Value="1">
+                                            <Setter Property="Text" Value="{x:Static p:Localization.Warning}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding CurrentWarningCount}"/>
+                        <TextBlock Text=")"/>
+                    </StackPanel>
                 </Grid>
             </ToggleButton>
             <Separator/>
@@ -71,18 +81,23 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="/ArmA-Studio;component/Resources/Pictograms/StatusInformation/StatusInformation.ico" Height="16"/>
-                    <TextBlock Grid.Column="1" Margin="4 0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Text" Value="{x:Static p:Localization.Infos}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentInfoCount}" Value="1">
-                                        <Setter Property="Text" Value="{x:Static p:Localization.Info}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Margin="4 0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{x:Static p:Localization.Infos}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentInfoCount}" Value="1">
+                                            <Setter Property="Text" Value="{x:Static p:Localization.Info}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding CurrentInfoCount}"/>
+                        <TextBlock Text=")"/>
+                    </StackPanel>
                 </Grid>
             </ToggleButton>
         </StackPanel>

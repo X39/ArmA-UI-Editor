@@ -51,6 +51,10 @@ namespace ArmA.Studio.DataContext
                 {
                     this.DocumentDictionary.Add(e.Logger, new TextDocument());
                     AvailableTargets.Add(e.Logger);
+                    if(this.SelectedTarget == null)
+                    {
+                        this.SelectedTarget = e.Logger;
+                    }
                 }
                 var doc = this.DocumentDictionary[e.Logger];
                 doc.Insert(doc.TextLength, string.Concat(e.Severity, ": ", e.Message, "\r\n"));

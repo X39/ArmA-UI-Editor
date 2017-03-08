@@ -64,5 +64,32 @@ namespace Utility
             }
         }
         #endregion
+        #region Count
+        public static int Count(this IEnumerable source)
+        {
+            var collection = source as ICollection;
+            if (collection != null)
+                return collection.Count;
+
+            var count = 0;
+            var enumerator = source.GetEnumerator();
+            try
+            {
+                while (enumerator.MoveNext())
+                    count++;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                var disposable = enumerator as IDisposable;
+                if (disposable != null)
+                    disposable.Dispose();
+            }
+            return count;
+        }
+        #endregion
     }
 }

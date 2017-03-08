@@ -84,7 +84,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Margin="0 0 4 0" Height="16">
+                    <Image Grid.Column="0" Height="16">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Folder_16x.png"/>
@@ -96,7 +96,7 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                    <TextBlock Grid.Column="1" Text="{Binding FileName}">
+                    <TextBlock Grid.Column="1" Text="{Binding FileName}" Margin="4 0">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -108,7 +108,7 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    <TextBox Text="{Binding FileName}" ev:LostKeyboardFocus.Command="{Binding CmdTextBoxLostKeyboardFocus}" att:LooseFocusOnKeyAttached.Key="Return" att:SelectAllOnFocusAttached.Attach="True" ev:KeyDown.Command="{Binding CmdTextBoxKeyDown}" Height="16" Margin="0" Padding="0" BorderThickness="0">
+                    <TextBox Text="{Binding FileName}" ev:LostKeyboardFocus.Command="{Binding CmdTextBoxLostKeyboardFocus}" att:LooseFocusOnKeyAttached.Key="Return" att:SelectAllOnFocusAttached.Attach="True" ev:KeyDown.Command="{Binding CmdTextBoxKeyDown}" Height="16" Margin="4 0" Padding="0" BorderThickness="0">
                         <TextBox.Style>
                             <Style TargetType="TextBox">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -148,7 +148,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Margin="0 0 4 0" Height="16">
+                    <Image Grid.Column="0" Height="16">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Setter Property="Source" Value="/ArmA-Studio;component/Resources/FileTypes/Document_16x.png"/>
@@ -172,7 +172,7 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                    <TextBlock Grid.Column="1" Text="{Binding FileName}">
+                    <TextBlock Grid.Column="1" Text="{Binding FileName}" Margin="4 0">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -184,7 +184,7 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    <TextBox Grid.Column="1" Text="{Binding FileName}" ev:LostKeyboardFocus.Command="{Binding CmdTextBoxLostKeyboardFocus}" att:LooseFocusOnKeyAttached.Key="Return" att:SelectFileNameOnFocusAttached.Attach="True" ev:KeyDown.Command="{Binding CmdTextBoxKeyDown}" Height="16" Margin="0" Padding="0" BorderThickness="0">
+                    <TextBox Grid.Column="1" Text="{Binding FileName}" ev:LostKeyboardFocus.Command="{Binding CmdTextBoxLostKeyboardFocus}" att:LooseFocusOnKeyAttached.Key="Return" att:SelectFileNameOnFocusAttached.Attach="True" ev:KeyDown.Command="{Binding CmdTextBoxKeyDown}" Height="16"  Margin="4 0" Padding="0" BorderThickness="0">
                         <TextBox.Style>
                             <Style TargetType="TextBox">
                                 <Setter Property="Visibility" Value="Collapsed"/>

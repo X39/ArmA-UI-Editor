@@ -17,6 +17,7 @@ namespace ArmA.Studio.Dialogs
         public void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName]string callerName = "") { this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(callerName)); }
 
         public ICommand CmdOKButtonPressed { get { return new UI.Commands.RelayCommand((p) => this.DialogResult = true); } }
+        public ICommand CmdPreviewKeyDown { get { return new UI.Commands.RelayCommand((p) => { if(this.OKButtonEnabled && Keyboard.IsKeyDown(Key.Enter)) this.DialogResult = true; }); } }
 
         public bool? DialogResult { get { return this._DialogResult; } set { this._DialogResult = value; this.RaisePropertyChanged(); } }
         private bool? _DialogResult;

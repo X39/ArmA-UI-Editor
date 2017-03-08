@@ -62,7 +62,7 @@ PREPROCESSOR: '#' .*? '\n' -> skip;
 STRING: '"' ( ANY | '""' )*? '"' | '\'' ( ANY | '\'\'' )*? '\'';
 NUMBER: ('0x' | '$') HEXADIGIT+ |  '-'? DIGIT+ ( '.' DIGIT+ )?;
 IDENTIFIER: (LETTER | '_') (LETTER | DIGIT | '_')*;
-OPERATOR: '||' | '&&' | '==' | '>=' | '<=' | '>' | '<' | '!=' | '*' | '/' | '>>' | '+' | '-';
+OPERATOR: '||' | '&&' | '==' | '>=' | '<=' | '>' | '<' | '!=' | '*' | '/' | '>>' | '+' | '-' | ':';
 NEGATION: '!';
 CURLYOPEN: '{';
 CURLYCLOSE: '}';

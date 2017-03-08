@@ -6,6 +6,7 @@
         xmlns:p="clr-namespace:ArmA.Studio.Properties"
         xmlns:local="clr-namespace:ArmA.Studio.Dialogs"
         xmlns:att="clr-namespace:ArmA.Studio.UI.Attached"
+        xmlns:ev="clr-namespace:ArmA.Studio.UI.Attached.Eventing"
         mc:Ignorable="d"
         Title="{x:Static p:Localization.CreateNewFileDialog_Title}" Style="{StaticResource DialogWindow}">
     <Grid>
@@ -33,7 +34,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="{x:Static p:Localization.FileName}" Margin="8 0" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" IsReadOnly="{Binding SelectedItem.StaticFileName, Converter={StaticResource IsNullConverter}, ConverterParameter=True}">
+            <TextBox Grid.Column="1" IsReadOnly="{Binding SelectedItem.StaticFileName, Converter={StaticResource IsNullConverter}, ConverterParameter=True}" ev:PreviewKeyDown.Command="{Binding CmdPreviewKeyDown}">
                 <TextBox.Text>
                     <PriorityBinding>
                         <Binding Path="SelectedItem.StaticFileName" Converter="{StaticResource NullToDependencyPropertyUnsetConverter}"/>
