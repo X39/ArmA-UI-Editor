@@ -9,7 +9,6 @@ namespace RealVirtuality.SQF
         }
 
         public SqfNode AssignedExpression { get; set; }
-        public sqfParser.AssignmentContext Context { get; set; }
         public bool HasPrivateKeyword { get; set; }
         public string VariableName { get; set; }
     }

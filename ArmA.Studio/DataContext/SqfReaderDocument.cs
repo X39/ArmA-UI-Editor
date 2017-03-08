@@ -52,7 +52,7 @@ namespace ArmA.Studio.DataContext
             var se = new List<LinterInfo>();
             p.AddErrorListener(new RealVirtuality.SQF.ANTLR.ErrorListener((recognizer, token, line, charPositionInLine, msg, ex) =>
             {
-                switch (p.RuleNames[ex.Context.RuleIndex])
+                switch (ex == null ? null : p.RuleNames[ex.Context.RuleIndex])
                 {
 
                     case "binaryexpression":

@@ -36,13 +36,13 @@ options
 {
 	private IEnumerable<SqfDefinition> BinaryDefinitions;
 	private IEnumerable<SqfDefinition> UnaryDefinitions;
-	private IEnumerable<SqfDefinition> NullarDefinitions;
+	private IEnumerable<SqfDefinition> NularDefinitions;
 
 	public sqfParser(ITokenStream input, IEnumerable<SqfDefinition> definitions) : this(input)
 	{
 		this.BinaryDefinitions = from def in definitions where def.Kind == SqfDefinition.EKind.Binary select def;
 		this.UnaryDefinitions = from def in definitions where def.Kind == SqfDefinition.EKind.Unary select def;
-		this.NullarDefinitions = from def in definitions where def.Kind == SqfDefinition.EKind.Nullar select def;
+		this.NularDefinitions = from def in definitions where def.Kind == SqfDefinition.EKind.Nular select def;
 	}
 }
 
@@ -54,7 +54,6 @@ fragment DIGIT: [0-9];
 fragment LETTER: (LOWERCASE | UPPERCASE);
 fragment HEXADIGIT: (DIGIT | [a-f] | [A-F]);
 fragment ANY: .;
-PUNCTUATION: '||' | '&&' | '==' | '>=' | '<=' | '!=' | '*' | '/' | '>>' | '+' | '-';
 WS: [ \t\r\n]+ -> skip;
 INSTRUCTION: '//@' .*? '\n';
 INLINECOMMENT: '//' .*? '\n' -> skip;
@@ -62,8 +61,9 @@ BLOCKCOMMENT: '/*' .*? '*/' -> skip;
 PREPROCESSOR: '#' .*? '\n' -> skip;
 STRING: '"' ( ANY | '""' )*? '"' | '\'' ( ANY | '\'\'' )*? '\'';
 NUMBER: ('0x' | '$') HEXADIGIT+ |  '-'? DIGIT+ ( '.' DIGIT+ )?;
-PRIVATE: { _input.GetTextTillWhitespace().Equals("private", System.StringComparison.InvariantCultureIgnoreCase) }? IDENTIFIER;
 IDENTIFIER: (LETTER | '_') (LETTER | DIGIT | '_')*;
+OPERATOR: '||' | '&&' | '==' | '>=' | '<=' | '>' | '<' | '!=' | '*' | '/' | '>>' | '+' | '-';
+NEGATION: '!';
 CURLYOPEN: '{';
 CURLYCLOSE: '}';
 ROUNDOPEN: '(';
@@ -81,36 +81,24 @@ statement:
          ;
 assignment:
 			IDENTIFIER '=' binaryexpression
-          |	PRIVATE IDENTIFIER '=' binaryexpression
+          |	{ _input.Lt(1).Text.Equals("private", System.StringComparison.InvariantCultureIgnoreCase) }? IDENTIFIER IDENTIFIER '=' binaryexpression
           ;
 binaryexpression:
-					primaryexpression ( { this.BinaryDefinitions.ContainsName(_input.Lt(1).Text) }? IDENTIFIER primaryexpression )*
+					primaryexpression ( { this.BinaryDefinitions.ContainsName(_input.Lt(1).Text) }? (IDENTIFIER | OPERATOR) primaryexpression )*
                 ;
-roundbrackets: ROUNDOPEN binaryexpression ROUNDCLOSE;
-array: EDGYOPEN ( binaryexpression ( ',' binaryexpression )* )? EDGYCLOSE;
 
 primaryexpression: 
                      NUMBER
-                 |   unaryexpression
-                 |   nularexpression
-                 |   variable
                  |   STRING
                  |   CURLYOPEN code? CURLYCLOSE
                  |   roundbrackets
                  |   array
+                 |   unaryexpression
+                 |   nularexpression
+                 |   variable
                  ;
-nularexpression:
-                   operator
-			   |   { this.NullarDefinitions.ContainsName(_input.Lt(1).Text) }? IDENTIFIER
-               ;
-unaryexpression:
-                   { this.UnaryDefinitions.ContainsName(_input.Lt(1).Text) }? IDENTIFIER primaryexpression
-               ;
-variable:
-            IDENTIFIER
-        ;
-operator:
-            IDENTIFIER
-        |   PUNCTUATION
-        |   PUNCTUATION PUNCTUATION
-        ;
+nularexpression: { this.NularDefinitions.ContainsName(_input.Lt(1).Text) }? IDENTIFIER;
+unaryexpression: { this.UnaryDefinitions.ContainsName(_input.Lt(1).Text) }? (IDENTIFIER | NEGATION) primaryexpression;
+roundbrackets:	ROUNDOPEN binaryexpression ROUNDCLOSE;
+array:			EDGYOPEN ( binaryexpression ( ',' binaryexpression )* )? EDGYCLOSE;
+variable:		IDENTIFIER;

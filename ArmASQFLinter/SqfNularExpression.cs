@@ -5,5 +5,7 @@
         public SqfNularExpression(SqfNode parent) : base(parent)
         {
         }
+
+        public string Identifier { get; internal set; }
     }
 }
